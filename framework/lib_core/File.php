@@ -82,6 +82,10 @@ abstract class File {
 		return $rows;
 	}
 	
+	static function remove_item($within_base, $item) {
+		
+	}
+	
 	static function scandir_recursive($directory) {
 	  $folderContents = array();
 		foreach (scandir($directory) as $folderItem) {

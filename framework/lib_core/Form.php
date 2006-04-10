@@ -76,6 +76,11 @@
 	    Session::set('errors', $this->errors_array);
 	    return true;	
 	 }
+	
+	public function clear_errors() {
+		$this->errors_array=array();
+		Session::unset_var('erros');
+	}
 	 
 	 public function add_raw($variable, $validation=null)
 	 {
