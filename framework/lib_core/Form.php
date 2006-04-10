@@ -15,8 +15,8 @@
  	private $formhtml;
  	private $formstructure;
  	private $formindex;
- 	private $validation_array;
- 	private $expected_array;
+ 	private $validation_array=array();
+ 	private $expected_array=array();
  	private $user_values;
  	private $errors_array=array();
  	private $label_mappings;
@@ -92,23 +92,20 @@
 	 
 	 private function parse_form_validation()
 	 {
-	 	foreach($this->formstructure as $array=>$tag)
-	 	{
-	 	  
-	 	  if(strlen($tag['attributes']['CLASS'])>0 && strlen($tag['attributes']['NAME'])>0)
-	 	    {
-	 	    $class_array=explode(" ", $tag['attributes']['CLASS']);
-	 	      foreach($class_array as $class)
-	 	      {
-	 	      	$testmatch=preg_match("/^FM[a-zA-Z0-9]*$/", $class);
-	 	      	if($testmatch)
-	 	        {
-	 	        $index=$tag['attributes']['NAME'];
-	 	        $this->validation_array[][$index]=$class;
-	 	        }
-	 	      }
-	 	    }	
-	 	}	
+		if(is_array($this->formstructure)) {
+	 		foreach($this->formstructure as $array=>$tag) {
+	 	  	if(strlen($tag['attributes']['CLASS'])>0 && strlen($tag['attributes']['NAME'])>0) {
+		 	    $class_array=explode(" ", $tag['attributes']['CLASS']);
+		 	      foreach($class_array as $class) {
+		 	      	$testmatch=preg_match("/^FM[a-zA-Z0-9]*$/", $class);
+		 	      	if($testmatch) {
+		 	        	$index=$tag['attributes']['NAME'];
+		 	        	$this->validation_array[][$index]=$class;
+		 	        }
+		 	      }
+		 	   }	
+		 	}
+		}	
 	 }
 	 
 	 private function set_allowed_values()

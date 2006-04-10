@@ -83,9 +83,17 @@ abstract class File {
 	}
 	
 	static function remove_item($within_base, $item) {
-		
+		if(!strpos($item, $within_base)===0) { return false; }
+		if(is_file($item)) { unlink($item); return true; }
+		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($item), 2);
+		foreach ( $iter as $file ) {
+				if($iter->isDir()) { rmdir($iter->getPath().'/'.$file); }
+				else { unlink($iter->getPath().'/'.$file); }
+		}
+		if(is_dir($item)) { rmdir($item); }
+		return true;
 	}
-	
+		
 	static function scandir_recursive($directory) {
 	  $folderContents = array();
 		foreach (scandir($directory) as $folderItem) {

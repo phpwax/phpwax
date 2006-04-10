@@ -130,6 +130,7 @@ class Session {
 			self::set('user_messages', $existing);
 			return true;
 		}
+		
 
 }
 
