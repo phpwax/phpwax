@@ -138,29 +138,16 @@ class ApplicationBase
 	        $cnt->set_routes($final_route);
 	        $cnt->set_action($this->action);
 	        $cnt->controller_global();
-					if(method_exists($cnt, $cnt->action)) {
-						$method = new ReflectionMethod($controller, $cnt->action);
-					}
-	         if(method_exists($cnt, $cnt->action) 
-								&& !is_callable(array('ControllerBase', $cnt->action))
-								&& $method->isPublic())
-	            { 
-				 if(count($cnt->route_array)>$cnt->accept_routes)
-	               {
-	               	throw new Exception("No Action Defined");
-	               }
-	            }
-	         elseif(method_exists($cnt, 'missing_action')) {$cnt->action='missing_action';}
-	         
-	         else throw new Exception("No Action Defined for - ".$cnt->action);
 	     }
 	   catch(Exception $e) 
         {
             $this->process_exception($e);
         }
-   $cnt->{$cnt->action}();
-	return $cnt;
-	   
+		$cnt->before_action($cnt->action);
+		$cnt->{$cnt->action}();
+		$cnt->filter_routes();
+		$cnt->after_action($cnt->action);
+		return $cnt;   
 	}
 
 	/**

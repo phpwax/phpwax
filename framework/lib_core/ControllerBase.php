@@ -261,7 +261,7 @@ abstract class ControllerBase extends ApplicationBase
 	 *	any commands will be run by all actions prior to running the action.
 	 *	@access protected
  	 */
-   protected function before_action()
+   protected function before_action($action)
    {
 
    }
@@ -270,12 +270,35 @@ abstract class ControllerBase extends ApplicationBase
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function after_action()
+	protected function after_action($action)
    {
 
    }
+
+	/**
+ 	 *	In the abstract class this remains empty. It is overridden by the controller,
+	 *	any commands will be run by all actions after execution.
+	 *	@access protected
+ 	 */
+	protected function filter_routes()
+   {
+			if(count($this->route_array)>$this->accept_routes) {
+				throw new Exception("No Action Defined");
+			}
+   }
 	
-	
+	/**
+	 * method overloading function
+	 *
+	 * @return void
+	 **/	
+	function __call($method, $args) {
+		if(count($this->route_array)>$this->accept_routes) {
+    	throw new Exception("No Action Defined");
+     }
+     elseif(method_exists($this, 'missing_action')) {$this->missing_action();}
+     else throw new Exception("No Action Defined for - ".$this->action);
+	}
    
 }
 

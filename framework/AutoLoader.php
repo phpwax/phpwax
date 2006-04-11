@@ -15,11 +15,14 @@ if(!ini_get('session.save_path')) { define('CACHE_DIR', '/tmp/'); }
 else { define('CACHE_DIR', ini_get('session.save_path'));}
 
 function __autoload($class_name) {
-		if(!require_once($class_name.".php")) {
-    	if(!include_once(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php")) {
-				include_once(APP_DIR.'lib/'.$class_name.".php");
-			}
-		}
+	switch(TRUE) {
+		case is_readable(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"): 
+			include_once(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"); break;
+		case is_readable(APP_DIR.'lib/'.$class_name.".php"):
+			include_once(APP_DIR.'lib/'.$class_name.".php"); break;
+		default:
+		  require_once($class_name. ".php");
+	}
 } 
 
 /**
