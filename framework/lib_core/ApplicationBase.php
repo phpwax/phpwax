@@ -127,17 +127,21 @@ class ApplicationBase
    */	
 	private function load_controller()
 	{
-	   $controller=$this->controller."_controller"; 
-	   $this->action=$this->actions[0];
-	   array_shift($this->actions);
-	   $final_route=$this->actions;
-	   if(strlen($this->action)<1) { $this->action="index"; }
-	   try
-	     {
-	       	$cnt=new $controller();
-	        $cnt->set_routes($final_route);
-	        $cnt->set_action($this->action);
-	        $cnt->controller_global();
+	  if(class_exists($this->controller."_controller", false)) { 		
+			$controller=$this->controller."_controller";
+		} else {
+			$controller=ucfirst($this->controller)."Controller";
+		}
+	  $this->action=$this->actions[0];
+	  array_shift($this->actions);
+	  $final_route=$this->actions;
+	  if(strlen($this->action)<1) { $this->action="index"; }
+	  try
+	  	{
+	    	$cnt=new $controller();
+	      $cnt->set_routes($final_route);
+	      $cnt->set_action($this->action);
+	      $cnt->controller_global();
 	     }
 	   catch(Exception $e) 
         {
@@ -164,6 +168,7 @@ class ApplicationBase
 		$tpl=new PHPTAL();
 		$tpl->addTrigger('message_insert', $messages);
 		$tpl->stripComments(true);
+		$tpl->urlid=$cnt->action;
   	$use_layout=$cnt->use_layout;
     foreach(get_object_vars($cnt) as $var=>$val) {
       $tpl->{$var}=$val;

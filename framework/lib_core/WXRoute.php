@@ -44,17 +44,20 @@ class WXRoute
    	   switch(TRUE)
    	   {
    	      case $this->check_controller($controllerDir.$tempController."_controller.php"):
+   	      case $this->check_controller($controllerDir.ucfirst($tempController)."Controller.php"):
    	      $controller=$tempController; 
    	      array_shift($route_array);
    	      $this->actions_array=$route_array;
    	      break;
       
    	      case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.$this->config_array['route'][$tempController]."_controller.php"):
+   	      case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
    	      $controller=$this->config_array['route'][$tempController]; 
    	      $this->actions_array=$route_array;
    	      break;
       
    	      case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.$this->config_array['route']['default']."_controller.php"):
+   	      case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.ucfirst($this->config_array['route']['default'])."Controller.php"):
    	      $controller=$this->config_array['route']['default']; 
    	      $this->actions_array=$route_array;
    	      break;

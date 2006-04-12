@@ -9,17 +9,18 @@
  */
 abstract class ControllerBase extends ApplicationBase
 {
-   protected $models=array();
-   protected $route_array=null;
-   protected $action;
-   public $use_layout='default';
-   public $use_view=null;
-   private $class_name='';
-   protected $referrer;
-	 protected $user_messages=array();
-	 protected $user_errors=array();
-	 protected $show_errors=true;
-	 protected $show_messages=true;
+  protected $models=array();
+  protected $route_array=null;
+  protected $action;
+  public $use_layout='default';
+  public $use_view=null;
+  private $class_name='';
+  protected $referrer;
+	protected $user_messages=array();
+	protected $user_errors=array();
+	protected $show_errors=true;
+	protected $show_messages=true;
+	protected $helpers=array();
    
   /** Set to 0 by default this decides whether any further
    * 	route information is passed on to the action.
@@ -226,6 +227,10 @@ abstract class ControllerBase extends ApplicationBase
 		return $this->{$action}();
 	}
 	
+	public function add_helper($url, $helperfile) {
+		$this->helpers[strtolower($url)]=$helperfile;
+	}
+	
 	
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
@@ -263,6 +268,9 @@ abstract class ControllerBase extends ApplicationBase
  	 */
 	protected function filter_routes()
    {
+			if(array_key_exists( $this->route_array[0], $this->helpers) ) {
+				return false;
+			}
 			if(count($this->route_array)>$this->accept_routes) {
 				throw new Exception("No Action Defined");
 			}
@@ -274,11 +282,13 @@ abstract class ControllerBase extends ApplicationBase
 	 * @return void
 	 **/	
 	function __call($method, $args) {
-		if(count($this->route_array)>$this->accept_routes) {
-    	throw new Exception("No Action Defined");
-     }
-     elseif(method_exists($this, 'missing_action')) {$this->missing_action();}
-     else throw new Exception("No Action Defined for - ".$this->action);
+		if(array_key_exists( $method, $this->helpers)) {
+			echo "We have a helper!!!"; exit;
+		}
+		
+		if(method_exists($this, 'missing_action')) {
+			$this->missing_action();
+		} else throw new Exception("No Action Defined for - ".$this->action);
 	}
    
 }
