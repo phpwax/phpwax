@@ -18,7 +18,7 @@ abstract class ControllerBase extends ApplicationBase
    protected $referrer;
 	 protected $user_messages=array();
 	 protected $user_errors=array();
-	 protected $show_errors=false;
+	 protected $show_errors=true;
 	 protected $show_messages=true;
    
   /** Set to 0 by default this decides whether any further
@@ -79,9 +79,10 @@ abstract class ControllerBase extends ApplicationBase
       return true;
    }
 
-	protected function remove_javascript($url)
+	protected function load_prototype()
 	{
-		unset($this->layout['scripts'][$url]);
+		$this->add_javascript('/javascript/lib/prototype.js');
+   	$this->add_javascript('/javascript/lib/scriptaculous.js');
 	}
 
 	/**
@@ -90,14 +91,6 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@param string $name
 	 *	@param mixed $value
  	 */
-   protected function add_layout_variable($name, $value)
-   {
-      if($name !='styles' && $name !='scripts')
-      {
-      $this->layout[$name]=$value; return true;
-      }
-      else return false;
-   }
 
 	/**
  	 *	Adds custom meta data which are passed onto the PHPTAL template.
@@ -178,20 +171,8 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@param $noerrors Defaults to null. If set errors will not be automatically prepended.
 	 *	@return string
  	 */   
-   protected function form_to_string($form, $values=array(), $noerrors=null)
+   protected function form_to_string($form, $values=array() )
    {
-   	 $form_errors=Session::get('errors');
-     if(count($form_errors)>=1 && !$noerrors) 
-       {
-       	$view_html='<ul class="user_errors">';
-       	foreach($form_errors as $field=>$error)
-       	  {
-       	   $view_html.='<li>'.$field.' : '.$error.'</li>';
-       	  }
-					$view_html.="</ul>";
-					Session::unset_var('errors');
-       }
-   	 else { $view_html=''; }
      try
    	 {
    	  $view=new PHPTAL(APP_DIR.'view/forms/'.$form.".html");

@@ -1,24 +1,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title tal:content="page_title | default">Sample Title Please Overwrite Me</title>
-<script>
-//var djConfig = {isDebug: true };
-</script>
-<span tal:omit-tag="" tal:repeat="meta layout/meta">
-  <meta  tal:attributes="name repeat/meta/key; content meta" />
-</span>
-<span tal:omit-tag="" tal:repeat="url layout/styles">
-  <link rel="stylesheet" type="text/css" tal:attributes="href url[0]; media url[1]" />
-</span>
+	<head>
+		<title tal:content="page_title | default">Sample Title Please Overwrite Me</title>
+		<script>
+			//var djConfig = {isDebug: true };
+		</script>
+		<span tal:omit-tag="" tal:repeat="meta layout/meta">
+	  	<meta  tal:attributes="name repeat/meta/key; content meta" />
+		</span>
+		<span tal:omit-tag="" tal:repeat="url layout/styles">
+	  	<link rel="stylesheet" type="text/css" tal:attributes="href url[0]; media url[1]" />
+		</span>
 
-<span tal:omit-tag="" tal:repeat="url layout/scripts">
-  <script tal:attributes="src url"></script>
-</span>
-</head>
-<!-- <span metal:use-macro="{$layout_path}" />  -->
-<span tal:omit-tag="" tal:content="structure layout_html">
-Layout goes here
-</span>
+		<span tal:omit-tag="" tal:repeat="url layout/scripts">
+	  	<script tal:attributes="src url"></script>
+		</span>
+	</head>
+	<!-- ****** This is where the layout content commences **** -->
+
+		<layout metal:use-macro="${layout_path}" tal:omit-tag="">
+
+		</layout>
+	<!-- ****** This is where the layout content finishes **** -->
 </html>

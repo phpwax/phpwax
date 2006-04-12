@@ -16,9 +16,11 @@ AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');
 
 $configFile=APP_DIR.'/config/config.yml';
 $config_array = Spyc::YAMLLoad($configFile);
-$config_array=ConfigBase::merge_environments($config_array);
+$config_array=WXRoute::merge_environments($config_array);
 
-ConfigBase::init_db($config_array['db']);
+ConfigBase::set_instance();
+$conf=new ConfigBase;
+$conf->init_db($config_array['db']);
 AutoLoader::include_dir(APP_DIR.'model');
 AutoLoader::include_dir(APP_DIR.'controller');
 

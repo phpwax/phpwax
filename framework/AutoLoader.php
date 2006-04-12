@@ -11,6 +11,7 @@
 define('FRAMEWORK_DIR', dirname(__FILE__) . "/");
 define('MODEL_DIR' , APP_DIR.'model/');
 define('CONTROLLER_DIR', APP_DIR.'controller/');
+define('PHPTAL_TEMPLATE_REPOSITORY', APP_DIR.'view');
 if(!ini_get('session.save_path')) { define('CACHE_DIR', '/tmp/'); }
 else { define('CACHE_DIR', ini_get('session.save_path'));}
 
@@ -58,6 +59,7 @@ class AutoLoader
 		AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');
 		AutoLoader::include_dir(MODEL_DIR);
 		AutoLoader::include_dir(CONTROLLER_DIR);
+		ConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
 
