@@ -56,10 +56,10 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-		AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');
-		AutoLoader::include_dir(MODEL_DIR);
-		AutoLoader::include_dir(CONTROLLER_DIR);
-		ConfigBase::set_instance();
+		AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');		
+		AutoLoader::include_dir(MODEL_DIR);				
+		AutoLoader::include_dir(CONTROLLER_DIR);				
+		ConfigBase::set_instance();		
 		$app=new ApplicationBase;
 	}
 
