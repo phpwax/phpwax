@@ -53,7 +53,7 @@ abstract class ControllerBase extends ApplicationBase
    {      
       // Find all models and instantiate
       $this->class_name=get_class($this);
-      $this->referrer=Session::get('referrer');    
+      $this->referrer=Session::get('referrer');
    }
    
 
@@ -109,7 +109,7 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@access protected
 	 *	@param string $route
  	 */   
-   protected function redirect_to($route)
+   public function redirect_to($route)
    {
    	 header("Location:$route");
    	 exit;
@@ -195,36 +195,12 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@access protected
 	 *	@param string $message
  	 */
-	protected function add_user_message($message) {
+	public function add_user_message($message) {
 		if(Session::add_message($message)) {
 			return true;
 		} else {
 			return false;
 		}
-	}
-	
-	
-	/**
- 	 *	Allows any controller/action to delegate work to another controller/action
-	 *	@access protected
-	 *	@param string $controller the controller to load
-	 *  @param string $action the action to run
-	 *  @param obj $owner the calling object - pass in $this
- 	 */
-	protected function delegate($controller, $action, $owner) {
-		$cnt=new $controller;
-		$result=$cnt->run_internal($action);
-		//$this->inspect($cnt);
-		$new_vars=get_object_vars($cnt);
-    foreach($new_vars as $viewVar=>$val)
-      {
-         $owner->{$viewVar}=$val;
-      }
-		return $result;
-	}
-	
-	public function run_internal($action) {
-		return $this->{$action}();
 	}
 	
 	public function add_helper($url, $helperfile) {
@@ -282,13 +258,23 @@ abstract class ControllerBase extends ApplicationBase
 	 * @return void
 	 **/	
 	function __call($method, $args) {
-		if(array_key_exists( $method, $this->helpers)) {
-			echo "We have a helper!!!"; exit;
-		}
+		$helperresult=false;
+		$arg1=$this->route_array[0];
+		array_shift($this->route_array);
+		$_GET['route']=$this->route_array;
 		
-		if(method_exists($this, 'missing_action')) {
-			$this->missing_action();
-		} else throw new Exception("No Action Defined for - ".$this->action);
+		if(array_key_exists( $method, $this->helpers)) {
+			$helper=$this->helpers[$method];
+			$helper= new $helper;
+			$helperresult=$helper->{$arg1}();
+		}
+		if(!$helperresult) {
+			if(method_exists($this, 'missing_action')) {
+				$this->missing_action(); exit;
+			}
+			throw new Exception("No Action Defined for - ".$this->action);
+		}
+		exit;
 	}
    
 }
