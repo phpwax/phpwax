@@ -160,7 +160,7 @@ abstract class ActiveRecord implements IteratorAggregate
      *  @param string Table name that this class works on, defaults to
      *      the class name, lowercase.
      */
-    public function __construct(  $table = NULL )
+    public function __construct(  $table=null )
     {
         define ('AR_BASE', dirname(__FILE__));
         define ('AR_ADAPTER_CACHE', CACHE_DIR);
@@ -369,7 +369,8 @@ abstract class ActiveRecord implements IteratorAggregate
     public function findBySql( $sql )
     {
     	$stmt = $this->pdo->prepare( $sql );
-    	return $this->findMany( $stmt );
+    	$ret= $this->findMany( $stmt );
+			return $ret;
     }    
     /**
      *  Counts the number of records that are in the current table.
@@ -746,6 +747,24 @@ abstract class ActiveRecord implements IteratorAggregate
         if($key) { $this->primarykey=$key; }
 				return $this->primarykey;
     }
+		
+		/**
+     *  This method receives an array of values, adds them to the object
+     *  and then automatically saves/updates the row.
+     *  Acts as a shorthand for individually adding values.
+     *
+		 */
+		public function add_row_save($array) {
+			foreach($array as $k=>$v) {
+				if( $this->adapter->validField( $k ) ) {
+	      	$this->values[$k] = $v;
+	      	$this->changed = true;
+	      }
+			}
+			if($this->changed) { return $this->save(); }
+			else { return false; }
+		}
+		
 }
 
 /**

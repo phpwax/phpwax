@@ -108,6 +108,18 @@ abstract class File {
     return $folderContents;
 	}
 	
+	static function list_images_recursive($directory) {
+		$dir = new RecursiveIteratorIterator(
+		           new RecursiveDirectoryIterator($directory), true);
+		foreach ( $dir as $file ) {
+			if(!strstr($dir->getPath()."/".$file, "/.") ) {
+				if(self::is_image($dir->getPath()."/".$file)) {
+					$imagearray[]=array("filename"=>$dir->getFilename(), "path"=>base64_encode($dir->getPath()."/".$file));
+				}
+			}			
+		}
+		return $imagearray;
+	}
 	
 }
 ?>

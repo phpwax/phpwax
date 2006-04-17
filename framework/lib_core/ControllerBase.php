@@ -21,6 +21,7 @@ abstract class ControllerBase extends ApplicationBase
 	protected $show_errors=true;
 	protected $show_messages=true;
 	protected $helpers=array();
+	public $body_js_files=array();
    
   /** Set to 0 by default this decides whether any further
    * 	route information is passed on to the action.
@@ -41,7 +42,7 @@ abstract class ControllerBase extends ApplicationBase
         'scripts'=>   array(
                             //'/javascript/lib/prototype.js',
                            // '/javascript/lib/scriptaculous.js',
-                         //   '/javascript/lib/form.behaviours.js',
+                            '/javascript/lib/form.behaviours.js',
 						//	'/javascript/lib/event-selectors.js',
 						//	'/javascript/lib/app.event-selectors.js'
 							
@@ -79,6 +80,10 @@ abstract class ControllerBase extends ApplicationBase
       $this->layout['scripts'][]=$url;
       return true;
    }
+
+	protected function add_body_js($file) {
+		$this->body_js_files[]=$file;
+	}
 
 	protected function load_prototype()
 	{
@@ -266,7 +271,10 @@ abstract class ControllerBase extends ApplicationBase
 		if(array_key_exists( $method, $this->helpers)) {
 			$helper=$this->helpers[$method];
 			$helper= new $helper;
-			$helperresult=$helper->{$arg1}();
+			$method = new ReflectionMethod($helper, $arg1);
+			if($method->isPublic()) {
+				$helperresult=$helper->{$arg1}();
+			}
 		}
 		if(!$helperresult) {
 			if(method_exists($this, 'missing_action')) {

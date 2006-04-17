@@ -104,7 +104,7 @@ class ConfigBase
         }
       catch(Exception $e) 
         {
-            $this->process_exception($e);
+            throw new Exception("Cannot Initialise DB");
         }
 	}
 	
@@ -119,8 +119,13 @@ class ConfigBase
 	
 	public function return_config($config=null)
 	{
-		if(!$config) { return $this->config_array; }
-		if($this->config_array[$config]) { return $this->config_array[$config]; }
+		$config=explode("/", $config);
+		$confarray=$this->config_array;
+		foreach($config as $conf) {
+			$confarray=$confarray[$conf];
+		}
+		if(!$confarray) { return $this->config_array; }
+		elseif($confarray) { return $confarray; }
 		else {return false;}
 	}
 	

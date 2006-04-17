@@ -45,6 +45,7 @@
 	  //$this->inspect_array($this->formindex);
 	  $this->parse_form_validation();
 	  $this->set_allowed_values();
+	
 	  $this->strip_unexpected();
 	  $this->map_labels();
 	  $this->validate_form();
@@ -156,7 +157,6 @@
 	 
 	 private function validate_form()
 	 {
-	 	
 	   	  foreach($this->validation_array as $validate)
 	   	  {
 	   	    $field=key($validate);
