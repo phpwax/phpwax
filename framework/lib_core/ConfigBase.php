@@ -124,9 +124,8 @@ class ConfigBase
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];
 		}
-		if(!$confarray) { return $this->config_array; }
-		elseif($confarray) { return $confarray; }
-		else {return false;}
+		if($confarray) { return $confarray; }
+		else return $this->config_array;
 	}
 	
 	

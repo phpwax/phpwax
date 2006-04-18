@@ -208,7 +208,7 @@ abstract class ActiveRecord implements IteratorAggregate
         $this->adapter = ActiveRecord_Adapter::instanceFor( $this->table );
         $this->changed = false;   
         $this->hasmany = array();
-        
+				
         
     }
     // }}}
