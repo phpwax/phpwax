@@ -71,7 +71,7 @@ class WXActiveRecord
     function __construct( $param = null )
     {
         $this->pdo = self::$default_pdo;
-        $class_name = strtolower( get_class($this) );
+        $class_name =  get_class($this) ;
         if( $class_name != 'wxactiverecord' )
         {
             $this->table = $this->underscore( $class_name );
@@ -355,7 +355,8 @@ class WXActiveRecord
         $item_list = array();
         foreach( $row_list as $row )
         {
-            $item = new $this->table( $this->pdo );
+						$newtable=$this->camelize($this->table);
+            $item = new $newtable( $this->pdo );
             $item->row = $row;
             $item->constraints = $this->constraints;
             if (isset($row['id'])) {
