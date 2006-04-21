@@ -101,6 +101,7 @@ class ConfigBase
 	     $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
 	     ActiveRecordPDO::setDefaultPDO( $pdo );
 	     ActiveRecordPDO::setDBAdapter($adapter);
+			 WXActiveRecord::setDefaultPDO($pdo);
         }
       catch(Exception $e) 
         {

@@ -32,7 +32,7 @@ if( ! is_numeric( @PDO_FETCH_ASSOC ) )
 
 /**
  *  active record
- *  @author HATA,Shinya
+ *  @package wx.php.core
  */
 class WXActiveRecord
 {
@@ -277,13 +277,16 @@ class WXActiveRecord
      *  @param  array   params  option array
      *                          params['conditions'] : WHERE phrase in SQL
      *                          params['order'] : ORDER phrase in SQL
-     *  @return array           array of ActiveRecord
+     *  @return array           array of ActiveRecord Objects
      */
     function find_all( $params = null, $join = null )
     {
         if (! is_array($params)) $params = array();
         if (! is_array($join)) $join = array();
-
+				
+				if( @$params['distinct'] ) {
+					$sql = "SELECT DISTINCT {$params['distinct']} FROM `{$this->table}`";
+				} 
         if( @$params['columns'] )
         {
             $sql = "SELECT {$params['columns']} FROM `{$this->table}`";
@@ -322,6 +325,10 @@ class WXActiveRecord
         {
             $sql .= " ORDER BY {$params['order']}";
         }
+				if( @$params['direction'] )
+        {
+            $sql .= " {$params['direction']}";
+        }
 
         if( array_key_exists( 'limit', $params ) )
         {
@@ -336,6 +343,10 @@ class WXActiveRecord
                 $sql .= " LIMIT {$limit}";
             }
         }
+
+				if( @$params["sql"]) {
+					$sql=$params["sql"];
+				}
 
         $sql .= ';';
         $binding_params = $this->_makeBindingParams( $this->constraints );
@@ -375,21 +386,22 @@ class WXActiveRecord
 		function findAll($params = null, $join = null) {
 			return $this->find_all($params, $join);
 		}
+		
+		function findBySql($sql) {
+			return $this->find_all( array("sql"=>$sql) );
+		}
 
     /**
      *  insert record to table, or update record data
      */
     function save()
     {
-        if( @$this->row['id'] )
-        {
-            $this->update();
-        }
-        else
-        {
-            unset( $this->row['id'] );
-            $this->insert();
-        }
+    	if( @$this->row['id'] ) {
+      	return $this->update();
+      }else{
+      	unset( $this->row['id'] );
+        return $this->insert();
+      }
     }
 
     /**
@@ -611,6 +623,30 @@ class WXActiveRecord
     public function underscore($name)
     {
         return strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $name));
+    }
+
+		public function add_row_save($array) {
+			foreach($array as $k=>$v) {
+			  $this->$k=$v;
+			}
+			return $this->save();
+		}
+
+		public function __call( $func, $args ) {
+			$what=substr( $func, 6 );
+			$what=explode("And", $what);
+			for($i=0;$i<count($what); $i++) {
+				$what[$i]=$this->underscore($what[$i]);
+			}			
+      if( $args ) {
+				if(count($what)>1 && count($args)>1) { 
+					$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
+				}else{
+					$conds=$what[0]."='".$args[0]."'";
+				}
+				$params = array("conditions"=>$conds);
+        return $this->find_all($params);
+      }
     }
 
 }
