@@ -1162,6 +1162,7 @@ class Email extends ApplicationBase
 			$whitelist=$this->fetch_config('email');
 			$parts=explode('@', $address);
 			$domain=$parts[1];
+			if(!is_array($whitelist['allowed_domains'])) { $whitelist['allowed_domains']=array(); }
 			if(in_array($domain, $whitelist['allowed_domains'])) {
 				return true;
 			}
