@@ -3,10 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title tal:content="page_title | default">Sample Title Please Overwrite Me</title>
-		<script>
-		 // var djConfig = {isDebug: true};
-			
-		</script>
 		<span tal:omit-tag="" tal:repeat="meta layout/meta">
 	  	<meta  tal:attributes="name repeat/meta/key; content meta" />
 		</span>
