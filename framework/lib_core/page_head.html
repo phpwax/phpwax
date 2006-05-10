@@ -4,7 +4,7 @@
 	<head>
 		<title tal:content="page_title | default">Sample Title Please Overwrite Me</title>
 		<script>
-			var djConfig = {isDebug: true};
+		 // var djConfig = {isDebug: true};
 			
 		</script>
 		<span tal:omit-tag="" tal:repeat="meta layout/meta">
@@ -15,7 +15,7 @@
 		</span>
 
 		<span tal:omit-tag="" tal:repeat="url layout/scripts">
-	  	<script tal:attributes="src url"></script>
+	  	<script tal:attributes="src url" type="text/javascript"></script>
 		</span>
 	</head>
 	<!--  This is where the layout content commences -->
