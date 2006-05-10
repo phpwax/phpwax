@@ -214,7 +214,9 @@ class ApplicationBase
 		$trace.="</font>\n";
 		echo $trace;
 		$message=strip_tags($this->get_trace($e));
+		error_log($message);
 		//mail("ross@webxpress.com", "Application Error on production server", $message);
+		if($this->fetch_config("debug")) { echo $message; }
 		exit();
 	}
 	/**
