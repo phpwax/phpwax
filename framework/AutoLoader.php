@@ -21,6 +21,8 @@ function __autoload($class_name) {
 			include_once(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"); break;
 		case is_readable(APP_DIR.'lib/'.$class_name.".php"):
 			include_once(APP_DIR.'lib/'.$class_name.".php"); break;
+		case is_readable(APP_DIR.'controller/'.$class_name.".php"):
+			include_once(APP_DIR.'controller/'.$class_name.".php"); break;
 		default:
 		  require_once($class_name. ".php");
 	}
