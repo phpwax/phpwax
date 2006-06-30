@@ -37,7 +37,7 @@ abstract class ControllerBase extends ApplicationBase
     */
    public $layout=array(
         'styles'=>    array(
-                              array('/styles/main.css','all')
+                              //array('/styles/main.css','all')
                            ),
         'scripts'=>   array(
                             //'/javascript/lib/prototype.js',
