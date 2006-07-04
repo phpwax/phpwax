@@ -200,7 +200,11 @@ class ApplicationBase
     try {
 			$page_output=$tpl->execute();
       echo $page_output;
-			Session::set('referrer', "/".$_GET['route']);	
+			if($_GET['route']  == '/index') {
+				Session::set('referrer', $_GET['route']);
+			} else {
+				Session::set('referrer', "/".$_GET['route']);
+			}	
  		} catch(Exception $e) {
         $this->process_exception($e);
     }
@@ -246,13 +250,13 @@ class ApplicationBase
    */	
 	public function get_trace($e) {
 		$trace.="<font face=\"verdana, arial, helvetica, sans-serif\">\n";
-    $trace.="<h1>Application Error</h1>\n";
-    $trace.="<p>{$e->getMessage()}</p>\n";
-    $trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px;\">";
-    $trace.="<code>{$e->getTraceAsString()}</code></pre>\n";
-    $trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px; margin-top:5px;\">";
-    $trace.="<code>{$e->getFile()}\nLine: {$e->getLine()}</code></pre>\n";
-    $trace.="</font>\n";
+    	$trace.="<h1>Application Error</h1>\n";
+    	$trace.="<p>{$e->getMessage()}</p>\n";
+    	$trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px;\">";
+    	$trace.="<code>{$e->getTraceAsString()}</code></pre>\n";
+    	$trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px; margin-top:5px;\">";
+    	$trace.="<code>{$e->getFile()}\nLine: {$e->getLine()}</code></pre>\n";
+    	$trace.="</font>\n";
 		return $trace;
 	}
 	
