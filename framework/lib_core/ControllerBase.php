@@ -153,18 +153,23 @@ abstract class ControllerBase extends ApplicationBase
      $view_html='';
      if(!$controller_name) { $controller_name=substr( $this->class_name,0,strpos($this->class_name,"_")); }
      
-   	 try
-   	 {
-   	  $view=new PHPTAL(APP_DIR.'view/'.$controller_name."/".$view_name.".html");
-   	  foreach($values as $k=>$v)
-   	  {
-   	   $view->$k=$v;
-   	  }
-   	  $view_html=$view->execute();
+   	 try {
+			if(!$this->fetch_config("templating")=="php") {
+   	  	$view=new PHPTAL(APP_DIR.'view/'.$controller_name."/".$view_name.".html");
+				foreach($values as $k=>$v) {
+	   	   $view->$k=$v;
+	   	  }
+	   	  $view_html=$view->execute();
+			} else {
+				$view= new WXTemplate;
+				foreach($values as $k=>$v) {
+	   	   $view->$k=$v;
+	   	  }
+				$view_html=$view->parse_no_buffer($controller_name."/".$view_name.".html/view");
+			}   	  
    	 }
-   	 catch(Exception $e)
-   	 {
-   	 $this->process_exception($e);	
+   	 catch(Exception $e) {
+   	 	$this->process_exception($e);	
    	 }
    	 return $view_html;
    }

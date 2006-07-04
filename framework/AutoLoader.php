@@ -21,8 +21,10 @@ function __autoload($class_name) {
 			include_once(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"); break;
 		case is_readable(APP_DIR.'lib/'.$class_name.".php"):
 			include_once(APP_DIR.'lib/'.$class_name.".php"); break;
-		case is_readable(APP_DIR.'controller/'.$class_name.".php"):
-			include_once(APP_DIR.'controller/'.$class_name.".php"); break;
+		case is_readable(MODEL_DIR.$class_name.".php"):
+			include_once(MODEL_DIR.$class_name.".php"); break;
+		case is_readable(CONTROLLER_DIR.$class_name.".php"):
+			include_once(CONTROLLER_DIR.$class_name.".php"); break;
 		default:
 		  require_once($class_name. ".php");
 	}
@@ -44,9 +46,13 @@ class AutoLoader
 	   $fileArray=scandir($dir);
 	   foreach($fileArray as $file)
 	    {
-				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
-					if(!require_once($dir."/".$match[0])) {
-						throw new exception("Cannot include file - ".$include);
+				if(is_file($file) && is_readable($file)) {
+					require_once($file);
+				} else {
+					if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
+						if(!require_once($dir."/".$match[0])) {
+							throw new exception("Cannot include file - ".$include);
+						}
 					}
 				}
 	    }

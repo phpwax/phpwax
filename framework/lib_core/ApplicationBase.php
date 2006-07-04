@@ -75,7 +75,7 @@ class ApplicationBase
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();				
 		$this->copy_javascript();		
-		$this->mysql_db_backup(); 
+		//$this->mysql_db_backup(); 
     // Clean User Input
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
@@ -164,10 +164,16 @@ class ApplicationBase
    */	
 	private function create_page($cnt)
 	{
-		$messages=new MessageTrigger();
-		$tpl=new PHPTAL();
-		$tpl->addTrigger('message_insert', $messages);
-		$tpl->stripComments(true);
+		if(!$this->fetch_config("templating")=="php") {
+			$messages=new MessageTrigger();
+			$tpl=new PHPTAL();
+			$tpl->addTrigger('message_insert', $messages);
+			$tpl->stripComments(true);
+		} else {
+			$tpl=new WXTemplate;
+			
+		}
+		
 		$tpl->urlid=$cnt->action;
   	$use_layout=$cnt->use_layout;
     foreach(get_object_vars($cnt) as $var=>$val) {

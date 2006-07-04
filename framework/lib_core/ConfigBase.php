@@ -121,6 +121,7 @@ class ConfigBase
 	public function return_config($config=null)
 	{
 		$config=explode("/", $config);
+		
 		$confarray=$this->config_array;
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];

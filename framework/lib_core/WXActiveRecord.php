@@ -151,18 +151,18 @@ class WXActiveRecord
             if( array_key_exists( $name, $this->children ) &&
                 $this->children[$name]->getConstraint( $foreign_key ) == $id )
             {
-                // return cashed instance
+                // return cached instance
                 return $this->children[$name];
             }
 
-            $class_name = ucfirst( $name );
+            $class_name = $this->camelize( $name );
             if( class_exists( $class_name, FALSE ) )
             {
                 // create instance
                 $child = new $class_name( $this->pdo );
                 $child->setConstraint( $foreign_key, $id );
                 $this->children[$name] = $child;
-                return $child;
+                return new ArrayIterator($child->find_all());
             }
         }
 
@@ -213,6 +213,12 @@ class WXActiveRecord
         $record = clone( $this );
         return $record->_find( $id, $params ) ? $record : null;
     }
+
+		function find_first() {
+			$sql="SELECT * FROM {$this->table} LIMIT 0,1";
+			$list = $this->find_by_sql($sql);
+			return $list[0];
+		}
 
     /**
      *  get one record helper
@@ -630,6 +636,13 @@ class WXActiveRecord
 			  $this->$k=$v;
 			}
 			return $this->save();
+		}
+		
+		/**
+     * Alias function to add_row_save
+     */
+		public function update_attributes($array) {
+			return $this->add_row_save($array);
 		}
 
 		public function __call( $func, $args ) {
