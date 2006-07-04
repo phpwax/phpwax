@@ -164,7 +164,7 @@ class ApplicationBase
    */	
 	private function create_page($cnt)
 	{
-		if(!$this->fetch_config("templating")=="php") {
+		if($this->fetch_config("templating")!="php") {
 			$messages=new MessageTrigger();
 			$tpl=new PHPTAL();
 			$tpl->addTrigger('message_insert', $messages);
