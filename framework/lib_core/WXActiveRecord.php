@@ -162,12 +162,14 @@ class WXActiveRecord
                 $child = new $class_name( $this->pdo );
                 $child->setConstraint( $foreign_key, $id );
                 $this->children[$name] = $child;
-                return new ArrayIterator($child->find_all());
+								return $this->children[$name]->find_all();
+								//ApplicationBase::inspect($all); exit;
             }
         }
 
         return null;
     }
+
 
     /**
      *  set property

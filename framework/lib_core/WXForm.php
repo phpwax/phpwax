@@ -34,6 +34,7 @@
 	   	try
 	   	  {
 				$this->formhtml=file_get_contents(APP_DIR."view/".$formfile.".html");
+				$this->strip_php();
    	  	$xp=xml_parser_create();
 				xml_parser_set_option($xp, XML_OPTION_SKIP_WHITE, 1);
    	  	xml_parse_into_struct($xp, $this->formhtml, $this->formstructure, $this->formindex);  	
@@ -49,7 +50,10 @@
 	  $this->map_labels();
 	
 	  $this->validate_form();
-	  //if(!$this->is_valid()) { Session::set('errors', $this->errors_array); }
+	  if(!$this->is_valid()) { 
+			Session::set('errors', $this->errors_array); 
+			Session::set('form', $_POST);
+		}
 	 }
 	 
 	 public function is_valid()
@@ -103,6 +107,10 @@
 			}
 			$this->formstructure= array_splice($this->formstructure, $opentag, $closetag-$opentag+1);
 		}
+	}
+	
+	private function strip_php() {
+		$this->formhtml= preg_replace('/(<\?).*(\?>)/', '', $this->formhtml);
 	}
 	 
 	 private function parse_form_validation()

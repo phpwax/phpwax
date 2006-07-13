@@ -8,37 +8,6 @@
  * @author  Clay Loveless <clay@killersoft.com>
  */
 
-/**
- * INTRODUCTION
- *
- * Let's assume that our working directory structure is
- * as follows:
- *
- *  /
- *      packager.php
- *      phpMyAdmin-2.6.3-pl1/
- *          ... (all phpMyAdmin distribution files)
- *
- * METHOD FOR INSTALLING FILES DIRECTLY ACCESSIBLE BY
- * BROWSERS
- * As discussed in the article, we should choose between
- * the "PEAR Default + Alias" method or the "Custom File
- * Role" method. For illustration purposes, let's use the
- * "Custom File Role" method ...
- * I'll assume that you can handle symbolic linking or 
- * using the Apache Alias directive without help from me.
- *
- * Before continuing, make sure you've installed the
- * Role_Web-1.0.0.tgz package. It is included with the 
- * article files. You may also install it like this:
- *
- *      $ pear channel-discover pearified.com
- *      $ pear install pearified/Role_Web
- *
- * It is important to install this custom role before
- * continuing.
- */
-
 // include package.xml 2.0-aware PackageFileManager
 ini_set('include_path', '/usr/local/php5.1/lib/php');
 require_once 'PEAR/PackageFileManager2.php';
@@ -54,11 +23,11 @@ $options = array();
 
 // We'll install in a 'pma' directory the base of our 
 // web root directory.
-$options['baseinstalldir'] = '/wxframe';
+$options['baseinstalldir'] = '/wxframework';
 
 // Where are we reading the files for our package from?
 $options['packagedirectory'] = 
-    '/usr/local/php5.1/lib/php/wx.php/';
+    '/usr/local/php5.1/lib/php/wxframework/';
 
 // We want to read from the package directory just like a
 // regular directory.
@@ -84,24 +53,11 @@ $options['exceptions'] = array(
             'TODO'                  => 'doc'
             );
 
-// phpMyAdmin comes with a "scripts" directory that
-// contains a variety of files ... some of which are
-// scripts, some of which are not. For now, let's put them
-// in the "miscellaneous extra data" directory -- they are
-// not essential for phpMyAdmin to function.
-
-// Set up our custom webroot role with a wildcard file
-// extension so that anything we did not include in
-// exceptions above is considered a web file role.
-// Note that this will OVERRIDE the default settings, 
-// which we want to do in this case, but you may not
-// want to do in EVERY case.
-
 // That's it for options -- just set them.
 $pkg->setOptions($options);
 
 // Set the name of our package
-$pkg->setPackage('wxframe');
+$pkg->setPackage('wxframework');
 
 // Set the overall version numbers
 // Note that the PEAR installer does not consider 
@@ -129,8 +85,8 @@ $pkg->setSummary('Webxpress php framework');
 $pkg->setDescription('These are the core library files required to run the framework');
 
 // Link in the license information
-$pkg->setLicense('GPL',
-    'http://www.phpmyadmin.net/documentation/LICENSE');
+$pkg->setLicense('BSD',
+    'http://www.opensource.org/licenses/bsd-license.php');
 
 // Add the package maintainer, who may not necessarily
 // be a package developer. I'm the lead package maintainer
@@ -138,7 +94,7 @@ $pkg->setLicense('GPL',
 $pkg->addMaintainer(
     'lead','ross','Ross Riley','ross@webxpress.com');
     
-// Require at least PHP 4.1.0, as required by phpMyAdmin
+// Require at least PHP 5.1.0, as required by the framework
 $pkg->setPhpDep('5.1.0');
 
 // Since this is a PEAR 1.4 package, require a minimum
