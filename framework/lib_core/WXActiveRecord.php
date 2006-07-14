@@ -126,6 +126,12 @@ class WXActiveRecord
         return $this->pdo;
     }
 
+		static function has_many($class, $pdo, $foreign_key, $id) {
+			$child = new $class($pdo);
+			$child->setConstraint( $foreign_key, $id );
+			return $child->find_all();
+		}
+
     /**
      *  get property
      *  @param  string  name    property name
@@ -158,12 +164,8 @@ class WXActiveRecord
             $class_name = $this->camelize( $name );
             if( class_exists( $class_name, FALSE ) )
             {
-                // create instance
-                $child = new $class_name( $this->pdo );
-                $child->setConstraint( $foreign_key, $id );
-                $this->children[$name] = $child;
-								return $this->children[$name]->find_all();
-								//ApplicationBase::inspect($all); exit;
+							return new ArrayObject(array_values(WXActiveRecord::has_many($class_name, $this->pdo, $foreign_key, $id)) );
+							//ApplicationBase::inspect($all); exit;
             }
         }
 
