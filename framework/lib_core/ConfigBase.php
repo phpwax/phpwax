@@ -136,7 +136,7 @@ class ConfigBase
 	
 	private function write_to_cache() {
 		try {
-  	 $fp1=fopen($this->cachedest, 'w+');
+  	 $fp1=fopen($this->cachedest, 'w');
   	 $result=fwrite($fp1, serialize($this->config_array));
   	 fclose($fp1);
 		} catch(Exception $e) {
