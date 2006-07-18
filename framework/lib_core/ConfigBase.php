@@ -55,7 +55,6 @@ class ConfigBase
 	private function load_config()
 	{
 		if(is_readable($this->cachedest)) {
-			echo "found cache";
 			$this->config_array = unserialize(file_get_contents($this->cachedest));
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
