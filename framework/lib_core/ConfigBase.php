@@ -62,7 +62,7 @@ class ConfigBase
 	    	if(is_file($configFile)){}
 	      	else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
 	     	} catch(Exception $e) {
-         ApplicationBase::process_exception($e);
+         
         }
 			$this->config_array = Spyc::YAMLLoad($configFile);
 		}	
@@ -140,7 +140,7 @@ class ConfigBase
   	 $result=fwrite($fp1, serialize($this->config_array));
   	 fclose($fp1);
 		} catch(Exception $e) {
-    	ApplicationBase::process_exception($e);
+    	
     }
 	}
 	
