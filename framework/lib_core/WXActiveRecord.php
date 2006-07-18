@@ -126,6 +126,12 @@ class WXActiveRecord
         return $this->pdo;
     }
 
+
+	/**
+    * has_many returns an array of associated objects. There is a recursion block in __get 
+		* which performing the operation statically overcomes.
+		* This is called from __get and shouldn't be used externally.
+    */
 		static function has_many($class, $pdo, $foreign_key, $id) {
 			$child = new $class($pdo);
 			$child->setConstraint( $foreign_key, $id );
@@ -147,8 +153,7 @@ class WXActiveRecord
         }
 
         // get child object
-        //$id = intval( $this->row['id'] );
-        $id = @$this->row['id']; // modify at 2005/12/14 for string id
+        $id = @$this->row['id']; 
         if( $id )
         {
             $foreign_key = $this->table . '_id';
@@ -165,7 +170,6 @@ class WXActiveRecord
             if( class_exists( $class_name, FALSE ) )
             {
 							return new ArrayObject(array_values(WXActiveRecord::has_many($class_name, $this->pdo, $foreign_key, $id)) );
-							//ApplicationBase::inspect($all); exit;
             }
         }
 
@@ -457,35 +461,7 @@ class WXActiveRecord
         $sth = $this->pdo->query( $sql );
         return intval( $sth->fetchColumn() );
     }
-/*
-    function _update()
-    {
-        $values = $this->row;
-        unset( $values['id'] );
-        if( ! count( $values ) )
-        {
-            trigger_error( 'No record value.', E_USER_ERROR );
-        }
-        $sql = "UPDATE `{$this->table}` SET " .
-            $this->_makeUPDATEValues( $values ) .
-            " WHERE `{$this->table}`.id=:id;";
-        $binding_params = $this->_makeBindingParams( $this->row );
 
-        $sth = $this->pdo->prepare( $sql );
-        if( ! $sth )
-        {
-            $err = $this->pdo->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-        if( ! $sth->execute( $binding_params ) )
-        {
-            $err = $sth->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-
-        return $sth->rowCount() > 0;
-    }
-*/
     function update( $id_list = array() )
     {
         $values = $this->row;

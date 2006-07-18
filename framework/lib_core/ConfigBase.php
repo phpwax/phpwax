@@ -28,11 +28,13 @@ class ConfigBase
 	private $environment;
 	private $actions_array;
 	private $behaviours_array;
+	private $cachedest;
 	static private $instance=false;
 	
 	function __construct()
 	{
-		if(self::$instance) {			
+		if(self::$instance) {
+			$this->cachedest=CACHE_DIR.str_replace("/", "_", APP_DIR).'cache';
 	  	$this->load_config();
 			$db=$this->return_config('db');
 	  	$this->init_db($db);	
@@ -52,18 +54,19 @@ class ConfigBase
     */
 	private function load_config()
 	{
-	   $configFile=APP_DIR.'/config/config.yml';
-	     try
-	     {
-	       if(is_file($configFile)){}
-	       else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
-	     }
-	     catch(Exception $e) 
-        {
+		if(is_readable($cachedest)) {
+			$this->config_array = unserialize(file_get_contents($cachedest));
+		} else { 
+	  	$configFile=APP_DIR.'/config/config.yml';
+	    try {
+	    	if(is_file($configFile)){}
+	      	else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
+	     	} catch(Exception $e) {
          $this->process_exception($e);
         }
-			$this->config_array = Spyc::YAMLLoad($configFile);			
-			$this->config_array=$this->merge_environments($this->config_array);		
+			$this->config_array = Spyc::YAMLLoad($configFile);
+		}	
+		$this->config_array=$this->merge_environments($this->config_array);		
 	}
 	
 	public function merge_environments($config_array) {
@@ -128,6 +131,18 @@ class ConfigBase
 		}
 		if($confarray) { return $confarray; }
 		else return $this->config_array;
+	}
+	
+	function __destruct() {
+		if(is_writable($this->cachedest) && File::is_older_than($this->cachedest, 36000)) {
+			try {
+	  	 $fp1=fopen($this->cachedest, 'w+');
+	  	 $result=fwrite($fp1, serialize($this->config_array));
+	  	 fclose($fp1);
+			} catch(Exception $e) {
+	    	$this->process_exception($e);
+	    }
+		}
 	}
 	
 	

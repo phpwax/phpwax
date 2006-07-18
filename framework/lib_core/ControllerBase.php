@@ -40,19 +40,13 @@ abstract class ControllerBase extends ApplicationBase
                               
                            ),
         'scripts'=>   array(
-                            //'/javascript/lib/prototype.js',
-                           // '/javascript/lib/scriptaculous.js',
-                            '/javascript/lib/form.behaviours.js',
-						//	'/javascript/lib/event-selectors.js',
-						//	'/javascript/lib/app.event-selectors.js'
-							
+                            '/javascript/lib/form.behaviours.js',							
                            ),
          'meta'=>     array()
    );
   
    function __construct()
    {      
-      // Find all models and instantiate
       $this->class_name=get_class($this);
       $this->referrer=Session::get('referrer');
    }
@@ -181,6 +175,7 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@param array $values Values to be passed to the template.
 	 *	@param $noerrors Defaults to null. If set errors will not be automatically prepended.
 	 *	@return string
+	 *  @deprecated
  	 */   
    protected function form_to_string($form, $values=array() )
    {
