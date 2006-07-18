@@ -29,6 +29,7 @@ class ConfigBase
 	private $actions_array;
 	private $behaviours_array;
 	private $cachedest;
+	private $fromcache=false;
 	static private $instance=false;
 	
 	function __construct()
@@ -54,19 +55,19 @@ class ConfigBase
     */
 	private function load_config()
 	{
-		if(is_readable($this->cachedestdd)) {
+		if(is_readable($this->cachedest)) {
 			$this->config_array = unserialize(file_get_contents($this->cachedest));
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
 	    try {
 	    	if(is_file($configFile)){
 					$this->config_array = Spyc::YAMLLoad($configFile);
+					$this->config_array=$this->merge_environments($this->config_array);		
 				} else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
 	    } catch(Exception $e) {
 				echo $e;
       }
 		}	
-		$this->config_array=$this->merge_environments($this->config_array);		
 	}
 	
 	public function merge_environments($config_array) {
