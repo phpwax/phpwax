@@ -133,15 +133,23 @@ class ConfigBase
 		else return $this->config_array;
 	}
 	
+	
+	private function write_to_cache() {
+		try {
+  	 $fp1=fopen($this->cachedest, 'w+');
+  	 $result=fwrite($fp1, serialize($this->config_array));
+  	 fclose($fp1);
+		} catch(Exception $e) {
+    	$this->process_exception($e);
+    }
+	}
+	
 	function __destruct() {
+		if(!file_exists($this->cachedest)) {
+			$this->write_to_cache();
+		}
 		if(is_writable($this->cachedest) && File::is_older_than($this->cachedest, 36000)) {
-			try {
-	  	 $fp1=fopen($this->cachedest, 'w+');
-	  	 $result=fwrite($fp1, serialize($this->config_array));
-	  	 fclose($fp1);
-			} catch(Exception $e) {
-	    	$this->process_exception($e);
-	    }
+			$this->write_to_cache();
 		}
 	}
 	
