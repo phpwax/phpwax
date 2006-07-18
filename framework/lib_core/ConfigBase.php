@@ -54,9 +54,8 @@ class ConfigBase
     */
 	private function load_config()
 	{
-		if(is_readable($this->cachedestdd)) {
+		if(is_readable($this->cachedest)) {
 			$this->config_array = unserialize(file_get_contents($this->cachedest));
-			ApplicationBase::inspect($this->config_array);
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
 	    try {
