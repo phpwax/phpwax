@@ -34,7 +34,7 @@ class ConfigBase
 	function __construct()
 	{
 		if(self::$instance) {
-			$this->cachedest=CACHE_DIR.str_replace("/", "_", APP_DIR).'cache';
+			$this->cachedest="/tmp/".str_replace("/", "_", APP_DIR).'cache';
 	  	$this->load_config();
 			$db=$this->return_config('db');
 	  	$this->init_db($db);	
