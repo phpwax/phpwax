@@ -64,6 +64,7 @@ class ConfigBase
 					$this->config_array = Spyc::YAMLLoad($configFile);
 				} else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
 	    } catch(Exception $e) {
+				echo $e;
       }
 		}	
 		$this->config_array=$this->merge_environments($this->config_array);		
