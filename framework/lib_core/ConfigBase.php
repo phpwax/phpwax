@@ -140,7 +140,8 @@ class ConfigBase
   	 $result=fwrite($fp1, serialize($this->config_array));
   	 fclose($fp1);
 		} catch(Exception $e) {
-    	echo "couldn't write to cache(".$this->cachedest.")";
+    	echo "couldn't write to cache(".$this->cachedest.")<br />";
+			echo $e;
     }
 	}
 	
