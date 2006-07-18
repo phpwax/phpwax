@@ -54,8 +54,9 @@ class ConfigBase
     */
 	private function load_config()
 	{
-		if(is_readable($this->cachedestdd)) {
+		if(is_readable($this->cachedest)) {
 			$this->config_array = unserialize(file_get_contents($this->cachedest));
+			ApplicationBase::inspect($this->config_array);
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
 	    try {
@@ -136,9 +137,7 @@ class ConfigBase
 	
 	private function write_to_cache() {
 		try {
-  	 $fp1=fopen($this->cachedest, 'w+');
-  	 $result=fwrite($fp1, serialize($this->config_array));
-  	 fclose($fp1);
+			$result=file_put_contents($this->cachedest, serialize($this->config_array));
 		} catch(Exception $e) {
     	echo "couldn't write to cache(".$this->cachedest.")<br />";
 			echo $e;
