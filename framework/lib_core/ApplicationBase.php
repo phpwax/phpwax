@@ -81,7 +81,7 @@ class ApplicationBase
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
     //Start a session
-    if(!isset($this->fetch_config("sessions"))) {
+    if(!$this->fetch_config("sessions")) {
 			Session::start();
 		}
     $this->controller_object=$this->load_controller(); 	
