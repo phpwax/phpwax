@@ -55,16 +55,16 @@ class ConfigBase
 	private function load_config()
 	{
 		if(is_readable($cachedest)) {
+			echo "found cache";
 			$this->config_array = unserialize(file_get_contents($cachedest));
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
 	    try {
-	    	if(is_file($configFile)){}
-	      	else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
-	     	} catch(Exception $e) {
-        
-        }
-			$this->config_array = Spyc::YAMLLoad($configFile);
+	    	if(is_file($configFile)){
+					$this->config_array = Spyc::YAMLLoad($configFile);
+				} else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
+	    } catch(Exception $e) {
+      }
 		}	
 		$this->config_array=$this->merge_environments($this->config_array);		
 	}
