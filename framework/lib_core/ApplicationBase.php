@@ -174,7 +174,6 @@ class ApplicationBase
 		
 		$tpl->urlid=$cnt->action;
   	$use_layout=$cnt->use_layout;
-		Session::start();
     foreach(get_object_vars($cnt) as $var=>$val) {
       $tpl->{$var}=$val;
     }
@@ -198,6 +197,7 @@ class ApplicationBase
 		}
     try {
 			$page_output=$tpl->execute();
+			Session::start();
       echo $page_output;
 			if($_GET['route']  == '/index') {
 				Session::set('referrer', $_GET['route']);
