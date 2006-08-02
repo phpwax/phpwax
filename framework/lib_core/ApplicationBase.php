@@ -81,7 +81,7 @@ class ApplicationBase
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
     //Start a session
-		Session::start();
+		echo Session::start();
     $this->controller_object=$this->load_controller(); 	
     $this->create_page($this->controller_object);
   }
