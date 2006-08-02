@@ -59,26 +59,24 @@ class Session {
         return md5($key);
     }
     
-    static function is_bot()
-    {
-      $isBot=false;
+	static function is_bot() {
+    $isBot=false;
 	  $ua=$_SERVER['HTTP_USER_AGENT'];
-      $bots=array('googlebot','ask jeeves','slurp','fast','scooter','zyborg','msnbot');
-      foreach($bots as $bot)
-	    {
-		 if(stristr($ua, $bot)) { return true; }
+    $bots=array('googlebot','ask jeeves','slurp','fast','scooter','zyborg','msnbot');
+    foreach($bots as $bot) {
+			if(stristr($ua, $bot)) { return true; }
 		}
 	  return false;
-    }
+  }
 
     static function start() {
         # set the session default for this app
         ini_set('session.name', self::$session_name);
-        ini_set('session.cookie_lifetime', self::$session_lifetime);
-        ini_set('session.gc_probability', 1);
-        ini_set('session.gc_maxlifetime', self::$session_max_lifetime * 60);
-        ini_set('session.use_trans_sid', self::$session_no_cookies);
-        ini_set('arg_separator.output', "/");
+        //ini_set('session.cookie_lifetime', self::$session_lifetime);
+        //ini_set('session.gc_probability', 1);
+        //ini_set('session.gc_maxlifetime', self::$session_max_lifetime * 60);
+        //ini_set('session.use_trans_sid', self::$session_no_cookies);
+        //ini_set('arg_separator.output', "/");
 
         header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
 
