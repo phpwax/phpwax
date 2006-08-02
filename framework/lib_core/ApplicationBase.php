@@ -73,7 +73,6 @@ class ApplicationBase
 	{
     set_exception_handler(array($this, 'process_exception'));    
     set_error_handler(array($this, 'process_error'), 259);
-		Session::start();
 		$this->load_config();				
 		$this->copy_javascript();		
 		//$this->mysql_db_backup(); 
