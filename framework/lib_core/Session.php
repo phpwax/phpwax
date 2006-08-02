@@ -10,34 +10,30 @@
  */
 class Session {
 		
+	private static
+  	$ip = null,
+		$user_agent = null;
 
-		
-    private static
-        $ip = null,
-        $user_agent = null;
+	public static
+    $id = null,
+    $session_lifetime = 0,
+    $session_max_lifetime= "61",
+    $session_name= "Session_ID",
+    $session_no_cookies = 0,
+		$user_messages=array();
 
-    public static
-        $id = null,
-        $session_lifetime = 0,
-        $session_max_lifetime= "61",
-        $session_name= "Session_ID",
-        $session_no_cookies = 0,
-				$user_messages=array();
-
-
-
-    static function get($key) {
-        if(self::is_valid_host() && isset($_SESSION[self::get_hash()][$key])) {
-            return $_SESSION[self::get_hash()][$key];
-        }
-        return null;
+	static function get($key) {
+  	if(self::is_valid_host() && isset($_SESSION[self::get_hash()][$key])) {
+    	return $_SESSION[self::get_hash()][$key];
     }
+    return null;
+  }
 
-    static function set($key, $value) {
-        if(self::is_valid_host()) {
-            $_SESSION[self::get_hash()][$key] = $value;
-        }
+  static function set($key, $value) {
+  	if(self::is_valid_host()) {
+     	$_SESSION[self::get_hash()][$key] = $value;
     }
+  }
 
     static function is_valid_host() {
         if(($_SERVER['REMOTE_ADDR'] == self::$ip || self::is_aol_host()) &&
