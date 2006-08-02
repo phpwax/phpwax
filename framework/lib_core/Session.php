@@ -71,14 +71,14 @@ class Session {
 
     static function start() {
         # set the session default for this app
-        ini_set('session.name', self::$session_name);
-        ini_set('session.cookie_lifetime', self::$session_lifetime);
-        ini_set('session.gc_probability', 1);
-        ini_set('session.gc_maxlifetime', self::$session_max_lifetime * 60);
-        ini_set('session.use_trans_sid', self::$session_no_cookies);
-        ini_set('arg_separator.output', "/");
+        //ini_set('session.name', self::$session_name);
+        //ini_set('session.cookie_lifetime', self::$session_lifetime);
+        //ini_set('session.gc_probability', 1);
+        //ini_set('session.gc_maxlifetime', self::$session_max_lifetime * 60);
+        //ini_set('session.use_trans_sid', self::$session_no_cookies);
+        //ini_set('arg_separator.output', "/");
 
-        header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
+        //header('P3P: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
 
         self::$ip = $_SERVER['REMOTE_ADDR'];
         self::$user_agent = $_SERVER['HTTP_USER_AGENT'];
