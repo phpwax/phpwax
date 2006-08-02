@@ -90,7 +90,7 @@ class Session {
         //    session_id($_REQUEST[self::$session_name]);
         //}
 
-        session_cache_limiter("must-revalidate");
+        //session_cache_limiter("must-revalidate");
         session_start();
         self::$id = session_id();
     }
