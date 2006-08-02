@@ -70,7 +70,9 @@ class ApplicationBase
    *  @return void
    */
 	function __construct()
-	{		
+	{
+		//Start a session
+		Session::start();		
     set_exception_handler(array($this, 'process_exception'));    
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();				
@@ -80,8 +82,6 @@ class ApplicationBase
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
-    //Start a session
-		Session::start();
     $this->controller_object=$this->load_controller(); 	
     $this->create_page($this->controller_object);
   }
