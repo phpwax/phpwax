@@ -174,6 +174,7 @@ class ApplicationBase
 		
 		$tpl->urlid=$cnt->action;
   	$use_layout=$cnt->use_layout;
+		Session::start();
     foreach(get_object_vars($cnt) as $var=>$val) {
       $tpl->{$var}=$val;
     }
