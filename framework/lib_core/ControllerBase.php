@@ -48,6 +48,7 @@ abstract class ControllerBase extends ApplicationBase
    function __construct()
    {      
       $this->class_name=get_class($this);
+			Session::start();			
       $this->referrer=Session::get('referrer');
    }
    

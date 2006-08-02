@@ -67,7 +67,6 @@ class AutoLoader
 		AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');		
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
-		Session::start();			
 		ConfigBase::set_instance();	
 		$app=new ApplicationBase;
 	}
