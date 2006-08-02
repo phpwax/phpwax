@@ -84,13 +84,13 @@ class Session {
         self::$user_agent = $_SERVER['HTTP_USER_AGENT'];
 
 		# Don't start a session if this is a search engine
-        if(self::is_bot()) { return false; }
+        //if(self::is_bot()) { return false; }
 
-        if(self::is_valid_host() && $_REQUEST[self::$session_name]) {
-            session_id($_REQUEST[self::$session_name]);
-        }
+        //if(self::is_valid_host() && $_REQUEST[self::$session_name]) {
+        //    session_id($_REQUEST[self::$session_name]);
+        //}
 
-        //session_cache_limiter("must-revalidate");
+        session_cache_limiter("must-revalidate");
         session_start();
         self::$id = session_id();
     }
