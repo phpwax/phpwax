@@ -18,7 +18,7 @@ class Session {
     $id = null,
     $session_lifetime = 0,
     $session_max_lifetime= "61",
-    $session_name= "Session_ID",
+    $session_name= "wxsession",
     $session_no_cookies = 0,
 		$user_messages=array();
 
