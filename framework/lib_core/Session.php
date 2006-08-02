@@ -70,7 +70,6 @@ class Session {
   }
 
     static function start() {
-        # set the session default for this app
         ini_set('session.name', self::$session_name);
         ini_set('session.cookie_lifetime', self::$session_lifetime);
         ini_set('session.gc_probability', 1);
