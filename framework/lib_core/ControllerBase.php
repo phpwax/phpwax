@@ -49,6 +49,7 @@ abstract class ControllerBase extends ApplicationBase
    {      
       $this->class_name=get_class($this);
       $this->referrer=Session::get('referrer');
+			include FRAMEWORK_DIR.'lib_core/WXHtmlHelperMixin';
    }
    
 

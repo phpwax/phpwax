@@ -197,7 +197,6 @@ class ApplicationBase
 		}
     try {
 			$page_output=$tpl->execute();
-			Session::start();
       echo $page_output;
 			if($_GET['route']  == '/index') {
 				Session::set('referrer', $_GET['route']);
