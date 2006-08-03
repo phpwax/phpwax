@@ -112,8 +112,9 @@
 	}
 	
 	private function strip_php() {
-		$this->formhtml = preg_replace('/(<\?)[^\?\>]*(\?>)/', '', $this->formhtml);
+		$this->formhtml = preg_replace('/(<\?)[^\?>]*(\?>)/', '', $this->formhtml);
 		$this->formhtml = preg_replace('/(\&)\w*(\;)/', '', $this->formhtml);
+		$this->formhtml = preg_replace('/(<\?).*(\?>)/', '', $this->formhtml);
 	}
 	 
 	 private function parse_form_validation()
