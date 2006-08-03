@@ -111,6 +111,7 @@
 	
 	private function strip_php() {
 		$this->formhtml= preg_replace('/(<\?).*(\?>)/', '', $this->formhtml);
+		$this->formhtml = html_entity_decode($this->formhtml);
 	}
 	 
 	 private function parse_form_validation()
