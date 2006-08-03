@@ -12,10 +12,10 @@
  class WXForm extends ApplicationBase
  {
 	
- 	public $formhtml;
+ 	private $formhtml="";
  	private $formstructure;
  	private $formindex;
- 	public $validation_array=array();
+ 	private $validation_array=array();
  	private $expected_array=array();
  	private $user_values;
  	private $errors_array=array();
@@ -33,7 +33,9 @@
 	 {
 	   	try
 	   	  {
-				$this->formhtml=file_get_contents(APP_DIR."view/".$formfile.".html");
+				$this->formhtml.='<div>';
+				$this->formhtml.=file_get_contents(APP_DIR."view/".$formfile.".html");
+				$this->formhtml.='</div>';
 				$this->strip_php();
    	  	$xp=xml_parser_create();
 				xml_parser_set_option($xp, XML_OPTION_SKIP_WHITE, 1);
