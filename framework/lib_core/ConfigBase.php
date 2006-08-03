@@ -93,24 +93,20 @@ class ConfigBase
 	 */
 	public function init_db($db)
 	{
-		if(isset($db['socket']))
-		{$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; }
-		else {
-		$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
-		
+		if(isset($db['socket']) && strlen($db['socket'])>2) {
+			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
+		} else {
+			$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
 		}
-	   try 
-	     {
-	     $adapter=$db['dbtype'];
-	     $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-	     ActiveRecordPDO::setDefaultPDO( $pdo );
-	     ActiveRecordPDO::setDBAdapter($adapter);
-			 WXActiveRecord::setDefaultPDO($pdo);
-        }
-      catch(Exception $e) 
-        {
-            throw new Exception("Cannot Initialise DB");
-        }
+	  try {
+	  	$adapter=$db['dbtype'];
+	    $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+	    ActiveRecordPDO::setDefaultPDO( $pdo );
+	    ActiveRecordPDO::setDBAdapter($adapter);
+			WXActiveRecord::setDefaultPDO($pdo);
+    } catch(Exception $e) {
+    	throw new Exception("Cannot Initialise DB");
+    }
 	}
 	
 	

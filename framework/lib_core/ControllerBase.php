@@ -22,6 +22,7 @@ abstract class ControllerBase extends ApplicationBase
 	protected $show_messages=true;
 	protected $helpers=array();
 	public $body_js_files=array();
+
    
   /** Set to 0 by default this decides whether any further
    * 	route information is passed on to the action.
@@ -49,7 +50,6 @@ abstract class ControllerBase extends ApplicationBase
    {      
       $this->class_name=get_class($this);
       $this->referrer=Session::get('referrer');
-			include FRAMEWORK_DIR.'lib_core/WXHtmlHelperMixin';
    }
    
 

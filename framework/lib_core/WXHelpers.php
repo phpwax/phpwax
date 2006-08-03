@@ -80,15 +80,15 @@ class WXHelpers {
 
         //  Copy controller information from $GLOBALS
         $this->controller_name =
-            !is_null(Trax::$current_controller_name)           
-            ? Trax::$current_controller_name : null;
+            !is_null(ApplicationBase::$current_controller_name)           
+            ? ApplicationBase::$current_controller_name : null;
         $this->controller_path =
-            !is_null(Trax::$current_controller_path)
-            ? Trax::$current_controller_path : null;
+            !is_null(ApplicationBase::$current_controller_path)
+            ? ApplicationBase::$current_controller_path : null;
         $this->controller_object =
-            (!is_null(Trax::$current_controller_object) 
-            && is_object(Trax::$current_controller_object))
-            ? Trax::$current_controller_object : null;
+            (!is_null(ApplicationBase::$current_controller_object) 
+            && is_object(ApplicationBase::$current_controller_object))
+            ? ApplicationBase::$current_controller_object : null;
     	if($auto_index) {
         	$object = $this->object();
             if(is_object($object)) {
