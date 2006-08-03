@@ -12,10 +12,10 @@
  class WXForm extends ApplicationBase
  {
 	
- 	private $formhtml;
+ 	public $formhtml;
  	private $formstructure;
  	private $formindex;
- 	private $validation_array=array();
+ 	public $validation_array=array();
  	private $expected_array=array();
  	private $user_values;
  	private $errors_array=array();
@@ -111,7 +111,7 @@
 	
 	private function strip_php() {
 		$this->formhtml= preg_replace('/(<\?).*(\?>)/', '', $this->formhtml);
-		$this->formhtml = html_entity_decode($this->formhtml);
+		$this->formhtml = preg_replace('/(\&)\w*(\;)/', '', $this->formhtml);
 	}
 	 
 	 private function parse_form_validation()
