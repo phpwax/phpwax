@@ -12,7 +12,7 @@
  *
  *  A collection of methods used to generate basic HTML/XML.
  */
-class Helpers {
+class WXHelpers {
 
     /**
      *  @var boolean
@@ -293,7 +293,7 @@ class Helpers {
  *                 followed by "\n"
  */
 function content_tag() {
-    $helper = new Helpers();
+    $helper = new WXHelpers();
     $args = func_get_args();
     return call_user_func_array(array($helper, 'content_tag'), $args);
 }
@@ -312,7 +312,7 @@ function content_tag() {
  *  @return string The tag, followed by "\n"
  */
 function tag() {
-    $helper = new Helpers();
+    $helper = new WXHelpers();
     $args = func_get_args();
     return call_user_func_array(array($helper, 'tag'), $args);
 }
@@ -321,7 +321,7 @@ function tag() {
  *  Create a Helpers object and call its cdata_section() method
  */
 function cdata_section() {
-    $helper = new Helpers();
+    $helper = new WXHelpers();
     $args = func_get_args();
     return call_user_func_array(array($helper, 'cdata_section'), $args);
 }

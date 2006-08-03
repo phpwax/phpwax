@@ -1,37 +1,16 @@
 <?php
-/**
- *  File containing the DateHelper class and support functions
+/*
+ * @package wxframework.core
  *
- *  (PHP 5)
- *
- *  @package PHPonTrax
- *  @version $Id: date_helper.php 201 2006-05-25 08:58:10Z john $
- *  @copyright (c) 2005 John Peterson
- *
- *  Permission is hereby granted, free of charge, to any person obtaining
- *  a copy of this software and associated documentation files (the
- *  "Software"), to deal in the Software without restriction, including
- *  without limitation the rights to use, copy, modify, merge, publish,
- *  distribute, sublicense, and/or sell copies of the Software, and to
- *  permit persons to whom the Software is furnished to do so, subject to
- *  the following conditions:
- *
- *  The above copyright notice and this permission notice shall be
- *  included in all copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- *  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- *  NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- *  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- *  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- *  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * This class is based in part on the helpers functionality in the PHP on Trax Framework. 
+ * For more information, see:
+ *  http://phpontrax.com/
  */
 
 /**
  *  Utility to help build HTML pulldown menus for date and time
  */
-class DateHelper extends Helpers {
+class DateHelper extends WXHelpers {
 
     /**
      *  Year values parsed from $_REQUEST
