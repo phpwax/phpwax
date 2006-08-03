@@ -124,6 +124,8 @@
 		 	      	$testmatch=preg_match("/^FM[a-zA-Z0-9]*$/", $class);
 		 	      	if($testmatch) {
 		 	        	$index=$tag['attributes']['NAME'];
+								//$index = str_replace('[', '', $index);
+								//$index = str_replace(']', '', $index);
 		 	        	$this->validation_array[][$index]=$class;
 		 	        }
 		 	      }

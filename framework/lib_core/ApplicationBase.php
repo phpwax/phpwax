@@ -77,7 +77,7 @@ class ApplicationBase
     set_exception_handler(array($this, 'process_exception'));    
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();
-		$this->copy_javascript();		
+		//$this->copy_javascript();		
 		//$this->mysql_db_backup(); 
     // Clean User Input
     $filter=new InputFilter(array(), array(), 1,1);
