@@ -12,7 +12,7 @@
  class WXForm extends ApplicationBase
  {
 	
- 	private $formhtml="";
+ 	public $formhtml="";
  	private $formstructure;
  	private $formindex;
  	private $validation_array=array();
