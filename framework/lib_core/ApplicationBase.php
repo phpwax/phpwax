@@ -77,13 +77,13 @@ class ApplicationBase
     set_exception_handler(array($this, 'process_exception'));    
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();
-		//$this->copy_javascript();		
+		$this->copy_javascript();		
 		//$this->mysql_db_backup(); 
     // Clean User Input
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
-		$this->validation_intercept();
+		//$this->validation_intercept();
     $this->controller_object=$this->load_controller();
 		self::$current_controller_object = $this->controller_object;
 		self::$current_controller_name = get_class($this);			
