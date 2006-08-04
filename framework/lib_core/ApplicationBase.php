@@ -83,6 +83,7 @@ class ApplicationBase
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
+		$this->validation_intercept();
     $this->controller_object=$this->load_controller();
 		self::$current_controller_object = $this->controller_object;
 		self::$current_controller_name = get_class($this);			
@@ -211,6 +212,24 @@ class ApplicationBase
  		} catch(Exception $e) {
         $this->process_exception($e);
     }
+	}
+	
+	
+	/**
+	 *	Intercepts posted values and matches against model validations.
+	 *  @access protected
+   *  @return void
+   */
+	protected function validation_intercept() {
+		foreach($_POST as $k=>$v) {
+			if(class_exists($k = WXActiveRecord::camelize($k)) && 
+				is_subclass_of($k, 'WXActiveRecord') &&
+				is_array($v)) {
+				$_POST[$k]='intercepted';
+			} else {
+				$_POST[$k]=$k;
+			}
+		}
 	}
 	
 	/**
