@@ -78,8 +78,6 @@ class ApplicationBase
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();
 		Session::start();
-		$this->copy_javascript();		
-		//$this->mysql_db_backup(); 
     // Clean User Input
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
@@ -162,25 +160,13 @@ class ApplicationBase
 	
 	/**
 	 *	Constructs the Output.
-	 *	Uses PHPTAL to parse templates, Inserts view html into the defined slot. 
-	 *	Also prepends a doctype and page head to the layout.
+	 *  Uses the WXTemplate Class to set variables in view
 	 *  @access private
    *  @return void
    */	
-	private function create_page($cnt)
-	{
-		if($this->fetch_config("templating")!="php") {
-			$messages=new MessageTrigger();
-			$tpl=new PHPTAL();
-			$tpl->addTrigger('message_insert', $messages);
-			$tpl->stripComments(true);
-		} else {
-			$tpl=new WXTemplate;
-			
-		}
-		
+	private function create_page($cnt) {
+		$tpl=new WXTemplate;		
 		$tpl->urlid=$cnt->action;
-  	$use_layout=$cnt->use_layout;
     foreach(get_object_vars($cnt) as $var=>$val) {
       $tpl->{$var}=$val;
     }
@@ -191,13 +177,13 @@ class ApplicationBase
 			$use_view=$cnt->use_view;
 		}
 		if(strpos($use_view, '/')) { 
-			$view_path="$use_view".".html"."/view"; 
+			$view_path="{$use_view}.html"; 
 		} else { 
-			$view_path=$this->controller."/".$use_view.".html"."/view"; 
+			$view_path=$this->controller."/".$use_view.".html"; 
 		}
 		$tpl->view_path=$view_path;
     if($cnt->use_layout) {
-			$tpl->layout_path="layouts/".$use_layout.".html/layout";
+			$tpl->layout_path="layouts/".$cnt->use_layout.".html/layout";
 	  	$tpl->setTemplate(FRAMEWORK_DIR.'lib_core/page_head.html');
     } else {
 			$tpl->setTemplate(FRAMEWORK_DIR.'lib_core/empty_page.html');
@@ -213,24 +199,6 @@ class ApplicationBase
  		} catch(Exception $e) {
         $this->process_exception($e);
     }
-	}
-	
-	
-	/**
-	 *	Intercepts posted values and matches against model validations.
-	 *  @access protected
-   *  @return void
-   */
-	protected function validation_intercept() {
-		foreach($_POST as $k=>$v) {
-			if(class_exists($k = WXActiveRecord::camelize($k)) && 
-				is_subclass_of($k, 'WXActiveRecord') &&
-				is_array($v)) {
-				$_POST[$k]='intercepted';
-			} else {
-				$_POST[$k]=$k;
-			}
-		}
 	}
 	
 	/**
@@ -295,16 +263,6 @@ class ApplicationBase
 
 	/**
 	 *	Echos a formatted array to screen.
-	 *	Superceded by inspect
-	 *  @access protected
-   *  @return void
-	 *	@deprecated
-   */	
-	protected function inspect_array($array) {
-		$this->inspect($array);
-	}
-	/**
-	 *	Echos a formatted array to screen.
 	 *  @access protected
    *  @return void
    */	
@@ -313,74 +271,10 @@ class ApplicationBase
 	   echo "<pre>"; print_r($array); echo "</pre>"; 
 	}
 	
-
-	/**
-	 *	Copies javascript files from the javascript library
-	 * 	into the runtime javascript folder.
-	 *	There is a time restriction in place, the copies will only be performed
-	 * periodically to improve performance.
-	 *  @access private
-   *  @return void
-   */	
-	private function copy_javascript() {
-		 $fileArray=scandir(FRAMEWORK_DIR.'lib_core/javascript');
-	   foreach($fileArray as $file)
-        {
-           if(preg_match("/^[a-zA-Z0-9_-\S]+\.js/",$file, $match))
-           { $includeArray[]=$match[0]; }
-        }
-			$destdir=APP_DIR.'public/javascript/lib/';
-			foreach($includeArray as $scriptfile) {
-				$copyfile=true;
-				if(file_exists($destdir.$scriptfile)) {
-					$modtime=filemtime($destdir.$scriptfile);
-					if($modtime>=(time() - 2592000 ) ) { $copyfile=false; $success=true; }
-				}
-				if($copyfile) { $success=copy(FRAMEWORK_DIR.'lib_core/javascript/'.$scriptfile, $destdir.$scriptfile); }
-				if(!$success) { throw new Exception("Couldn't copy the javascript files"); }
-				$success=false;
-			}
-	}
 	
-	/**
-	 *	Includes an entire directory of php files.
-	 *	This method is now handled by the AutoLoader class.
-	 *	Left here for backwards compatibility.
-	 *  @access public
-   *  @return bool
-	 *	@deprecated
-   */	
-	public function find_include_php($dir) {
-		AutoLoader::include_dir($dir);
-		return true;
-	}
 
-	/**
-	 *	Writes a dump of the database to the app/model folder.
-	 *	Occurs only in development environment and for mysql db only.
-	 *	@todo Implement for other databases.
-	 *  @access private
-   *  @return bool
-   */	
-	private function mysql_db_backup() {
-		if($this->fetch_config('environment')=='development') {
-			$db=$this->fetch_config('db');
-			if($db['dbtype']=="mysql") {
-				$database=$db['database']; $user=$db['username']; $pass=$db['password'];
-				$file=APP_DIR.'model/'.$database.'.sql';
-				if(is_writable($file)) {
-					$modtime=filemtime($file);
-					if($modtime>=(time() - 1800 ) ) { return false; }
-					unlink($file);
-				}
-				else { throw new Exception("Couldn't backup database - Check your app/model dir is writable"); }
- 				$backup="/usr/local/mysql5/bin/mysqldump -u{$user} -p{$pass} $database  > $file";
-				$result=passthru($backup);
-				if($result) { return true; }
-			}
-		}
-		return false;
-	}
+
+	
 
 }
 
