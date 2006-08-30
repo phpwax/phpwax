@@ -11,9 +11,8 @@
 define('FRAMEWORK_DIR', dirname(__FILE__) . "/");
 define('MODEL_DIR' , APP_DIR.'model/');
 define('CONTROLLER_DIR', APP_DIR.'controller/');
-define('PHPTAL_TEMPLATE_REPOSITORY', APP_DIR.'view');
-if(!ini_get('session.save_path')) { define('CACHE_DIR', '/tmp/'); }
-else { define('CACHE_DIR', ini_get('session.save_path'));}
+define('VIEW_DIR', APP_DIR.'view/');
+define('CACHE_DIR', FRAMEWORK_DIR.'tmp');
 
 function __autoload($class_name) {
 	switch(TRUE) {
@@ -41,21 +40,19 @@ class AutoLoader
  *	@access public
  *	@param string $dir The directory to include 
  */
-	static public function include_dir($dir)
-	{
-	   $fileArray=scandir($dir);
-	   foreach($fileArray as $file)
-	    {
-				if(is_file($file) && is_readable($file)) {
-					require_once($file);
-				} else {
-					if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
-						if(!require_once($dir."/".$match[0])) {
-							throw new exception("Cannot include file - ".$include);
-						}
+	static public function include_dir($dir) {
+		$fileArray=scandir($dir);
+	  foreach($fileArray as $file) {
+			if(is_file($file) && is_readable($file)) {
+				require_once($file);
+			} else {
+				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
+					if(!require_once($dir."/".$match[0])) {
+						throw new exception("Cannot include file - ".$include);
 					}
 				}
-	    }
+			}
+	  }
 		return true;
 	}
 	

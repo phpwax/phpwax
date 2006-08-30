@@ -32,8 +32,7 @@ class ConfigBase
 	private $fromcache=false;
 	static private $instance=false;
 	
-	function __construct()
-	{
+	function __construct() {
 		if(self::$instance) {
 			$this->cachedest="/tmp/".str_replace("/", "_", APP_DIR).'cache';
 	  	$this->load_config();

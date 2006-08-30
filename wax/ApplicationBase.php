@@ -72,8 +72,7 @@ class ApplicationBase
 	 *  @access public
    *  @return void
    */
-	function __construct()
-	{
+	function __construct() {
     set_exception_handler(array($this, 'process_exception'));    
     set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();
@@ -82,7 +81,6 @@ class ApplicationBase
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
-		//$this->validation_intercept();
     $this->controller_object=$this->load_controller();
 		self::$current_controller_object = $this->controller_object;
 		self::$current_controller_name = get_class($this);			
@@ -94,13 +92,12 @@ class ApplicationBase
 	 *  @access private
    *  @return void
    */
-	private function load_config() 
-	{
+	private function load_config() {
 		if(!$this->config_object) { $this->config_object=new ConfigBase; }
 		$route=new WXroute;		
 		$this->controller=$route->make_controller_route();		
 		$this->actions=$route->read_actions();		
-    }
+  }
 	
 	/**
 	 *	Looks up a configuration value from the loaded
@@ -108,11 +105,9 @@ class ApplicationBase
 	 *  @access protected
    *  @return array
    */
-	protected function fetch_config($config)
-	{
+	protected function fetch_config($config) {
 		$this->load_config();
-		if($this->config_object)
-		{
+		if($this->config_object) {
 		return $this->config_object->return_config($config);	
 		} else {
 			return false;
@@ -128,8 +123,7 @@ class ApplicationBase
 	 *  @access private
    *  @return obj
    */	
-	private function load_controller()
-	{
+	private function load_controller() {
 	  if(class_exists($this->controller."_controller", false)) { 		
 			$controller=$this->controller."_controller";
 		} else {
@@ -139,17 +133,14 @@ class ApplicationBase
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
-	  try
-	  	{
-	    	$cnt=new $controller();
-	      $cnt->set_routes($final_route);
-	      $cnt->set_action($this->action);
-	      $cnt->controller_global();
-	     }
-	   catch(Exception $e) 
-        {
-            $this->process_exception($e);
-        }
+	  try {
+	  	$cnt=new $controller();
+	    $cnt->set_routes($final_route);
+	    $cnt->set_action($this->action);
+	    $cnt->controller_global();
+	  } catch(Exception $e) {
+     	$this->process_exception($e);
+    }
 		$cnt->before_action($cnt->action);
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
@@ -207,8 +198,7 @@ class ApplicationBase
 	 *  @access public
    *  @return void
    */	
-	public function process_exception_prod($e)
-	{
+	public function process_exception_prod($e) {
 		$trace.="<font face=\"verdana, arial, helvetica, sans-serif\">\n";
 		$trace.="<h1>Application Error</h1>\n";
 		$trace.="Oops, looks like there's been an error. Give it a few minutes and try again.";
@@ -226,8 +216,7 @@ class ApplicationBase
 	 *  @access public
    *  @return void
    */	
-	public function process_exception($e)
-	{
+	public function process_exception($e) {
 		if($this->fetch_config('environment')=='production') {
 	    	$this->process_exception_prod($e); exit;
 		}
@@ -256,8 +245,7 @@ class ApplicationBase
 	 *  @access public
    *  @return void
    */	
-	 public function process_error($errno, $errstr, $errfile, $errline) 
-   {
+	 public function process_error($errno, $errstr, $errfile, $errline) {
      throw new Exception($errstr, $errno);
    }
 
@@ -266,9 +254,8 @@ class ApplicationBase
 	 *  @access protected
    *  @return void
    */	
-	public function inspect($array)
-	{
-	   echo "<pre>"; print_r($array); echo "</pre>"; 
+	public function inspect($array) {
+		echo "<pre>"; print_r($array); echo "</pre>"; 
 	}
 	
 	
