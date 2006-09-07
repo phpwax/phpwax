@@ -7,22 +7,20 @@
 
 /**
  *	Includes necessary files.
- */
+ 
 require_once('AutoLoader.php');
-require_once('wxphp/lib_extended/simpletest/unit_tester.php');
-require_once('wxphp/lib_extended/simpletest/reporter.php');
 
-AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');
+AutoLoader::include_dir(FRAMEWORK_DIR);
 
-$configFile=APP_DIR.'/config/config.yml';
+$configFile=APP_DIR.'config/config.yml';
 $config_array = Spyc::YAMLLoad($configFile);
 $config_array=WXRoute::merge_environments($config_array);
 
 ConfigBase::set_instance();
 $conf=new ConfigBase;
 $conf->init_db($config_array['db']);
-AutoLoader::include_dir(APP_DIR.'model');
-AutoLoader::include_dir(APP_DIR.'controller');
-
+AutoLoader::include_dir(MODEL_DIR);
+AutoLoader::include_dir(CONTROLLER_DIR);
+*/
 
 ?>

@@ -7,9 +7,9 @@ development:
   dbtype: mysql
   host: localhost
   port: 3306
-  database: cms
-  username: root
-  password: blackbeti
+  database: wax
+  username: wax
+  password: wax
   socket: /usr/local/mysql5/tmp/mysql.sock
  email:  
   host: localhost
@@ -20,11 +20,11 @@ development:
 
 test:
   db:
-    database: cms
+    database: test
 
 production: 
   db: 
-    database: cms
+    database: test
     port: 3306
     password: password
 

@@ -8,16 +8,17 @@
 /**
  *	Defines application level constants
  */
-define('FRAMEWORK_DIR', dirname(__FILE__) . "/");
-define('MODEL_DIR' , APP_DIR.'model/');
-define('CONTROLLER_DIR', APP_DIR.'controller/');
-define('VIEW_DIR', APP_DIR.'view/');
-define('CACHE_DIR', FRAMEWORK_DIR.'tmp');
+define('FRAMEWORK_DIR', WAX_ROOT . "wax");
+define('APP_DIR', WAX_ROOT . "app");
+define('MODEL_DIR' , WAX_ROOT.'app/model/');
+define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
+define('VIEW_DIR', WAX_ROOT.'app/view/');
+define('CACHE_DIR', WAX_ROOT.'tmp');
 
 function __autoload($class_name) {
 	switch(TRUE) {
-		case is_readable(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"): 
-			include_once(FRAMEWORK_DIR.'lib_extended/'.$class_name . ".php"); break;
+		case is_readable(FRAMEWORK_DIR.$class_name . ".php"): 
+			include_once(FRAMEWORK_DIR.$class_name . ".php"); break;
 		case is_readable(APP_DIR.'lib/'.$class_name.".php"):
 			include_once(APP_DIR.'lib/'.$class_name.".php"); break;
 		case is_readable(MODEL_DIR.$class_name.".php"):
@@ -61,7 +62,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-		AutoLoader::include_dir(FRAMEWORK_DIR.'lib_core');		
+		AutoLoader::include_dir(FRAMEWORK_DIR);		
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
 		ConfigBase::set_instance();	

@@ -1,6 +1,6 @@
 <?php
-define('APP_DIR', dirname(dirname(__FILE__)).'/');
-define('FW_NAME', 'wax');
-require_once(FW_NAME.'/AutoLoader.php');
+define('WAX_ROOT', dirname(dirname(__FILE__)).'/');
+ini_set('include_path', WAX_ROOT);
+require_once('wax/AutoLoader.php');
 AutoLoader::run_application();
 ?>
