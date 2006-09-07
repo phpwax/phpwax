@@ -1,0 +1,32 @@
+environment: development
+route:
+ default:page
+
+development:
+ db:
+  dbtype: mysql
+  host: localhost
+  port: 3306
+  database: cms
+  username: root
+  password: blackbeti
+  socket: /usr/local/mysql5/tmp/mysql.sock
+ email:  
+  host: localhost
+  allowed_addresses: 
+    
+# The following will override values in development.
+# If the values are the same there is no need to declare them.
+
+test:
+  db:
+    database: cms
+
+production: 
+  db: 
+    database: cms
+    port: 3306
+    password: password
+
+users:
+  joet: password
