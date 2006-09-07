@@ -30,72 +30,13 @@ class WXHelpers {
      */
     public $attribute_name;
 
-    /**
-     *  Current controller object
-     *
-     *  Local copy of Trax::$current_controller_object<br />
-     *  valid instance of ActionController.
-     *  @var ActionController
-     */
-    public $controller_object;
-
-    /**
-     *  Current controller name
-     *
-     *  Local copy of Trax::$current_controller_name
-     *  @var string
-     */
-    public $controller_name;
-
-    /**
-     *  Current controller path
-     *
-     *  Local copy of Trax::$current_controller_path
-     *  @var string
-     */
-    public $controller_path;
-
 
     /**
      *  Construct a Helpers object
      *
-     *  @param string Name of ActiveRecord subclass
-     *  @param string Attribute of ActiveRecord subclass
-     *  @uses auto_index
-     *  @uses object_name
-     *  @uses attribute_name
-     *  @uses controller_name
-     *  @uses controller_path
-     *  @uses controller_object
      */
-    function __construct($object_name = null, $attribute_name = null) {
-    	if(substr($object_name, -2) == "[]") {
-            $auto_index = true;
-    	} else {
-            $auto_index = false;
-        }
-    	$this->auto_index = false;
-        $this->object_name = str_replace("[]", "", $object_name);     
-        $this->attribute_name = $attribute_name;        
-
-        //  Copy controller information from $GLOBALS
-        $this->controller_name =
-            !is_null(ApplicationBase::$current_controller_name)           
-            ? ApplicationBase::$current_controller_name : null;
-        $this->controller_path =
-            !is_null(ApplicationBase::$current_controller_path)
-            ? ApplicationBase::$current_controller_path : null;
-        $this->controller_object =
-            (!is_null(ApplicationBase::$current_controller_object) 
-            && is_object(ApplicationBase::$current_controller_object))
-            ? ApplicationBase::$current_controller_object : null;
-    	if($auto_index) {
-        	$object = $this->object();
-            if(is_object($object)) {
-                $index = $object->index_on; # should be primary key (usually id field)
-                $this->auto_index = $object->$index;  	
-           	}  
-        }         
+    function __construct() {
+    	
     }
 
     /**

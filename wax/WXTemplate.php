@@ -15,9 +15,11 @@ class WXTemplate
 	public function parse( $pFile ) {
 		ob_clean ();
 		ob_start();
-		$pFile = substr($pFile,0,strrpos($pFile, '/'));
-		$pFile = APP_DIR.'view/'.$pFile;
+		$pFile = VIEW_DIR.$pFile;
 		extract((array)$this);
+		if(!is_readable($pFile)) {
+			throw new WXException("Unable to find ".$pFile, "Missing Template File");
+		}
 		include( $pFile );
 		return ob_get_clean();
 	}
@@ -25,9 +27,11 @@ class WXTemplate
 	public function parse_no_buffer($pFile) {
 		$buffer = ob_get_clean();
 		ob_start();
-		$pFile = substr($pFile,0,strrpos($pFile, '/'));
-		$pFile = APP_DIR.'view/'.$pFile;
+		$pFile = VIEW_DIR.$pFile;
 		extract((array)$this);
+		if(!is_readable($pFile)) {
+			throw new WXException("Unable to find ".$pFile, "Missing Template File");
+		}
 		include( $pFile );
 		$content = ob_get_clean();
 		ob_start();

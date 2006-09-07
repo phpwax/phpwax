@@ -62,10 +62,6 @@ class ApplicationBase
 	 *	@var 		string
 	 */
 	protected $layout_html;
-	public static $current_controller_name=null;
-	public static $current_controller_path=null;
-	public static $current_controller_object=null;
-	
 	
 	/**
 	 *	Sets up the application and orchestrates progression.
@@ -73,17 +69,12 @@ class ApplicationBase
    *  @return void
    */
 	function __construct() {
-    set_exception_handler(array($this, 'process_exception'));    
-    set_error_handler(array($this, 'process_error'), 259);
 		$this->load_config();
 		Session::start();
-    // Clean User Input
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);
     $this->controller_object=$this->load_controller();
-		self::$current_controller_object = $this->controller_object;
-		self::$current_controller_name = get_class($this);			
     $this->create_page($this->controller_object);
   }
 
@@ -138,7 +129,7 @@ class ApplicationBase
 	    $cnt->set_routes($final_route);
 	    $cnt->set_action($this->action);
 	    $cnt->controller_global();
-	  } catch(Exception $e) {
+	  } catch(WXException $e) {
      	$this->process_exception($e);
     }
 		$cnt->before_action($cnt->action);
@@ -174,8 +165,7 @@ class ApplicationBase
 		}
 		$tpl->view_path=$view_path;
     if($cnt->use_layout) {
-			$tpl->layout_path="layouts/".$cnt->use_layout.".html/layout";
-	  	$tpl->setTemplate(FRAMEWORK_DIR.'lib_core/page_head.html');
+			$tpl->layout_path="layouts/".$cnt->use_layout.".html";
     } else {
 			$tpl->setTemplate(FRAMEWORK_DIR.'lib_core/empty_page.html');
 		}
@@ -187,58 +177,10 @@ class ApplicationBase
 			} else {
 				Session::set('referrer', "/".$_GET['route']);
 			}	
- 		} catch(Exception $e) {
-        $this->process_exception($e);
-    }
+ 		} catch(WXException $e) {}
 	}
 	
-	/**
-	 *	The production environment exception handler.
-	 *	Emails the trace and prints a generic user message to the screen. 
-	 *  @access public
-   *  @return void
-   */	
-	public function process_exception_prod($e) {
-		$trace.="<font face=\"verdana, arial, helvetica, sans-serif\">\n";
-		$trace.="<h1>Application Error</h1>\n";
-		$trace.="Oops, looks like there's been an error. Give it a few minutes and try again.";
-		$trace.="</font>\n";
-		echo $trace;
-		$message=strip_tags($this->get_trace($e));
-		error_log($message);
-		//mail("ross@webxpress.com", "Application Error on production server", $message);
-		if($this->fetch_config("debug")) { echo $message; }
-		exit();
-	}
-	/**
-	 *	The development environment exception handler.
-	 *	Prints the stack trace to the screen. 
-	 *  @access public
-   *  @return void
-   */	
-	public function process_exception($e) {
-		if($this->fetch_config('environment')=='production') {
-	    	$this->process_exception_prod($e); exit;
-		}
-		echo $this->get_trace($e);        
-		exit();
-	}
-	/**
-	 *	Converts the stack trace into a single html string.
-	 *  @access public
-   *  @return string
-   */	
-	public function get_trace($e) {
-		$trace.="<font face=\"verdana, arial, helvetica, sans-serif\">\n";
-    	$trace.="<h1>Application Error</h1>\n";
-    	$trace.="<p>{$e->getMessage()}</p>\n";
-    	$trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px;\">";
-    	$trace.="<code>{$e->getTraceAsString()}</code></pre>\n";
-    	$trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px; margin-top:5px;\">";
-    	$trace.="<code>{$e->getFile()}\nLine: {$e->getLine()}</code></pre>\n";
-    	$trace.="</font>\n";
-		return $trace;
-	}
+
 	
 	/**
 	 *	Maps errors to the standard exception handler.
@@ -246,7 +188,7 @@ class ApplicationBase
    *  @return void
    */	
 	 public function process_error($errno, $errstr, $errfile, $errline) {
-     throw new Exception($errstr, $errno);
+     throw new WXException($errstr, $errno);
    }
 
 	/**

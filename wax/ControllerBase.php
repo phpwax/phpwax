@@ -12,7 +12,7 @@ abstract class ControllerBase extends ApplicationBase
   protected $models=array();
   protected $route_array=null;
   protected $action;
-  public $use_layout='default';
+  public $use_layout='application';
   public $use_view=null;
   private $class_name='';
   protected $referrer;
@@ -254,7 +254,7 @@ abstract class ControllerBase extends ApplicationBase
 				return false;
 			}
 			if(count($this->route_array)>$this->accept_routes) {
-				throw new Exception("No Action Defined");
+				throw new WXException("No Action Defined", "Missing Action");
 			}
    }
 	
@@ -281,7 +281,7 @@ abstract class ControllerBase extends ApplicationBase
 			if(method_exists($this, 'missing_action')) {
 				$this->missing_action(); exit;
 			}
-			throw new Exception("No Action Defined for - ".$this->action);
+			throw new WXException("No Action Defined for - ".$this->action, "Missing Action");
 		}
 		exit;
 	}

@@ -13,7 +13,7 @@ define('APP_DIR', WAX_ROOT . "app");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
-define('CACHE_DIR', WAX_ROOT.'tmp');
+define('CACHE_DIR', WAX_ROOT.'tmp/');
 
 function __autoload($class_name) {
 	switch(TRUE) {
@@ -28,7 +28,11 @@ function __autoload($class_name) {
 		default:
 		  require_once($class_name. ".php");
 	}
-} 
+}
+
+function throw_wxexception() {
+	$exc = new WXException("An unknown error has occurred", "Application Error");
+}
 
 /**
  *	A simple static class to Preload php files and commence the application.
@@ -49,7 +53,7 @@ class AutoLoader
 			} else {
 				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
 					if(!require_once($dir."/".$match[0])) {
-						throw new exception("Cannot include file - ".$include);
+						throw new WXException("Cannot include file - ".$include);
 					}
 				}
 			}
@@ -62,10 +66,12 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-		AutoLoader::include_dir(FRAMEWORK_DIR);		
+		AutoLoader::include_dir(FRAMEWORK_DIR);
+		set_exception_handler('throw_wxexception');
+		set_error_handler('throw_wxexception', 247 );	
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
-		ConfigBase::set_instance();	
+		ConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
 

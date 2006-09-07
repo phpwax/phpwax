@@ -34,10 +34,12 @@ class ConfigBase
 	
 	function __construct() {
 		if(self::$instance) {
-			$this->cachedest="/tmp/".str_replace("/", "_", APP_DIR).'cache';
+			$this->cachedest=CACHE_DIR.'config_cache';
 	  	$this->load_config();
-			$db=$this->return_config('db');
-	  	$this->init_db($db);	
+			if(!WXActiveRecord::getDefaultPDO()) {
+				$db=$this->return_config('db');
+	  		$this->init_db($db);	
+			}
 		}
 	}
 	
@@ -90,21 +92,18 @@ class ConfigBase
 	/* Sets up the database connection
 	 * 
 	 */
-	public function init_db($db)
-	{
+	public function init_db($db) {
 		if(isset($db['socket']) && strlen($db['socket'])>2) {
 			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
-		} else {
-			$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
+			} else {
+				$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
 		}
-	  try {
-	  	$adapter=$db['dbtype'];
-	    $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-	    ActiveRecordPDO::setDefaultPDO( $pdo );
-	    ActiveRecordPDO::setDBAdapter($adapter);
+		$adapter=$db['dbtype'];
+		try {
+	  	$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
 			WXActiveRecord::setDefaultPDO($pdo);
-    } catch(Exception $e) {
-    	throw new Exception("Cannot Initialise DB");
+  		} catch(Exception $e) {
+    		throw new WXException("Cannot Initialise DB", "Database Configuration Error");
     }
 	}
 	

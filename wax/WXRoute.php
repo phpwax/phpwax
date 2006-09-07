@@ -16,7 +16,7 @@
  * This class fetches the URL parameters from $_GET
  * It also requires access to the config object to check configurations.
  **/
-class WXRoute
+class WXRoute extends ApplicationBase
 {
 	protected $route_array=array();
 	protected $config_array=array();
@@ -34,45 +34,30 @@ class WXRoute
     *  Constructs a route from the url
     *  @return string      The Controller
     */
-	public function make_controller_route()
-	{
-	   $route_array=$this->route_array;
-	   $tempController=$route_array[0];
-	   $controllerDir=APP_DIR."/controller/";
-	  try
-	  {
-   	   switch(TRUE)
-   	   {
-   	      case $this->check_controller($controllerDir.$tempController."_controller.php"):
-   	      case $this->check_controller($controllerDir.ucfirst($tempController)."Controller.php"):
-   	      $controller=$tempController; 
-   	      array_shift($route_array);
-   	      $this->actions_array=$route_array;
-   	      break;
+	public function make_controller_route() {
+	  $route_array=$this->route_array;
+	  $tempController=$route_array[0];
+	  $controllerDir=CONTROLLER_DIR;
+   	switch(TRUE) {
+ 	  	case $this->check_controller($controllerDir.ucfirst($tempController)."Controller.php"):
+ 	    $controller=$tempController; 
+ 	    array_shift($route_array);
+ 	    $this->actions_array=$route_array;
+ 	    break;
       
-   	      case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.$this->config_array['route'][$tempController]."_controller.php"):
-   	      case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
-   	      $controller=$this->config_array['route'][$tempController]; 
-   	      $this->actions_array=$route_array;
-   	      break;
+ 	    case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
+ 	    $controller=$this->config_array['route'][$tempController]; 
+ 	    $this->actions_array=$route_array;
+ 	    break;
       
-   	      case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.$this->config_array['route']['default']."_controller.php"):
-   	      case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.ucfirst($this->config_array['route']['default'])."Controller.php"):
-   	      $controller=$this->config_array['route']['default']; 
-   	      $this->actions_array=$route_array;
-   	      break;
-   	      
-   	      case isset($this->config_array['route'][$tempController]);
-   	      throw new Exception("Missing Controller - ".$this->config_array['route'][$tempController]); break;
-      
-   	      default: throw new Exception("Missing Controller - ".$tempController);      
-   	   }
-     }
-     catch(Exception $e) 
-     {
-        $this->process_exception($e);
-     }
-     return $controller;
+ 	    case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.ucfirst($this->config_array['route']['default'])."Controller.php"):
+ 	    $controller=$this->config_array['route']['default']; 
+ 	    $this->actions_array=$route_array;
+ 	    break;
+        
+   	  default: throw new WXException("Missing Controller - ".$tempController, "Controller Not Found");
+		}
+		return $controller;
 	}
 	
 	/**

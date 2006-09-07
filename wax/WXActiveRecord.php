@@ -9,28 +9,6 @@
  */
 
 /**
- *  exception class for WXActiveRecord
- */
-class WXActiveRecordException extends Exception
-{
-    function __construct( $message, $code )
-    {
-        return parent::__construct( $message, $code );
-    }
-}
-
-// exception code
-define( 'ar_construct_by_id',           0 );
-define( 'ar_construct_by_constraints',  1 );
-
-if( ! is_numeric( @PDO_FETCH_ASSOC ) )
-{
-    define( 'PDO_FETCH_ASSOC', PDO::FETCH_ASSOC );
-    define( 'PDO_PARAM_INT', PDO::PARAM_INT );
-    define( 'PDO_PARAM_STR', PDO::PARAM_STR );
-}
-
-/**
  *  active record
  *  @package wx.php.core
  */
@@ -51,9 +29,8 @@ class WXActiveRecord
      *  get default PDO instance
      *  @return object      PDO instance
      */
-    static function &getDefaultPDO()
-    {
-        return self::$default_pdo;
+    static function getDefaultPDO() {
+    	return self::$default_pdo;
     }
 
     protected $pdo = null;
