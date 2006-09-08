@@ -56,9 +56,8 @@ class WXException extends Exception
 
 class WXActiveRecordException extends WXException
 {
-    function __construct( $message, $code )
-    {
-        return parent::__construct( $message, $code );
-    }
+	function __construct( $message, $code ) {
+  	return parent::__construct( $message, $code );
+  }
 }
 ?>
