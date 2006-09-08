@@ -54,42 +54,9 @@ class WXHelpers {
             && array_key_exists($this->attribute_name,
                                  $_REQUEST[$this->object_name])) {
             $value = $_REQUEST[$this->object_name][$this->attribute_name];
-        } else {
-
-            //  Attribute value not found in $_REQUEST.  Find the
-            //  ActiveRecord subclass instance and query it.
-            $object = $this->object();
-            if(is_object($object) && $this->attribute_name) {
-                $value = $object->send($this->attribute_name);
-            }
-        }
-        return $value;
+        } 
     }
 
-    /**
-     *  Given the name of an ActiveRecord subclass, find an instance
-     *
-     *  Finds the AR instance from the ActionController instance.
-     *  Assumes that if a $object_name is defined either as the
-     *  argument or an instance variable, then there must be
-     *  a controller object instance which points to a single instance
-     *  of the ActiveRecord.
-     *  <b>FIXME:</b> Handle errors better.
-     *  @param string Name of an ActiveRecord subclass or null
-     *  @return mixed Instance of the subclass, or null if
-     *                object not available.
-     *  @uses controller_object
-     *  @uses object_name
-     */
-    protected function object($object_name = null) {
-        $object_name = $object_name ? $object_name : $this->object_name;
-        if($object_name
-           && isset($this->controller_object)
-           && isset($this->controller_object->$object_name)) {
-            return $this->controller_object->$object_name;
-        }
-        return null;
-    }   
     
     /**
      *  Convert array of tag attribute names and values to string

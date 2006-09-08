@@ -211,14 +211,7 @@ class UrlHelper extends WXHelpers {
             } else {
                 $url_base = "http://".$url_base;
             }
-            //  Insert value of Trax::$url_prefix
-            if(!is_null(Trax::$url_prefix)) {
-                $prefix = Trax::$url_prefix;
-                if($prefix{0} != "/") {
-                    $prefix = "/$prefix";
-                }
-                $url_base .= $prefix;
-            }
+
             
             //  Get controller from $options or $controller_path
             if(array_key_exists(":controller", $options)) {
@@ -313,11 +306,4 @@ function url_for($options = array()) {
     return $url_helper->url_for($options);
 }
 
-// -- set Emacs parameters --
-// Local variables:
-// tab-width: 4
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:
 ?>
