@@ -10,7 +10,6 @@ development:
   database: wax
   username: wax
   password: wax
-  socket: /usr/local/mysql5/tmp/mysql.sock
  email:  
   host: localhost
   allowed_addresses: 
@@ -24,9 +23,7 @@ test:
 
 production: 
   db: 
-    database: test
-    port: 3306
-    password: password
+    database: wax
 
 users:
   joet: password

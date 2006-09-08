@@ -103,6 +103,7 @@ class ConfigBase
 	  	$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
 			WXActiveRecord::setDefaultPDO($pdo);
   		} catch(Exception $e) {
+				echo $dsn;
     		throw new WXException("Cannot Initialise DB", "Database Configuration Error");
     }
 	}

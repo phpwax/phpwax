@@ -35,9 +35,7 @@ class WXException extends Exception
     $trace.="<h1>Application Error</h1>\n";
 		return $trace;
 	}
-	public function email_trace($e) {
-		
-	}
+
 	public function dev_giveup() {
 		header("Status: 500 Application Error");
 		echo $this->error_message;
@@ -46,7 +44,7 @@ class WXException extends Exception
 	public function prod_giveup() {
 		header("Status: 500 Application Error");
 		echo $this->simple_error_message;
-		$message=strip_tags($this->get_trace($e));
+		$message=strip_tags($this->error_message);
 		error_log($message);
 		mail("ross@webxpress.com", "Application Error on production server", $message);
 		exit;
