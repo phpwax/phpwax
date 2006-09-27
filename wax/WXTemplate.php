@@ -44,14 +44,20 @@ class WXTemplate
 	}
 	
 	public function execute() {
-		$this->content_for_layout = $this->parse($this->view_path);
+		$this->content_for_layout = $this->parse($this->view_path);	
+		
 		$this->layout_content = $this->content_for_layout;
 		if($this->layout_path) {
 			echo $this->parse($this->layout_path);
 		} else {
 			echo $this->layout_content;
 		}
+		
+		$wx = new WXCache();
+		//$wx->write_to_cache($this->parse($this->layout_path));	
 	}
+	
+  
 
 } // END class 
 ?>

@@ -78,6 +78,7 @@ class ApplicationBase
     $this->create_page($this->controller_object);
   }
 
+ 
 	/**
 	 *	Instantiates a config object and constructs the route.
 	 *  @access private
@@ -202,6 +203,7 @@ class ApplicationBase
 	
 	
 
+	
 
 	
 

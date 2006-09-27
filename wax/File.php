@@ -121,6 +121,27 @@ abstract class File {
 		return $imagearray;
 	}
 	
+	static function write_to_file($filename, $filecontents, $overwrite=true)
+	{
+  	
+  	file_put_contents($filename, $filecontents); 	
+	
+  }
+	
+  
+  static function read_from_file($filename)
+	{
+  	if(!is_readable($filename))
+  	{
+      throw new WXException("Cannot read from file - ".$filename);	
+  	}
+  	else
+  	{
+      return file_get_contents($filename);	 	
+    }
+  }
+	
+	
 	
 	
 }

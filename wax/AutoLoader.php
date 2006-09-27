@@ -13,7 +13,8 @@ define('APP_DIR', WAX_ROOT . "app");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
-define('CACHE_DIR', WAX_ROOT.'tmp/');
+define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
+define('SESSION_DIR', WAX_ROOT.'tmp/session/');
 
 function __autoload($class_name) {
 	switch(TRUE) {
