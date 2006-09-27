@@ -700,11 +700,4 @@ function pagination_range_text() {
     return call_user_func_array(array($ar_helper, 'pagination_range_text'), $args);
 }
 
-// -- set Emacs parameters --
-// Local variables:
-// tab-width: 4
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:
 ?>
