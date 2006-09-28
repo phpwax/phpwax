@@ -1,4 +1,4 @@
-php_value error_reporting 248
+php_value error_reporting 247
 php_flag display_errors on
 
 

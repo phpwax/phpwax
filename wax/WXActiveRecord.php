@@ -22,7 +22,7 @@ class WXActiveRecord
      */
     static function setDefaultPDO( $pdo )
     {
-        self::$default_pdo = $pdo;
+        return self::$default_pdo = $pdo;
     }
 
     /**

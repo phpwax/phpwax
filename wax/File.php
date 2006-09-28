@@ -121,22 +121,19 @@ abstract class File {
 		return $imagearray;
 	}
 	
-	static function write_to_file($filename, $filecontents, $overwrite=true)
-	{
-  	
-  	file_put_contents($filename, $filecontents); 	
-	
-  }
+	static function write_to_file($filename, $filecontents, $overwrite=true) {
+		if(is_writable($filename) && file_put_contents($filename, $filecontents) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
   
-  static function read_from_file($filename)
-	{
-  	if(!is_readable($filename))
-  	{
-      throw new WXException("Cannot read from file - ".$filename);	
-  	}
-  	else
-  	{
+  static function read_from_file($filename) {
+  	if(!is_readable($filename)) {
+      return false;	
+  	} else {
       return file_get_contents($filename);	 	
     }
   }

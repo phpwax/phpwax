@@ -108,7 +108,7 @@ class AssetTagHelper extends WXHelpers {
                     $sources = array_merge($this->javascript_default_sources,
                                            $sources);    
                 }                  
-                if(file_exists(Trax::$public_path. "/javascripts/application.js")) {
+                if(file_exists(SCRIPT_DIR. "application.js")) {
                     $sources[] = 'application';
                 }
                 # remove defaults from array

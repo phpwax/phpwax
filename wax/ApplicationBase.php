@@ -69,11 +69,11 @@ class ApplicationBase
    *  @return void
    */
 	function __construct() {
-		$this->load_config();
+		$this->load_config();		
 		Session::start();
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
-    $_GET=$filter->process($_GET);
+    $_GET=$filter->process($_GET);		
     $this->controller_object=$this->load_controller();
     $this->create_page($this->controller_object);
   }
@@ -116,11 +116,7 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
-	  if(class_exists($this->controller."_controller", false)) { 		
-			$controller=$this->controller."_controller";
-		} else {
-			$controller=ucfirst($this->controller)."Controller";
-		}
+	  $controller=ucfirst($this->controller)."Controller";
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
@@ -148,7 +144,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
-		$tpl=new WXTemplate;		
+		$tpl=new WXTemplate;			
 		$tpl->urlid=$cnt->action;
     foreach(get_object_vars($cnt) as $var=>$val) {
       $tpl->{$var}=$val;
@@ -159,26 +155,22 @@ class ApplicationBase
 		} else {
 			$use_view=$cnt->use_view;
 		}
-		if(strpos($use_view, '/')) { 
-			$view_path="{$use_view}.html"; 
+		if(strpos($use_view, '/')===0) { 
+			$view_path=substr("{$use_view}.html", 1); 
 		} else { 
 			$view_path=$this->controller."/".$use_view.".html"; 
 		}
 		$tpl->view_path=$view_path;
     if($cnt->use_layout) {
 			$tpl->layout_path="layouts/".$cnt->use_layout.".html";
-    } else {
-			$tpl->setTemplate(FRAMEWORK_DIR.'lib_core/empty_page.html');
-		}
-    try {
-			$page_output=$tpl->execute();
-      echo $page_output;
-			if($_GET['route']  == '/index') {
-				Session::set('referrer', $_GET['route']);
-			} else {
-				Session::set('referrer', "/".$_GET['route']);
-			}	
- 		} catch(WXException $e) {}
+    }
+		$page_output=$tpl->execute();
+    echo $page_output;
+		if($_GET['route']  == '/index') {
+			Session::set('referrer', $_GET['route']);
+		} else {
+			Session::set('referrer', "/".$_GET['route']);
+		}	
 	}
 	
 

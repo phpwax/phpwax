@@ -53,8 +53,6 @@ class WXTemplate
 			echo $this->layout_content;
 		}
 		
-		$wx = new WXCache();
-		//$wx->write_to_cache($this->parse($this->layout_path));	
 	}
 	
   

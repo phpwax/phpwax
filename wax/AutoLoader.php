@@ -15,6 +15,9 @@ define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
 define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
 define('SESSION_DIR', WAX_ROOT.'tmp/session/');
+define('PUBLIC_DIR', WAX_ROOT.'public/');
+define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
+define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 
 function __autoload($class_name) {
 	switch(TRUE) {
@@ -49,13 +52,9 @@ class AutoLoader
 	static public function include_dir($dir) {
 		$fileArray=scandir($dir);
 	  foreach($fileArray as $file) {
-			if(is_file($file) && is_readable($file)) {
-				require_once($file);
-			} else {
-				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
-					if(!require_once($dir."/".$match[0])) {
-						throw new WXException("Cannot include file - ".$include);
-					}
+			if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
+				if(!require_once($dir."/".$match[0])) {
+					throw new WXException("Cannot include file - ".$include);
 				}
 			}
 	  }
@@ -69,10 +68,11 @@ class AutoLoader
 	static public function run_application() {
 		AutoLoader::include_dir(FRAMEWORK_DIR);
 		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxexception', 247 );	
+		set_error_handler('throw_wxexception', 247 );
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
 		ConfigBase::set_instance();
+		$configFile=APP_DIR.'/config/config.yml';
 		$app=new ApplicationBase;
 	}
 

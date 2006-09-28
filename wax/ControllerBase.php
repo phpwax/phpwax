@@ -22,6 +22,13 @@ abstract class ControllerBase extends ApplicationBase
 	protected $show_messages=true;
 	protected $helpers=array();
 	public $body_js_files=array();
+	
+	/**
+	 *	An array of actions that implement caching, or 'all' to cache entire model.
+	 *	@access protected
+	 *	@var 		array
+	 */
+	protected $caches=array();
 
    
   /** Set to 0 by default this decides whether any further
@@ -82,8 +89,8 @@ abstract class ControllerBase extends ApplicationBase
 
 	protected function load_prototype()
 	{
-		$this->add_javascript('/javascript/lib/prototype.js');
-   	$this->add_javascript('/javascript/lib/scriptaculous.js');
+		$this->add_javascript(SCRIPT_DIR.'prototype.js');
+   	$this->add_javascript(SCRIPT_DIR.'scriptaculous.js');
 	}
 
 	/**
@@ -99,69 +106,62 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@param string $name
 	 *	@param string $content
  	 */   
-   protected function add_meta_content($name, $content)
-   {
-   $this->layout['meta'][$name]=$content; return true;   
-   }
+  protected function add_meta_content($name, $content) {
+   	$this->layout['meta'][$name]=$content; return true;   
+  }
 
 	/**
  	 *	Sends a header redirect, moving the app to a new url.
 	 *	@access protected
 	 *	@param string $route
  	 */   
-   public function redirect_to($route)
-   {
-   	 header("Location:$route");
-   	 exit;
-   }
+	public function redirect_to($route) {
+  	header("Location:$route");
+   	exit;
+  }
 
 	/**
  	 *	Allows overriding of the default routes.
 	 *	@access protected
 	 *	@param array $route_array
  	 */
-   protected function set_routes($route_array)
-   {
+  protected function set_routes($route_array) {
    	$this->route_array=$route_array;
-   }
+  }
 
 	/**
  	 *	Allows overriding of the default action.
 	 *	@access protected
 	 *	@param string $action
  	 */
-   protected function set_action($action)
-   {
+  protected function set_action($action) {
    	$this->action=$action;
-   }
+  }
 
 	/**
- 	 *	Renders the given view using PHPTAL and returns the html as a string.
+ 	 *	Renders the given view using WXTemplate and returns the html as a string.
 	 *	@access protected
 	 *	@param string $controller_name if not given defaults to current.
 	 *	@param string $view_name
 	 *	@param array $values Values to be passed to the template.
 	 *	@return string
  	 */
-   protected function view_to_string($controller_name=null, $view_name, $values=array())
-   {
-     $view_html='';
-     if(!$controller_name) { $controller_name=substr( $this->class_name,0,strpos($this->class_name,"_")); }
-     
-   	 try {
-				$view= new WXTemplate;
-				foreach($values as $k=>$v) {
-	   	   $view->$k=$v;
-	   	  }
-				$view_html=$view->parse_no_buffer($controller_name."/".$view_name.".html/view"); 	  
-   	 }
-   	 catch(Exception $e) {
+	protected function view_to_string($controller_name=null, $view_name, $values=array()) {
+  	$view_html='';
+    if(!$controller_name) { 
+			$controller_name=substr( $this->class_name,0,strpos($this->class_name,"_")); 
+		}
+    try {
+			$view= new WXTemplate;
+			foreach($values as $k=>$v) {
+	   		$view->$k=$v;
+	   	}
+			$view_html=$view->parse_no_buffer($controller_name."/".$view_name.".html/view"); 	  
+   	} catch(Exception $e) {
    	 	$this->process_exception($e);	
-   	 }
-   	 
-   	 
-   	 return $view_html;
-   }
+   	}
+   	return $view_html;
+	}
 
 	/**
  	 *	Renders the given form using PHPTAL, adds any errors and returns the html as a string.
@@ -213,37 +213,27 @@ abstract class ControllerBase extends ApplicationBase
 	 *	any commands will be run by all actions prior to running the action.
 	 *	@access protected
  	 */
-   protected function controller_global()
-   {
-   	
-   }
+   protected function controller_global() {}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions prior to running the action.
 	 *	@access protected
  	 */
-   protected function before_action($action)
-   {
-
-   }
+   protected function before_action($action) {}
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function after_action($action)
-   {
-
-   }
+	protected function after_action($action) {}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function filter_routes()
-   {
+	protected function filter_routes() {
 			if(array_key_exists( $this->route_array[0], $this->helpers) ) {
 				return false;
 			}

@@ -29,17 +29,19 @@ class ConfigBase
 	private $actions_array;
 	private $behaviours_array;
 	private $cachedest;
+	private $cache_length = "10000";
 	private $fromcache=false;
 	static private $instance=false;
 	
 	function __construct() {
 		if(self::$instance) {
-			$this->cachedest=CACHE_DIR.'config_cache';
+			$this->cachedest=CACHE_DIR.'config_cache';			
 	  	$this->load_config();
 			if(!WXActiveRecord::getDefaultPDO()) {
 				$db=$this->return_config('db');
+				define ('ENV', $this->return_config("environment"));
 	  		$this->init_db($db);	
-			}
+			}			
 		}
 	}
 	
@@ -54,19 +56,16 @@ class ConfigBase
     *  Loads the config.yml file
     *  @return array      sets value of $this->config_array
     */
-	private function load_config()
-	{
-		if(is_readable($this->cachedest)) {
-			$this->config_array = unserialize(file_get_contents($this->cachedest));
+	private function load_config() {
+		if($cache_out = WXCache::read_from_cache($this->cachedest) ) {
+			$this->config_array = unserialize($cache_out);
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
-	    try {
-	    	if(is_file($configFile)){
-					$this->config_array = Spyc::YAMLLoad($configFile);
-					$this->config_array=$this->merge_environments($this->config_array);		
-				} else throw new Exception("Missing Configuration file at -".APP_DIR.'config/config.yml');
-	    } catch(Exception $e) {
-				echo $e;
+	    if(is_readable($configFile)){
+				$this->config_array = Spyc::YAMLLoad($configFile);
+				$this->config_array=$this->merge_environments($this->config_array);		
+				} else {
+				throw new WXException("Missing Configuration file at -".APP_DIR.'config/config.yml');
       }
 		}	
 	}
@@ -95,17 +94,16 @@ class ConfigBase
 	public function init_db($db) {
 		if(isset($db['socket']) && strlen($db['socket'])>2) {
 			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
-			} else {
-				$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
+		} else {
+			$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
 		}
 		$adapter=$db['dbtype'];
-		try {
-	  	$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-			WXActiveRecord::setDefaultPDO($pdo);
-  		} catch(Exception $e) {
-				echo $dsn;
-    		throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+		
+		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+    	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
     }
+
 	}
 	
 	
@@ -117,26 +115,23 @@ class ConfigBase
 	
 	
 	
-	public function return_config($config=null)
-	{
+	public function return_config($config=null) {
 		$config=explode("/", $config);
 		
 		$confarray=$this->config_array;
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];
 		}
-		if($confarray) { return $confarray; }
-		else return $this->config_array;
+		if($confarray) { 
+			return $confarray; 
+		} else {
+		return $this->config_array;
+		}
 	}
 	
 	
 	private function write_to_cache() {
-		try {
-			$result=file_put_contents($this->cachedest, serialize($this->config_array));
-		} catch(Exception $e) {
-    	echo "couldn't write to cache(".$this->cachedest.")<br />";
-			echo $e;
-    }
+		return WXCache::write_to_cache($this->cachedest, serialize($this->config_array), $this->cache_length);
 	}
 	
 	function __destruct() {

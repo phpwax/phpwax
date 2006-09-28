@@ -6,12 +6,11 @@ class WXException extends Exception
 {
 	public function __construct($message, $heading, $code = "500") {
       parent::__construct($message, $code);
-			$config = new ConfigBase;
       $this->error_heading = $heading;
       $this->error_message = $this->format_trace($this);
 			$this->simple_error_message = $this->simple_error();
       $this->error_code = $code;
-			if($config->return_config("environment")=="production") {
+			if(ENV =="production") {
 				$this->prod_giveup();
 			} else {
 				$this->dev_giveup();
@@ -56,6 +55,13 @@ class WXActiveRecordException extends WXException
 {
 	function __construct( $message, $code ) {
   	return parent::__construct( $message, $code );
+  }
+}
+
+class WXPermissionsException extends WXException
+{
+	function __construct( $message, $code ) {
+  	parent::__construct( $message, get_class($this));
   }
 }
 ?>
