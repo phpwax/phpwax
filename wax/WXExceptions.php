@@ -54,14 +54,14 @@ class WXException extends Exception
 class WXActiveRecordException extends WXException
 {
 	function __construct( $message, $code ) {
-  	return parent::__construct( $message, $code );
+  	return parent::__construct( $message, "Database Error");
   }
 }
 
 class WXPermissionsException extends WXException
 {
 	function __construct( $message, $code ) {
-  	parent::__construct( $message, get_class($this));
+  	parent::__construct( $message, "File Permissions Error");
   }
 }
 ?>
