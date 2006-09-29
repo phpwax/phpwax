@@ -143,34 +143,71 @@ class ApplicationBase
 	 *  @access private
    *  @return void
    */	
-	private function create_page($cnt) {
-		$tpl=new WXTemplate;			
-		$tpl->urlid=$cnt->action;
-    foreach(get_object_vars($cnt) as $var=>$val) {
-      $tpl->{$var}=$val;
-    }
-
-		if(!$cnt->use_view) { 
-			$use_view=$this->action; 
-		} else {
-			$use_view=$cnt->use_view;
+	private function create_page($cnt) 
+	{
+  	//set this to false so files arent writen in cache
+  	$write_to_cache = false;
+  	//file name for the cache file
+   	$cache_file   = $this->controller . "_" . $cnt->action;
+  	//set to false by default so if not cached second if will generate content
+  	$page_output = false;
+  	/**
+  	*  if the action has been selected to cache within the controller 
+  	*  or the global all has been raised then pull data from the cache 
+  	*/
+  	if(in_array($cnt->action, $cnt->caches) || in_array("all", $cnt->caches) )
+  	{
+    	//turn the cache option on
+    	$write_to_cache = true;
+    	//if the cache is old then this will return false
+    	$page_output  = WXCache::read_from_cache($cache_file);
+  	}
+  	
+  	
+  	//if the page_content is still false then create the content  	
+  	if(!$page_output)
+  	{
+  		$tpl=new WXTemplate;			
+  		$tpl->urlid=$cnt->action;
+      foreach(get_object_vars($cnt) as $var=>$val) {
+        $tpl->{$var}=$val;
+      }
+  
+  		if(!$cnt->use_view) { 
+  			$use_view=$this->action; 
+  		} else {
+  			$use_view=$cnt->use_view;
+  		}
+  		if(strpos($use_view, '/')===0) { 
+  			$view_path=substr("{$use_view}.html", 1); 
+  		} else { 
+  			$view_path=$this->controller."/".$use_view.".html"; 
+  		}
+  		$tpl->view_path=$view_path;
+      if($cnt->use_layout) {
+  			$tpl->layout_path="layouts/".$cnt->use_layout.".html";
+      }
+  		$page_output=$tpl->execute();
 		}
-		if(strpos($use_view, '/')===0) { 
-			$view_path=substr("{$use_view}.html", 1); 
-		} else { 
-			$view_path=$this->controller."/".$use_view.".html"; 
-		}
-		$tpl->view_path=$view_path;
-    if($cnt->use_layout) {
-			$tpl->layout_path="layouts/".$cnt->use_layout.".html";
-    }
-		$page_output=$tpl->execute();
+	
     echo $page_output;
+    
+    /**
+     *  if the cache has expired and either the all global 
+     *  cache or this action has be set to cache then write
+     *  the result to the cache
+     */    
+    if($write_to_cache)
+    {
+      WXCache::write_to_cache($page_output, $cache_file); 
+    }
+    
 		if($_GET['route']  == '/index') {
 			Session::set('referrer', $_GET['route']);
 		} else {
 			Session::set('referrer', "/".$_GET['route']);
-		}	
+		}
+				
 	}
 	
 

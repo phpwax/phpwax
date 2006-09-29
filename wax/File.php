@@ -121,11 +121,11 @@ abstract class File {
 		return $imagearray;
 	}
 	
-	static function write_to_file($filename, $filecontents, $overwrite=true) {
-		if(is_writable($filename) && file_put_contents($filename, $filecontents) ) {
-			return true;
-		} else {
+	static function write_to_file($filename, $filecontents) {
+		if(! $res = file_put_contents($filename, $filecontents) ) {
 			return false;
+		} else {
+			return true;
 		}
 	}
 	

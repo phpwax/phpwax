@@ -35,7 +35,7 @@ class ConfigBase
 	
 	function __construct() {
 		if(self::$instance) {
-			$this->cachedest=CACHE_DIR.'config_cache';			
+			$this->cachedest='config_cache';			
 	  	$this->load_config();
 			if(!WXActiveRecord::getDefaultPDO()) {
 				$db=$this->return_config('db');
@@ -130,12 +130,14 @@ class ConfigBase
 	}
 	
 	
-	private function write_to_cache() {
-		return WXCache::write_to_cache($this->cachedest, serialize($this->config_array), $this->cache_length);
+	private function write_to_cache() 
+	{
+		return WXCache::write_to_cache(serialize($this->config_array), $this->cachedest, $this->cache_length);
 	}
 	
 	function __destruct() {
-		if(!file_exists($this->cachedest)) {
+		if(!file_exists($this->cachedest)) 
+		{
 			$this->write_to_cache();
 		}
 		if(is_writable($this->cachedest) && File::is_older_than($this->cachedest, 36000)) {

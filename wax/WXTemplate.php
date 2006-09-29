@@ -48,9 +48,9 @@ class WXTemplate
 		
 		$this->layout_content = $this->content_for_layout;
 		if($this->layout_path) {
-			echo $this->parse($this->layout_path);
+			return $this->parse($this->layout_path);
 		} else {
-			echo $this->layout_content;
+			return $this->layout_content;
 		}
 		
 	}
