@@ -81,8 +81,7 @@ class WXCache extends ApplicationBase
     * returns true on success
     */  
   static function clear_from_cache($filename) 
-  {    
-    
+  {     
     $filename = CACHE_DIR.$filename;
     if(is_readable($filename))
     {
@@ -104,8 +103,7 @@ class WXCache extends ApplicationBase
      $files = glob(CACHE_DIR . "*");
      foreach($files as $k => $filename)
      {
-      $filename = str_replace(CACHE_DIR, "", $filename);
-      WXCache::clear_from_cache($filename);  
+      @unlink($filename); 
      } 
   }
 	

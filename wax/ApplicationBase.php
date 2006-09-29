@@ -194,7 +194,7 @@ class ApplicationBase
     
     /**
      *  if the cache has expired and either the all global 
-     *  cache or this action has be set to cache then write
+     *  cache or this action has been set to cache then write
      *  the result to the cache
      */    
     if($write_to_cache)
