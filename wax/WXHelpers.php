@@ -68,7 +68,16 @@ class WXHelpers {
       $name       = $this->object_name;
       $attribute  = $this->attribute_name;      
       $data       = array_merge($_REQUEST, $_SESSION);
-      $request    = $data[$name];
+      //if the object name is present then get the matching info
+      if(!empty($name))
+      {
+        $request   = $data[$name];
+      }
+      //otherwise just use the full data array
+      else
+      {
+        $request   = $data;  
+      }
 
       if(isset($request[$attribute]))
       {

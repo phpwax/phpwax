@@ -123,8 +123,9 @@ class FormOptionsHelper extends FormHelper {
     function to_select_tag($choices, $options) 
     {           
         $options = $this->add_default_name_and_id_and_value($options);
-        $options['value'] = $this->options_for_select($choices, $this->get_value());
-        return $this->content_tag("select",$options['value'],$options);           
+        $content = $this->options_for_select($choices, $this->get_value());
+        unset($options['value']);
+        return $this->content_tag("select",$content,$options);           
     }  
 
   
@@ -174,7 +175,11 @@ function select($object, $field, $choices, $options = array())
     return $form->to_select_tag($choices, $options);
 }
 
-
+function label_select($object, $field, $choices, $options = array(), $label_name="") 
+{
+    
+  return make_label($object, $field, $label_name) . select($object, $field, $choices, $options) ; 
+}
 /**
  *  Create a new FormOptionsHelper object and call its to_country_select_tag() method
  *
@@ -190,6 +195,11 @@ function country_select($object, $field, $options = array())
     return $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
 }
 
+function label_country_select($object, $field, $options = array(), $label_name="") 
+{
+    
+  return make_label($object, $field, $label_name) . country_select($object, $field, $options) ; 
+}
 
 // -- set Emacs parameters --
 // Local variables:
