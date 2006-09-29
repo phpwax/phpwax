@@ -111,152 +111,23 @@ class FormOptionsHelper extends FormHelper {
         return implode("\n", $options);
     }
     
-    /**
-     *  Returns a string of option tags that have been compiled by
-     *  iterating over the +collection+ and assigning the result of a
-     *  call to the +value_method+ as the option value and the
-     *  +text_method+ as the option text. If +selected_value+ is
-     *  specified, the element returning a match on +value_method+ will
-     *  get the selected option tag. 
-     *
-     *  Example (call, result). Imagine a loop iterating over each
-     *  +person+ in <tt>@project.people</tt> to generate an input tag: 
-     *   options_from_collection_for_select(@project.people, "id", "name")
-     *     <option value="#{person.id}">#{person.name}</option>
-     *
-     *  NOTE: Only the option tags are returned, you have to wrap this call
-     *  in a regular HTML select tag. 
-     *  @todo Document this method
-     */
-    function options_from_collection_for_select($collection, $attribute_value,
-                                                $attribute_text,
-                                                $selected_value = null) {
-        $options = array();
-        if(is_array($collection)) {
-            foreach($collection as $object) {
-                if(is_object($object)) {
-                    $options[$object->send($attribute_value)] =
-                        $object->send($attribute_text);            
-                }
-            }    
-        }       
-        return $this->options_for_select($options, $selected_value);
-    }
-    
-    /**
-     *  Generate HTML options for world countries
-     *
-     *  @param integer  Array key of country initially selected
-     *  NOTE: Only the option tags are returned, you have to wrap this
-     *  call in a regular HTML select tag.
-     *  @todo <b>FIXME:</b> Second argument doesn't work
-     */
-    function country_options_for_select($selected = null,
-					$priority_countries = array()) {
-        $country_options = "";
-        
-        if(count($priority_countries)) {
-            $country_options .= $this->options_for_select($priority_countries,
-							  $selected);
-            $country_options .= "<option value=\"\">-------------</option>\n";
-            foreach($priority_countries as $country) { 
-                unset($GLOBALS['COUNTRIES'][array_search($country,
-						     $GLOBALS['COUNTRIES'])]);
-            }
-        }
-        
-        $country_options .= $this->options_for_select($GLOBALS['COUNTRIES'],
-						      $selected);
- 
-        return $country_options;
-    }
+   
     
     /**
      *  @todo Document this method
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      *  @uses add_options()
      *  @uses content_tag()
      *  @uses value()
      */
-    function to_select_tag($choices, $options, $html_options) {
-        $html_options = $this->add_default_name_and_id($html_options);
-        return $this->content_tag(
-             "select",
-             $this->add_options(
-                       $this->options_for_select($choices, $this->value()),
-                       $options,
-                       $this->value()),
-             $html_options);
-    }
-    
-    /**
-     *  @todo Document this method
-     *
-     *  @uses add_default_name_and_id()
-     *  @uses add_options()
-     *  @uses content_tag()
-     *  @uses options_from_collection_for_select()
-     *  @uses value()
-     */
-    function to_collection_select_tag($collection, $attribute_value,
-                                      $attribute_text, $options,
-                                      $html_options) {
-        $html_options = $this->add_default_name_and_id($html_options);
-        return $this->content_tag(
-          "select",
-          $this->add_options(
-            $this->options_from_collection_for_select($collection,
-                                                      $attribute_value,
-                                                      $attribute_text,
-                                                      $this->value()),
-            $options,
-            $this->value()),
-         $html_options);
-    }
-    
-    /**
-     *  @todo Document this method
-     *
-     *  @uses add_default_name_and_id()
-     *  @uses add_options()
-     *  @uses content_tag()
-     *  @uses value
-     */
-    function to_country_select_tag($priority_countries,
-                                   $options, $html_options) {
-        $html_options = $this->add_default_name_and_id($html_options);
-        return $this->content_tag(
-                "select",
-                $this->add_options(
-                        $this->country_options_for_select($this->value(),
-                                                          $priority_countries),
-                        $options,
-                        $this->value),
-                $html_options);
-    }
+    function to_select_tag($choices, $options) 
+    {           
+        $options = $this->add_default_name_and_id_and_value($options);
+        $options['value'] = $this->options_for_select($choices, $this->get_value());
+        return $this->content_tag("select",$options['value'],$options);           
+    }  
 
-    /**
-     *  @todo Document this method
-     *
-     *  @param string
-     *  @param string[]
-     *  @param string
-     *  @todo <b>FIXME:</b> Why the third argument?  It's overwritten!
-     *  @uses value()
-     */
-    private function add_options($option_tags, $options, $value = null) {
-        if(array_key_exists("include_blank", $options)
-           && $options["include_blank"] == true) {
-            $option_tags = "<option value=\"\"></option>\n" . $option_tags;
-        } 
-        $value = $this->value();
-        if(empty($value) && array_key_exists('prompt', $options)) {
-            $text = $options['prompt'] ? $options['prompt'] : "Please select";
-            return ("<option value=\"\">$text</option>\n" . $option_tags);
-        } else {
-            return $option_tags;
-        }        
-    }
+  
 }
 
 /**
@@ -295,43 +166,14 @@ class FormOptionsHelper extends FormHelper {
  *  generate form inputs for both edit and create forms. 
  *  @todo Document this function
  */
-function select($object_name, $attribute_name, $choices,
-		$options = array(), $html_options = array()) {
-    $form = new FormOptionsHelper($object_name, $attribute_name);
-    return $form->to_select_tag($choices, $options, $html_options);
+function select($object, $field, $choices, $options = array()) 
+{
+    $form             = new FormOptionsHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;     
+    return $form->to_select_tag($choices, $options);
 }
 
-/**
- *  Create a new FormOptionsHelper object and call its to_collection_select_tag() method
- *
- * Return select and option tags for the given object and method using 
- * options_from_collection_for_select to generate the list of option tags.
- *
- * Example with $post->person_id => 1:
- *   $person = new Person;
- *   $people = $person->find_all();
- *   collection_select("post", "person_id", $people, "id", "first_name", array("include_blank" => true))
- *
- * could become:
- *
- *   <select name="post[person_id]">
- *     <option></option>
- *     <option value="1" selected="selected">David</option>
- *     <option value="2">Sam</option>
- *     <option value="3">Tobias</option>
- *   </select>
- *
- *  @todo Document this function
- *  @uses FormOptionsHelper::to_collection_select_tag()
- */
-function collection_select($object_name, $attribute_name, $collection,
-                           $attribute_value, $attribute_text,
-                           $options = array(), $html_options = array()) {
-    $form = new FormOptionsHelper($object_name, $attribute_name);
-    return $form->to_collection_select_tag($collection, $attribute_value,
-                                           $attribute_text, $options,
-                                           $html_options);
-}
 
 /**
  *  Create a new FormOptionsHelper object and call its to_country_select_tag() method
@@ -340,22 +182,14 @@ function collection_select($object_name, $attribute_name, $collection,
  *  @todo Document this function
  *  @uses FormOptionsHelper::country_select()
  */
-function country_select($object_name, $attribute_name, $priority_countries = null, $options = array(), $html_options = array()) {
-    $form = new FormOptionsHelper($object_name, $attribute_name);
-    return $form->to_country_select_tag($priority_countries, $options, $html_options);
+function country_select($object, $field, $options = array())  
+{
+    $form             = new FormOptionsHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;     
+    return $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
 }
 
-/**
- *  Create a new FormOptionsHelper object and call its options_for_select() method
- *
- *  @param string[]  List of choices
- *  @param integer   Index of the selected choice
- *  @uses FormOptionsHelper::options_for_select()
- */
-function options_for_select($choices, $selected = null) {
-    $form = new FormOptionsHelper();
-    return $form->options_for_select($choices, $selected);    
-}
 
 // -- set Emacs parameters --
 // Local variables:

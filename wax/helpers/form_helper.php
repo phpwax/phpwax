@@ -36,6 +36,9 @@ class FormHelper extends WXHelpers {
      */
     private $default_date_options = array();
 
+    
+    private $errors = array();
+    
     /**
      *  @todo Document this method
      *  @uses default_date_options
@@ -43,9 +46,13 @@ class FormHelper extends WXHelpers {
      *  @uses default_radio_options
      *  @uses default_text_area_options
      */
-    function __construct($object_name, $attribute_name) {
+    function __construct($object_name, $attribute_name) 
+    {
         parent::__construct($object_name, $attribute_name);
-
+                
+        $this->object_name    = $object_name;        
+        $this->attribute_name = $attribute_name;
+        
         //  Set default attributes for input fields
         $this->default_field_options = 
             array_key_exists('DEFAULT_FIELD_OPTIONS',$GLOBALS)
@@ -71,6 +78,9 @@ class FormHelper extends WXHelpers {
             : array(":discard_type" => true);
     }
 
+      
+    
+    
     /**
      *  @todo Document this method
      */
@@ -108,7 +118,12 @@ class FormHelper extends WXHelpers {
      *  @uses tag_id_with_index()
      *  @uses tag_name_with_index()
      */
-    function add_default_name_and_id($options) {  	
+    function add_default_name_and_id_and_value($options) 
+    {  	
+        if(!array_key_exists("value", $options))
+        {
+          $options['value'] = $this->get_value();
+        }
        	if(array_key_exists("index", $options)) {
             $options["name"] = array_key_exists("name", $options)
                 ? $options["name"]
@@ -146,7 +161,7 @@ class FormHelper extends WXHelpers {
      *  @return string
      *   <samp><input type="</samp><i>type</i>
      *   <samp>" maxlength="</samp><i>maxlength</i><samp>" .../>\n</samp>
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      *  @uses attribute_name
      *  @uses error_wrapping
      *  @uses default_field_options
@@ -154,108 +169,98 @@ class FormHelper extends WXHelpers {
      *  @uses tag()
      *  @uses value()
      */
-    function to_input_field_tag($field_type, $options = array()) {
+    function to_input_field_tag($field_type, $options = array()) 
+    {
+      
         $default_size = array_key_exists("maxlength", $options)
             ? $options["maxlength"] : $this->default_field_options['size'];
+               
         $options["size"] = array_key_exists("size", $options)
             ? $options["size"]: $default_size;
+            
         $options = array_merge($this->default_field_options, $options);
-        if($field_type == "hidden") {
+
+        if($field_type == "hidden") 
+        {
             unset($options["size"]);
         }
-        $options["type"] = $field_type;
-        if($field_type != "file") {
-            $options["value"] = array_key_exists("value", $options)
-                ? $options["value"] : $this->value();
-        }
-        $options = $this->add_default_name_and_id($options);
-        return $this->error_wrapping(
-                     $this->tag("input", $options),
-                     @array_key_exists($this->attribute_name,
-                                      $this->object()->errors)
-                     ? true : false);
+        $options["type"] = $field_type;  
+                
+        $options = $this->add_default_name_and_id_and_value($options);
+        
+        return $this->tag("input", $options);           
+       
     }
 
     /**
      *  @todo Document this method
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      */
-    function to_radio_button_tag($tag_value, $options = array()) {
-        $options = array_merge($this->default_radio_options, $options);
-        $options["type"] = "radio";
-        $options["value"] = $tag_value;
-        if($this->value() == $tag_value) {
-            $options["checked"] = "checked";
-        }
-        $pretty_tag_value = preg_replace('/\s/', "_", preg_replace('/\W/', "", strtolower($tag_value)));
-        $options["id"] = $this->auto_index ?
-            "{$this->object_name}_{$this->auto_index}_{$this->attribute_name}_{$pretty_tag_value}" :
-            "{$this->object_name}_{$this->attribute_name}_{$pretty_tag_value}";
-        $options = $this->add_default_name_and_id($options);
-        return $this->error_wrapping($this->tag("input", $options),$this->object()->errors[$this->attribute_name]);
+    function to_radio_button_tag($tag_value, $options = array() ) 
+    {
+       $options["type"] = "radio";
+        
+        if($this->get_value() == $tag_value)
+        {        
+          $options["checked"] = "checked";          
+        } 
+        else 
+        {
+            unset($options["checked"]);
+        }        
+
+        $options = $this->add_default_name_and_id_and_value($options);
+        $options['value'] = $tag_value;        
+        return $this->tag("input", $options);
     }
 
     /**
      *  @todo Document this method
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      */
-    function to_text_area_tag($options = array()) {
-        if (array_key_exists("size", $options)) {
+    function to_text_area_tag($options = array()) 
+    {
+        if (array_key_exists("size", $options)) 
+        {
             $size = explode('x', $options["size"]);
             $options["cols"] = reset($size);
             $options["rows"] = end($size);
             unset($options["size"]);
         }
         $options = array_merge($this->default_text_area_options, $options);
-        $options = $this->add_default_name_and_id($options);
-        return $this->error_wrapping(
-           $this->content_tag("textarea",
-                              htmlspecialchars($this->value()),
-                              $options),
-           array_key_exists($this->attribute_name,$this->object()->errors)
-           ? $this->object()->errors[$this->attribute_name] : false);
+        $options = $this->add_default_name_and_id_and_value($options);
+        
+        return $this->content_tag("textarea", htmlspecialchars($options['value']),$options);
+           
     }
 
     /**
      *  @todo Document this method
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      */
-    function to_check_box_tag($options = array(), $checked_value = "1", $unchecked_value = "0") {
+    function to_check_box_tag($options = array(), $checked_value = "1", $unchecked_value = "1") {
         $options["type"] = "checkbox";
-        $options["value"] = $checked_value;
-        switch(gettype($this->value())) {
-            case 'boolean':
-                $checked = $this->value();
-                break;
-            case 'NULL':
-                $checked = false;
-                break;
-            case 'integer':
-                $checked = ($this->value() != 0);
-                break;
-            case 'string':
-                $checked = ($this->value() == $checked_value);
-                break;
-            default:
-                $checked = ($this->value() != 0);
-        }
-
-        if ($checked || $options["checked"] == "checked") {
-            $options["checked"] = "checked";
-        } else {
+        
+        if($this->get_value() == $checked_value)
+        {        
+          $options["checked"] = "checked";          
+        } 
+        else 
+        {
             unset($options["checked"]);
-        }
+        }        
 
-        $options = $this->add_default_name_and_id($options);
-        return $this->error_wrapping($this->tag("input", $options) . $this->tag("input", array("name" => $options["name"], "type" => "hidden", "value" => $unchecked_value)),$this->object()->errors[$this->attribute_name]);
+        $options = $this->add_default_name_and_id_and_value($options);
+        $options['value'] = $checked_value;        
+        return $this->tag("input", $options);
     }
 
     /**
      *  @todo Document this method
-     *  @uses add_default_name_and_id()
+     *  @uses add_default_name_and_id_and_value()
      */
     function to_boolean_select_tag($options = array()) {
-        $options = $this->add_default_name_and_id($options);
+        $options = $this->add_default_name_and_id_and_value($options);
         $tag_text = "<select ";
         $tag_text .= $this->tag_options($options);
         $tag_text .= ">\n";
@@ -270,22 +275,22 @@ class FormHelper extends WXHelpers {
         }
         $tag_text .= ">True</option>\n";
         $tag_text .= "</select>\n";
-        return $this->error_wrapping($tag_text,$this->object()->errors[$this->attribute_name]);;
+        return $tag_text;
     }
     
-    /**
+    /** NOT BEING USED AT THE MOMENT
      *  If this tag has an error, wrap it with a visual indicator
      *
      *  @param string HTML to be wrapped
      *  @param boolean  true=>error, false=>no error
      *  @return string
-     */
+     
     function error_wrapping($html_tag, $has_error) {
         return ($has_error
                 ? '<span class="fieldWithErrors">' . $html_tag . '</span>'
                 : $html_tag);
     }    
-
+  */
 }
 
 
@@ -301,8 +306,11 @@ class FormHelper extends WXHelpers {
  *    <samp>array('attr1' => 'value1'[, 'attr2' => 'value2']...)</samp>
  *  @uses FormHelper::to_input_field_tag()
  */
-function text_field($object, $field, $options = array()) {
-    $form = new FormHelper($object, $field);
+function text_field($object, $field, $options = array()) 
+{
+    $form             = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;    
     return $form->to_input_field_tag("text", $options);
 }
 
@@ -314,6 +322,8 @@ function text_field($object, $field, $options = array()) {
  */
 function password_field($object, $field, $options = array()) {
     $form = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;    
     return $form->to_input_field_tag("password", $options);
 }
 
@@ -325,6 +335,8 @@ function password_field($object, $field, $options = array()) {
  */
 function hidden_field($object, $field, $options = array()) {
     $form = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;    
     return $form->to_input_field_tag("hidden", $options);
 }
 
@@ -332,8 +344,11 @@ function hidden_field($object, $field, $options = array()) {
  * Works just like text_field, but returns a input tag of the "file" type instead, which won't have any default value.
  *  @uses FormHelper::to_input_field_tag()
  */
-function file_field($object, $field, $options = array()) {
+function file_field($object, $field, $options = array()) 
+{
     $form = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;  
     return $form->to_input_field_tag("file", $options);
 }
 
@@ -342,8 +357,11 @@ function file_field($object, $field, $options = array()) {
  *  Result: <textarea cols="20" rows="40" id="post_body" name="post[body]">$post->body</textarea>
  *  @uses FormHelper::to_text_area_tag()
  */
-function text_area($object, $field, $options = array()) {
+function text_area($object, $field, $options = array()) 
+{
     $form = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;  
     return $form->to_text_area_tag($options);
 }
 
@@ -368,8 +386,11 @@ function text_area($object, $field, $options = array()) {
  *     <input name="puppy[gooddog]" type="hidden" value="no" />
    *  @uses FormHelper::to_check_box_tag()
  */
-function check_box($object, $field, $options = array(), $checked_value = "1", $unchecked_value = "0") {
+function check_box($object, $field, $options = array(), $checked_value = "1", $unchecked_value = "0") 
+{
     $form = new FormHelper($object, $field);
+    $options['name']  = $object . "[" . $field . "]" ;
+    $options['id']    = $object . "_" . $field;  
     return $form->to_check_box_tag($options, $checked_value, $unchecked_value);
 }
 

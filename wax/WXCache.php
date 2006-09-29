@@ -31,6 +31,8 @@ class WXCache extends ApplicationBase
 		//return that cache has been written successfully 
 		else 
 		{
+  		//ensure the file is chmod correctly to allow for overwriting 
+  		system("chmod 777 $filename");
 		  return true;
 		}
   }

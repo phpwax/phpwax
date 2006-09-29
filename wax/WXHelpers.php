@@ -39,6 +39,7 @@ class WXHelpers {
     	
     }
 
+  
     /**
      *  Get value of current attribute in the current ActiveRecord object
      *
@@ -49,14 +50,36 @@ class WXHelpers {
      *  @uses object_name
      *  @uses ActiveRecord::send()
      */
-    protected function value() {
+    protected function value() 
+    {
         if (array_key_exists($this->object_name, $_REQUEST)
             && array_key_exists($this->attribute_name,
                                  $_REQUEST[$this->object_name])) {
             $value = $_REQUEST[$this->object_name][$this->attribute_name];
         } 
     }
+    
+    /**
+     *  Replacement for value. Merges the session information and posted
+     *  
+     */
+    protected function get_value()
+    {
+      $name       = $this->object_name;
+      $attribute  = $this->attribute_name;      
+      $data       = array_merge($_REQUEST, $_SESSION);
+      $request    = $data[$name];
 
+      if(isset($request[$attribute]))
+      {
+        return $request[$attribute];  
+      }
+      else
+      {
+        return "";  
+      }
+     
+    }
     
     /**
      *  Convert array of tag attribute names and values to string
@@ -144,10 +167,12 @@ class WXHelpers {
      *  @return string The generated tag, followed by "\n"
      *  @uses tag_options()
      */
-    function tag($name, $options = array(), $open = false) {
+    function tag($name, $options = array(), $open = false) 
+    {
         $html = "<$name ";
         $html .= $this->tag_options($options);
         $html .= $open ? ">" : " />";
+        
         return $html."\n";
     }
 
