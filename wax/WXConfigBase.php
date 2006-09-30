@@ -129,8 +129,6 @@ class WXConfigBase
 	
 	private function write_to_cache() {
 		if($this->return_config("cache_config")) {
-			ApplicationBase::inspect( $this->return_config("cache_config") );
-			exit;
 			return WXCache::write_to_cache(serialize($this->config_array), $this->cachedest, $this->cache_length);
 		}
 	}
