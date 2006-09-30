@@ -143,30 +143,23 @@ class ApplicationBase
 	 *  @access private
    *  @return void
    */	
-	private function create_page($cnt) 
-	{
-  	//set this to false so files arent writen in cache
+	private function create_page($cnt) {
   	$write_to_cache = false;
-  	//file name for the cache file
    	$cache_file   = $this->controller . "_" . $cnt->action;
-  	//set to false by default so if not cached second if will generate content
   	$page_output = false;
   	/**
   	*  if the action has been selected to cache within the controller 
   	*  or the global all has been raised then pull data from the cache 
   	*/
-  	if(in_array($cnt->action, $cnt->caches) || in_array("all", $cnt->caches) )
-  	{
-    	//turn the cache option on
-    	$write_to_cache = true;
-    	//if the cache is old then this will return false
-    	$page_output  = WXCache::read_from_cache($cache_file);
+  	if(in_array($cnt->action, $cnt->caches) || in_array("all", $cnt->caches) ) {
+			if($this->fetch_config("cache_actions")) {
+    		$write_to_cache = true;
+    		$page_output  = WXCache::read_from_cache($cache_file);
+			}
   	}
-  	
-  	
-  	//if the page_content is still false then create the content  	
-  	if(!$page_output)
-  	{
+  		
+  	//if there's no page_content then create it 	
+  	if(!$page_output) {
   		$tpl=new WXTemplate;			
   		$tpl->urlid=$cnt->action;
       foreach(get_object_vars($cnt) as $var=>$val) {
@@ -197,8 +190,7 @@ class ApplicationBase
      *  cache or this action has been set to cache then write
      *  the result to the cache
      */    
-    if($write_to_cache)
-    {
+    if($write_to_cache) {
       WXCache::write_to_cache($page_output, $cache_file); 
     }
     

@@ -7,7 +7,7 @@
  * @package wx.php.core
  *	Email class gives a comprehensive API for sending emails.
  */
-class Email extends ApplicationBase
+class WXEmail
 {
 
     /**

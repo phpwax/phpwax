@@ -87,21 +87,8 @@ abstract class ControllerBase extends ApplicationBase
 		$this->body_js_files[]=$file;
 	}
 
-	protected function load_prototype()
-	{
-		$this->add_javascript(SCRIPT_DIR.'prototype.js');
-   	$this->add_javascript(SCRIPT_DIR.'scriptaculous.js');
-	}
-
 	/**
- 	 *	Adds custom layout variables which are passed onto the PHPTAL template.
-	 *	@access protected
-	 *	@param string $name
-	 *	@param mixed $value
- 	 */
-
-	/**
- 	 *	Adds custom meta data which are passed onto the PHPTAL template.
+ 	 *	Adds custom meta data which are passed onto the template.
 	 *	@access protected
 	 *	@param string $name
 	 *	@param string $content
@@ -146,49 +133,21 @@ abstract class ControllerBase extends ApplicationBase
 	 *	@param array $values Values to be passed to the template.
 	 *	@return string
  	 */
-	protected function view_to_string($controller_name=null, $view_name, $values=array()) {
+	protected function view_to_string($view_path, $values=array()) {
   	$view_html='';
     if(!$controller_name) { 
 			$controller_name=substr( $this->class_name,0,strpos($this->class_name,"_")); 
 		}
-    try {
-			$view= new WXTemplate;
-			foreach($values as $k=>$v) {
-	   		$view->$k=$v;
-	   	}
-			$view_html=$view->parse_no_buffer($controller_name."/".$view_name.".html/view"); 	  
-   	} catch(Exception $e) {
-   	 	$this->process_exception($e);	
-   	}
-   	return $view_html;
+		$view= new WXTemplate("preserve");
+		foreach($values as $k=>$v) {
+	  	$view->$k=$v;
+	  }
+		if($view_html=$view->parse($view_path.".html") ) {  
+   		return $view_html;
+		} else {
+			throw new WXException("Couldn't find file ".$controller_name."/".$view_name.".html", "Missing Template");
+		}
 	}
-
-	/**
- 	 *	Renders the given form using PHPTAL, adds any errors and returns the html as a string.
-	 *	@access protected
-	 *	@param string $form
-	 *	@param array $values Values to be passed to the template.
-	 *	@param $noerrors Defaults to null. If set errors will not be automatically prepended.
-	 *	@return string
-	 *  @deprecated
- 	 */   
-   protected function form_to_string($form, $values=array() )
-   {
-     try
-   	 {
-   	  $view=new PHPTAL(APP_DIR.'view/forms/'.$form.".html");
-   	  foreach($values as $k=>$v)
-   	  {
-   	   $view->$k=$v;
-   	  }
-   	  $view_html.=$view->execute();
-   	 }
-   	 catch(Exception $e)
-   	 {
-   	 $this->process_exception($e);	
-   	 }
-   	 return $view_html;
-   }
 
 	/**
  	 *	Adds a message that will be displayed to the user on the next screen.
@@ -202,12 +161,7 @@ abstract class ControllerBase extends ApplicationBase
 			return false;
 		}
 	}
-	
-	public function add_helper($url, $helperfile) {
-		$this->helpers[strtolower($url)]=$helperfile;
-	}
-	
-	
+
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions prior to running the action.
@@ -248,19 +202,6 @@ abstract class ControllerBase extends ApplicationBase
 	 * @return void
 	 **/	
 	function __call($method, $args) {
-		$helperresult=false;
-		$arg1=$this->route_array[0];
-		array_shift($this->route_array);
-		$_GET['route']=$this->route_array;
-		
-		if(array_key_exists( $method, $this->helpers)) {
-			$helper=$this->helpers[$method];
-			$helper= new $helper;
-			$method = new ReflectionMethod($helper, $arg1);
-			if($method->isPublic()) {
-				$helperresult=$helper->{$arg1}();
-			}
-		}
 		if(!$helperresult) {
 			if(method_exists($this, 'missing_action')) {
 				$this->missing_action(); exit;
