@@ -56,8 +56,8 @@ class ConfigBase
     *  Loads the config.yml file
     *  @return array      sets value of $this->config_array
     */
-	private function load_config() {
-		if($cache_out = WXCache::read_from_cache($this->cachedest) ) {
+	private function load_config() {	
+		if($this->return_config("cache_config") && $cache_out = WXCache::read_from_cache($this->cachedest) ) {
 			$this->config_array = unserialize($cache_out);
 		} else { 
 	  	$configFile=APP_DIR.'/config/config.yml';
@@ -72,20 +72,18 @@ class ConfigBase
 	
 	public function merge_environments($config_array) {
 		$environment=$config_array['environment'];
-	   foreach($config_array['development'] as $key=>$value)
-	       {
-	        $config_array[$key]=$value;  
-	       }
+	  foreach($config_array['development'] as $key=>$value) {
+	  	$config_array[$key]=$value;  
+	  }
 	
-	   foreach($config_array[$environment] as $key=>$value)
-	       {
-	        if(is_array($value)) { $config_array[$key]=array_merge($config_array[$key], $value); }
-					else { $config_array[$key]=$value; }
-	       } 
-      unset($config_array['development']);
-      unset($config_array['test']);
-      unset($config_array['production']);
-			return $config_array;
+	  foreach($config_array[$environment] as $key=>$value) {
+	  	if(is_array($value)) { $config_array[$key]=array_merge($config_array[$key], $value); }
+			else { $config_array[$key]=$value; }
+	  } 
+    unset($config_array['development']);
+    unset($config_array['test']);
+    unset($config_array['production']);
+		return $config_array;
 	}
 	
 	/* Sets up the database connection
@@ -112,12 +110,11 @@ class ConfigBase
     *  @return array      remaining actions
     */
 	
-	
-	
-	
 	public function return_config($config=null) {
+		if($config=="all") {
+			return $this->config_array;
+		}
 		$config=explode("/", $config);
-		
 		$confarray=$this->config_array;
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];
@@ -125,19 +122,21 @@ class ConfigBase
 		if($confarray) { 
 			return $confarray; 
 		} else {
-		return $this->config_array;
+		  return false;
 		}
 	}
 	
 	
-	private function write_to_cache() 
-	{
-		return WXCache::write_to_cache(serialize($this->config_array), $this->cachedest, $this->cache_length);
+	private function write_to_cache() {
+		if($this->return_config("cache_config")) {
+			ApplicationBase::inspect( $this->return_config("cache_config") );
+			exit;
+			return WXCache::write_to_cache(serialize($this->config_array), $this->cachedest, $this->cache_length);
+		}
 	}
 	
 	function __destruct() {
-		if(!file_exists($this->cachedest)) 
-		{
+		if(!file_exists($this->cachedest)) {
 			$this->write_to_cache();
 		}
 		if(is_writable($this->cachedest) && File::is_older_than($this->cachedest, 36000)) {
