@@ -1,11 +1,11 @@
 <?php
 /**
- * 	@package wx.php.core
+ * 	@package wax.php.core
  */
 
 /**
  *
- * @package wx.php.core
+ * @package wax.php.core
  *
  *  One of four base classes. Loaded by the application class
  *  and used to set application variables.
@@ -21,7 +21,7 @@
  *  @author Ross Riley
  *
  */
-class ConfigBase
+class WXConfigBase
 {
 	
 	private $config_array;
@@ -47,7 +47,7 @@ class ConfigBase
 	
 	static public function set_instance() {
 		if(!self::$instance) {
-			self::$instance=new ConfigBase();
+			self::$instance=new WXConfigBase();
 		}
 	}
 	

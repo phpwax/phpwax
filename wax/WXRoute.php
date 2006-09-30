@@ -24,8 +24,8 @@ class WXRoute extends ApplicationBase
 	
 	public function __construct() {
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
-		$conf=new ConfigBase;
-		$this->config_array=$conf->return_config();		
+		$conf=new WXConfigBase;
+		$this->config_array=$conf->return_config("all");		
 		$this->make_controller_route();
 	}
 	

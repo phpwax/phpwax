@@ -85,7 +85,7 @@ class ApplicationBase
    *  @return void
    */
 	private function load_config() {
-		if(!$this->config_object) { $this->config_object=new ConfigBase; }
+		if(!$this->config_object) { $this->config_object=new WXConfigBase; }
 		$route=new WXroute;		
 		$this->controller=$route->make_controller_route();		
 		$this->actions=$route->read_actions();		

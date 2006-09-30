@@ -71,7 +71,7 @@ class AutoLoader
 		set_error_handler('throw_wxexception', 247 );
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
-		ConfigBase::set_instance();
+		WXConfigBase::set_instance();
 		$configFile=APP_DIR.'/config/config.yml';
 		$app=new ApplicationBase;
 	}
