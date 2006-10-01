@@ -9,7 +9,7 @@
  *	Defines application level constants
  */
 define('FRAMEWORK_DIR', WAX_ROOT . "wax");
-define('APP_DIR', WAX_ROOT . "app");
+define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
@@ -30,7 +30,11 @@ function __autoload($class_name) {
 		case is_readable(CONTROLLER_DIR.$class_name.".php"):
 			include_once(CONTROLLER_DIR.$class_name.".php"); break;
 		default:
-		  require_once($class_name. ".php");
+			try {
+				require_once($class_name. ".php");
+			} catch(Exception $e) {
+				throw new WXDependencyException("Cannot find ".$class_name. ".php");			
+			}
 	}
 }
 

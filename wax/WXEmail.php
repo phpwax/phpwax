@@ -95,37 +95,17 @@ class WXEmail
      * @access private
      */
 
-    private $to              = array();
-    private $cc              = array();
-    private $bcc             = array();
-    private $ReplyTo         = array();
-    private $attachment      = array();
-    private $CustomHeader    = array();
-    private $message_type    = "";
+    protected $to              = array();
+    protected $cc              = array();
+    protected $bcc             = array();
+    protected $ReplyTo         = array();
+    protected $attachment      = array();
+    protected $CustomHeader    = array();
+    protected $message_type    = "";
     private $boundary        = array();
     private $error_count     = 0;
     private $LE              = "\n";
-    private $recent_destinations = array();
-    private $recent_ips		 = array();
     
-    /**
-		 *	Constructor.
-		 *	Looks for a cached object containing email throttling settings.
-		 */
-    function __construct()
-    {
-      	if(is_file(CACHE_DIR."email.destination.cache"))
-      	{
-      	$dest=CACHE_DIR."email.destination.cache";
-      	$this->recent_destinations=unserialize(file_get_contents($dest));	
-      	}
-      	if(is_file(CACHE_DIR."email.ip.cache"))
-      	{
-      	$ips=CACHE_DIR."email.ip.cache";
-      	$this->recent_ips=unserialize(file_get_contents($ips));	
-      	}
-      	
-    }
     
     /////////////////////////////////////////////////
     // VARIABLE METHODS
@@ -136,7 +116,7 @@ class WXEmail
      * @param bool $bool
      * @return void
      */
-    function IsHTML($bool) {
+    function is_html($bool) {
         if($bool == true)
             $this->ContentType = "text/html";
         else
@@ -155,7 +135,7 @@ class WXEmail
      * @param string $name
      * @return void
      */
-    function AddAddress($address, $name = "") {
+    function add_to_address($address, $name = "") {
         $cur = count($this->to);
         $this->to[$cur][0] = trim($address);
         $this->to[$cur][1] = $name;
@@ -169,7 +149,7 @@ class WXEmail
      * @param string $name
      * @return void
     */
-    function AddCC($address, $name = "") {
+    function add_cc_address($address, $name = "") {
         $cur = count($this->cc);
         $this->cc[$cur][0] = trim($address);
         $this->cc[$cur][1] = $name;
@@ -183,7 +163,7 @@ class WXEmail
      * @param string $name
      * @return void
      */
-    function AddBCC($address, $name = "") {
+    function add_bcc_address($address, $name = "") {
         $cur = count($this->bcc);
         $this->bcc[$cur][0] = trim($address);
         $this->bcc[$cur][1] = $name;
@@ -195,7 +175,7 @@ class WXEmail
      * @param string $name
      * @return void
      */
-    function AddReplyTo($address, $name = "") {
+    function add_replyto_address($address, $name = "") {
         $cur = count($this->ReplyTo);
         $this->ReplyTo[$cur][0] = trim($address);
         $this->ReplyTo[$cur][1] = $name;
@@ -212,7 +192,7 @@ class WXEmail
      * variable to view description of the error.  
      * @return bool
      */
-    function Send() {
+    function send() {
         $header = "";
         $body = "";
         $result = true;
@@ -245,26 +225,11 @@ class WXEmail
      * @return bool
      */
     function MailSend($header, $body) {
-        $to = "";
-        for($i = 0; $i < count($this->to); $i++)
-        {
-            if($i != 0) { $to .= ", "; }
-            $to .= $this->to[$i][0];
-            $this->recent_destinations[]=array('address'=>$this->to[$i][0], 'timestamp'=>time());
-            $allow=$this->check_valid_destination($this->to[$i][0]);
-            if(!$allow) { unset($allow); throw new Exception('Your Email Address has been temporarily blocked'); }
-            
-            $this->recent_ips[]=(array('ip'=>$_SERVER['REMOTE_ADDR'], 'timestamp'=>time()));
-            $allow=$this->check_valid_ip($_SERVER['REMOTE_ADDR']);
-            if(!$allow) { unset($allow); throw new Exception('Your IP Address has been temporarily blocked'); }
-        }
-		
-				try {
-       		$rt = @mail($to, $this->EncodeHeader($this->subject), $body, $header);
-        } catch(Exception $e) {
-          $this->process_exception($e);
-        }
+			if($rt = @mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
+			} else {
+				throw new WXEmailException("Couldn't Send Email");
+			}
     }
 
     
@@ -969,70 +934,6 @@ class WXEmail
         }
         
         return $result;
-    }
-
-    /////////////////////////////////////////////////
-    // MESSAGE RESET METHODS
-    /////////////////////////////////////////////////
-
-    /**
-     * Clears all recipients assigned in the TO array.  Returns void.
-     * @return void
-     */
-    function ClearAddresses() {
-        $this->to = array();
-    }
-
-    /**
-     * Clears all recipients assigned in the CC array.  Returns void.
-     * @return void
-     */
-    function ClearCCs() {
-        $this->cc = array();
-    }
-
-    /**
-     * Clears all recipients assigned in the BCC array.  Returns void.
-     * @return void
-     */
-    function ClearBCCs() {
-        $this->bcc = array();
-    }
-
-    /**
-     * Clears all recipients assigned in the ReplyTo array.  Returns void.
-     * @return void
-     */
-    function ClearReplyTos() {
-        $this->ReplyTo = array();
-    }
-
-    /**
-     * Clears all recipients assigned in the TO, CC and BCC
-     * array.  Returns void.
-     * @return void
-     */
-    function ClearAllRecipients() {
-        $this->to = array();
-        $this->cc = array();
-        $this->bcc = array();
-    }
-
-    /**
-     * Clears all previously set filesystem, string, and binary
-     * attachments.  Returns void.
-     * @return void
-     */
-    function ClearAttachments() {
-        $this->attachment = array();
-    }
-
-    /**
-     * Clears all custom headers.  Returns void.
-     * @return void
-     */
-    function ClearCustomHeaders() {
-        $this->CustomHeader = array();
     }
 
 

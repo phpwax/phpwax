@@ -64,4 +64,18 @@ class WXPermissionsException extends WXException
   	parent::__construct( $message, "File Permissions Error");
   }
 }
+class WXEmailException extends WXException
+{
+	function __construct( $message, $code ) {
+  	parent::__construct( $message, "Email Send Error");
+  }
+}
+class WXDependencyException extends WXException
+{
+	function __construct( $message, $code="Missing File Dependency" ) {
+  	parent::__construct( $message, $code);
+  }
+}
+
+
 ?>
