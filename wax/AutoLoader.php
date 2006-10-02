@@ -30,10 +30,9 @@ function __autoload($class_name) {
 		case is_readable(CONTROLLER_DIR.$class_name.".php"):
 			include_once(CONTROLLER_DIR.$class_name.".php"); break;
 		default:
-			try {
-				require_once($class_name. ".php");
-			} catch(Exception $e) {
-				throw new WXDependencyException("Cannot find ".$class_name. ".php");			
+		  if(!is_readable($class_name. ".php" || !require_once($class_name. ".php")) ) {
+				return false;
+				throw new WXDependencyException("Cannot find ".$class_name. ".php in ".ini_get("include_path"));			
 			}
 	}
 }

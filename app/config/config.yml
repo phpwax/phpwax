@@ -1,7 +1,14 @@
+##### config.yml file use to configure applications ###
+# 1: environment: development / test / production 
 environment: development
+
+# 2: route: passes config values to WXRoute
+# options:
+#  a) default:page -the value of default is the controller that unanswered requests are passed to
 route:
  default:page
 
+# Development configuration. This is the default, setings in other environments only overide these
 development:
  db:
   dbtype: mysql
@@ -13,17 +20,22 @@ development:
  email:  
   host: localhost
   allowed_addresses: 
+ cache_actions:no
+ cache_config: no
     
 # The following will override values in development.
 # If the values are the same there is no need to declare them.
 
 test:
   db:
-    database: test
+    database: wax_test
 
 production: 
   db: 
-    database: wax
+    database: wax_production
+  cache_actions: yes
+  cache_config: yes
 
+# Users are made available for the YAMLAuthorise technique. Use for simple authentication.
 users:
   joet: password

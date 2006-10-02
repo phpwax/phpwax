@@ -1,11 +1,16 @@
 <?php
 class PageController extends ApplicationController
 {
-  function controller_global()
-  {
-    //$this->caches = array("all");
+  
+	function controller_global() {
+
   }
+	
 	public function index() {
-		$this->hello="hello";
-	}
+		$user = new User;
+		$this_user = $user->find_first();
+		
+		$this->hello=$this_user->name;
+	}	
+	
 }
