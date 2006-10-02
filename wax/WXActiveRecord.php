@@ -278,6 +278,7 @@ class WXActiveRecord
 		
 		$binding_params = $this->_makeBindingParams( $this->constraints );
 		$sth = $this->pdo->prepare($sql);
+		echo "Still Going"; exit;
 		
 		if( ! $sth ) {
 			$err = $this->pdo->errorInfo();
