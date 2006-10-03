@@ -41,6 +41,7 @@ function throw_wxexception() {
 	$exc = new WXException("An unknown error has occurred", "Application Error");
 }
 
+
 /**
  *	A simple static class to Preload php files and commence the application.
  *	@package wx.php.core
@@ -75,7 +76,6 @@ class AutoLoader
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
 		WXConfigBase::set_instance();
-		$configFile=APP_DIR.'/config/config.yml';
 		$app=new ApplicationBase;
 	}
 

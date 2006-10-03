@@ -93,11 +93,11 @@ class WXConfigBase
 		if(isset($db['socket']) && strlen($db['socket'])>2) {
 			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
 		} else {
-			$dsn="{$db['dbtype']}:host={$db['host']}; port={$db['port']};dbname={$db['database']}";
+			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
 		}
-		$adapter=$db['dbtype'];
-		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
 		
+		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+
 		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
     	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
     }

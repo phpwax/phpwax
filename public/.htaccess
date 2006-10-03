@@ -1,10 +1,7 @@
 php_value error_reporting 247
-php_flag display_errors on
-
 
 RewriteEngine On
 
-RewriteRule ^$ $1/index [QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond $1 !-d
 RewriteRule ^(.*)$ /index.php?route=$1 [QSA,L]

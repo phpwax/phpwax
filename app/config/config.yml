@@ -14,12 +14,12 @@ development:
   dbtype: mysql
   host: localhost
   port: 3306
-  database: wax
+  database: wax_development
   username: wax
   password: wax
- email:  
-  host: localhost
-  allowed_addresses: 
+
+ cache_actions:no
+ cache_config: no
  cache_actions:no
  cache_config: no
     
