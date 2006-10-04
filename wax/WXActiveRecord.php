@@ -165,6 +165,19 @@ class WXActiveRecord
 	function find_by_sql($sql) {
 		return $this->find_all(array("sql"=>$sql));
 	}
+	
+	public function query( $sql, $type ){
+		$sth = $this->pdo->prepare( $sql );
+		if( ! $sth->execute( ) ) {
+			$err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
+    }
+		if($type="all") {
+			return $sth->fetchAll( PDO::FETCH_ASSOC );
+		} else {
+			return $sth->fetch( PDO::FETCH_ASSOC );
+		}
+	}
 
  /**
   *  get one record helper
@@ -194,20 +207,8 @@ class WXActiveRecord
     }
     
 		$sql .= ';';
-		$sth = $this->pdo->prepare( $sql );
-		if( ! $sth ) {
-    	$err = $this->pdo->errorInfo();
-			throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
-    }
-        
-		if( ! $sth->execute( $binding_params ) ) {
-			$err = $sth->errorInfo();
-			throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Running Database Query" );
-    }
-
-		$row = $sth->fetch( PDO_FETCH_ASSOC );
-		$sth->closeCursor();
-		if( ! $row ) return FALSE;
+		$row = $this->query($sql, "one");
+		if(!$row) return false;
 		$this->row = $row;
  		return true;
   }
@@ -277,26 +278,9 @@ class WXActiveRecord
 		$sql .= ';';
 		
 		$binding_params = $this->_makeBindingParams( $this->constraints );
-
-		try {
-			$sth = $this->pdo->prepare($sql);
-		} catch(Exception $e) {
-			die($e->getMessage());
-		}
 		
-		echo "Still Going"; exit;
+		$row_list = $this->query($sql, "all");
 		
-		if( ! $sth ) {
-			$err = $this->pdo->errorInfo();
-      throw new WXActiveRecordException( "Error Preparing Database Query {$err[2]}:{$sql}");
-    }
-		
-		if( ! $sth->execute( $binding_params ) ) {
-			$err = $sth->errorInfo();
-      throw new WXActiveRecordException( "Error Running Database Query {$err[2]}:{$sql}" );
-    }
-
-		$row_list = $sth->fetchAll( PDO::FETCH_ASSOC );
 		$item_list = array();
 		foreach( $row_list as $row ) {
 			$newtable=$this->camelize($this->table);
@@ -304,12 +288,11 @@ class WXActiveRecord
 			$item->row = $row;
 			$item->constraints = $this->constraints;
 			if (isset($row['id'])) {
-				$item_list[$row['id']] = $item;
+				$item_list[$row['id']] = $item;				
 			} else {
 				$item_list[] = $item;
 			}
-    }
-
+    }		
     return $item_list;
   }
 

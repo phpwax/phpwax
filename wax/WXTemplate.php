@@ -26,14 +26,17 @@ class WXTemplate
 		extract((array)$this);
 		if(!is_readable($pFile)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");
+		}		
+		if(!include($pFile) ) {
+			throw new WXUserException("PHP parse error in $pFile");
 		}
-		include( $pFile );
 		if($this->preserve_buffer) {
 			$content = ob_get_clean();
 			ob_start();
 			echo $buffer;
 			return $content;
 		} else {
+		
 			return ob_get_clean();
 		}
 	}
@@ -43,7 +46,7 @@ class WXTemplate
 	}
 	
 	public function execute() {
-		$this->content_for_layout = $this->parse($this->view_path);	
+		$this->content_for_layout = $this->parse($this->view_path);
 		
 		$this->layout_content = $this->content_for_layout;
 		if($this->layout_path) {

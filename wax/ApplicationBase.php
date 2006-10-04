@@ -177,6 +177,7 @@ class ApplicationBase
   			$view_path=$this->controller."/".$use_view.".html"; 
   		}
   		$tpl->view_path=$view_path;
+
       if($cnt->use_layout) {
   			$tpl->layout_path="layouts/".$cnt->use_layout.".html";
       }
