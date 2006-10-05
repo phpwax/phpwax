@@ -166,7 +166,8 @@ class WXActiveRecord
 		return $this->find_all(array("sql"=>$sql));
 	}
 	
-	public function query( $sql, $type="one" ){
+	public function query( $sql, $type="one" )
+	{
 		$sth = $this->pdo->prepare( $sql );
 		if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
@@ -188,25 +189,9 @@ class WXActiveRecord
   	if( is_null( $params ) ) {
     	$params = array();
     }
-		if( $id ) {
-    	if( is_numeric( $id ) ) {
-      	$id = intval( $id );
-      }
-			$this->constraints['id'] = $id;
-    }
-
-    if( $params['columns'] ) {
-    	$sql = "SELECT {$params['columns']} FROM `{$this->table}`";
-    } else {
-    	$sql = "SELECT * FROM `{$this->table}`";
-    }
-
-    if( count( $this->constraints ) ) {
-    	$sql .= ' WHERE ' . $this->_makeANDConstraints( $this->constraints );
-    	$binding_params = $this->_makeBindingParams( $this->constraints );
-    }
-    
-		$sql .= ';';
+		$params['find_id'] = $id;
+		$sql = $this->build_query($params);
+		
 		$row = $this->query($sql, "one");
 		if(!$row) return false;
 		$this->row = $row;
@@ -224,60 +209,10 @@ class WXActiveRecord
 	
 		if (! is_array($params)) $params = array();
 		if (! is_array($join)) $join = array();
-		if( $params['distinct'] ) {
-			$sql = "SELECT DISTINCT {$params['distinct']} FROM `{$this->table}`";
-		} 
-    if( $params['columns'] ) {
-    	$sql = "SELECT {$params['columns']} FROM `{$this->table}`";
-    } else {
-      $sql = "SELECT * FROM `{$this->table}`";
-    }
-
-    if (count($join) && $join['table'] && $join['lhs'] && $join['rhs']) {
-    	$sql .= " INNER JOIN `{$join['table']}`".
-      				" ON `{$this->table}`.{$join['lhs']}=`{$join['table']}`.{$join['rhs']}";
-    }
-
-    $where = false;
-    if( count( $this->constraints ) ) {
-    	$sql .= ' WHERE ' . $this->_makeANDConstraints( $this->constraints );
-      $where = true;
-    }
-
-		if( $params['conditions'] ) {
-    	if( $where ) {
-      	$sql .= " AND ({$params['conditions']})";
-      } else {
-        $sql .= " WHERE {$params['conditions']}";
-        $where = true;
-      }
-    }
-
-		if( $params['order'] ) {
-    	$sql .= " ORDER BY {$params['order']}";
-    }
-			
-		if( $params['direction'] ) {
-    	$sql .= " {$params['direction']}";
-    }
-
-    if( array_key_exists( 'limit', $params ) ) {
-    	$limit = intval( $params['limit'] );
-    	if( array_key_exists( 'offset', $params ) ) {
-      	$offset = intval( $params['offset'] );
-      	$sql .= " LIMIT {$limit} OFFSET {$offset}";
-      } else {
-        $sql .= " LIMIT {$limit}";
-      }
-    }
+	  
+		$params['join'] = $join;
 		
-		if( $params["sql"]) {
-			$sql=$params["sql"];
-		}
-
-		$sql .= ';';
-		$binding_params = $this->_makeBindingParams( $this->constraints );
-		
+		$sql = $this->build_query($params);				
 		$row_list = $this->query($sql, "all");
 		
 		$item_list = array();
@@ -459,7 +394,8 @@ class WXActiveRecord
     return $params;
   }
 
-	private function build_query($params) {
+	private function build_query($params) 
+	{
 		if( $params['distinct'] ) {
 			$sql = "SELECT DISTINCT {$params['distinct']} FROM `{$this->table}`";
 		} elseif( $params['columns'] ) {
@@ -467,37 +403,54 @@ class WXActiveRecord
     } else {
       $sql = "SELECT * FROM `{$this->table}`";
     }
+    
+    if(!empty($params['join']))
+    {
+      $join = $params['join'];
+      if (count($join) && $join['table'] && $join['lhs'] && $join['rhs']) {
+    	  $sql .= " INNER JOIN `{$join['table']}`".
+      	  			" ON `{$this->table}`.{$join['lhs']}=`{$join['table']}`.{$join['rhs']}";
+      }
+    }
+    
     $where = false;
     if( count( $this->constraints ) ) {
     	$sql .= ' WHERE ' . $this->_makeANDConstraints( $this->constraints );
       $where = true;
     }
 
-		if($params['conditions']) {
-    	if( $where ) {
-      	$sql .= " AND ({$params['conditions']})";
-      } else {
-        $sql .= " WHERE {$params['conditions']}";
-        $where = true;
+    if(!$params['find_id'])
+    {
+  		if($params['conditions']) {
+      	if( $where ) {
+        	$sql .= " AND ({$params['conditions']})";
+        } else {
+          $sql .= " WHERE {$params['conditions']}";
+          $where = true;
+        }
       }
-    }
-
-		if($params['order']) {
-    	$sql .= " ORDER BY {$params['order']}";
-    }
-			
-		if( $params['direction'] ) {
-    	$sql .= " {$params['direction']}";
-    }
-
-    if($params['limit']) {
-    	$limit = intval( $params['limit'] );		
-    	if($params['offset']) {
-      	$offset = intval( $params['offset'] );
-      	$sql .= " LIMIT {$offset}, {$limit} ";
-      } else {
-        $sql .= " LIMIT {$limit}";
+  
+  		if($params['order']) {
+      	$sql .= " ORDER BY {$params['order']}";
       }
+  			
+  		if( $params['direction'] ) {
+      	$sql .= " {$params['direction']}";
+      }
+  
+      if($params['limit']) {
+      	$limit = intval( $params['limit'] );		
+      	if($params['offset']) {
+        	$offset = intval( $params['offset'] );
+        	$sql .= " LIMIT {$offset}, {$limit} ";
+        } else {
+          $sql .= " LIMIT {$limit}";
+        }
+  		}
+		}
+		else
+		{
+  	  $sql .= "WHERE id='$params[find_id]' ";	
 		}
 		
 		if( $params["sql"]) {
