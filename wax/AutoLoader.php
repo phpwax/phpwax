@@ -18,6 +18,8 @@ define('SESSION_DIR', WAX_ROOT.'tmp/session/');
 define('PUBLIC_DIR', WAX_ROOT.'public/');
 define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
 define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
+define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
+
 
 function __autoload($class_name) {
 	switch(TRUE) {
@@ -53,23 +55,62 @@ class AutoLoader
  *	@access public
  *	@param string $dir The directory to include 
  */
-	static public function include_dir($dir) {
+  static $plugin_array=array(); 
+ 
+	static public function include_dir($dir) 
+	{
+  	//get a list of any classes included within the plugins directory
+  	$pluginClasses = get_declared_classes();
+  	  
 		$fileArray=scandir($dir);
 	  foreach($fileArray as $file) {
-			if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)) { 
-				if(!require_once($dir."/".$match[0])) {
-					throw new WXException("Cannot include file - ".$include);
-				}
-			}
-	  }
+			if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)  ) 
+			{ 
+  			$className = str_ireplace(".php", "", $match[0]);
+  			
+  			if( !in_array($className, $pluginClasses) && !class_exists($className) )
+  			{
+  				if(!require_once($dir."/".$match[0])) 
+  				{
+  					throw new WXException("Cannot include file - ".$include);
+  				}
+				}//end class exist check
+			}//end preg match
+	  }//end foreach
 		return true;
 	}
+	
+	static public function add_plugin_directory($directory="./") 
+	{
+    self::$plugin_array[]=$directory;
+    $directory  = PLUGIN_DIR . $directory;
+    $included   = true;
+    $plugins    = glob($directory . "*.php");
+    
+    if(empty($plugins){return false;}
+    
+    foreach($plugins as $file)
+    {
+      $name = str_ireplace(PLUGIN_DIR, "", $file);
+      $name = str_ireplace($directory, "", $name);
+      if(class_exists($name)){ throw new WXException("Cannot include plugin file - " . $name); }
+      
+      if(!require_once($file)) 
+  		{
+  			throw new WXException("Cannot include file - ".$include);
+  		}
+      
+    }      
+	}
+	
+	
 	
 	/**
 	 *	Includes the necessary files and instantiates the application.
 	 *	@access public
 	 */	
 	static public function run_application() {
+  	include APP_DIR."config/environment.php";
 		AutoLoader::include_dir(FRAMEWORK_DIR);
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxexception', 247 );
