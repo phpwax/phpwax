@@ -94,7 +94,7 @@ class Session {
         self::$id = session_id();
     }
 
-    static function destory_session() {
+    static function destroy_session() {
         session_destroy();
     }
 
