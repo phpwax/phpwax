@@ -87,7 +87,7 @@ class AutoLoader
     $included   = true;
     $plugins    = glob($directory . "*.php");
     
-    if(empty($plugins){return false;}
+    if(empty($plugins)){return false;}
     
     foreach($plugins as $file)
     {
