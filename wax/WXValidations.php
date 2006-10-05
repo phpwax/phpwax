@@ -8,19 +8,21 @@ class WXValidations
    * insurance number.
    *	
 	*/
-	private $fixed    = array('email'                   => '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$',
-	                        'uk_postcode'               => '^(GIR0AA)|(TDCU1ZZ)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))[0-9][ABD-HJLNP-UW-Z]{2})$',
-	                        'usa_zipcode'               => '[[:digit:]]{5}(-[[:digit:]]{4})?',
-	                        'usa_date'                  => '([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',
-	                        'uk_date'                   => '([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})',
-	                        'number'                    => '^[+-]?[0-9]*\.?[0-9]+$',
-	                        'currency'                  => '^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$',
-              	          'simple_phone_number'       =>'^[[:digit:]]{6,20}',
-              	          'printable'                 => '^[[:print:]]{1}',
-              	          'national_insurance_number' => '^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$'
-              	          );
+	protected $fixed_validations = array(
+		'email'                   	=> '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$',
+	  'uk_postcode'               => '^(GIR0AA)|(TDCU1ZZ)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))[0-9][ABD-HJLNP-UW-Z]{2})$',
+	  'usa_zipcode'               => '[[:digit:]]{5}(-[[:digit:]]{4})?',
+	  'usa_date'                  => '([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',
+	  'uk_date'                   => '([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})',
+	  'number'                    => '^[+-]?[0-9]*\.?[0-9]+$',
+	  'currency'                  => '^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$',
+    'simple_phone_number'       =>'^[[:digit:]]{6,20}',
+    'printable'                 => '^[[:print:]]{1}',
+    'national_insurance_number' => '^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$'
+  );
               	                        
-	private $extras = array();
+	protected $extra_validations = array();
+	
 	
 	
 	/**
@@ -30,19 +32,13 @@ class WXValidations
 	 */
 	function __get($field)
 	{  	
-  	if(isset($this->extras[$field]))
-  	{
-      return $this->extras[$field];	
-  	}
-  	elseif(isset($this->fixed[$field]))
-  	{
-      return $this->fixed[$field];		
-  	}
-  	else
-  	{
+  	if(isset($this->extra_validations[$field])) {
+      return $this->extra_validations[$field];	
+  	} elseif(isset($this->fixed[$field])) {
+      return $this->fixed_validations[$field];		
+  	} else {
       return false;	
   	}
-  	
 	}
 	
 	/**
@@ -52,17 +48,12 @@ class WXValidations
 	 */
 	function __set($field, $value)
 	{
-  	if(isset($this->extras[$field]))
-  	{
-      $this->extras[$field] = $value;	
-  	}
-  	elseif(isset($this->fixed[$field]))
-  	{
-      $this->fixed[$field] = $value;		
-  	}
-  	else
-  	{
-      $this->extras[$field] = $value;
+  	if(isset($this->extra_validations[$field])) {
+      $this->extra_validations[$field] = $value;	
+  	} elseif(isset($this->fixed[$field])) {
+      $this->fixed_validations[$field] = $value;		
+  	} else {
+      $this->extra_validations[$field] = $value;
   	}
 	}
 	

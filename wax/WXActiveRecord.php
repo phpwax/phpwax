@@ -35,7 +35,7 @@ class WXActiveRecord
 			$this->table = $this->underscore( $class_name );
 		}
 		
-		switch(TRUE) {
+		switch(true) {
 			case is_numeric($param) || is_string($param):
 				if( ! $this->_find( $param ) ) {
         	throw new WXActiveRecordException('Fail to construct by record id.', ar_construct_by_id );
@@ -151,14 +151,14 @@ class WXActiveRecord
   *  @param  mixed id            record id
   *  @return WXActiveRecord    this instance, or null if failed
   */
-	function find( $id = null, $params = null ) {
+	public function find( $id = null, $params = null ) {
   	$record = clone( $this );
     return $record->_find( $id, $params ) ? $record : null;
   }
 
-	function find_first() {
-		$sql="SELECT * FROM `{$this->table}` LIMIT 0,1";
-		$list = $this->find_by_sql($sql);
+	public function find_first() {
+		$list = $this->find_all(array("limit"=>"1"));
+		$list = array_values($list);
 		return $list[0];
 	}
 	
@@ -166,7 +166,7 @@ class WXActiveRecord
 		return $this->find_all(array("sql"=>$sql));
 	}
 	
-	public function query( $sql, $type ){
+	public function query( $sql, $type="one" ){
 		$sth = $this->pdo->prepare( $sql );
 		if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
@@ -276,7 +276,6 @@ class WXActiveRecord
 		}
 
 		$sql .= ';';
-		
 		$binding_params = $this->_makeBindingParams( $this->constraints );
 		
 		$row_list = $this->query($sql, "all");
@@ -293,128 +292,120 @@ class WXActiveRecord
 				$item_list[] = $item;
 			}
     }		
-    return $item_list;
+    return array_values($item_list);
   }
 
 
     /**
      *  insert record to table, or update record data
      */
-    function save()
-    {
-    	if( $this->row['id'] ) {
-      	return $this->update();
-      }else{
-      	unset( $this->row['id'] );
-        return $this->insert();
-      }
+	public function save() {
+		$this->before_save();
+  	if( $this->row['id'] ) {
+    	$i = $this->update();
+    }else{
+    	unset( $this->row['id'] );
+      $i = $this->insert();
     }
+		$this->after_save();
+		return $i;
+  }
 
-    /**
-     *  delete record from table
-     *  @param  mixed id    record id
-     *  @return boolean
-     */
-    function delete( $id )
-    {
-        if( is_numeric( $id ) && ! isset( $this->has_string_id ) )
-        {
-            $id = intval( $id );
-        }
-        $this->constraints['id'] = $id;
-        $sql = "DELETE FROM `{$this->table}` WHERE " .
-            $this->_makeANDConstraints( $this->constraints ) . ';';
-        $binding_params = $this->_makeBindingParams( $this->constraints );
-
-        $sth = $this->pdo->prepare( $sql );
-        if( ! $sth )
-        {
-            $err = $this->pdo->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-        if( ! $sth->execute( $binding_params ) )
-        {
-            $err = $sth->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-
-        $this->row = array();
-        return $sth->rowCount() > 0;
+   /**
+    *  delete record from table
+    *  @param  mixed id    record id
+    *  @return boolean
+    */
+	public function delete( $id ) {
+  	if( is_numeric( $id ) && ! isset( $this->has_string_id ) ) {
+    	$id = intval( $id );
     }
-
-    function count($params = null)
+    $this->constraints['id'] = $id;
+    $sql = "DELETE FROM `{$this->table}` WHERE " . $this->_makeANDConstraints($this->constraints).';';
+    $binding_params = $this->_makeBindingParams( $this->constraints );    
+    $sth = $this->pdo->prepare($sql);
+    if( ! $sth )
     {
-        $sql = "SELECT COUNT(*) FROM `{$this->table}`";
-        if (isset($params['conditions']) && $params['conditions'] != '')
-        {
-            $sql .= " WHERE {$params['conditions']}";
-        }
-        $sql .= ';';
-        $sth = $this->pdo->query( $sql );
-        return intval( $sth->fetchColumn() );
+        $err = $this->pdo->errorInfo();
+        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
     }
-
-    function update( $id_list = array() )
+    if( ! $sth->execute( $binding_params ) )
     {
-        $values = $this->row;
-        unset($values['id']);
-        if (! count( $values)) {
-            trigger_error( 'No record value.', E_USER_ERROR );
-        }
-
-        $sql = "UPDATE `{$this->table}` SET ".
-            $this->_makeUPDATEValues($values);
-
-        if (isset($this->row['id']) && $this->row['id']) {
-            $sql .= " WHERE `{$this->table}`.id=:id;";
-        } else if (count($id_list)) {
-            $sql .= ' WHERE '.$this->_makeIDList($id_list).';';
-        } else {
-            trigger_error('ID is not specified.', E_USER_ERROR);
-        }
-        $binding_params = $this->_makeBindingParams($this->row);
-
-        $sth = $this->pdo->prepare($sql);
-        if (! $sth) {
-            $err = $this->pdo->errorInfo();
-            trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
-        }
-        if (! $sth->execute($binding_params)) {
-            $err = $sth->errorInfo();
-            trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
-        }
-
-        return $sth->rowCount();
+        $err = $sth->errorInfo();
+        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
     }
+    
+    $this->row = array();
+    return $sth->rowCount() > 0;
+  }
 
-    function insert()
+  function count($params = null) {
+    $sql = "SELECT COUNT(*) FROM `{$this->table}`";
+    if (isset($params['conditions']) && $params['conditions'] != '') {
+        $sql .= " WHERE {$params['conditions']}";
+    }
+    $sql .= ';';
+    $sth = $this->pdo->query( $sql );
+    return intval( $sth->fetchColumn() );
+  }
+
+  function update( $id_list = array() ) {
+    $values = $this->row;
+    unset($values['id']);
+    if (! count( $values)) {
+        trigger_error( 'No record value.', E_USER_ERROR );
+    }
+    
+    $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
+    
+    if (isset($this->row['id']) && $this->row['id']) {
+      $sql .= " WHERE `{$this->table}`.id=:id;";
+    } else if (count($id_list)) {
+      $sql .= ' WHERE '.$this->_makeIDList($id_list).';';
+    } else {
+      trigger_error('ID is not specified.', E_USER_ERROR);
+    }
+    $binding_params = $this->_makeBindingParams($this->row);
+    
+    $sth = $this->pdo->prepare($sql);
+    if (! $sth) {
+      $err = $this->pdo->errorInfo();
+      trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
+    }
+    if (! $sth->execute($binding_params)) {
+      $err = $sth->errorInfo();
+      trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
+    }     
+    return $sth->rowCount();
+  }
+
+  function insert() {
+    $this->row = array_merge( $this->constraints, $this->row );
+    $binding_params = $this->_makeBindingParams( $this->row );
+    $sql = "INSERT INTO `{$this->table}` (" .
+        implode( ', ', array_keys($this->row) ) . ') VALUES(' .
+        implode( ', ', array_keys($binding_params) ) . ');';
+    
+    $sth = $this->pdo->prepare( $sql );
+    if( ! $sth )
     {
-        $this->row = array_merge( $this->constraints, $this->row );
-        $binding_params = $this->_makeBindingParams( $this->row );
-        $sql = "INSERT INTO `{$this->table}` (" .
-            implode( ', ', array_keys($this->row) ) . ') VALUES(' .
-            implode( ', ', array_keys($binding_params) ) . ');';
-
-        $sth = $this->pdo->prepare( $sql );
-        if( ! $sth )
-        {
-            $err = $this->pdo->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-        if( ! $sth->execute( $binding_params ) )
-        {
-            $err = $sth->errorInfo();
-            trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
-        }
-
-        if( ! $this->row['id'] && ! isset( $this->has_string_id ) )
-        {
-            $this->row['id'] = $this->pdo->lastInsertId();
-            return intval( $this->row['id'] );
-        }
-
-        return $this->row['id'];
+        $err = $this->pdo->errorInfo();
+        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
     }
+    if( ! $sth->execute( $binding_params ) )
+    {
+        $err = $sth->errorInfo();
+        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
+    }
+    
+    if( ! $this->row['id'] && ! isset( $this->has_string_id ) )
+    {
+        $this->row['id'] = $this->pdo->lastInsertId();
+        return intval( $this->row['id'] );
+    }
+    
+    return $this->row['id'];
+  }
 
     function uniqid($len = 8, $set = TRUE)
     {
@@ -468,12 +459,59 @@ class WXActiveRecord
     return $params;
   }
 
-    function _makeIDList( $array )
-    {
-        $expressions = array();
-        foreach ($array as $id) {
-            $expressions[] = "`{$this->table}`.id=".
-                $this->pdo->quote($id, isset($this->has_string_id) ? PDO_PARAM_INT : PDO_PARAM_STR);
+	private function build_query($params) {
+		if( $params['distinct'] ) {
+			$sql = "SELECT DISTINCT {$params['distinct']} FROM `{$this->table}`";
+		} elseif( $params['columns'] ) {
+    	$sql = "SELECT {$params['columns']} FROM `{$this->table}`";
+    } else {
+      $sql = "SELECT * FROM `{$this->table}`";
+    }
+    $where = false;
+    if( count( $this->constraints ) ) {
+    	$sql .= ' WHERE ' . $this->_makeANDConstraints( $this->constraints );
+      $where = true;
+    }
+
+		if($params['conditions']) {
+    	if( $where ) {
+      	$sql .= " AND ({$params['conditions']})";
+      } else {
+        $sql .= " WHERE {$params['conditions']}";
+        $where = true;
+      }
+    }
+
+		if($params['order']) {
+    	$sql .= " ORDER BY {$params['order']}";
+    }
+			
+		if( $params['direction'] ) {
+    	$sql .= " {$params['direction']}";
+    }
+
+    if($params['limit']) {
+    	$limit = intval( $params['limit'] );		
+    	if($params['offset']) {
+      	$offset = intval( $params['offset'] );
+      	$sql .= " LIMIT {$offset}, {$limit} ";
+      } else {
+        $sql .= " LIMIT {$limit}";
+      }
+		}
+		
+		if( $params["sql"]) {
+			$sql=$params["sql"];
+		}
+		$sql .= ';';
+		return $sql;
+	} 
+
+  function _makeIDList( $array ) {
+  	$expressions = array();
+    foreach ($array as $id) {
+    $expressions[] = "`{$this->table}`.id=".
+    $this->pdo->quote($id, isset($this->has_string_id) ? PDO_PARAM_INT : PDO_PARAM_STR);
         }
         return '('.implode(' OR ', $expressions).')';
     }
@@ -507,23 +545,31 @@ class WXActiveRecord
 			}
 			return $this->save();
 		}
+		
+ /**
+	*  These are left deliberately empty in the base class
+	*  
+	*/	
+	public function specification() {}
+	public function before_save() {}
+	public function after_save() {}
 
-		public function __call( $func, $args ) {
-			$what=substr( $func, 6 );
-			$what=explode("And", $what);
-			for($i=0;$i<count($what); $i++) {
-				$what[$i]=$this->underscore($what[$i]);
-			}			
-      if( $args ) {
-				if(count($what)>1 && count($args)>1) { 
-					$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
-				}else{
-					$conds=$what[0]."='".$args[0]."'";
-				}
-				$params = array("conditions"=>$conds);
-        return $this->find_all($params);
-      }
+	public function __call( $func, $args ) {
+		$what=substr( $func, 6 );
+		$what=explode("And", $what);
+		for($i=0;$i<count($what); $i++) {
+			$what[$i]=$this->underscore($what[$i]);
+		}			
+    if( $args ) {
+			if(count($what)>1 && count($args)>1) { 
+				$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
+			}else{
+				$conds=$what[0]."='".$args[0]."'";
+			}
+			$params = array("conditions"=>$conds);
+      return $this->find_all($params);
     }
+  }
 
 }
 
