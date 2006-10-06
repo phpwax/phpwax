@@ -561,7 +561,30 @@ function label_check_box($object, $field, $options = array(), $checked_value="1"
   return make_label($object, $field, $label_name) . check_box($object, $field, $options, $checked_value, $unchecked_value); 
 }
 
-
+/**
+  * Alternative version - no object name used
+  * Use with or without a label - default without (false)
+  * options is now required - in particular the name param
+  */
+function no_obj_check_box($options, $checked_value=1, $unchecked_value="0", $label=false)
+{
+  if(empty($options['name']))
+  {
+    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
+  }
+  $name = $options['name'];
+ 
+  $form = new FormHelper("", $name);
+  if(!$label)
+  {
+    return $form->to_check_box_tag($options, $checked_value, $unchecked_value);
+  }
+  else
+  {
+    return make_label("", $options['name'], "", "") . $form->to_check_box_tag($options, $checked_value, $unchecked_value);
+  }
+    
+}
 
 /**
  * Returns a radio button tag for accessing a specified attribute (identified by $field) on an object
@@ -585,6 +608,31 @@ function label_radio_button($object, $field, $tag_value, $options = array(), $la
 {
   return make_label($object, $field, $label_name) . radio_button($object, $field, $tag_value, $options); 
 }
+
+/**
+  * Alternative version - no object name used
+  * Use with or without a label - default without (false)
+  * options is now required - in particular the name param
+  */
+function no_obj_radio_button($options, $tag_value, $label=false)
+{
+  if(empty($options['name']))
+  {
+    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
+  }
+  $name = $options['name'];
+ 
+  $form = new FormHelper("", $name);
+  if(!$label)
+  {
+    return $form->to_radio_button_tag($tag_value, $options);
+  }
+  else
+  {
+    return make_label("", $options['name'], "", "") . $form->to_radio_button_tag($tag_value, $options);
+  }    
+}
+
 /**
  *  Make a new FormHelper object and call its to_boolean_select_tag method
  *  @uses FormHelper::to_boolean_select_tag()
