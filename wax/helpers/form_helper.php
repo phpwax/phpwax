@@ -610,9 +610,10 @@ function label_radio_button($object, $field, $tag_value, $options = array(), $la
 }
 
 /**
-  * Alternative version - no object name used
+  * no object name used
   * Use with or without a label - default without (false)
-  * options is now required - in particular the name param
+  * options is now required 
+  * if options[name] is missing then exception is thrown
   */
 function no_obj_radio_button($options, $tag_value, $label=false)
 {

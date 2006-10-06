@@ -181,6 +181,31 @@ function label_select($object, $field, $choices, $options = array(), $label_name
   return make_label($object, $field, $label_name) . select($object, $field, $choices, $options) ; 
 }
 /**
+  * no object name used, can be with or without a label - default is without (false)
+  * options is now required - in particular the name param
+  * if the name param is missing an exception is thrown
+  */
+function no_obj_select($options, $choices, $label_name="")
+{
+  if(empty($options['name']))
+  {
+    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
+  }
+  $name = $options['name'];
+ 
+  $form = new FormHelper("", $name);
+  if(!$label)
+  {
+    return $form->to_select_tag($choices, $options);
+  }
+  else
+  {
+    return make_label("", $options['name'], "", "") . $form->to_select_tag($choices, $options);
+  }    
+}
+
+
+/**
  *  Create a new FormOptionsHelper object and call its to_country_select_tag() method
  *
  * Return select and option tags for the given object and method, using country_options_for_select to generate the list of option tags.
@@ -199,6 +224,31 @@ function label_country_select($object, $field, $options = array(), $label_name="
 {
     
   return make_label($object, $field, $label_name) . country_select($object, $field, $options) ; 
+}
+
+
+/**
+  * Alternative version - no object name used, can be with or 
+  * without a label - default is without (false)
+  * options is now required - in particular the name param
+  */
+function no_obj_country_select($options, $label_name="")
+{
+  if(empty($options['name']))
+  {
+    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
+  }
+  $name = $options['name'];
+ 
+  $form = new FormHelper("", $name);
+  if(!$label)
+  {
+    return $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
+  }
+  else
+  {
+    return make_label("", $options['name'], "", "") . $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
+  }    
 }
 
 // -- set Emacs parameters --
