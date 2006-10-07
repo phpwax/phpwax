@@ -7,7 +7,9 @@
  * @package wx.php.core
  * Provides basic functionality which controllers inherit.
  */
-abstract class ControllerBase extends ApplicationBase
+require_once "ApplicationBase.php";
+
+abstract class WXControllerBase extends ApplicationBase
 {
   protected $models=array();
   protected $route_array=null;

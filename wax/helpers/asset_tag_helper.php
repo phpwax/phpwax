@@ -322,11 +322,4 @@ function javascript_include_tag() {
     return call_user_func_array(array($asset_helper, 'javascript_include_tag'), $args);
 }
 
-// -- set Emacs parameters --
-// Local variables:
-// tab-width: 4
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:
 ?>

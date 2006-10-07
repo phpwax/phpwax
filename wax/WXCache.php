@@ -4,6 +4,7 @@
   *
   * @package wx.php.core
   */
+require_once "ApplicationBase.php";
   
 class WXCache extends ApplicationBase 
 {	

@@ -38,7 +38,7 @@ class WXActiveRecord
 		switch(true) {
 			case is_numeric($param) || is_string($param):
 				if( ! $this->_find( $param ) ) {
-        	throw new WXActiveRecordException('Fail to construct by record id.', ar_construct_by_id );
+        	throw new WXActiveRecordException('Fail to construct by record id.');
         }
 			case strtolower( get_class( $param ) ) == 'pdo':
 				$this->pdo = $param;
@@ -77,10 +77,10 @@ class WXActiveRecord
 	 * This is called from __get and shouldn't be used externally.
    */
 
-	static function has_many($class, $pdo, $foreign_key, $id) {
-		$child = new $class($pdo);
+	static function get_relation($class, $pdo, $foreign_key, $id) {
+		$child = new $class();
 		$child->setConstraint( $foreign_key, $id );
-		return $child->find_all();
+		return $child;
 	}
 
     /**
@@ -99,16 +99,16 @@ class WXActiveRecord
 	 /**
     *  Next we try and link to a child object of the same name
 	  */
-    $id = $this->row['id']; 
-    if( $id ) {
+    $id = $this->row['id'];
+    if($id) {
     	$foreign_key = $this->table . '_id';
-			if( array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
+			if(array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
       	// return cached instance
         return $this->children[$name];
       }
-			$class_name = $this->camelize( $name );
-      if( class_exists( $class_name, FALSE ) ) {
-				return new ArrayObject(array_values(WXActiveRecord::has_many($class_name, $this->pdo, $foreign_key, $id)) );
+			$class_name = $this->camelize( $name);
+      if(class_exists( $class_name, false)) {
+				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
       }
     }
 
@@ -169,6 +169,10 @@ class WXActiveRecord
 	public function query( $sql, $type="one" )
 	{
 		$sth = $this->pdo->prepare( $sql );
+		$binding_params = $this->_makeBindingParams( $this->constraints );
+		if($binding_params) {
+			$sth->execute($binding_params);
+		}
 		if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
@@ -191,10 +195,9 @@ class WXActiveRecord
     }
 		$params['find_id'] = $id;
 		$sql = $this->build_query($params);
-		
 		$row = $this->query($sql, "one");
 		if(!$row) return false;
-		$this->row = $row;
+		$this->row = $row[0];
  		return true;
   }
 
@@ -212,9 +215,8 @@ class WXActiveRecord
 	  
 		$params['join'] = $join;
 		
-		$sql = $this->build_query($params);				
+		$sql = $this->build_query($params);
 		$row_list = $this->query($sql, "all");
-		
 		$item_list = array();
 		foreach( $row_list as $row ) {
 			$newtable=$this->camelize($this->table);
@@ -526,5 +528,6 @@ class WXActiveRecord
 
 }
 
+function add_spec($name) {}
 
 ?>

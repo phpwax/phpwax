@@ -6,12 +6,8 @@ class PageController extends ApplicationController
 	}
 	
 	public function index() {
-		$user = new User;
-		//$this->hello = print_r($user->query("SELECT * FROM user"), 1);
-		//$this->hello = print_r($user->find_all(), 1);
-		//$this->hello = print_r($user->find_first(), 1);
-		//$this->hello = print_r($user->find_by_sql("SELECT * FROM user"), 1);
-		$this->hello = $this->is_satisfied_by();
+		$user2 = new User(1);
+		$this->hello = print_r($user2->article->find_first()->url, 1);
 	}	
 	
 	public function is_satisfied_by() {

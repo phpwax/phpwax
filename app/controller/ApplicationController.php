@@ -7,5 +7,5 @@
  * Use to provide application wide methods
  **/
 
-class ApplicationController extends ControllerBase
+class ApplicationController extends WXControllerBase
 {}

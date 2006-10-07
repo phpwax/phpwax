@@ -6,7 +6,7 @@
 /**
 	* 	@package wx.php.core
   *   The absolute base class. This will instantiate all of the other 
-  *   four base classes, ConfigBase, ModelBase, ControllerBase, ViewBase.
+  *   four base classes, WXConfigBase, WXActiveRecord, WXControllerBase, WXTemplate.
   *
   *   Methods Available to sub-classes.....
   *   fetch_config()

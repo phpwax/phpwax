@@ -421,8 +421,7 @@ function hidden_field($object, $field, $options = array()) {
     return $form->to_input_field_tag("hidden", $options);
 }
 
-function label_hidden_field($object, $field, $options = array(), $label_name="") 
-{
+function label_hidden_field($object, $field, $options = array(), $label_name="") {
   return make_label($object, $field, $label_name) . hidden_field($object, $field, $options); 
 }
 
@@ -431,33 +430,26 @@ function label_hidden_field($object, $field, $options = array(), $label_name="")
   * hidden fields cannot have labels!
   * options is now required - in particular the name param
   */
-function no_obj_hidden_field($options)
-{
-  if(empty($options['name']))
-  {
+function no_obj_hidden_field($options) {
+  if(empty($options['name'])) {
     throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
   }
   $object = $options['name'];
- 
   $form = new FormHelper("", $object);
-
   return $form->to_input_field_tag("hidden", $options);
-      
 }
 /**
  * Works just like text_field, but returns a input tag of the "file" type instead, which won't have any default value.
  *  @uses FormHelper::to_input_field_tag()
  */
-function file_field($object, $field, $options = array()) 
-{
-    $form = new FormHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;  
-    return $form->to_input_field_tag("file", $options);
+function file_field($object, $field, $options = array()) {
+	$form = new FormHelper($object, $field);
+	$options['name']  = $object . "[" . $field . "]" ;
+	$options['id']    = $object . "_" . $field;  
+	return $form->to_input_field_tag("file", $options);
 }
 
-function label_file_field($object, $field, $options = array(), $label_name="") 
-{
+function label_file_field($object, $field, $options = array(), $label_name="") {
   return make_label($object, $field, $label_name) . file_field($object, $field, $options); 
 }
 
@@ -466,21 +458,15 @@ function label_file_field($object, $field, $options = array(), $label_name="")
   * Use with or without a label - default without (false)
   * options is now required - in particular the name param
   */
-function no_obj_file_field($options, $label=false)
-{
-  if(empty($options['name']))
-  {
+function no_obj_file_field($options, $label=false) {
+  if(empty($options['name'])) {
     throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
   }
   $name = $options['name'];
- 
   $form = new FormHelper("", $name);
-  if(!$label)
-  {
+  if(!$label) {
     return $form->to_input_field_tag("file", $options);
-  }
-  else
-  {
+  } else {
     return make_label("", $options['name'], "", "") . $form->to_input_field_tag("file", $options);  
   }
     
@@ -491,16 +477,14 @@ function no_obj_file_field($options, $label=false)
  *  Result: <textarea cols="20" rows="40" id="post_body" name="post[body]">$post->body</textarea>
  *  @uses FormHelper::to_text_area_tag()
  */
-function text_area($object, $field, $options = array()) 
-{
-    $form = new FormHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;  
-    return $form->to_text_area_tag($options);
+function text_area($object, $field, $options = array())  {
+  $form = new FormHelper($object, $field);
+  $options['name']  = $object . "[" . $field . "]" ;
+  $options['id']    = $object . "_" . $field;  
+  return $form->to_text_area_tag($options);
 }
 
-function label_text_area($object, $field, $options = array(), $label_name="") 
-{
+function label_text_area($object, $field, $options = array(), $label_name="")  {
   return make_label($object, $field, $label_name) . text_area($object, $field, $options); 
 }
 /**
@@ -508,21 +492,15 @@ function label_text_area($object, $field, $options = array(), $label_name="")
   * Use with or without a label - default without (false)
   * options is now required - in particular the name param
   */
-function no_obj_text_area($options, $label=false)
-{
-  if(empty($options['name']))
-  {
+function no_obj_text_area($options, $label=false) {
+  if(empty($options['name'])) {
     throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
   }
   $name = $options['name'];
- 
   $form = new FormHelper("", $name);
-  if(!$label)
-  {
+  if(!$label) {
     return $form->to_text_area_tag($options);;
-  }
-  else
-  {
+  } else {
     return make_label("", $options['name'], "", "") . $form->to_text_area_tag($options);  
   }
     
@@ -548,16 +526,14 @@ function no_obj_text_area($options, $label=false)
  *     <input name="puppy[gooddog]" type="hidden" value="no" />
    *  @uses FormHelper::to_check_box_tag()
  */
-function check_box($object, $field, $options = array(), $checked_value = "1", $unchecked_value = "0") 
-{
-    $form = new FormHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;  
-    return $form->to_check_box_tag($options, $checked_value, $unchecked_value);
+function check_box($object, $field, $options = array(), $checked_value = "1", $unchecked_value = "0")  {
+  $form = new FormHelper($object, $field);
+  $options['name']  = $object . "[" . $field . "]" ;
+  $options['id']    = $object . "_" . $field;  
+  return $form->to_check_box_tag($options, $checked_value, $unchecked_value);
 }
 
-function label_check_box($object, $field, $options = array(), $checked_value="1", $unchecked_value="0", $label_name="") 
-{
+function label_check_box($object, $field, $options = array(), $checked_value="1", $unchecked_value="0", $label_name="") {
   return make_label($object, $field, $label_name) . check_box($object, $field, $options, $checked_value, $unchecked_value); 
 }
 
@@ -604,8 +580,7 @@ function radio_button($object, $field, $tag_value, $options = array()) {
     return $form->to_radio_button_tag($tag_value, $options);
 }
 
-function label_radio_button($object, $field, $tag_value, $options = array(), $label_name="") 
-{
+function label_radio_button($object, $field, $tag_value, $options = array(), $label_name="")  {
   return make_label($object, $field, $label_name) . radio_button($object, $field, $tag_value, $options); 
 }
 
@@ -634,21 +609,5 @@ function no_obj_radio_button($options, $tag_value, $label=false)
   }    
 }
 
-/**
- *  Make a new FormHelper object and call its to_boolean_select_tag method
- *  @uses FormHelper::to_boolean_select_tag()
- */
- /* REMOVED
-function boolean_select($object, $field, $options = array()) {
-    $form = new FormHelper($object, $field);
-    return $form->to_boolean_select_tag($options);        
-}
-*/
-// -- set Emacs parameters --
-// Local variables:
-// tab-width: 4
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:
+
 ?>
