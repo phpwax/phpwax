@@ -15,8 +15,8 @@ development:
   host: localhost
   port: 3306
   database: wax_development
-  username: wax
-  password: wax
+  username: root
+  password: blackbeti
 
  cache_actions:no
  cache_config: no

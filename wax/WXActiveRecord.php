@@ -1,4 +1,5 @@
 <?php
+require_once "WXValidations.php";
 
 /*
  * @package wx.php.core
@@ -12,7 +13,7 @@
  *  active record
  *  @package wx.php.core
  */
-class WXActiveRecord
+class WXActiveRecord extends WXValidations
 {
 	protected static $default_pdo = null;
 	protected $pdo = null;
@@ -109,7 +110,9 @@ class WXActiveRecord
 			$class_name = $this->camelize( $name);
       if(class_exists( $class_name, false)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
-      }
+      } else {
+				throw new WXActiveRecordException("Can't access property '{$class_name}' - Maybe the class or table doesn't exist");
+			}
     }
 
     return null;
@@ -168,10 +171,15 @@ class WXActiveRecord
 	
 	public function query( $sql, $type="one" )
 	{
-		$sth = $this->pdo->prepare( $sql );
-		$binding_params = $this->_makeBindingParams( $this->constraints );
-		if($binding_params) {
-			$sth->execute($binding_params);
+		try {
+			$sth = $this->pdo->prepare( $sql );
+			$binding_params = $this->_makeBindingParams( $this->constraints );
+			if($binding_params) {
+				$sth->execute($binding_params);
+			}
+		} catch(PDOException $e) {
+			$err = $this->pdo->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
 		}
 		if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
@@ -237,6 +245,10 @@ class WXActiveRecord
      *  insert record to table, or update record data
      */
 	public function save() {
+		$this->validations();
+		if(!$this->validate()) {
+			return false;
+		}
 		$this->before_save();
   	if( $this->row['id'] ) {
     	$i = $this->update();
@@ -452,7 +464,12 @@ class WXActiveRecord
 		}
 		else
 		{
-  	  $sql .= "WHERE id='$params[find_id]' ";	
+			if( $where ) {
+      	$sql .= " AND ({$params['find_id']})";
+      } else {
+        $sql .= " WHERE {$params['find_id']}";
+        $where = true;
+      }
 		}
 		
 		if( $params["sql"]) {
@@ -505,10 +522,17 @@ class WXActiveRecord
 	*  These are left deliberately empty in the base class
 	*  
 	*/	
-	public function specification() {}
 	public function before_save() {}
 	public function after_save() {}
-
+	
+	public function is_posted() {
+		if(is_array($_POST[$this->underscore(get_class($this))])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public function __call( $func, $args ) {
 		$what=substr( $func, 6 );
 		$what=explode("And", $what);
@@ -527,7 +551,5 @@ class WXActiveRecord
   }
 
 }
-
-function add_spec($name) {}
 
 ?>

@@ -305,7 +305,7 @@ function make_label($object, $field, $label_name="", $spacer = "_")
     $label_name = $field;
   }
   
-  return "<label for=\"" . $label_for. "\">" . $label_name  . "</label>";
+  return "<label for=\"" . $label_for. "\">" . ucfirst($label_name)  . "</label><br />";
 }
 
 /**
@@ -590,21 +590,15 @@ function label_radio_button($object, $field, $tag_value, $options = array(), $la
   * options is now required 
   * if options[name] is missing then exception is thrown
   */
-function no_obj_radio_button($options, $tag_value, $label=false)
-{
-  if(empty($options['name']))
-  {
+function no_obj_radio_button($options, $tag_value, $label=false) {
+  if(empty($options['name'])) {
     throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
   }
   $name = $options['name'];
- 
-  $form = new FormHelper("", $name);
-  if(!$label)
-  {
+ 	$form = new FormHelper("", $name);
+  if(!$label) {
     return $form->to_radio_button_tag($tag_value, $options);
-  }
-  else
-  {
+  } else {
     return make_label("", $options['name'], "", "") . $form->to_radio_button_tag($tag_value, $options);
   }    
 }

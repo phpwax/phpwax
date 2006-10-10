@@ -1,4 +1,5 @@
 <?php
+
 class WXValidations
 {
   /**
@@ -9,19 +10,21 @@ class WXValidations
    *	
 	*/
 	protected $fixed_validations = array(
-		'email'                   	=> '^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$',
-	  'uk_postcode'               => '^(GIR0AA)|(TDCU1ZZ)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))[0-9][ABD-HJLNP-UW-Z]{2})$',
-	  'usa_zipcode'               => '[[:digit:]]{5}(-[[:digit:]]{4})?',
-	  'usa_date'                  => '([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',
-	  'uk_date'                   => '([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})',
-	  'number'                    => '^[+-]?[0-9]*\.?[0-9]+$',
-	  'currency'                  => '^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$',
-    'simple_phone_number'       =>'^[[:digit:]]{6,20}',
-    'printable'                 => '^[[:print:]]{1}',
-    'national_insurance_number' => '^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$'
+		'email'                   	=> '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/',
+	  'uk_postcode'               => '/^(GIR0AA)|(TDCU1ZZ)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))[0-9][ABD-HJLNP-UW-Z]{2})$/',
+	  'usa_zipcode'               => '/[[:digit:]]{5}(-[[:digit:]]{4})?/',
+	  'usa_date'                  => '/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/',
+	  'uk_date'                   => '/([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})/',
+	  'number'                    => '/^[+-]?[0-9]*\.?[0-9]+$/',
+	  'currency'                  => '/^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/',
+    'simple_phone_number'       => '/^[[:digit:]]{6,20}/',
+    'printable'                 => '/^[[:print:]]{1}/',
+    'national_insurance_number' => '/^[A-CEGHJ-PR-TW-Z]{1}[A-CEGHJ-NPR-TW-Z]{1}[0-9]{6}[A-DFM]{0,1}$/'
   );
               	                        
 	protected $extra_validations = array();
+	protected $validations = array();
+	protected static $errors = array();
 	
 	
 	
@@ -56,5 +59,45 @@ class WXValidations
       $this->extra_validations[$field] = $value;
   	}
 	}
+	
+	public function get_errors() {
+		return self::$errors;
+	}
+	
+	protected function validate() {
+		if(count(self::$errors) <1) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected function add_error($field, $message) {
+		self::$errors[]=array("field"=>$field, "message"=>$message);
+	}
+	
+	protected function valid_format($field, $format, $message="Is an invalid format", $optional=true) {
+		if(strlen($this->{$field})<1) {
+			$this->valid_required($field);
+			return false;
+		}
+		if(array_key_exists($format, $this->fixed_validations)) {
+			$format = $this->fixed_validations[$format];
+		}
+		if(preg_match($format, $this->{$field})) {
+			return true;
+		} else {
+			$this->add_error($field, $message);
+			return false;
+		}
+	}
+	
+	protected function valid_required($field, $message="Is a required field") {
+		if(strlen($this->{$field}) < 1 ) {
+			$this->add_error($field, $message);
+			return false;
+		}
+	}
+	
+	protected function validations() {}
 	
 }

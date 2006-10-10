@@ -1,11 +1,10 @@
 <?php
 class User extends WXActiveRecord 
 {
-	var $children = array("article");
-	
-	public function specifications() {
-		$this->add_spec('name', true);
-		$this->add_spec('email', WXSpec::email);
+	public function validations() {
+		$this->valid_format("email", "email", false);
+		$this->valid_required("name");
+		//$this->valid_unique("email", "email");
 	}
 	
 }

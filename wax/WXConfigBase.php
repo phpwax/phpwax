@@ -97,7 +97,7 @@ class WXConfigBase
 		}
 		
 		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
     	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
     }

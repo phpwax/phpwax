@@ -1,8 +1,7 @@
 <?php
-require "WXValidations.php";
 class WXSpecificationBase extends WXValidations
 {
-	$specification = null;
+	public $specification = null;
 		
 	public function is_satisfied_by($value, $specification) {
 		if($value === $specification) {

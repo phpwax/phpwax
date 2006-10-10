@@ -1,5 +1,6 @@
-<h1>index.html</h1>
-
-<?= $hello?><br />
-<br />
-<?= $hello2?>
+<h1>Add a new article</h1>
+<?=error_messages_for("User")?>
+<form action="" method="post">
+  <?= label_text_field('user', 'name')?>
+  <input type="submit" value="Go" />
+</form>

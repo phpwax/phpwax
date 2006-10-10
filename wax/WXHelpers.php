@@ -220,7 +220,16 @@ class WXHelpers {
      */    
     function to_content_tag($tag_name, $options = array()) {
         return $this->content_tag($tag_name, $this->value(), $options);
-    }     
+    }
+
+    function error_messages_for($object) {
+			$class= new $object;
+			$errors = $class->get_errors();
+			foreach($errors as $error) {
+				$html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_error"));
+			}
+			return $this->content_tag("ul", $html, array("class"=>"user_errors"));
+		}
 
 }
 
@@ -266,6 +275,12 @@ function cdata_section() {
     $helper = new WXHelpers();
     $args = func_get_args();
     return call_user_func_array(array($helper, 'cdata_section'), $args);
+}
+
+function error_messages_for($object) {
+	$helper = new WXHelpers();
+  $args = func_get_args();
+  return call_user_func_array(array($helper, 'error_messages_for'), $args);
 }
 
 Autoloader::include_dir(dirname(__FILE__).'/helpers');
