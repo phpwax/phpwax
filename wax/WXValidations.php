@@ -75,7 +75,7 @@ class WXValidations
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	
-	protected function valid_format($field, $format, $message="Is an invalid format", $optional=true) {
+	protected function valid_format($field, $format, $message="is an invalid format", $optional=true) {
 		if(strlen($this->{$field})<1) {
 			$this->valid_required($field);
 			return false;
@@ -91,9 +91,20 @@ class WXValidations
 		}
 	}
 	
-	protected function valid_required($field, $message="Is a required field") {
+	protected function valid_required($field, $message="is a required field") {
 		if(strlen($this->{$field}) < 1 ) {
 			$this->add_error($field, $message);
+			return false;
+		}
+	}
+	
+	protected function valid_length($field, $min, $max=0, $message_short="must be at least", $message_long="must be less than") {
+		if(strlen($this->{$field}) < $min && $min >0 ) {
+			$this->add_error($field, $message_short." {$min} characters");
+			return false;
+		}
+		if(strlen($this->{$field}) > $max && $max > 0 ) {
+			$this->add_error($field, $message_long." {$max} characters");
 			return false;
 		}
 	}
