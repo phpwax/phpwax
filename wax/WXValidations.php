@@ -117,7 +117,7 @@ class WXValidations
 		}
 		$class = get_class($this);
 		$obj = new $class;
-		if($obj->find_all(array("conditions"=>"{$field}={$this->{$field}}"))) {
+		if($obj->find_all(array("conditions"=>"{$field}='{$this->{$field}}'"))) {
 			$this->add_error($field, $message);
 			return false;
 		}

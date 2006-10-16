@@ -1,8 +1,13 @@
-<h1>Add a new article</h1>
+<h1>Add a new user</h1>
 <?=error_messages_for("User")?>
 <form action="" method="post">
-  <?= label_text_field('user', 'name')?>
+  <?= label_text_field('user', 'name')?><br />
+  <?= label_text_field('user', 'email')?><br />
+  <?= label_password_field('user', 'password')?><br />
   <input type="submit" value="Go" />
 </form>
 
 <?=$hello?>
+<pre>
+<?print_r(get_declared_classes());?>
+</pre>

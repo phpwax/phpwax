@@ -1,3 +1,3 @@
 <?
-//AutoLoader::add_plugin_directory();
+AutoLoader::add_plugin_directory("cms");
 ?>

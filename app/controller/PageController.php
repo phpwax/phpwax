@@ -7,7 +7,6 @@ class PageController extends ApplicationController
 		if($user->is_posted() && $user->update_attributes($_POST['user'])) {
 			$this->redirect_to("/success");
 		}
-		
 	}	
 	
 	public function success() {

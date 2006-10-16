@@ -160,7 +160,10 @@ class ApplicationBase
   		
   	//if there's no page_content then create it 	
   	if(!$page_output) {
-  		$tpl=new WXTemplate;			
+  		$tpl=new WXTemplate;
+			if($cnt->use_plugin) {
+				$tpl->view_base = PLUGIN_DIR.$cnt->use_plugin."/view/";
+			}
   		$tpl->urlid=$cnt->action;
       foreach(get_object_vars($cnt) as $var=>$val) {
         $tpl->{$var}=$val;

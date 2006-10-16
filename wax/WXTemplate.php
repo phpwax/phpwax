@@ -12,6 +12,7 @@ class WXTemplate
 	public $layout_content;
 	public $view_content;
 	public $preserve_buffer = null;
+	public $view_base = null; 
 	
 	public function __construct($preserve_buffer = null) {
 		if($preserve_buffer) {
@@ -22,7 +23,13 @@ class WXTemplate
 	public function parse( $pFile ) {
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
-		$pFile = VIEW_DIR.$pFile;
+		if(is_readable(VIEW_DIR.$pFile)) {
+			$pFile = VIEW_DIR.$pFile;
+		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
+			$pFile = $this->view_base.$pFile;
+		} else {
+			$pFile = VIEW_DIR.$pFile;
+		}
 		extract((array)$this);
 		if(!is_readable($pFile)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");
@@ -46,8 +53,7 @@ class WXTemplate
 	}
 	
 	public function execute() {
-		$this->content_for_layout = $this->parse($this->view_path);
-		
+		$this->content_for_layout = $this->parse($this->view_path);		
 		$this->layout_content = $this->content_for_layout;
 		if($this->layout_path) {
 			return $this->parse($this->layout_path);

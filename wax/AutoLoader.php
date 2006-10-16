@@ -83,10 +83,9 @@ class AutoLoader
 	static public function add_plugin_directory($directory="./") 
 	{
     self::$plugin_array[]=$directory;
-    $directory  = PLUGIN_DIR . $directory;
+    $directory  = PLUGIN_DIR . $directory. "/lib/";
     $included   = true;
-    $plugins    = glob($directory . "*.php");
-    
+    $plugins    = glob($directory  ."*.php");    
     if(empty($plugins)){return false;}
     
     foreach($plugins as $file)
@@ -99,7 +98,6 @@ class AutoLoader
   		{
   			throw new WXException("Cannot include file - ".$include);
   		}
-      
     }      
 	}
 	

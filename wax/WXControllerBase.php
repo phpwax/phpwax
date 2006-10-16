@@ -22,7 +22,7 @@ abstract class WXControllerBase extends ApplicationBase
 	protected $user_errors=array();
 	protected $show_errors=true;
 	protected $show_messages=true;
-	protected $helpers=array();
+	protected $use_plugin=false;
 	public $body_js_files=array();
 	
 	/**
@@ -189,14 +189,7 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function filter_routes() {
-			if(array_key_exists( $this->route_array[0], $this->helpers) ) {
-				return false;
-			}
-			if(count($this->route_array)>$this->accept_routes) {
-				throw new WXException("No Action Defined", "Missing Action");
-			}
-   }
+	protected function filter_routes() {}
 	
 	/**
 	 * method overloading function
