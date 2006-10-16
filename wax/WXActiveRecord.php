@@ -28,7 +28,7 @@ class WXActiveRecord extends WXValidations
   *                          or record id (if integer),
   *                          or constraints (if array) but param['pdo'] is PDO instance
   */
-	function __construct( $param = null ) {
+	function __construct($param=null) {
 		$this->pdo = self::$default_pdo;
 		$class_name =  get_class($this) ;
 		
@@ -37,13 +37,14 @@ class WXActiveRecord extends WXValidations
 		}
 		
 		switch(true) {
-			case is_numeric($param) || is_string($param):
-				if( ! $this->_find( $param ) ) {
-        	throw new WXActiveRecordException('Fail to construct by record id.');
-        }
+			case is_numeric($param):			
+			case is_string($param):
+				$this->_find( $param );
+				break;
 			case strtolower( get_class( $param ) ) == 'pdo':
 				$this->pdo = $param;
 			default:
+				break;
 			
 		}
 	}
@@ -180,14 +181,15 @@ class WXActiveRecord extends WXValidations
 		} catch(PDOException $e) {
 			$err = $this->pdo->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
-		}
+		}			
 		if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-		if($type="all") {
+		
+		if($type=="all") {
 			return $sth->fetchAll( PDO::FETCH_ASSOC );
-		} else {
+		} else {			
 			return $sth->fetch( PDO::FETCH_ASSOC );
 		}
 	}
@@ -204,8 +206,10 @@ class WXActiveRecord extends WXValidations
 		$params['find_id'] = $id;
 		$sql = $this->build_query($params);
 		$row = $this->query($sql, "one");
-		if(!$row) return false;
-		$this->row = $row[0];
+		if(!$row) {
+			return false;
+		}
+		$this->row = $row;
  		return true;
   }
 
@@ -465,9 +469,9 @@ class WXActiveRecord extends WXValidations
 		else
 		{
 			if( $where ) {
-      	$sql .= " AND ({$params['find_id']})";
+      	$sql .= " AND (`id`={$params['find_id']})";
       } else {
-        $sql .= " WHERE {$params['find_id']}";
+        $sql .= " WHERE `id`={$params['find_id']}";
         $where = true;
       }
 		}

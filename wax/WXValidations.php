@@ -61,7 +61,9 @@ class WXValidations
 	}
 	
 	public function get_errors() {
-		return self::$errors;
+		$ret = self::$errors;
+		self::$errors=array();
+		return $ret;
 	}
 	
 	protected function validate() {
@@ -71,7 +73,7 @@ class WXValidations
 		return false;
 	}
 	
-	protected function add_error($field, $message) {
+	public function add_error($field, $message) {
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	
@@ -105,6 +107,18 @@ class WXValidations
 		}
 		if(strlen($this->{$field}) > $max && $max > 0 ) {
 			$this->add_error($field, $message_long." {$max} characters");
+			return false;
+		}
+	}
+	
+	protected function valid_unique($field, $message="is already taken") {
+		if(!$this->{$field}) {
+			return false;
+		}
+		$class = get_class($this);
+		$obj = new $class;
+		if($obj->find_all(array("conditions"=>"{$field}={$this->{$field}}"))) {
+			$this->add_error($field, $message);
 			return false;
 		}
 	}
