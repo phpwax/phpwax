@@ -123,6 +123,7 @@ class ApplicationBase
 	  if(strlen($this->action)<1) { $this->action="index"; }
 	  try {
 	  	$cnt=new $controller();
+			$cnt->controller = $this->controller;
 	    $cnt->set_routes($final_route);
 	    $cnt->set_action($this->action);
 	    $cnt->controller_global();
