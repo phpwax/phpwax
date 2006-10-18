@@ -3,7 +3,7 @@ php_value error_reporting 247
 
 RewriteEngine On
 # If you're working on your own server, don't forget to rewrite this
-#RewriteBase /you
+RewriteBase /
 
 RewriteRule ^$ index.html [QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
