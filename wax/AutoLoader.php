@@ -8,7 +8,6 @@
 /**
  *	Defines application level constants
  */
-define('FRAMEWORK_DIR', WAX_ROOT . "wax");
 define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
