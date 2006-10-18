@@ -3,7 +3,7 @@
 //define('WAX_EDGE', 'true');
 
 define('WAX_VERSION', '0.6');
-define('WAX_ROOT', dirname(dirname(dirname(__FILE__))) );
+define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
 if(defined("WAX_EDGE")) {
 	ini_set('include_path', ini_get("include_path").":/home/waxphp/trunk");
 	define('FRAMEWORK_DIR', "/home/waxphp/trunk/wax");
