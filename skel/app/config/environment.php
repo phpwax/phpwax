@@ -9,7 +9,7 @@ if(defined("WAX_EDGE")) {
 	define('FRAMEWORK_DIR', "/home/waxphp/trunk/wax");
 } else {
 	ini_set('include_path', ini_get("include_path").":/home/waxphp/tags/".WAX_VERSION);
-	define('FRAMEWORK_DIR', "/home/waxphp/trunk/tags/".WAX_VERSION."/wax");
+	define('FRAMEWORK_DIR', "/home/waxphp/tags/".WAX_VERSION."/wax");
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
 
