@@ -14,9 +14,9 @@ development:
   dbtype: mysql
   host: localhost
   port: 3306
-  database: wax_development
+  database: _development
   username: root
-  password: blackbeti
+  password: 
 
  cache_actions:no
  cache_config: no
@@ -26,14 +26,14 @@ development:
 
 test:
   db:
-    database: wax_test
+    database: _test
 
 production: 
   db: 
-    database: wax_production
+    database: _production
   cache_actions: yes
   cache_config: yes
 
 # Users are made available for the YAMLAuthorise technique. Use for simple authentication.
 users:
-  joet: password
+  user: password
