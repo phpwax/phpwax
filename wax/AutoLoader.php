@@ -57,25 +57,23 @@ class AutoLoader
  */
   static $plugin_array=array(); 
  
-	static public function include_dir($dir) 
-	{
+	static public function include_dir($dir) {
   	//get a list of any classes included within the plugins directory
-  	$pluginClasses = get_declared_classes();
-  	  
+  	$pluginClasses = get_declared_classes();	  
 		$fileArray=scandir($dir);
 	  foreach($fileArray as $file) {
-			if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)  ) 
-			{ 
-  			$className = str_ireplace(".php", "", $match[0]);
-  			
-  			if( !in_array($className, $pluginClasses) && !class_exists($className) )
-  			{
-  				if(!require_once($dir."/".$match[0])) 
-  				{
-  					throw new WXException("Cannot include file - ".$include);
-  				}
-				}//end class exist check
-			}//end preg match
+			if(is_dir($dir.$file) && substr($file,0,1)!="." ) {
+				self::include_dir($dir.$file);
+			} else {
+				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)  ) { 
+  				$className = str_ireplace(".php", "", $match[0]);
+  				if( !in_array($className, $pluginClasses) && !class_exists($className) ) {
+  					if(!require_once($dir."/".$match[0])) {
+  						throw new WXException("Cannot include file - ".$include);
+  					}
+					}//end class exist check
+				}//end preg match
+			} //end if is_dir
 	  }//end foreach
 		return true;
 	}

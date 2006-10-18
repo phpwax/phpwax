@@ -85,10 +85,10 @@ class ApplicationBase
    *  @return void
    */
 	private function load_config() {
-		if(!$this->config_object) { $this->config_object=new WXConfigBase; }
 		$route=new WXroute;		
-		$this->controller=$route->make_controller_route();		
+		$this->controller=$route->make_controller_route();
 		$this->actions=$route->read_actions();		
+		$this->inspect($this->actions);
   }
 	
 	/**
@@ -98,12 +98,9 @@ class ApplicationBase
    *  @return array
    */
 	protected function fetch_config($config) {
-		$this->load_config();
-		if($this->config_object) {
-		return $this->config_object->return_config($config);	
-		} else {
-			return false;
-		}
+		$obj = new WXConfigBase;
+		return $obj->return_config($config);	
+		return false;
 	}
 		
 	/**
@@ -116,7 +113,13 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
-	  $controller=ucfirst($this->controller)."Controller";
+		if(strpos($this->controller, "/")) {
+			$name ="_".str_replace('/', ' ', strtolower($this->controller));
+      $controller = ltrim(str_replace(' ', '', ucwords($name)), '_');
+			$controller = ucfirst($controller)."Controller";
+		} else {
+	  	$controller=ucfirst($this->controller)."Controller";
+		}
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
