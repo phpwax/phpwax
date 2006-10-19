@@ -9,7 +9,8 @@ class {$controller_name}Controller extends ApplicationController
 }
 ?>
 ";
-system('echo "{$content}" > $cntdir.$controller_name.php');
+$command = "echo \"".$content."\" > ".$cntdir.$controller_name.".php";
+system($command);
 
 
 ?>
