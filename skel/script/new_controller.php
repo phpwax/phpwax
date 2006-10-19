@@ -19,7 +19,8 @@ class {$controller_name}Controller extends ApplicationController
 ?>
 ";
 if(is_readable($cntdir.$controller_name."Controller.php")) {
-  exit("[ERROR] Not written, a controller of that name already exists");
+  exit("[ERROR] Not written, a controller of that name already exists.
+");
 }
 $command = "echo ".'"'.$content.'"'." > ".$cntdir.$controller_name."Controller.php";
 system($command);

@@ -14,7 +14,8 @@ class Test{$test_name} extends WXTestCase
 ?>
 ";
 if(is_readable($testdir."Test".$test_name.".php")) {
-  exit("[ERROR] Not written, a test of that name already exists");
+  exit("[ERROR] Not written, a test of that name already exists.
+");
 }
 $command = "echo ".'"'.$content.'"'." > ".$testdir."Test".$test_name.".php";
 system($command);

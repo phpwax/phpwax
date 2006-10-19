@@ -10,7 +10,8 @@ class {$model_name} extends WXActiveRecord
 ?>
 ";
 if(is_readable($modeldir.$model_name.".php")) {
-  exit("[ERROR] Not written, a model of that name already exists");
+  exit("[ERROR] Not written, a model of that name already exists.
+");
 }
 $command = "echo ".'"'.$content.'"'." > ".$modeldir.$model_name.".php";
 system($command);
