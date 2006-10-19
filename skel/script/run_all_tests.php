@@ -1,6 +1,5 @@
 <?php
-define('WAX_ROOT', dirname(dirname(__FILE__)).'/');
-ini_set("include_path", ini_get("include_path").":".dirname(dirname(__FILE__)) );
+require_once '../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
 AutoLoader::include_dir(FRAMEWORK_DIR);
 $configFile=APP_DIR.'config/config.yml';
