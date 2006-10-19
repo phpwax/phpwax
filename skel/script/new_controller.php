@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 $cntdir = dirname(__FILE__).'/../app/controller/';
+$viewdir = dirname(__FILE__).'/../app/view/'.$argv[1];
 $controller_name = $argv[1];
 if(strpos($controller_name, "/")) {
 	$cont = explode("/", $controller_name);
@@ -19,6 +20,6 @@ class {$controller_name}Controller extends ApplicationController
 ";
 $command = "echo ".'"'.$content.'"'." > ".$cntdir.$controller_name."Controller.php";
 system($command);
-
+system("mkdir -p {$viewdir}");
 
 ?>
