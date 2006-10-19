@@ -5,15 +5,11 @@ $test_name = ucfirst($argv[1]);
 $content = "<?php
 class Test{$test_name} extends WXTestCase
 {
-	public function setUp() {
-		
-	}
+  public function setUp() {}
 	
-	public function tearDown() {
-		
-	}
-	
-	/* Add tests below here. all must start with the word 'test'
+  public function tearDown() {}
+
+  /* Add tests below here. all must start with the word 'test'
 }
 ?>
 ";
