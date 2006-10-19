@@ -9,10 +9,13 @@ class Test{$test_name} extends WXTestCase
 	
   public function tearDown() {}
 
-  /* Add tests below here. all must start with the word 'test'
+  /* Add tests below here. all must start with the word 'test' */
 }
 ?>
 ";
+if(is_readable($testdir."Test".$test_name.".php")) {
+  exit("[ERROR] Not written, a test of that name already exists");
+}
 $command = "echo ".'"'.$content.'"'." > ".$testdir."Test".$test_name.".php";
 system($command);
 
