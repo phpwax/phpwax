@@ -5,7 +5,7 @@ $controller_name = $argv[1];
 if(strpos($controller_name, "/")) {
 	$cont = explode($controller_name, "/");
 	$cntdir = $cntdir.$cont[0]."/";
-	system("mkdir -p {$cntdir}")
+	system("mkdir -p {$cntdir}");
 	$controller_name = ucfirst($cont[0]).ucfirst($cont[1]);
 }
 $content = "<?php
