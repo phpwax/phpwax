@@ -1,5 +1,6 @@
+#!/usr/bin/php
 <?php
-require_once '../app/config/environment.php';
+require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
 AutoLoader::include_dir(FRAMEWORK_DIR);
 $configFile=APP_DIR.'config/config.yml';
