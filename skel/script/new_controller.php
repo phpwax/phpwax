@@ -10,7 +10,6 @@ class {$controller_name}Controller extends ApplicationController
 ?>
 ";
 $command = "echo ".'"'.$content.'"'." > ".$cntdir.$controller_name.".php";
-echo $command; exit;
 system($command);
 
 
