@@ -13,4 +13,7 @@ system($command);
 $command = "ssh ".$deployment_settings['user']."@".$deployment_settings['server'];
 system($command);
 
+$command = "cd ".$deployment_settings['server_path'];
+system($command);
+
 ?>
