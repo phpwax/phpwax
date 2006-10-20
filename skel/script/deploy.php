@@ -16,4 +16,5 @@ if($deployment_settings['svn_user'] && $deployment_settings['svn_pass']) {
   $command .= " --username ".$deployment_settings['svn_user']." --password ".$deployment_settings['svn_pass'];
 }
 system($command);
+echo "Application successfully deployed to ".$deployment_settings['server'];
 ?>
