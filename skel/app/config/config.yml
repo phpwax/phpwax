@@ -37,3 +37,10 @@ production:
 # Users are made available for the YAMLAuthorise technique. Use for simple authentication.
 users:
   user: password
+  
+# Deployment settings are for the destination
+deploy:
+  server:     example.com
+  user:       _user_
+  svn_path: 
+  dest_path:  /
