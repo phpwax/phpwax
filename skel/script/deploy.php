@@ -12,6 +12,6 @@ system($command);
 
 $command = "ssh ".$deployment_settings['user']."@".$deployment_settings['server'];
 $command .= " cd ".$deployment_settings['server_path'];
-$command .= " && svn export ".$deployment_settings['svn_path']." --username ".$deployment_settings['svn_user']." --password ".$deployment_settings['svn_pass'];
+$command .= " && svn export ".$deployment_settings['svn_path']." --force --username ".$deployment_settings['svn_user']." --password ".$deployment_settings['svn_pass'];
 system($command);
 ?>
