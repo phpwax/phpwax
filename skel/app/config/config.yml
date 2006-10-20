@@ -41,6 +41,8 @@ users:
 # Deployment settings are for the destination
 deploy:
   server:       example.com
+  server_path:  /
   user:         _user_
   svn_path:   
-  server_path:  /
+  svn_user:
+  svn_pass:
