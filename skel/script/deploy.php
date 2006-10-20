@@ -16,4 +16,11 @@ system($command);
 $command = "cd ".$deployment_settings['server_path'];
 system($command);
 
+$command = "ls";
+system($command);
+
+$command = "exit";
+system($command);
+
+
 ?>
