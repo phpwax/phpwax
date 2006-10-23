@@ -239,58 +239,8 @@ class AssetTagHelper extends WXHelpers {
         return $this->tag("img", $options);
     }
     
-    /**
-     *  Returns a link tag that browsers and news readers can use to
-     *  auto-detect a RSS or ATOM feed for this page. The $type can 
-     *  either be <tt>:rss</tt> (default) or <tt>:atom</tt> and the
-     *  $options follow the url_for() style of declaring a link
-     *  target. 
-     *
-     *  Examples:
-     *  auto_discovery_link_tag  =>
-     *   <link rel="alternate" type="application/rss+xml" title="RSS"
-     *  href="http://www.curenthost.com/controller/action" /> 
-     *  auto_discovery_link_tag(:atom) =>
-     *   <link rel="alternate" type="application/atom+xml"
-     *  title="ATOM"
-     *  href="http://www.curenthost.com/controller/action" /> 
-     *  auto_discovery_link_tag(:rss, {:action => "feed"}) =>
-     *   <link rel="alternate" type="application/rss+xml" title="RSS"
-     *  href="http://www.curenthost.com/controller/feed" /> 
-     *  auto_discovery_link_tag(:rss, {:action => "feed"}, {:title =>
-     *  "My RSS"})  => 
-     *   <link rel="alternate" type="application/rss+xml" title="My
-     *  RSS" href="http://www.curenthost.com/controller/feed" /> 
-     *  @uses tag()
-     *  @uses url_for()
-     */
-    function auto_discovery_link_tag($type = 'rss', $options = array(),
-                                     $tag_options = array()) {
-        return $this->tag(
-          "link", array(
-                        "rel" => (array_key_exists('rel',$tag_options)
-                                  ? $tag_options['rel'] : "alternate"),
-                        "type" => (array_key_exists('type',$tag_options)
-                                   ? $tag_options['type']
-                                   : "application/{$type}+xml"),
-                        "title" => (array_key_exists('title',$tag_options)
-                                    ? $tag_options['title']
-                                    : strtoupper($type)),
-                        "href" => url_for(array_merge($options,
-                                         array('only_path' => false))))
-          );
-    }    
 }
 
-/**
- *  Make a new AssetTagHelper object and call its auto_discovery_link_tag() method
- *  @uses AssetTagHelper::auto_discovery_link_tag()
- */
-function auto_discovery_link_tag() {
-    $asset_helper = new AssetTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($asset_helper, 'auto_discovery_link_tag'), $args);
-}
 
 /**
  *  Make a new AssetTagHelper object and call its image_tag() method
