@@ -88,7 +88,6 @@ class ApplicationBase
 		$route=new WXroute;		
 		$this->controller=$route->make_controller_route();
 		$this->actions=$route->read_actions();		
-		$this->inspect($this->actions);
   }
 	
 	/**
