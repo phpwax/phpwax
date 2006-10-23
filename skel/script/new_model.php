@@ -15,5 +15,6 @@ if(is_readable($modeldir.$model_name.".php")) {
 }
 $command = "echo ".'"'.$content.'"'." > ".$modeldir.$model_name.".php";
 system($command);
-
+echo "Model class created in app/model.
+";
 ?>

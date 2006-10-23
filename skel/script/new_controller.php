@@ -25,5 +25,7 @@ if(is_readable($cntdir.$controller_name."Controller.php")) {
 $command = "echo ".'"'.$content.'"'." > ".$cntdir.$controller_name."Controller.php";
 system($command);
 system("mkdir -p {$viewdir}");
+echo "Controller class created in app/controller.
+";
 
 ?>

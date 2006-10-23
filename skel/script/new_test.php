@@ -19,5 +19,7 @@ if(is_readable($testdir."Test".$test_name.".php")) {
 }
 $command = "echo ".'"'.$content.'"'." > ".$testdir."Test".$test_name.".php";
 system($command);
+echo "Test class created in app/tests.
+";
 
 ?>
