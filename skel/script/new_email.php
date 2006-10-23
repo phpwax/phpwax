@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 $modeldir = dirname(__FILE__).'/../app/model/';
-$model_name = ucfirst($argv[1]);
+$model_name = ucfirst($argv[1])."Email";
 $content = "<?php
 class {$model_name} extends WXEmail
 {
