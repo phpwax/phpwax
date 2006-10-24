@@ -87,7 +87,8 @@ class ApplicationBase
 	private function load_config() {
 		$route=new WXroute;		
 		$this->controller=$route->make_controller_route();
-		$this->actions=$route->read_actions();		
+		$this->actions=$route->read_actions();
+		print_r($this->actions); exit;	
   }
 	
 	/**
@@ -126,7 +127,6 @@ class ApplicationBase
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
-	  print_r($this->actions); exit;
 	  $cnt->set_action($this->action);
 	  $cnt->controller_global();
 	  $cnt->before_action($cnt->action);
