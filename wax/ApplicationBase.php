@@ -73,9 +73,7 @@ class ApplicationBase
 		Session::start();
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
-    $_GET=$filter->process($_GET);
-    echo "Got Here"; exit;
-    		
+    $_GET=$filter->process($_GET);    		
     $this->controller_object=$this->load_controller();
     $this->create_page($this->controller_object);
   }
@@ -120,6 +118,8 @@ class ApplicationBase
 			$controller = ucfirst($controller)."Controller";
 		} else {
 	  	$controller=ucfirst($this->controller)."Controller";
+	  	echo "Got Here ($controller)"; exit;
+      
 		}
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
