@@ -531,7 +531,7 @@ class WXActiveRecord extends WXValidations implements iterator
    * @return void
    **/
   public function current() {
-    
+    return current($this->row);
   }
   
   /**
@@ -540,7 +540,7 @@ class WXActiveRecord extends WXValidations implements iterator
    * @return void
    **/
   public function key() {
-    
+    return key($this->row);
   }
   
   /**
@@ -549,7 +549,7 @@ class WXActiveRecord extends WXValidations implements iterator
    * @return void
    **/
   public function next() {
-    
+    return next($this->row);
   }
 	
 	/**
@@ -558,7 +558,7 @@ class WXActiveRecord extends WXValidations implements iterator
    * @return void
    **/
   public function rewind() {
-    
+    reset($this->row);
   }
   
   /**
