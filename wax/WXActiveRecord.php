@@ -13,7 +13,7 @@ require_once "WXValidations.php";
  *  active record
  *  @package wx.php.core
  */
-class WXActiveRecord extends WXValidations
+class WXActiveRecord extends WXValidations implements iterator
 {
 	protected static $default_pdo = null;
 	protected $pdo = null;
@@ -510,8 +510,7 @@ class WXActiveRecord extends WXValidations
     /**
      * Convert camelCaps to underscore_words.
      */
-    public function underscore($name)
-    {
+    public function underscore($name) {
         return strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $name));
     }
 
@@ -521,6 +520,55 @@ class WXActiveRecord extends WXValidations
 			}
 			return $this->save();
 		}
+		
+		public function describe() {
+      $fields = $this->find_by_sql("DESCRIBE `{$this->table}`");
+		}
+		
+  /**
+   * iterator function current
+   *
+   * @return void
+   **/
+  public function current() {
+    
+  }
+  
+  /**
+   * iterator function key
+   *
+   * @return void
+   **/
+  public function key() {
+    
+  }
+  
+  /**
+   * iterator function next
+   *
+   * @return void
+   **/
+  public function next() {
+    
+  }
+	
+	/**
+   * iterator function rewind
+   *
+   * @return void
+   **/
+  public function rewind() {
+    
+  }
+  
+  /**
+   * iterator function valid
+   *
+   * @return void
+   **/
+  public function valid() {
+    
+  }
 		
  /**
 	*  These are left deliberately empty in the base class
