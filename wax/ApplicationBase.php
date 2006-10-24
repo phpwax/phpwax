@@ -117,24 +117,18 @@ class ApplicationBase
       $controller = ltrim(str_replace(' ', '', ucwords($name)), '_');
 			$controller = ucfirst($controller)."Controller";
 		} else {
-	  	$controller=ucfirst($this->controller)."Controller";
-	  	echo "Got Here ($controller)"; exit;
-      
+	  	$controller=ucfirst($this->controller)."Controller";      
 		}
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
-	  try {
-	  	$cnt=new $controller();
-			$cnt->controller = $this->controller;
-	    $cnt->set_routes($final_route);
-	    $cnt->set_action($this->action);
-	    $cnt->controller_global();
-	  } catch(WXException $e) {
-     	$this->process_exception($e);
-    }
-		$cnt->before_action($cnt->action);
+	  $cnt=new $controller();
+		$cnt->controller = $this->controller;
+	  $cnt->set_routes($final_route);
+	  $cnt->set_action($this->action);
+	  $cnt->controller_global();
+	  $cnt->before_action($cnt->action);
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->after_action($cnt->action);
