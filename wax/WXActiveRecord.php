@@ -13,7 +13,7 @@ require_once "WXValidations.php";
  *  active record
  *  @package wx.php.core
  */
-class WXActiveRecord extends WXValidations implements iterator
+class WXActiveRecord extends WXValidations implements iterator, madeupinterface
 {
 	protected static $default_pdo = null;
 	protected $pdo = null;
