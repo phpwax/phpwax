@@ -28,7 +28,7 @@ class WXTemplate
 			$pFile = VIEW_DIR.$pFile;
 		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
 			$pFile = $this->view_base.$pFile;
-		} elseif($this->plugin_view_path)) {
+		} elseif($this->plugin_view_path) {
 		  $pFile = $this->view_base.$this->plugin_view_path.$pFile;
 		  echo "trying to find ".$this->view_base.$this->plugin_view_path.$pFile; exit;
 		} else {
