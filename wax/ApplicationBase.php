@@ -88,7 +88,6 @@ class ApplicationBase
 		$route=new WXroute;		
 		$this->controller=$route->make_controller_route();
 		$this->actions=$route->read_actions();
-		print_r($this->actions); exit;	
   }
 	
 	/**
@@ -121,6 +120,7 @@ class ApplicationBase
 	  	$controller=ucfirst($this->controller)."Controller";      
 		}
 	  $this->action=$this->actions[0];
+	  echo "Got Here ($controller : {$this->action})"; exit;
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
