@@ -14,6 +14,7 @@ if(is_dir(WAX_ROOT."wax")) {
 	define('FRAMEWORK_DIR', "/home/waxphp/tags/".WAX_VERSION."/wax");
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
+require_once(FRAMEWORK_DIR."/AutoLoader.php");
 
 /* Add your application level commands below here */
 
