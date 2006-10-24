@@ -126,8 +126,8 @@ class ApplicationBase
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
+	  print_r($this->actions); exit;
 	  $cnt->set_action($this->action);
-		echo "Got Here ($controller : {$this->action})"; exit;
 	  $cnt->controller_global();
 	  $cnt->before_action($cnt->action);
 		$cnt->{$cnt->action}();
