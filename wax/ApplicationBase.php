@@ -69,13 +69,14 @@ class ApplicationBase
    *  @return void
    */
 	function __construct() {
-		$this->load_config();		
+		$this->load_config();
+		echo "Got Here"; exit;
+    		
 		Session::start();
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);		
     $this->controller_object=$this->load_controller();
-    echo "Got Here"; exit;
     $this->create_page($this->controller_object);
   }
 
