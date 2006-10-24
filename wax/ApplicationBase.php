@@ -184,6 +184,7 @@ class ApplicationBase
   		}
   		if($cnt->use_plugin) {
   		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
+  		  echo "Setting plugin_view_path to ".get_parent_class($cnt)."/".$use_view.".html";
   		}
   		$tpl->view_path=$view_path;
 
