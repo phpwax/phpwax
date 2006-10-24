@@ -120,7 +120,6 @@ class ApplicationBase
 	  	$controller=ucfirst($this->controller)."Controller";      
 		}
 	  $this->action=$this->actions[0];
-	  print_r($this->actions); exit;
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
