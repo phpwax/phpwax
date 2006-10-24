@@ -122,14 +122,14 @@ class ApplicationBase
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
-	  if(!$this->action || strlen($this->action)<1) { $this->action="index"; }
+	  if(strlen($this->action)<1) { $this->action="index"; }
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
 	  $cnt->set_action($this->action);
 	  $cnt->controller_global();
 	  $cnt->before_action($cnt->action);
-		echo "Got Here ($controller : $action)"; exit;
+		echo "Got Here ($controller : {$cnt->action})"; exit;
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->after_action($cnt->action);
