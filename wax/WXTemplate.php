@@ -36,7 +36,8 @@ class WXTemplate
 		extract((array)$this);
 		if(!is_readable($pFile)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");
-		}		
+		}
+		echo "including ".$pFile; exit;		
 		if(!include($pFile) ) {
 			throw new WXUserException("PHP parse error in $pFile");
 		}
@@ -46,8 +47,7 @@ class WXTemplate
 			echo $buffer;
 			return $content;
 		} else {
-		
-			return ob_get_clean();
+		  return ob_get_clean();
 		}
 	}
 	
