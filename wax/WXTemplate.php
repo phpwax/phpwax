@@ -8,6 +8,7 @@ class WXTemplate
 {
 	public $layout_path = null;
 	public $view_path;
+	public $plugin_view_path=null;
   public $content_for_layout;
 	public $layout_content;
 	public $view_content;
@@ -27,6 +28,8 @@ class WXTemplate
 			$pFile = VIEW_DIR.$pFile;
 		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
 			$pFile = $this->view_base.$pFile;
+		} elseif($this->plugin_view_path && is_readable($this->plugin_view_path.$pFile)) {
+		  $pFile = $this->plugin_view_path.$pFile;
 		} else {
 			$pFile = VIEW_DIR.$pFile;
 		}

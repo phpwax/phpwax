@@ -182,6 +182,9 @@ class ApplicationBase
   		} else { 
   			$view_path=$this->controller."/".$use_view.".html"; 
   		}
+  		if($cnt->use_plugin) {
+  		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
+  		}
   		$tpl->view_path=$view_path;
 
       if($cnt->use_layout) {
