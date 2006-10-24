@@ -30,7 +30,6 @@ class WXTemplate
 			$pFile = $this->view_base.$pFile;
 		} elseif($this->plugin_view_path) {
 		  $pFile = $this->view_base.$this->plugin_view_path;
-		  echo "trying to find ".$pFile; exit;
 		} else {
 			$pFile = VIEW_DIR.$pFile;
 		}
