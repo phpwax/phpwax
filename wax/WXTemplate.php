@@ -29,6 +29,7 @@ class WXTemplate
 		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
 			$pFile = $this->view_base.$pFile;
 		} elseif($this->plugin_view_path && is_readable($this->plugin_view_path.$pFile)) {
+		  echo "Looking in ".$this->plugin_view_path.$pFile;
 		  $pFile = $this->plugin_view_path.$pFile;
 		} else {
 			$pFile = VIEW_DIR.$pFile;
