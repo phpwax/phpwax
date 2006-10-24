@@ -75,6 +75,7 @@ class ApplicationBase
     $_POST=$filter->process($_POST);
     $_GET=$filter->process($_GET);		
     $this->controller_object=$this->load_controller();
+    echo "Got Here"; exit;
     $this->create_page($this->controller_object);
   }
 
