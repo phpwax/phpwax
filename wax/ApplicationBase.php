@@ -122,7 +122,7 @@ class ApplicationBase
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
-	  if(strlen($this->action)<1) { $this->action="index"; }
+	  if(!$this->action || strlen($this->action)<1) { $this->action="index"; }
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
