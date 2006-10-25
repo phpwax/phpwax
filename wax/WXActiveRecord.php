@@ -522,7 +522,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		}
 		
 		public function describe() {
-      $fields = $this->find_by_sql("DESCRIBE `{$this->table}`");
+      return $this->find_by_sql("DESCRIBE `{$this->table}`");
 		}
 		
   /**
