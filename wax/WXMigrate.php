@@ -29,13 +29,59 @@ class WXMigrate
   }
   
   protected function create_schema() {
-    $this->pdo->query("CREATE TABLE `migration_info` (`version` INT(7) unsigned NOT NULL default '0', PRIMARY KEY  (`version`))");
-    $this->pdo->query("INSERT INTO `migration_info` (`version`) VALUES (0)");    
+    $this->pdo->query("CREATE TABLE `migration_info` (`version` INT(7) unsigned NOT NULL default '0', 
+                      `version_latest` INT(7) unsigned NOT NULL default '0', PRIMARY KEY  (`version`))");
+    $this->pdo->query("INSERT INTO `migration_info` (`version`, `version_latest`) VALUES (0,0)");    
   }
   
   protected function get_version() {
+    $row = $this->pdo->query("SELECT version FROM migration_info")->fetch();
+    return $row['version'];
+  }
+  
+  protected function set_version($version) {
+    if($version > 0) {
+      return false;
+    }
+    $this->pdo->query("UPDATE migration_info SET version=".$version);
+  }
+  
+  protected function increase_version() {
+    $version = get_version() + 1;
+    $this->pdo->query("UPDATE migration_info SET version=".$version);
+  }
+  
+  protected function decrease_version() {
+    if(get_version()>0) {
+      $version = get_version() - 1;
+      $this->pdo->query("UPDATE migration_info SET version=".$version);
+    }
+  }
+  
+  public function get_version_latest() {
+    $row = $this->pdo->query("SELECT version_latest FROM migration_info")->fetch();
+    return $row['version_latest'];
+  }
+  
+  public function create_migration($name) {
+    $latest_ver = get_version_latest() + 1;
+    $this->pdo->query("UPDATE migration_info SET version_latest=".$latest_ver);
+    $name = WXActiveRecord::camelize($name);
+    $text="<?php
+class {$name} extends WXMigrate
+{
+  public function up() {
     
   }
+  
+  public function down() {
+    
+  }
+}
+?>";
+  return $text;
+  }
+  
 }
 
 

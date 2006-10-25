@@ -1,0 +1,25 @@
+#!/usr/bin/php
+<?php
+if(!isset($argv[1]) ) {
+  exit("[ERROR] You must supply a migration name that you wish to create. 
+");
+}
+require_once dirname(__FILE__).'/../app/config/environment.php';
+$dbdir = dirname(__FILE__).'/../app/db/migrate/';
+if(!is_dir($dbdir)) {
+  $command = "mkdir -p $dbdir";
+  system($command);
+}
+
+
+$migrate = new WXMigrate;
+$new_version=$migrate->get_version_latest() + 1;
+$new_version = str_pad($new_version, 3, "0", STR_PAD_LEFT);
+$code = $migrate->create_migration($argv[1]);
+$filename = $new_version."_".strtolower($argv[1]);
+$command = "echo $code > $dbdir".$filename;
+system($command);
+echo "Migration class created in app/db/migrate.
+";
+
+?>
