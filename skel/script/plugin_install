@@ -17,6 +17,7 @@ if($argv[1]=="list") {
     echo $plugin."
 ";
   }
+  exit;
 }
 if(!array_key_exists($argv[1], $plugin_array)) {
   exit("[ERROR] Plugin not found.
