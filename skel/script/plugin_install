@@ -7,12 +7,12 @@ $plugin_array = array(
 $output_dir = WAX_ROOT."plugins/";
 if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a plugin name that you wish to install. 
-Type 'script/plugin_install.php list' to see available plugins.
+Type 'script/plugin_install list' to see available plugins.
 ");
 }
 if(!in_array($argv[1], $plugin_array)) {
   exit("[ERROR] Plugin not found.
-Type 'script/plugin_install.php list' to see available plugins.
+Type 'script/plugin_install list' to see available plugins.
 ");
 }
 exit("Success");
