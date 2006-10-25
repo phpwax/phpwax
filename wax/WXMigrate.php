@@ -82,6 +82,14 @@ class {$name} extends WXMigrate
   return $text;
   }
   
+  public function migrate($directory) {
+    $migrations=scandir($dir);
+    foreach($migrations as $migration) {
+      $ver = substr($migration, 0 , strpos($migration, "_")-1);
+      echo intval($ver);
+    }
+  }
+  
 }
 
 
