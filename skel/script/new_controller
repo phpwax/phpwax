@@ -1,5 +1,9 @@
 #!/usr/bin/php
 <?php
+if(!isset($argv[1]) ) {
+  exit("[ERROR] You must supply a controller name that you wish to create. 
+");
+}
 $cntdir = dirname(__FILE__).'/../app/controller/';
 $viewdir = dirname(__FILE__).'/../app/view/'.$argv[1];
 $controller_name = $argv[1];

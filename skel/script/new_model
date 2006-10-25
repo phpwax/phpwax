@@ -1,5 +1,9 @@
 #!/usr/bin/php
 <?php
+if(!isset($argv[1]) ) {
+  exit("[ERROR] You must supply a model name that you wish to create. 
+");
+}
 $modeldir = dirname(__FILE__).'/../app/model/';
 $model_name = ucfirst($argv[1]);
 $content = "<?php
