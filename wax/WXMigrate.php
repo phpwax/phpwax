@@ -64,7 +64,7 @@ class WXMigrate
   }
   
   public function create_migration($name) {
-    $latest_ver = get_version_latest() + 1;
+    $latest_ver = $this->get_version_latest() + 1;
     $this->pdo->query("UPDATE migration_info SET version_latest=".$latest_ver);
     $name = WXActiveRecord::camelize($name);
     $text="<?php
