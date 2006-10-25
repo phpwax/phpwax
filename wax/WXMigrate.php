@@ -24,8 +24,8 @@ class WXMigrate
       if($table[0] == "migration_info") {
         return true;
       }
-      return false;
     }
+    return false;
   }
   
   protected function create_schema() {
