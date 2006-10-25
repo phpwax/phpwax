@@ -5,7 +5,7 @@ $output_dir = WAX_ROOT."plugins/";
 if(!$argv[1]) {
   exit("You must supply a plugin name that you wish to install. 
   Type 'script/plugin_install.php list' to see available plugins.
-")
+");
 }
 
 $command = "phpdoc -t {$output_dir} -d {$source_dir1},{$source_dir2} -o HTML:frames:phpedit";
