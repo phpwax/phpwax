@@ -13,12 +13,12 @@ require_once "WXValidations.php";
  *  active record
  *  @package wx.php.core
  */
-class WXActiveRecord extends WXValidations implements IteratorAggregate
+class WXActiveRecord extends WXValidations implements Iterator
 {
 	protected static $default_pdo = null;
 	protected $pdo = null;
   protected $table = null;
-  public $row = array();
+  protected $row = array();
   protected $constraints = array();
   protected $children = array();
 
