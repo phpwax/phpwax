@@ -5,7 +5,7 @@ if(!isset($argv[1]) ) {
 ");
 }
 require_once dirname(__FILE__).'/../app/config/environment.php';
-require_once FRAMEWORK_DIR."WXMigrate.php";
+require_once "wax/WXMigrate.php";
 $dbdir = dirname(__FILE__).'/../app/db/migrate/';
 if(!is_dir($dbdir)) {
   $command = "mkdir -p $dbdir";
