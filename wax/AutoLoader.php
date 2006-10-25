@@ -12,6 +12,7 @@ define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
+define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
 define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
 define('SESSION_DIR', WAX_ROOT.'tmp/session/');
 define('PUBLIC_DIR', WAX_ROOT.'public/');
@@ -111,6 +112,7 @@ class AutoLoader
 		set_error_handler('throw_wxexception', 247 );
 		AutoLoader::include_dir(MODEL_DIR);				
 		AutoLoader::include_dir(CONTROLLER_DIR);
+		AutoLoader::include_dir(APP_LIB_DIR);
 		WXConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
