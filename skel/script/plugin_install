@@ -1,13 +1,21 @@
 #!/usr/bin/php
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
+$plugin_array = array(
+  "cms"=>"svn://svn.webxpress.com/home/SVN/cms"
+)
 $output_dir = WAX_ROOT."plugins/";
 if(!isset($argv[1]) ) {
-  exit("You must supply a plugin name that you wish to install. 
+  exit("[ERROR] You must supply a plugin name that you wish to install. 
 Type 'script/plugin_install.php list' to see available plugins.
 ");
 }
-
+if(!in_array($argv[1], $plugin_array)) {
+  exit("[ERROR] Plugin not found.
+Type 'script/plugin_install.php list' to see available plugins.
+");
+}
+exit("Success");
 $command = "";
 system($command);
 echo "Documentation has been created in /doc. Open the index.html file to view.
