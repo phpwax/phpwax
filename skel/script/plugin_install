@@ -3,7 +3,7 @@
 require_once dirname(__FILE__).'/../app/config/environment.php';
 $plugin_array = array(
   "cms"=>"svn://svn.webxpress.com/home/SVN/cms"
-)
+);
 $output_dir = WAX_ROOT."plugins/";
 if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a plugin name that you wish to install. 
