@@ -567,7 +567,7 @@ class WXActiveRecord extends WXValidations implements Iterator
    * @return void
    **/
   public function valid() {
-    
+    return $this->current() !== false;
   }
 		
  /**
