@@ -2,9 +2,8 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 $plugin_array = array(
-  "cms"=>"svn://svn.webxpress.com/home/SVN/cms"
+  "cms"=>"svn://svn.webxpress.com/home/SVN/cms/trunk"
 );
-$output_dir = WAX_ROOT."plugins/";
 if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a plugin name that you wish to install. 
 Type 'script/plugin_install list' to see available plugins.
@@ -24,9 +23,10 @@ if(!array_key_exists($argv[1], $plugin_array)) {
 Type 'script/plugin_install list' to see available plugins.
 ");
 }
-exit("Success");
-$command = "";
+$source = $plugin_array[$argv[1]];
+$output_dir = WAX_ROOT."plugins/".$argv[1]."/";
+$command = "svn export {$source} {$output_dir}";
 system($command);
-echo "Documentation has been created in /doc. Open the index.html file to view.
+echo "Plugin installed in /plugins/{$argv[1]}.
 ";
 ?>
