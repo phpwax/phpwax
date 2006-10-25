@@ -29,7 +29,7 @@ class WXMigrate
   }
   
   protected function create_schema() {
-    $this->pdo->query("CREATE TABLE `migration_info` (`version` INT(7) unsigned NOT NULL default '0')");
+    $this->pdo->query("CREATE TABLE `migration_info` (`version` INT(7) unsigned NOT NULL default '0', PRIMARY KEY  (`version`))");
     $this->pdo->query("INSERT INTO `migration_info` (`version`) VALUES (0)");    
   }
   
