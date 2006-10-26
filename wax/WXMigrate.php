@@ -89,9 +89,9 @@ class {$name} extends WXMigrate
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
-      $file_name = strstr($migration, "_");
+      $class_name = WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_"));
       if(ltrim($file_version, '0') > $version) {
-        $files_to_migrate[$migration]=$file_name;
+        $files_to_migrate[$migration]=$class_name;
       }
     }
     foreach($files_to_migrate as $version=>$file_to_migrate) {
