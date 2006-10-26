@@ -83,6 +83,7 @@ class {$name} extends WXMigrate
   }
   
   public function migrate($directory, $version=false) {
+    $files_to_migrate = array();
     if(!$version) {
       $version = $this->get_version();
     }
