@@ -17,7 +17,7 @@ if(!is_dir($dbdir)) {
   system($command);
 }
 $version = false;
-if($argv[1]) {
+if(isset($argv[1])) {
   $version = $argv[1];
 }
 
