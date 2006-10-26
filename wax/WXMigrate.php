@@ -172,21 +172,21 @@ class WXMigrate
     return $running_version;
   }
   
-  protected function migrate_down(WXMigrate $class, $version) {
+  private function migrate_down(WXMigrate $class, $version) {
     echo "...reverting with version ".$version."\n";
     $class->down();
     $this->set_version($version);
     return true;
   }
   
-  protected function migrate_up(WXMigrate $class, $version) {
+  private function migrate_up(WXMigrate $class, $version) {
     echo "...updating with version ".$version."\n";
     $class->up();
     $this->set_version($version);
     return true;
   }
   
-  protected function build_column_sql($column) {
+  private function build_column_sql($column) {
     $sql = "`".$column[0]."` ";
     switch($column[1]) {
       case "string": $sql.= "VARCHAR "; break;
@@ -214,7 +214,6 @@ class WXMigrate
     if(count($this->columns_array) > 0) {
       $sql.= ", ";
       foreach($this->columns_array as $column) {
-        print_r($column); exit;
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
       }
@@ -222,6 +221,7 @@ class WXMigrate
     $this->columns_array = array();
     $sql.= rtrim($sql, ",");
     $sql.= ")";
+    echo $sql; exit;
     $this->pdo->query($sql);
     echo "...created table $table_name"."\n";
   }
