@@ -113,7 +113,9 @@ class WXMigrate
     if($direction == "down") {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
         $this->migrate_down($class_name);
-      } else {
+      }
+    } else {
+      foreach($files_to_migrate as $file_to_include=>$class_name) {
         $this->migrate_up($class_name);
       }
     }
