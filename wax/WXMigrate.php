@@ -34,7 +34,7 @@ class WXMigrate
     $this->pdo->query("INSERT INTO `migration_info` (`version`, `version_latest`) VALUES (0,0)");    
   }
   
-  protected function get_version() {
+  public function get_version() {
     $row = $this->pdo->query("SELECT version FROM migration_info")->fetch();
     return $row['version'];
   }
