@@ -86,7 +86,7 @@ class {$name} extends WXMigrate
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $ver = substr($migration, 0 , strpos($migration, "_"));
-      echo intval($ver);
+      echo ltrim($ver, '0');
     }
   }
   
