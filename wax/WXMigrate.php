@@ -85,13 +85,13 @@ class WXMigrate
   public function migrate($directory, $version=false) {
     $files_to_migrate = array();
     if(!$version) {
-      $version = $this->get_version();
+      $version = $this->get_version()+1;
     }
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
       $class_name = ucfirst(WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_")));
-      if(ltrim($file_version, '0') > $version) {
+      if(ltrim($file_version, '0') >= $version) {
         $files_to_migrate[$migration]=$class_name;
       }
     }
