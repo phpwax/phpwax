@@ -139,7 +139,7 @@ class WXMigrate
         }
       }
     } else {
-      foreach($files_to_migrate as $file_to_include=>$class_name) {
+      foreach($this->migrations_array as $migration) {
         include_once($directory.$migration['file']);
         if($migration['version'] <= $target_version) {
           $this->migrate_up(new $migration['class'], $migration['version']);
