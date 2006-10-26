@@ -10,6 +10,7 @@ class WXMigrate
   protected $pdo;
   protected $version;
   protected $migration_dir;
+  protected $migrations_array = array();
   
   public function __construct() {
     $this->pdo = WXActiveRecord::getDefaultPDO();
@@ -83,22 +84,33 @@ class WXMigrate
     return $text;
   }
   
-  public function migrate($directory, $version=false) {
-    $files_to_migrate = array();
-    if($version==$this->get_version()) {
-      $version = $this->get_version();
-    }
+  protected function get_version_from_file($file) {
+    return ltrim(substr($file, 0 , strpos($file, "_")), "0");
+  }
+  
+  protected function get_class_from_file($file) {
+    return rtrim(ucfirst(WXActiveRecord::camelize(ltrim(strstr($file, "_"),"_"))), ".php" );
+  }
+  
+  protected function create_migration_array($directory) {   
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
-      $file_version = substr($migration, 0 , strpos($migration, "_"));
-      $class_name = ucfirst(WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_")));
-      if(ltrim($file_version, '0') <= $version) {
-        $files_to_migrate[$migration]=rtrim($class_name, ".php");
-      }
+      $version_number_of_file = get_version_from_file($migration);
+      $class_name = get_class_from_file($migration);
+      $this->migrations_array[$version_number_of_file] = array($migration, $class_name);
     }
+  }
+  
+  public function migrate($directory, $version=false) {
+    $this->create_migration_array($directory);
+    print_r($this->migrations_array); exit;
+    if($version==$this->get_version()) {
+      return false;
+    }  
     if(count($files_to_migrate)<1) {
       return false;
     }
+    
     if($version==false) {
       $tmp_ref = $files_to_migrate;
       krsort($tmp_ref);
