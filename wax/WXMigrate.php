@@ -100,9 +100,7 @@ class WXMigrate
     if(count($files_to_migrate)<1) {
       return false;
     }
-    foreach($files_to_migrate as $file_to_include=>$class_name) {
-      include_once($directory.$file_to_include);
-    }
+
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
       $direction = "down";
@@ -112,26 +110,26 @@ class WXMigrate
     }
     if($direction == "down") {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $this->migrate_down($class_name);
+        include_once($directory.$file_to_include);
+        $this->migrate_down(new $class_name);
       }
     } else {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $this->migrate_up($class_name);
+        include_once($directory.$file_to_include);
+        $this->migrate_up(new $class_name);
       }
     }
     return print_r($files_to_migrate, 1);
   }
   
   protected function migrate_down(WXMigrate $class) {
-    $migration = new $class;
-    $migration->down();
+    $class->down();
     echo "Stepping back to version ".$this->decrease_version()."\n";
     return true;
   }
   
   protected function migrate_up(WXMigrate $class) {
-    $migration = new $class;
-    $migration->up();
+    $class->up();
     echo "Stepping forward to version ".$this->decrease_version()."\n";
     return true;
   }
