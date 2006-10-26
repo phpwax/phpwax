@@ -29,16 +29,6 @@ $result = $migrate->migrate($dbdir, $version);
 if(!$result) {
   exit("No Files to migrate". "\n");
 }
-exit($result);
-$new_version=$migrate->get_version_latest() + 1;
-$new_version = str_pad($new_version, 3, "0", STR_PAD_LEFT);
-$code = $migrate->create_migration($argv[1]);
-$filename = $new_version."_".strtolower($argv[1]);
-$command = "echo '$code' > $dbdir".$filename.".php";
-system($command);
-if(is_readable($dbdir.$filename.".php")) {
-  echo "Migration class created in app/db/migrate.
-";
-}
+exit("-------------------"."\n"."Successfully migrated to version ".$result."\n");
 
 ?>
