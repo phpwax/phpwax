@@ -89,14 +89,15 @@ class {$name} extends WXMigrate
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
+      $file_name = strstr($migration, "_")
       if(ltrim($file_version, '0') > $version) {
-        $files_to_migrate[]=$migration;
+        $files_to_migrate[$migration]=$file_name;
       }
     }
-    foreach($files_to_migrate as $file_to_migrate) {
+    foreach($files_to_migrate as $version=>$file_to_migrate) {
       include_once($directory.$file_to_migrate);
     }
-    print_r(get_declared_classes());
+    print_r($files_to_migrate);
   }
   
   public function up() {}
