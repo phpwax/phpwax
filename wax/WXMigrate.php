@@ -94,6 +94,9 @@ class {$name} extends WXMigrate
         $files_to_migrate[$migration]=$class_name;
       }
     }
+    if(count($files_to_migrate)==0) {
+      return false;
+    }
     foreach($files_to_migrate as $file_to_include=>$class_name) {
       include_once($directory.$file_to_include);
     }
