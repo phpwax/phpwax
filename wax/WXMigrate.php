@@ -91,7 +91,7 @@ class WXMigrate
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
       $class_name = ucfirst(WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_")));
-      if(ltrim($file_version, '0') > $version) {
+      if(ltrim($file_version, '0') >= $version) {
         $files_to_migrate[$migration]=$class_name;
       }
     }
@@ -101,7 +101,19 @@ class WXMigrate
     foreach($files_to_migrate as $file_to_include=>$class_name) {
       include_once($directory.$file_to_include);
     }
+    if($version < $this->get_version()) {
+      $files_to_migrate = rsort($files_to_migrate)
+    } else {
+      $files_to_migrate = sort($files_to_migrate)
+    }
     return print_r($files_to_migrate, 1);
+  }
+  
+  protected function migrate_down(WXMigrate $class) {
+    $migration = new $class;
+    $migration->down();
+    $this->decrease_version();
+    return true;
   }
   
   public function up() {}
