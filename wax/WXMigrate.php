@@ -112,27 +112,31 @@ class WXMigrate
     }
     if($direction == "down") {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
+        $file_version = substr($files_to_migrate, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
-        $this->migrate_down(new $class_name);
+        $this->migrate_down(new $class_name, $version);
       }
     } else {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
+        $file_version = substr($files_to_migrate, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
-        $this->migrate_up(new $class_name);
+        $this->migrate_up(new $class_name, $version);
       }
     }
     return print_r($files_to_migrate, 1);
   }
   
-  protected function migrate_down(WXMigrate $class) {
+  protected function migrate_down(WXMigrate $class, $version) {
     $class->down();
-    echo "Stepping back to version ".$this->decrease_version()."\n";
+    echo "Stepping back to version ".$version."\n";
+    $this->set_version($version);
     return true;
   }
   
-  protected function migrate_up(WXMigrate $class) {
+  protected function migrate_up(WXMigrate $class, $version) {
     $class->up();
-    echo "Stepping forward to version ".$this->increase_version()."\n";
+    echo "Stepping forward to version ".$version."\n";
+    $this->set_version($version);
     return true;
   }
   
