@@ -97,7 +97,7 @@ class WXMigrate
     foreach($migrations as $migration) {
       $version_number_of_file = $this->get_version_from_file($migration);
       $class_name = $this->get_class_from_file($migration);
-      $this->migrations_array[$version_number_of_file] = array("file"=>$migration, "class"=>$class_name);
+      $this->migrations_array[$version_number_of_file] = array("file"=>$migration, "class"=>$class_name, "version"=>$version_number_of_file);
     }
   }
   
@@ -116,7 +116,7 @@ class WXMigrate
     }
     
     if($version===false) {
-      echo key($this->get_highest_version() ); exit;
+      echo $this->get_highest_version()['version']; exit;
     }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
