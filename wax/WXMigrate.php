@@ -90,6 +90,9 @@ class {$name} extends WXMigrate
     }
   }
   
+  public function up() {}
+  public function down() {}
+  
 }
 
 

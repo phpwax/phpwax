@@ -1,0 +1,36 @@
+#!/usr/bin/php
+<?php
+
+require_once dirname(__FILE__).'/../app/config/environment.php';
+
+AutoLoader::include_dir(FRAMEWORK_DIR);
+$configFile=APP_DIR.'config/config.yml';
+$config_array = Spyc::YAMLLoad($configFile);
+$config_array = WXConfigBase::merge_environments($config_array);
+WXConfigBase::set_instance();
+$conf=new WXConfigBase;
+$conf->init_db($config_array['db']);
+
+$dbdir = dirname(__FILE__).'/../app/db/migrate/';
+if(!is_dir($dbdir)) {
+  $command = "mkdir -p $dbdir";
+  system($command);
+}
+
+
+$migrate = new WXMigrate;
+$migrate->migrate($dbdir);
+
+exit;
+$new_version=$migrate->get_version_latest() + 1;
+$new_version = str_pad($new_version, 3, "0", STR_PAD_LEFT);
+$code = $migrate->create_migration($argv[1]);
+$filename = $new_version."_".strtolower($argv[1]);
+$command = "echo '$code' > $dbdir".$filename.".php";
+system($command);
+if(is_readable($dbdir.$filename.".php")) {
+  echo "Migration class created in app/db/migrate.
+";
+}
+
+?>
