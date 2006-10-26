@@ -11,7 +11,7 @@ class WXMigrate
   protected $version;
   protected $migration_dir;
   protected $migrations_array = array();
-  protected $column_array = array();
+  protected $columns_array = array();
   
   public function __construct() {
     $this->pdo = WXActiveRecord::getDefaultPDO();
