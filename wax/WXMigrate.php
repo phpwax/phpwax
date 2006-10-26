@@ -142,7 +142,7 @@ class WXMigrate
   
   protected function create_table($table_name, $columns=null) {
     $sql = "CREATE TABLE `$table_name`(";
-    $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+    $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
     if($columns) {
       $sql.= $this->build_columns($columns);
     }
