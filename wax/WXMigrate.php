@@ -221,7 +221,6 @@ class WXMigrate
     $this->columns_array = array();
     $sql = rtrim($sql, ",");
     $sql.= ")";
-    echo $sql; exit;
     $this->pdo->query($sql);
     echo "...created table $table_name"."\n";
   }
