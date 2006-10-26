@@ -29,6 +29,6 @@ $result = $migrate->migrate($dbdir, $version);
 if(!$result) {
   exit("No Files to migrate". "\n");
 }
-exit("-------------------"."\n"."Successfully migrated to version ".$result."\n");
+exit("-------------------"."\n"."Successfully migrated to version ".$result."-------------------"."\n");
 
 ?>
