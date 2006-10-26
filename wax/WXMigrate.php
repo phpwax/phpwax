@@ -123,12 +123,12 @@ class WXMigrate
         $this->migrate_up(new $class_name, $file_version);
       }
     }
-    return print_r($files_to_migrate, 1);
+    return true;
   }
   
   protected function migrate_down(WXMigrate $class, $version) {
     $class->down();
-    echo "Stepping back to version ".$version."\n";
+    echo "Stepping back through version ".$version."\n";
     $this->set_version($version);
     return true;
   }
