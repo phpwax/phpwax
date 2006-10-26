@@ -115,8 +115,8 @@ class WXMigrate
     if(count($this->migrations_array)<1) {
       return false;
     }
-    if($target_version > $this->get_highest_version()) {
-      echo "...version given does not exist yet."."\n";
+    if($target_version > $this->get_highest_version() || !array_key_exists($target_version, $this->migrations_array)) {
+      echo "...version given does not exist."."\n";
       return false;
     }
     if($target_version===false) {
