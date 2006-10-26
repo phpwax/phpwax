@@ -99,6 +99,11 @@ class WXMigrate
     if(count($files_to_migrate)<1) {
       return false;
     }
+    if($version==false) {
+      $tmp_ref = $files_to_migrate;
+      $last_migration = array_pop($tmp_ref);
+      $version = ltrim(substr(key($last_migration), 0 , strpos(key($last_migration), "_")), "0" );
+    }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
