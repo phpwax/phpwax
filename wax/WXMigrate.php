@@ -92,7 +92,7 @@ class WXMigrate
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
       $class_name = ucfirst(WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_")));
-      if(ltrim($file_version, '0') >= $version) {
+      if(ltrim($file_version, '0') <= $version) {
         $files_to_migrate[$migration]=rtrim($class_name, ".php");
       }
     }
