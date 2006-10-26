@@ -101,7 +101,7 @@ class WXMigrate
     foreach($files_to_migrate as $file_to_include=>$class_name) {
       include_once($directory.$file_to_include);
     }
-    return true;
+    return print_r($files_to_migrate, 1);
   }
   
   public function up() {}
