@@ -107,6 +107,16 @@ class WXMigrate
     return $high['version'];
   }
   
+  public function migrate_revert($directory) {
+    $this->create_migration_array($directory);
+    foreach($this->migrations_array as $migration) {
+      include_once($directory.$migration['file']);
+      $this->migrate_down(new $migration['class'], $migration['version']);
+    }
+    $this->set_version("0");
+    return "0";
+  }
+  
   public function migrate($directory, $target_version=false) {
     $this->create_migration_array($directory);
     
@@ -185,6 +195,12 @@ class WXMigrate
   }
   
   protected function drop_table($table_name) {
+    $sql = "DROP TABLE `$table_name`";
+    $this->pdo->query($sql);
+    echo "...removed table $table_name"."\n";
+  }
+  
+  protected function create_column($name, $type="VARCHAR(128)" ) {
     $sql = "DROP TABLE `$table_name`";
     $this->pdo->query($sql);
     echo "...removed table $table_name"."\n";
