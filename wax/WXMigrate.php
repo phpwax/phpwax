@@ -115,12 +115,12 @@ class WXMigrate
     if(count($this->migrations_array)<1) {
       return false;
     }
+    if($target_version===false) {
+      $target_version = $this->get_highest_version();
+    }
     if($target_version > $this->get_highest_version() || !array_key_exists($target_version, $this->migrations_array)) {
       echo "...version given does not exist."."\n";
       return false;
-    }
-    if($target_version===false) {
-      $target_version = $this->get_highest_version();
     }
     
     echo "...current version: ".$this->get_version()."\n"."...now moving to version: ".$target_version."\n";
