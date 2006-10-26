@@ -26,7 +26,8 @@ if($version == 'version') {
   exit("Now at version ".$migrate->get_version()."\n");
 }
 if($version == 'clean') {
-  exit("Database reset to version ".$migrate->migrate_revert($dbdir)."\n");
+  $result = $migrate->migrate_revert($dbdir);
+  exit("Database reset to version ".$result."\n");
 }
 $result = $migrate->migrate($dbdir, $version);
 if($result===false) {
