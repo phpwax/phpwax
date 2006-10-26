@@ -111,7 +111,7 @@ class WXMigrate
     if($version==$this->get_version()) {
       return false;
     }  
-    if(count($files_to_migrate)<1) {
+    if(count($this->migrations_array)<1) {
       return false;
     }
     
