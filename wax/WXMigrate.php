@@ -136,17 +136,19 @@ class WXMigrate
         include_once($directory.$migration['file']);
         if($migration['version'] > $target_version && $migration['version'] <= $this->get_version()) {
           $this->migrate_down(new $migration['class'], $migration['version']);
+          $running_version = $migration['version'];
         }
       }
     } else {
       foreach($this->migrations_array as $migration) {
         include_once($directory.$migration['file']);
-        if($migration['version'] <= $target_version) {
+        if($migration['version'] >= $this->get_version() && $migration['version'] <= $target_version) {
           $this->migrate_up(new $migration['class'], $migration['version']);
+          $running_version = $migration['version'];
         }
       }
     }
-    return $target_version;
+    return $running_version;
   }
   
   protected function migrate_down(WXMigrate $class, $version) {
