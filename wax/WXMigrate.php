@@ -218,6 +218,7 @@ class WXMigrate
         $sql.= ",";
       }
     }
+    $this->columns_array = array();
     $sql.= rtrim($sql, ",");
     $sql.= ")";
     echo $sql; exit;
