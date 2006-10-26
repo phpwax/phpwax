@@ -124,41 +124,38 @@ class WXMigrate
     }
     
     echo "current version:".$this->get_version()."  target version:".$target_version."\n"; exit;
-    if($version < $this->get_version()) {
-      krsort($files_to_migrate);
+    if($target_version < $this->get_version()) {
       $direction = "down";
+      krsort($files_to_migrate);
     } else {
       ksort($files_to_migrate);
       $direction = "up";
     }
     if($direction == "down") {
-      foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
-        include_once($directory.$file_to_include);
-        $this->migrate_down(new $class_name, $file_version);
+      foreach($this->migration_array as $migration) {
+        include_once($directory.$migration['file']);
+        $this->migrate_down(new $migration['class'], $migration['version']);
       }
     } else {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
-        include_once($directory.$file_to_include);
-        $this->migrate_up(new $class_name, $file_version);
+        include_once($directory.$migration['file']);
+        $this->migrate_up(new $migration['class'], $migration['version']);
       }
     }
-    $this->set_version($version);
     return $version;
   }
   
   protected function migrate_down(WXMigrate $class, $version) {
+    echo "...reverting with version ".$version."\n";
     $class->down();
-    echo "Reverted to version ".$version."\n";
-    $this->set_version(ltrim($version, '0'));
+    $this->set_version($version);
     return true;
   }
   
   protected function migrate_up(WXMigrate $class, $version) {
+    echo "....updating with version ".$version."\n";
     $class->up();
-    echo "Updated to version ".$version."\n";
-    $this->set_version(ltrim($version, '0'));
+    $this->set_version($version);
     return true;
   }
   
