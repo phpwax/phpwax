@@ -149,7 +149,7 @@ class WXMigrate
         if($migration['version'] == $target_version) {
           $running_version = $migration['version'];
         }
-        if($migration['version'] > $this->get_version() && $migration['version'] < $target_version) {
+        if($migration['version'] > $this->get_version() && $migration['version'] <= $target_version) {
           $this->migrate_up(new $migration['class'], $migration['version']);
           $running_version = $migration['version'];
         }
