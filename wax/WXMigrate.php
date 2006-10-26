@@ -108,7 +108,7 @@ class WXMigrate
   
   public function migrate($directory, $version=false) {
     $this->create_migration_array($directory);
-    if($version==$this->get_version()) {
+    if($version===$this->get_version()) {
       return false;
     }  
     if(count($this->migrations_array)<1) {
