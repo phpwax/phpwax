@@ -117,9 +117,9 @@ class WXMigrate
     }
     
     if($version===false) {
-      echo $this->get_highest_version(); exit;
+      $target_version = $this->get_highest_version();
     }
-    echo "current version:".$this->get_version()."  target version:".$version."\n";
+    echo "current version:".$this->get_version()."  target version:".$version."\n"; exit;
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
       $direction = "down";
