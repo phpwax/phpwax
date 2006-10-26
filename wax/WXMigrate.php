@@ -89,7 +89,7 @@ class {$name} extends WXMigrate
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
-      $file_name = strstr($migration, "_")
+      $file_name = strstr($migration, "_");
       if(ltrim($file_version, '0') > $version) {
         $files_to_migrate[$migration]=$file_name;
       }
