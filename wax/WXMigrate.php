@@ -66,7 +66,7 @@ class WXMigrate
   public function create_migration($name) {
     $latest_ver = $this->get_version_latest() + 1;
     $this->pdo->query("UPDATE migration_info SET version_latest=".$latest_ver);
-    $name = WXActiveRecord::camelize($name);
+    $name = ucfirst(WXActiveRecord::camelize($name));
     $text="<?php
 class {$name} extends WXMigrate
 {
@@ -89,13 +89,13 @@ class {$name} extends WXMigrate
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $file_version = substr($migration, 0 , strpos($migration, "_"));
-      $class_name = WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_"));
+      $class_name = ucfirst(WXActiveRecord::camelize(ltrim(strstr($migration, "_"),"_")));
       if(ltrim($file_version, '0') > $version) {
         $files_to_migrate[$migration]=$class_name;
       }
     }
-    foreach($files_to_migrate as $version=>$file_to_migrate) {
-      include_once($directory.$file_to_migrate);
+    foreach($files_to_migrate as $file_to_include=>$class_name) {
+      include_once($directory.$file_to_include);
     }
     print_r($files_to_migrate);
   }
