@@ -127,14 +127,14 @@ class WXMigrate
   protected function migrate_down(WXMigrate $class, $version) {
     $class->down();
     echo "Reverted to version ".$version."\n";
-    $this->set_version($version);
+    $this->set_version(ltrim($version, '0'));
     return true;
   }
   
   protected function migrate_up(WXMigrate $class, $version) {
     $class->up();
     echo "Updated to version ".$version."\n";
-    $this->set_version($version);
+    $this->set_version(ltrim($version, '0'));
     return true;
   }
   
