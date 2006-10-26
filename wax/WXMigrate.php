@@ -216,10 +216,10 @@ class WXMigrate
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
-        echo $sql."\n";
       }
-      exit;
     }
+    echo $sql."\n";
+    exit;
     $this->columns_array = array();
     $sql.= rtrim($sql, ",");
     $sql.= ")";
