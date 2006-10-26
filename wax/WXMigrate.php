@@ -113,6 +113,7 @@ class WXMigrate
     foreach($this->migrations_array as $migration) {
       if($migration['version'] <= $this->get_version()) {
         include_once($directory.$migration['file']);
+        echo "...running ".$migration['class']."\n";
         $this->migrate_down(new $migration['class'], $migration['version']);
       }
     }
