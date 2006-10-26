@@ -88,7 +88,7 @@ class WXMigrate
   
   public function migrate($directory, $version=false) {
     $files_to_migrate = array();
-    if(!$version || $version==$this->get_version() || $version==0) {
+    if(!$version || $version==$this->get_version() || $version==="0") {
       $version = $this->get_version()+1;
     }
     $migrations=scandir($directory);
