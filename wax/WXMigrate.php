@@ -187,25 +187,25 @@ class WXMigrate
   }
   
   private function build_column_sql($column) {
-    $sql = "`".$column[0]."` ";
+    $column_sql = "`".$column[0]."` ";
     switch($column[1]) {
-      case "string": $sql.= "VARCHAR "; break;
-      case "integer": $sql.= "INT "; break;
-      case "text": $sql.= "TEXT "; $column[2]=null; break;
-      default: $sql.= $column[1]." "; $column[2]=null;
+      case "string": $column_sql.= "VARCHAR "; break;
+      case "integer": $column_sql.= "INT "; break;
+      case "text": $column_sql.= "TEXT "; $column[2]=null; break;
+      default: $column_sql.= $column[1]." "; $column[2]=null;
     }
     if($column[2]) {
-      $sql.= "({$column[2]}) ";
+      $column_sql.= "({$column[2]}) ";
     }
     if($column[3]) {
-      $sql.= "NULL ";
+      $column_sql.= "NULL ";
     } else {
-      $sql.= "NOT NULL";
+      $column_sql.= "NOT NULL";
     }
     if($column[4]) {
-      $sql.= "DEFAULT '".$column[4]."' ";
+      $column_sql.= "DEFAULT '".$column[4]."' ";
     }
-    return $sql;
+    return $column_sql;
   }
   
   protected function create_table($table_name) {
@@ -213,7 +213,6 @@ class WXMigrate
     $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
     if(count($this->columns_array) > 0) {
       $sql.= ", ";
-      echo $sql; exit;
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
