@@ -67,19 +67,19 @@ class WXMigrate
     $latest_ver = $this->get_version_latest() + 1;
     $this->pdo->query("UPDATE migration_info SET version_latest=".$latest_ver);
     $name = ucfirst(WXActiveRecord::camelize($name));
-    $text="<?php
-class {$name} extends WXMigrate
-{
-  public function up() {
-    
-  }
-  
-  public function down() {
-    
-  }
-}
-?>";
-  return $text;
+    $text = "<?php".                          "\n";
+    $text.= "class {$name} extends WXMigrate"."\n";
+    $text.= "{".                              "\n";
+    $text.= "  public function up() {".       "\n";
+    $text.=                                   "\n";
+    $text.= "  }".                            "\n";
+    $text.=                                   "\n";
+    $text.= "  public function down() {".     "\n";
+    $text.=                                   "\n";
+    $text.= "  }".                            "\n";
+    $text.= "}".                              "\n";
+    $text.= "?>".                              "\n";
+    return $text;
   }
   
   public function migrate($directory, $version=false) {
