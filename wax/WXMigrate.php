@@ -99,7 +99,7 @@ class WXMigrate
     if(count($files_to_migrate)<1) {
       return false;
     }
-
+    echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
       $direction = "down";
