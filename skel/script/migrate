@@ -16,10 +16,13 @@ if(!is_dir($dbdir)) {
   $command = "mkdir -p $dbdir";
   system($command);
 }
-
+$version = false;
+if($argv[1]) {
+  $version = $argv[1];
+}
 
 $migrate = new WXMigrate;
-$migrate->migrate($dbdir, $argv[1]);
+$migrate->migrate($dbdir, $version);
 
 exit;
 $new_version=$migrate->get_version_latest() + 1;
