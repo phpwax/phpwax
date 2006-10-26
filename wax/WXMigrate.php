@@ -84,7 +84,7 @@ class {$name} extends WXMigrate
   
   public function migrate($directory, $version=false) {
     if(!$version) {
-      $version = get_version();
+      $version = $this->get_version();
     }
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
