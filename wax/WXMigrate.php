@@ -100,7 +100,7 @@ class WXMigrate
       return false;
     }
     if($version==false) {
-      $tmp_ref $files_to_migrate;
+      $tmp_ref = $files_to_migrate;
       echo array_shift(krsort($tmp_ref)); exit;
       $version = ltrim(substr($last_migration, 0 , strpos($last_migration, "_")), "0" );
     }
