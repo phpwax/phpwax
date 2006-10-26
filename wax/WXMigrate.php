@@ -187,7 +187,7 @@ class WXMigrate
   }
   
   protected function build_column_sql($column) {
-    $sql.= "`".$column[0]."` ";
+    $sql = "`".$column[0]."` ";
     switch($column[1]) {
       case "string": $sql.= "VARCHAR "; break;
       case "integer": $sql.= "INT "; break;
@@ -212,6 +212,7 @@ class WXMigrate
     $sql = "CREATE TABLE `$table_name`(";
     $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
     if(count($this->columns_array) > 0) {
+      $sql.= ", ";
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
