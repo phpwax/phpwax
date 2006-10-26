@@ -116,7 +116,7 @@ class WXMigrate
     }
     
     if($version===false) {
-      echo $this->get_highest_version()['version']; exit;
+      print_r( $this->get_highest_version()); exit;
     }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
