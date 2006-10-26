@@ -111,7 +111,9 @@ class WXMigrate
     $this->create_migration_array($directory);
     foreach($this->migrations_array as $migration) {
       include_once($directory.$migration['file']);
-      $this->migrate_down(new $migration['class'], $migration['version']);
+      if($migration['version']>$this->get_version()) {
+        $this->migrate_down(new $migration['class'], $migration['version']);
+      }
     }
     $this->set_version("0");
     return "0";
