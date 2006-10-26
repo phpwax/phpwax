@@ -148,11 +148,13 @@ class WXMigrate
     }
     $sql.= ")";
     $this->pdo->query($sql);
+    echo "Created table $table_name"."\n";
   }
   
   protected function drop_table($table) {
     $sql = "DROP TABLE `$table`";
     $this->pdo->query($sql);
+    echo "Removed table $table_name"."\n";
   }
   
   public function up() {}
