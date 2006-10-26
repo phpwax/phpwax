@@ -11,6 +11,7 @@ class WXMigrate
   protected $version;
   protected $migration_dir;
   protected $migrations_array = array();
+  protected $column_array = array();
   
   public function __construct() {
     $this->pdo = WXActiveRecord::getDefaultPDO();
@@ -185,12 +186,38 @@ class WXMigrate
     return true;
   }
   
-  protected function create_table($table_name, $columns=null) {
+  protected function build_column_sql($column) {
+    $sql.= "`".$column[0]."` ";
+    switch($column[1]) {
+      case "string": $sql.= "VARCHAR "; break;
+      case "integer": $sql.= "INT "; break;
+      case "text": $sql.= "TEXT "; $column[2]=null; break;
+      default: $sql.= $column[1]." "; $column[2]=null;
+    }
+    if($column[2]) {
+      $sql.= "({$column[2]}) ";
+    }
+    if($column[3]) {
+      $sql.= "NULL ";
+    } else {
+      $sql.= "NOT NULL";
+    }
+    if($column[4]) {
+      $sql.= "DEFAULT '".$column[4]."' ";
+    }
+    return $sql;
+  }
+  
+  protected function create_table($table_name) {
     $sql = "CREATE TABLE `$table_name`(";
     $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
-    if($columns) {
-      $sql.= $this->build_columns($columns);
+    if(count($this->columns_array) > 0) {
+      foreach($this->columns_array as $column) {
+        $sql.= $this->build_column_sql($column);
+        $sql.= ",";
+      }
     }
+    $sql.= rtrim($sql, ",");
     $sql.= ")";
     $this->pdo->query($sql);
     echo "...created table $table_name"."\n";
@@ -202,10 +229,8 @@ class WXMigrate
     echo "...removed table $table_name"."\n";
   }
   
-  protected function create_column($name, $type="VARCHAR(128)" ) {
-    $sql = "DROP TABLE `$table_name`";
-    $this->pdo->query($sql);
-    echo "...removed table $table_name"."\n";
+  protected function create_column($name, $type="string", $length = "128", $null=true, $default=null) {
+    $this->columns_array[] = array($name, $type, $length, $null, $default);
   }
   
   public function up() {}
