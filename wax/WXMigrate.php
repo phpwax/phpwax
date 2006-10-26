@@ -115,10 +115,14 @@ class WXMigrate
     if(count($this->migrations_array)<1) {
       return false;
     }
-    
+    if($target_version > $this->get_highest_version()) {
+      return false;
+      echo "...version given does not exist yet."."\n";
+    }
     if($target_version===false) {
       $target_version = $this->get_highest_version();
     }
+    
     echo "current version:".$this->get_version()."  target version:".$target_version."\n"; exit;
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
