@@ -146,7 +146,7 @@ class WXMigrate
         }
       }
     }
-    return $version;
+    return $target_version;
   }
   
   protected function migrate_down(WXMigrate $class, $version) {
