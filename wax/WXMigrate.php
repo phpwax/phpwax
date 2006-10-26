@@ -103,7 +103,8 @@ class WXMigrate
   
   protected function get_highest_version() {
     ksort($this->migrations_array);
-    return end($this->migrations_array);
+    $high =  end($this->migrations_array);
+    return $high['version'];
   }
   
   public function migrate($directory, $version=false) {
@@ -116,7 +117,7 @@ class WXMigrate
     }
     
     if($version===false) {
-      print_r( $this->get_highest_version()); exit;
+      echo $this->get_highest_version(); exit;
     }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
