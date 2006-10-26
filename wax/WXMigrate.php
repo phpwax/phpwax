@@ -93,7 +93,7 @@ class WXMigrate
   }
   
   protected function create_migration_array($directory) {   
-    $migrations=scandir($directory);
+    $migrations=File::scandir_recursive($directory);
     foreach($migrations as $migration) {
       $version_number_of_file = $this->get_version_from_file($migration);
       $class_name = $this->get_class_from_file($migration);
