@@ -25,6 +25,9 @@ $migrate = new WXMigrate;
 if($version == 'version') {
   exit("Now at version ".$migrate->get_version()."\n");
 }
+if($version == 'clean') {
+  exit("Database reset to version ".$migrate->migrate_revert($dbdir)."\n");
+}
 $result = $migrate->migrate($dbdir, $version);
 if($result===false) {
   exit("No Files to migrate". "\n");
