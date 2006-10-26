@@ -109,14 +109,15 @@ class WXMigrate
   
   public function migrate($directory, $target_version=false) {
     $this->create_migration_array($directory);
+    
+    if($target_version===false) {
+      $target_version = $this->get_highest_version();
+    }
     if($target_version==$this->get_version()) {
       return false;
     }  
     if(count($this->migrations_array)<1) {
       return false;
-    }
-    if($target_version===false) {
-      $target_version = $this->get_highest_version();
     }
     if($target_version > $this->get_highest_version() || !array_key_exists($target_version, $this->migrations_array)) {
       echo "...version given does not exist."."\n";
