@@ -213,6 +213,7 @@ class WXMigrate
     $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
     if(count($this->columns_array) > 0) {
       $sql.= ", ";
+      print_r($this->columns_array); exit;
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
