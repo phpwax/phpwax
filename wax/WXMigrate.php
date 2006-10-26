@@ -102,9 +102,9 @@ class WXMigrate
       include_once($directory.$file_to_include);
     }
     if($version < $this->get_version()) {
-      $files_to_migrate = rsort($files_to_migrate);
+      rsort($files_to_migrate);
     } else {
-      $files_to_migrate = sort($files_to_migrate);
+      sort($files_to_migrate);
     }
     return print_r($files_to_migrate, 1);
   }
