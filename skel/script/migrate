@@ -22,6 +22,9 @@ if(isset($argv[1])) {
 }
 
 $migrate = new WXMigrate;
+if($version == 'version') {
+  exit("Now at version ".$migrate->get_version()."\n");
+}
 $result = $migrate->migrate($dbdir, $version);
 if(!$result) {
   exit("No Files to migrate". "\n");

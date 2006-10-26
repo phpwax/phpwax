@@ -128,14 +128,14 @@ class WXMigrate
   
   protected function migrate_down(WXMigrate $class, $version) {
     $class->down();
-    echo "Stepping back through version ".$version."\n";
+    echo "Reverted to version ".$version."\n";
     $this->set_version($version);
     return true;
   }
   
   protected function migrate_up(WXMigrate $class, $version) {
     $class->up();
-    echo "Stepping forward through version ".$version."\n";
+    echo "Updated to version ".$version."\n";
     $this->set_version($version);
     return true;
   }
@@ -148,13 +148,13 @@ class WXMigrate
     }
     $sql.= ")";
     $this->pdo->query($sql);
-    echo "Created table $table_name"."\n";
+    echo "...created table $table_name"."\n";
   }
   
-  protected function drop_table($table) {
-    $sql = "DROP TABLE `$table`";
+  protected function drop_table($table_name) {
+    $sql = "DROP TABLE `$table_name`";
     $this->pdo->query($sql);
-    echo "Removed table $table"."\n";
+    echo "...removed table $table_name"."\n";
   }
   
   public function up() {}
