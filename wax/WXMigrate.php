@@ -132,7 +132,7 @@ class WXMigrate
   
   protected function migrate_up(WXMigrate $class) {
     $class->up();
-    echo "Stepping forward to version ".$this->decrease_version()."\n";
+    echo "Stepping forward to version ".$this->increase_version()."\n";
     return true;
   }
   
