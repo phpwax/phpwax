@@ -132,7 +132,7 @@ class WXMigrate
       $direction = "up";
     }
     if($direction == "down") {
-      foreach($this->migration_array as $migration) {
+      foreach($this->migrations_array as $migration) {
         include_once($directory.$migration['file']);
         if($migration['version'] >= $target_version) {
           $this->migrate_down(new $migration['class'], $migration['version']);
