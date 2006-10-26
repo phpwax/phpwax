@@ -116,8 +116,8 @@ class WXMigrate
       return false;
     }
     if($target_version > $this->get_highest_version()) {
-      return false;
       echo "...version given does not exist yet."."\n";
+      return false;
     }
     if($target_version===false) {
       $target_version = $this->get_highest_version();
