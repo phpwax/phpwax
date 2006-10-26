@@ -19,7 +19,7 @@ if(!is_dir($dbdir)) {
 
 
 $migrate = new WXMigrate;
-$migrate->migrate($dbdir);
+$migrate->migrate($dbdir, $argv[1]);
 
 exit;
 $new_version=$migrate->get_version_latest() + 1;
