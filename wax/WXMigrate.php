@@ -120,7 +120,8 @@ class WXMigrate
         $this->migrate_up(new $class_name, $file_version);
       }
     }
-    return true;
+    $this->set_version($version);
+    return $version;
   }
   
   protected function migrate_down(WXMigrate $class, $version) {
