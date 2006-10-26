@@ -47,14 +47,14 @@ class WXMigrate
   }
   
   protected function increase_version() {
-    $version = get_version() + 1;
+    $version = $this->get_version() + 1;
     $this->pdo->query("UPDATE migration_info SET version=".$version);
     return $version;
   }
   
   protected function decrease_version() {
-    if(get_version()>0) {
-      $version = get_version() - 1;
+    if($this->get_version()>0) {
+      $version = $this->get_version() - 1;
       $this->pdo->query("UPDATE migration_info SET version=".$version);
     }
     return $version;
