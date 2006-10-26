@@ -112,13 +112,13 @@ class WXMigrate
     }
     if($direction == "down") {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $file_version = substr($files_to_migrate, 0 , strpos($migration, "_"));
+        $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
         $this->migrate_down(new $class_name, $version);
       }
     } else {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
-        $file_version = substr($files_to_migrate, 0 , strpos($migration, "_"));
+        $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
         $this->migrate_up(new $class_name, $version);
       }
