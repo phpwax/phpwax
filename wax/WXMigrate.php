@@ -187,25 +187,25 @@ class WXMigrate
   }
   
   private function build_column_sql($column) {
-    $column_sql = "`".$column[0]."` ";
+    $sql = "`".$column[0]."` ";
     switch($column[1]) {
-      case "string": $column_sql.= "VARCHAR "; break;
-      case "integer": $column_sql.= "INT "; break;
-      case "text": $column_sql.= "TEXT "; $column[2]=null; break;
-      default: $column_sql.= $column[1]." "; $column[2]=null;
+      case "string": $sql.= "VARCHAR "; break;
+      case "integer": $sql.= "INT "; break;
+      case "text": $sql.= "TEXT "; $column[2]=null; break;
+      default: $sql.= $column[1]." "; $column[2]=null;
     }
     if($column[2]) {
-      $column_sql.= "({$column[2]}) ";
+      $sql.= "({$column[2]}) ";
     }
     if($column[3]) {
-      $column_sql.= "NULL ";
+      $sql.= "NULL ";
     } else {
-      $column_sql.= "NOT NULL";
+      $sql.= "NOT NULL";
     }
     if($column[4]) {
-      $column_sql.= "DEFAULT '".$column[4]."' ";
+      $sql.= "DEFAULT '".$column[4]."' ";
     }
-    return $column_sql;
+    return $sql;
   }
   
   protected function create_table($table_name) {
@@ -216,7 +216,9 @@ class WXMigrate
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
+        echo $sql;
       }
+      exit;
     }
     $this->columns_array = array();
     $sql.= rtrim($sql, ",");
