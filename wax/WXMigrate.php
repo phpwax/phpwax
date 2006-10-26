@@ -49,6 +49,7 @@ class WXMigrate
   protected function increase_version() {
     $version = get_version() + 1;
     $this->pdo->query("UPDATE migration_info SET version=".$version);
+    return $version;
   }
   
   protected function decrease_version() {
@@ -56,6 +57,7 @@ class WXMigrate
       $version = get_version() - 1;
       $this->pdo->query("UPDATE migration_info SET version=".$version);
     }
+    return $version;
   }
   
   public function get_version_latest() {
@@ -103,8 +105,17 @@ class WXMigrate
     }
     if($version < $this->get_version()) {
       krsort($files_to_migrate);
+      $direction = "down";
     } else {
       ksort($files_to_migrate);
+      $direction = "up";
+    }
+    if($direction == "down") {
+      foreach($files_to_migrate as $file_to_include=>$class_name) {
+        $this->migrate_down($class_name);
+      } else {
+        $this->migrate_up($class_name);
+      }
     }
     return print_r($files_to_migrate, 1);
   }
@@ -112,7 +123,14 @@ class WXMigrate
   protected function migrate_down(WXMigrate $class) {
     $migration = new $class;
     $migration->down();
-    $this->decrease_version();
+    echo "Stepping back to version ".$this->decrease_version()."\n";
+    return true;
+  }
+  
+  protected function migrate_up(WXMigrate $class) {
+    $migration = new $class;
+    $migration->up();
+    echo "Stepping forward to version ".$this->decrease_version()."\n";
     return true;
   }
   
