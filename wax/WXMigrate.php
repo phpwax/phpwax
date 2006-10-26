@@ -114,13 +114,13 @@ class WXMigrate
       foreach($files_to_migrate as $file_to_include=>$class_name) {
         $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
-        $this->migrate_down(new $class_name, $version);
+        $this->migrate_down(new $class_name, $file_version);
       }
     } else {
       foreach($files_to_migrate as $file_to_include=>$class_name) {
         $file_version = substr($file_to_include, 0 , strpos($migration, "_"));
         include_once($directory.$file_to_include);
-        $this->migrate_up(new $class_name, $version);
+        $this->migrate_up(new $class_name, $file_version);
       }
     }
     return print_r($files_to_migrate, 1);
