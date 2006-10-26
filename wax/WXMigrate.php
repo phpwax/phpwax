@@ -83,7 +83,7 @@ class {$name} extends WXMigrate
   }
   
   public function migrate($directory) {
-    $migrations=scandir($dir);
+    $migrations=scandir($directory);
     foreach($migrations as $migration) {
       $ver = substr($migration, 0 , strpos($migration, "_")-1);
       echo intval($ver);
