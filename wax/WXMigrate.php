@@ -236,6 +236,28 @@ class WXMigrate
     $this->columns_array[] = array($name, $type, $length, $null, $default);
   }
   
+  protected function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
+    $column = array($name, $type, $length, $null, $default);
+    $sql = "ALTER TABLE `$table` ADD ";
+    $sql.= $this->build_column_sql($column);
+    $this->pdo->query($sql);
+    echo "...added column $name to $table"."\n";
+  }
+  
+  protected function remove_column($table, $name) {
+    $sql = "ALTER TABLE `$table` DROP `$name`";
+    $this->pdo->query($sql);
+    echo "...removed column $name from $table"."\n";
+  }
+  
+  protected function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
+    $column = array($name, $type, $length, $null, $default);
+    $sql = "ALTER TABLE `$table` CHANGE `$name` ";
+    $sql.= $this->build_column_sql($column);
+    $this->pdo->query($sql);
+    echo "...changed column $name in $table"."\n";
+  }
+  
   public function up() {}
   public function down() {}
   
