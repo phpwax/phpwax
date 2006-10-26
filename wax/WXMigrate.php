@@ -40,9 +40,6 @@ class WXMigrate
   }
   
   protected function set_version($version) {
-    if($version > 0) {
-      return false;
-    }
     $this->pdo->query("UPDATE migration_info SET version=".$version);
   }
   
