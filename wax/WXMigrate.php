@@ -154,7 +154,7 @@ class WXMigrate
   protected function drop_table($table) {
     $sql = "DROP TABLE `$table`";
     $this->pdo->query($sql);
-    echo "Removed table $table_name"."\n";
+    echo "Removed table $table"."\n";
   }
   
   public function up() {}
