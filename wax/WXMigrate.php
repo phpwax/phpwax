@@ -101,9 +101,13 @@ class WXMigrate
     }
   }
   
+  protected function get_highest_version() {
+    ksort($this->migrations_array);
+    return end($this->migrations_array);
+  }
+  
   public function migrate($directory, $version=false) {
     $this->create_migration_array($directory);
-    print_r($this->migrations_array); exit;
     if($version==$this->get_version()) {
       return false;
     }  
@@ -112,12 +116,7 @@ class WXMigrate
     }
     
     if($version==false) {
-      $tmp_ref = $files_to_migrate;
-      krsort($tmp_ref);
-      foreach($tmp_ref as $last_migration=>$tmp_first) {
-        $version = ltrim(substr($last_migration, 0 , strpos($last_migration, "_")), "0" );
-        break;
-      }
+      echo $this->get_highest_version(); exit;
     }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
     if($version < $this->get_version()) {
