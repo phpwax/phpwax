@@ -101,7 +101,7 @@ class WXMigrate
     }
     if($version==false) {
       $tmp_ref = krsort($files_to_migrate);
-      $last_migration = key(array_shift($tmp_ref));
+      echo array_shift($tmp_ref); exit;
       $version = ltrim(substr($last_migration, 0 , strpos($last_migration, "_")), "0" );
     }
     echo "current version:".$this->get_version()."  target version:".$version."\n";
