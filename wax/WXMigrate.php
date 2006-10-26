@@ -82,12 +82,21 @@ class {$name} extends WXMigrate
   return $text;
   }
   
-  public function migrate($directory) {
+  public function migrate($directory, $version=false) {
+    if(!$version) {
+      $version = get_version();
+    }
     $migrations=scandir($directory);
     foreach($migrations as $migration) {
-      $ver = substr($migration, 0 , strpos($migration, "_"));
-      echo ltrim($ver, '0');
+      $file_version = substr($migration, 0 , strpos($migration, "_"));
+      if(ltrim($file_version, '0') > $version) {
+        $files_to_migrate[]=$migration;
+      }
     }
+    foreach($files_to_migrate as $file_to_migrate) {
+      include_once($directory.$file_to_migrate);
+    }
+    print_r(get_declared_classes());
   }
   
   public function up() {}
