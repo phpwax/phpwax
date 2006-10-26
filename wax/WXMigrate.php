@@ -107,16 +107,16 @@ class WXMigrate
     return $high['version'];
   }
   
-  public function migrate($directory, $version=false) {
+  public function migrate($directory, $target_version=false) {
     $this->create_migration_array($directory);
-    if($version===$this->get_version()) {
+    if($target_version===$this->get_version()) {
       return false;
     }  
     if(count($this->migrations_array)<1) {
       return false;
     }
     
-    if($version===false) {
+    if($target_version===false) {
       $target_version = $this->get_highest_version();
     }
     echo "current version:".$this->get_version()."  target version:".$target_version."\n"; exit;
