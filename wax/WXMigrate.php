@@ -155,6 +155,7 @@ class WXMigrate
         }
       }
     }
+    $this->set_version($running_version);
     return $running_version;
   }
   
