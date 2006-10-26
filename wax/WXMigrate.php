@@ -214,6 +214,7 @@ class WXMigrate
     if(count($this->columns_array) > 0) {
       $sql.= ", ";
       foreach($this->columns_array as $column) {
+        print_r($column); exit;
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
       }
@@ -221,7 +222,6 @@ class WXMigrate
     $this->columns_array = array();
     $sql.= rtrim($sql, ",");
     $sql.= ")";
-    echo $sql; exit;
     $this->pdo->query($sql);
     echo "...created table $table_name"."\n";
   }
