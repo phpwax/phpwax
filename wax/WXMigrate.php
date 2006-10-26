@@ -216,7 +216,7 @@ class WXMigrate
       foreach($this->columns_array as $column) {
         $sql.= $this->build_column_sql($column);
         $sql.= ",";
-        echo $sql;
+        echo $sql;."\n";
       }
       exit;
     }
