@@ -135,9 +135,24 @@ class WXMigrate
   
   protected function migrate_up(WXMigrate $class, $version) {
     $class->up();
-    echo "Stepping forward to version ".$version."\n";
+    echo "Stepping forward through version ".$version."\n";
     $this->set_version($version);
     return true;
+  }
+  
+  protected function create_table($table_name, $columns=null) {
+    $sql = "CREATE TABLE `$table_name`(";
+    $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+    if($columns) {
+      $sql.= $this->build_columns($columns);
+    }
+    $sql.= ")";
+    $this->pdo->query($sql);
+  }
+  
+  protected function drop_table($table) {
+    $sql = "DROP TABLE `$table`";
+    $this->pdo->query($sql);
   }
   
   public function up() {}
