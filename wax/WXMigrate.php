@@ -123,12 +123,12 @@ class WXMigrate
       $target_version = $this->get_highest_version();
     }
     
-    echo "...current version:".$this->get_version()."\n"."...now moving to version:".$target_version."\n";
+    echo "...current version: ".$this->get_version()."\n"."...now moving to version: ".$target_version."\n";
     if($target_version < $this->get_version()) {
       $direction = "down";
-      krsort($files_to_migrate);
+      krsort($this->migrations_array);
     } else {
-      ksort($files_to_migrate);
+      ksort($this->migrations_array);
       $direction = "up";
     }
     if($direction == "down") {
