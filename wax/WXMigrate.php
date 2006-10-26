@@ -111,9 +111,9 @@ class WXMigrate
   public function migrate_revert($directory) {
     $this->create_migration_array($directory);
     foreach($this->migrations_array as $migration) {
+      echo "...running ".$migration['class']."   ".$this->get_version()."\n";
       if($migration['version'] <= $this->get_version()) {
         include_once($directory.$migration['file']);
-        echo "...running ".$migration['class']."\n";
         $this->migrate_down(new $migration['class'], $migration['version']);
       }
     }
