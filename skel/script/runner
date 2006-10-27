@@ -21,6 +21,7 @@ array_shift($argv);
 array_shift($argv);
 array_shift($argv);
 $arguments = implode(", ", $argv);
+echo $arguments; exit;
 if($model->$method($arguments) ) {
   exit("...successfully ran command, and method returned true."."\n");
 } else {
