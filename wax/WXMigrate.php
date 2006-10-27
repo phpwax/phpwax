@@ -258,6 +258,17 @@ class WXMigrate
     echo "...changed column $name in $table"."\n";
   }
   
+  protected function rename_table($table, $new_name) {
+    $sql = "ALTER TABLE `$table` RENAME `$new_name`";
+    $this->pdo->query($sql);
+    echo "...renamed table $table to $new_name"."\n";
+  }
+  
+  protected function run_sql($sql) {
+    $this->pdo->query($sql);
+    echo "...executed raw sql command"."\n";
+  }
+  
   public function up() {}
   public function down() {}
   
