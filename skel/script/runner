@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 print_r($argv);
-if(!isset($argv[1]) && !isset($argv[2])) {
+if(!isset($argv[1]) || !isset($argv[2])) {
   exit("[ERROR] You must supply at least two values, a model and a method"."\n");
 }
 require_once dirname(__FILE__).'/../app/config/environment.php';
