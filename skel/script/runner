@@ -14,7 +14,7 @@ WXConfigBase::set_instance();
 $conf=new WXConfigBase;
 $conf->init_db($config_array['db']);
 $model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
-if(!$model = new $model_name) {
+if(!class_exists($model_name) || !$model = new $model_name) {
   exit("[ERROR] Cannot find class name given"."\n");
 }
 $method = $argv[2];
