@@ -277,17 +277,14 @@ class WXActiveRecord extends WXValidations implements Iterator
     $sql = "DELETE FROM `{$this->table}` WHERE " . $this->_makeANDConstraints($this->constraints).';';
     $binding_params = $this->_makeBindingParams( $this->constraints );    
     $sth = $this->pdo->prepare($sql);
-    if( ! $sth )
-    {
-        $err = $this->pdo->errorInfo();
-        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
+    if( ! $sth->execute( ) ) {
+			$err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-    if( ! $sth->execute( $binding_params ) )
-    {
-        $err = $sth->errorInfo();
-        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
+    if( ! $sth->execute( $binding_params ) ) {
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-    
     $this->row = array();
     return $sth->rowCount() > 0;
   }
@@ -306,7 +303,8 @@ class WXActiveRecord extends WXValidations implements Iterator
     $values = $this->row;
     unset($values['id']);
     if (! count( $values)) {
-        trigger_error( 'No record value.', E_USER_ERROR );
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "No values to update" );
     }
     
     $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
@@ -316,18 +314,19 @@ class WXActiveRecord extends WXValidations implements Iterator
     } else if (count($id_list)) {
       $sql .= ' WHERE '.$this->_makeIDList($id_list).';';
     } else {
-      trigger_error('ID is not specified.', E_USER_ERROR);
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "No primary key(id) specified" );
     }
     $binding_params = $this->_makeBindingParams($this->row);
     
     $sth = $this->pdo->prepare($sql);
     if (! $sth) {
-      $err = $this->pdo->errorInfo();
-      trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
     if (! $sth->execute($binding_params)) {
       $err = $sth->errorInfo();
-      trigger_error("{$err[2]}:{$sql}", E_USER_ERROR);
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }     
     return $sth->rowCount();
   }
@@ -340,69 +339,57 @@ class WXActiveRecord extends WXValidations implements Iterator
         implode( ', ', array_keys($binding_params) ) . ');';
     
     $sth = $this->pdo->prepare( $sql );
-    if( ! $sth )
-    {
-        $err = $this->pdo->errorInfo();
-        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
+    if( ! $sth ) {
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-    if( ! $sth->execute( $binding_params ) )
-    {
-        $err = $sth->errorInfo();
-        trigger_error( "{$err[2]}:{$sql}", E_USER_ERROR );
+    if( ! $sth->execute( $binding_params )) {
+      $err = $sth->errorInfo();
+      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
     
-    if( ! $this->row['id'] && ! isset( $this->has_string_id ) )
-    {
-        $this->row['id'] = $this->pdo->lastInsertId();
-        return intval( $this->row['id'] );
+    if( ! $this->row['id'] && ! isset( $this->has_string_id ) ) {
+      $this->row['id'] = $this->pdo->lastInsertId();
+      return intval( $this->row['id'] );
     }
-    
     return $this->row['id'];
   }
 
-    function uniqid($len = 8, $set = TRUE)
-    {
-        if ($len < 8) {
-            trigger_error('ID length is short.', E_USER_ERROR);
-        }
-        $sql = "SELECT id FROM `{$this->table}` WHERE id=:id;";
-        $sth = $this->pdo->prepare($sql);
-        do {
-            $id = substr(md5(uniqid()), 0, $len);
-            $sth->execute(array('id'=>$id));
-            $row = $sth->fetch();
-            $sth->closeCursor();
-        } while ($row);
-        if ($set) {
-            $this->id = $id;
-        }
-        return $id;
+  function uniqid($len = 8, $set = TRUE) {
+    if ($len < 8) {
+      throw new WXActiveRecordException( "Database Error", "ID length is short." );
     }
+    $sql = "SELECT id FROM `{$this->table}` WHERE id=:id;";
+    $sth = $this->pdo->prepare($sql);
+    do {
+      $id = substr(md5(uniqid()), 0, $len);
+      $sth->execute(array('id'=>$id));
+      $row = $sth->fetch();
+      $sth->closeCursor();
+    } while ($row);
+      if ($set) {
+        $this->id = $id;
+      }
+    return $id;
+  }
 
-    function _makeANDConstraints( $array )
-    {
-        foreach( $array as $key=>$value )
-        {
-            if( is_null( $value ) )
-            {
-                $expressions[] = "`{$this->table}`.{$key} IS NULL";
-            }
-            else
-            {
-                $expressions[] = "`{$this->table}`.{$key}=:{$key}";
-            }
-        }
-        return implode( ' AND ', $expressions );
+  function _makeANDConstraints( $array ) {
+    foreach( $array as $key=>$value ) {
+      if(is_null( $value ) ) {
+        $expressions[] = "`{$this->table}`.{$key} IS NULL";
+      } else {
+        $expressions[] = "`{$this->table}`.{$key}=:{$key}";
+      }
     }
+    return implode( ' AND ', $expressions );
+  }
 
-    function _makeUPDATEValues( $array )
-    {
-        foreach( $array as $key=>$value )
-        {
-            $expressions[] ="{$key}=:{$key}";
-        }
-        return implode( ', ', $expressions );
+  function _makeUPDATEValues( $array ) {
+    foreach( $array as $key=>$value ) {
+      $expressions[] ="{$key}=:{$key}";
     }
+    return implode( ', ', $expressions );
+  }
 
   function _makeBindingParams( $array ) {
 		$params = array();
@@ -412,8 +399,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     return $params;
   }
 
-	private function build_query($params) 
-	{
+	private function build_query($params) {
 		if( $params['distinct'] ) {
 			$sql = "SELECT DISTINCT {$params['distinct']} FROM `{$this->table}`";
 		} elseif( $params['columns'] ) {
@@ -422,23 +408,20 @@ class WXActiveRecord extends WXValidations implements Iterator
       $sql = "SELECT * FROM `{$this->table}`";
     }
     
-    if(!empty($params['join']))
-    {
+    if(!empty($params['join'])) {
       $join = $params['join'];
       if (count($join) && $join['table'] && $join['lhs'] && $join['rhs']) {
     	  $sql .= " INNER JOIN `{$join['table']}`".
       	  			" ON `{$this->table}`.{$join['lhs']}=`{$join['table']}`.{$join['rhs']}";
       }
     }
-    
     $where = false;
     if( count( $this->constraints ) ) {
     	$sql .= ' WHERE ' . $this->_makeANDConstraints( $this->constraints );
       $where = true;
     }
 
-    if(!$params['find_id'])
-    {
+    if(!$params['find_id']) {
   		if($params['conditions']) {
       	if( $where ) {
         	$sql .= " AND ({$params['conditions']})";
@@ -465,9 +448,7 @@ class WXActiveRecord extends WXValidations implements Iterator
           $sql .= " LIMIT {$limit}";
         }
   		}
-		}
-		else
-		{
+		} else {
 			if( $where ) {
       	$sql .= " AND (`id`={$params['find_id']})";
       } else {
@@ -486,44 +467,43 @@ class WXActiveRecord extends WXValidations implements Iterator
   function _makeIDList( $array ) {
   	$expressions = array();
     foreach ($array as $id) {
-    $expressions[] = "`{$this->table}`.id=".
-    $this->pdo->quote($id, isset($this->has_string_id) ? PDO_PARAM_INT : PDO_PARAM_STR);
-        }
-        return '('.implode(' OR ', $expressions).')';
+      $expressions[] = "`{$this->table}`.id=".
+      $this->pdo->quote($id, isset($this->has_string_id) ? PDO_PARAM_INT : PDO_PARAM_STR);
     }
+    return '('.implode(' OR ', $expressions).')';
+  }
 
-		/**
-     * Convert underscore_words to camelCaps.
-     */
-    public function camelize($name)
-    {
-        // lowercase all, underscores to spaces, and prefix with underscore.
-        // (the prefix is to keep the first letter from getting uppercased
-        // in the next statement.)
-        $name = '_' . str_replace('_', ' ', strtolower($name));
+	/**
+  * Convert underscore_words to camelCaps.
+  */
+  public function camelize($name){
+    // lowercase all, underscores to spaces, and prefix with underscore.
+    // (the prefix is to keep the first letter from getting uppercased
+    // in the next statement.)
+    $name = '_' . str_replace('_', ' ', strtolower($name));
 
-        // uppercase words, collapse spaces, and drop initial underscore
-        return ltrim(str_replace(' ', '', ucwords($name)), '_');
-    }
+    // uppercase words, collapse spaces, and drop initial underscore
+    return ltrim(str_replace(' ', '', ucwords($name)), '_');
+  }
 
 
-    /**
-     * Convert camelCaps to underscore_words.
-     */
-    public function underscore($name) {
-        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $name));
-    }
+  /**
+    * Convert camelCaps to underscore_words.
+    */
+  public function underscore($name) {
+    return strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $name));
+  }
 
-		public function update_attributes($array) {
-			foreach($array as $k=>$v) {
-			  $this->$k=$v;
-			}
-			return $this->save();
+	public function update_attributes($array) {
+		foreach($array as $k=>$v) {
+		  $this->$k=$v;
 		}
+	  return $this->save();
+	}
 		
-		public function describe() {
-      return $this->find_by_sql("DESCRIBE `{$this->table}`");
-		}
+	public function describe() {
+    return $this->find_by_sql("DESCRIBE `{$this->table}`");
+	}
 		
   /**
    * iterator function current
