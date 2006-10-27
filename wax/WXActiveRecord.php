@@ -18,6 +18,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	protected static $default_pdo = null;
 	protected $pdo = null;
   protected $table = null;
+  protected $primary_key="id";
   protected $row = array();
   protected $constraints = array();
   protected $children = array();
@@ -101,7 +102,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	 /**
     *  Next we try and link to a child object of the same name
 	  */
-    $id = $this->row['id'];
+    $id = $this->row[$this->primary_key];
     if($id) {
     	$foreign_key = $this->table . '_id';
 			if(array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
