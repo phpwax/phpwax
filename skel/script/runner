@@ -22,8 +22,8 @@ array_shift($argv);
 array_shift($argv);
 $arguments = implode(", ", $argv);
 if($model->$method($arguments) ) {
-  exit("...successfully ran command"."\n");
+  exit("...successfully ran command, and method returned true."."\n");
 } else {
-  exit("[ERROR] Problem running command"."\n");
+  exit("...successfully ran command but method returned false."."\n");
 }
 ?>
