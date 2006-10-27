@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+print_r($argv);
 if(!isset($argv[1]) && !isset($argv[2])) {
   exit("[ERROR] You must supply at least two values, a model and a method"."\n");
 }
@@ -12,7 +13,8 @@ $config_array = WXConfigBase::merge_environments($config_array);
 WXConfigBase::set_instance();
 $conf=new WXConfigBase;
 $conf->init_db($config_array['db']);
-if(!$model = new ucfirst(WXActiveRecord::camelize($argv[1]))) {
+$model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
+if(!$model = new $model_name) {
   exit("[ERROR] Cannot find class name given"."\n");
 }
 $method = $argv[2];
