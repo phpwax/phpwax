@@ -27,7 +27,7 @@ $source = $plugin_array[$argv[1]];
 $output_dir = WAX_ROOT."plugins/".$argv[1]."/";
 echo "This will overwrite files inside the plugins directory. Do you want to continue?: [y/n] ";
 $answer = trim(fgets(STDIN));
-if($answer != "y" || $answer != "yes") {
+if($answer != "y" && $answer != "yes") {
  exit("\n"); 
 }
 $command = "svn export {$source} {$output_dir} --force";
@@ -38,7 +38,7 @@ if(is_readable(WAX_ROOT."plugins/".$argv[1]."/installer")) {
   echo "Would you like to run the additional installer script: [y/n] ";
 }
 $answer = trim(fgets(STDIN));
-if($answer != "y" || $answer != "yes") {
+if($answer != "y" && $answer != "yes") {
  exit("\n"); 
 }
 ?>
