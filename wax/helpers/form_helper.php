@@ -172,8 +172,7 @@ class FormHelper extends WXHelpers {
     function to_input_field_tag($field_type, $options = array()) 
     {
       
-        $default_size = array_key_exists("maxlength", $options)
-            ? $options["maxlength"] : $this->default_field_options['size'];
+        $default_size = $this->default_field_options['size'];
                
         $options["size"] = array_key_exists("size", $options)
             ? $options["size"]: $default_size;
