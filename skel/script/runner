@@ -22,7 +22,7 @@ array_shift($argv);
 array_shift($argv);
 $arguments = "";
 foreach($argv as $arg) {
-  $arguments .= "{eval($arg)}".",";
+  $arguments .= eval($arg).",";
 }
 $arguments = rtrim($arguments, ",");
 
