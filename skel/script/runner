@@ -21,7 +21,7 @@ array_shift($argv);
 array_shift($argv);
 array_shift($argv);
 
-if(call_user_func($commands, $argv) ) {
+if(call_user_func_array($commands, $argv) ) {
   exit("...successfully ran command, and method returned true."."\n");
 } else {
   exit("...successfully ran command but method returned false."."\n");
