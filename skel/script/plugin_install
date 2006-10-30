@@ -30,7 +30,7 @@ $answer = trim(fgets(STDIN));
 if($answer != "y" && $answer != "yes") {
  exit("\n"); 
 }
-$command = "svn export {$source} {$output_dir} --force";
+$command = "svn export -q {$source} {$output_dir} --force";
 system($command);
 
 echo "Plugin installed in /plugins/{$argv[1]}."."\n";
