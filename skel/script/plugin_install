@@ -39,7 +39,7 @@ if(is_readable(WAX_ROOT."plugins/".$argv[1]."/installer")) {
   "(this may overwrite files inside your app and public folders): [y/n] "; 
   $answer = trim(fgets(STDIN));
   if($answer != "y" && $answer != "yes") {
-    exit("\n"); 
+    exit("Installer script was skipped. (Just re-run the install if this was a mistake.)"."\n"); 
   }
   system(PLUGIN_DIR.$argv[1]."/installer");
   exit("\n"."Plugin installer successfully ran."."\n");
