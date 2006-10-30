@@ -16,10 +16,12 @@ $model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
 if(!class_exists($model_name) || !$model = new $model_name) {
   exit("[ERROR] Cannot find class name $model_name"."\n");
 }
-$method = $argv[2];
+$commands = array($argv[1], $argv[2]);
 array_shift($argv);
-call_user_func($argv);
-if($model->$method($arguments) ) {
+array_shift($argv);
+array_shift($argv);
+
+if(call_user_func($commands, $argv) ) {
   exit("...successfully ran command, and method returned true."."\n");
 } else {
   exit("...successfully ran command but method returned false."."\n");
