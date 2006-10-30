@@ -25,7 +25,6 @@ foreach($argv as $arg) {
   $arguments .= "\"$arg\"".",";
 }
 $arguments = rtrim($arguments, ",");
-echo $arguments; exit;
 
 if($model->$method($arguments) ) {
   exit("...successfully ran command, and method returned true."."\n");
