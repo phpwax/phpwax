@@ -41,7 +41,7 @@ if(is_readable(WAX_ROOT."plugins/".$argv[1]."/installer")) {
   if($answer != "y" && $answer != "yes") {
     exit("Installer script was skipped. (Just re-run the install if this was a mistake.)"."\n"); 
   }
-  system(PLUGIN_DIR.$argv[1]."/installer");
+  include(PLUGIN_DIR.$argv[1]."/installer");
   exit("\n"."Plugin installer successfully ran."."\n");
 } else {
   exit("\n");
