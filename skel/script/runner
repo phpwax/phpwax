@@ -18,14 +18,7 @@ if(!class_exists($model_name) || !$model = new $model_name) {
 }
 $method = $argv[2];
 array_shift($argv);
-array_shift($argv);
-array_shift($argv);
-$arguments = "";
-foreach($argv as $arg) {
-  $arguments .= $arg.",";
-}
-$arguments = rtrim($arguments, ",");
-
+call_user_func($argv);
 if($model->$method($arguments) ) {
   exit("...successfully ran command, and method returned true."."\n");
 } else {
