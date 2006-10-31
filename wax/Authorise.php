@@ -35,7 +35,7 @@ abstract class Authorise
   protected $encrypt_password=false;
   protected $session_key = "loggedin_user";
   
-	function __construct($username, $password) {
+	function __construct($username=null, $password=null) {
 	  if($username && $password) {
 	    $this->verify($username, $password);
 	  } elseif($sess_val = Session::get($this->session_key)) {
