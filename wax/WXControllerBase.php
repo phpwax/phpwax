@@ -81,11 +81,11 @@ abstract class WXControllerBase extends ApplicationBase
   }
   
   public function before_filter($action, $action_to_run) {
-    $this->filters[]=array($action=>array("before", $action_to_run));
+    $this->filters[$action]=array("before", $action_to_run);
   }
   
   public function after_filter($action, $action_to_run) {
-    $this->filters[]=array($action=>array("after", $action_to_run));
+    $this->filters[$action]=array("after", $action_to_run);
   }
   
 
