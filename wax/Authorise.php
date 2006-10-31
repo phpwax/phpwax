@@ -174,7 +174,6 @@ class DBAuthorise extends Authorise
 	 *	@return bool
 	 */
 	public function verify($username, $password) {
-	  echo $this->database_table; exit;
 	  $user=new $this->database_table;
 	  $method = "findBy".ucfirst($this->username_column)."And".ucfirst($this->password_column);
 	  $current_user = $user->$method($username, $password);
