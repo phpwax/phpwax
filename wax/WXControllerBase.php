@@ -62,23 +62,24 @@ abstract class WXControllerBase extends ApplicationBase
   
   public function run_before_filters() {
     foreach($this->filters as $key=>$filter) {
-			if($key == "except") {
-				if(is_array($filter)) {
-					foreach($filter as $action) {
-						if($action != $this->action) {
-							$this->$action;
-						}
-					}
-				} else {
-					if($filter != $this->action) {
-						$this->$action;
-					}
-				}
-			}
       if($key == $this->action || $key == "all") {
         if($filter[0]=="before") {
-          $filter = $filter[1];
-          $this->$filter();
+					if($filter[2]) {
+						if(is_array($filter[2])) {
+							foreach($filter[2] as $filt) {
+								if($this->action !=$filt) {
+									$this->$filt();
+								}
+							}
+						} else {
+							if($this->action != $filt) {
+								$this->filt();
+							}
+						}
+					} else {
+          	$filter = $filter[1];
+          	$this->$filter();
+					}
         }
       }
     }
@@ -95,12 +96,18 @@ abstract class WXControllerBase extends ApplicationBase
     }
   }
   
-  public function before_filter($action, $action_to_run) {
+  public function before_filter($action, $action_to_run, $except=null) {
     $this->filters[$action]=array("before", $action_to_run);
+		if($except) {
+			$this->filters[$action][2]=$except;
+		}
   }
   
-  public function after_filter($action, $action_to_run) {
+  public function after_filter($action, $action_to_run, $except=null) {
     $this->filters[$action]=array("after", $action_to_run);
+		if($except) {
+			$this->filters[$action][2]=$except;
+		}
   }
   
 
