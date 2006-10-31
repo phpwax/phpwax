@@ -181,7 +181,7 @@ class DBAuthorise extends Authorise
 		  $current_user = $current_user[0];
 		  $this->user_id = $current_user->id;
 		  $this->user_object = $current_user;
-		  echo "got here"; exit;
+		  return true;
 		} else {
 		  return false;
 		}
