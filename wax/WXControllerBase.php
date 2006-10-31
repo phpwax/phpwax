@@ -72,8 +72,9 @@ abstract class WXControllerBase extends ApplicationBase
 								}
 							}
 						} else {
-							if($this->action != $filt) {
-								$this->$filt();
+							if($this->action != $filter) {
+								$filter = $filter[1];
+		          	$this->$filter();
 							}
 						}
 					} else {
