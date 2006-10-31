@@ -22,6 +22,14 @@ abstract class WXControllerBase extends ApplicationBase
 	protected $use_plugin=false;
 	
 	/**
+	 *	An array of filters that can run actions before or after other actions.
+	 *  Takes the form array("action"=>array("before", "check_authorise"));
+	 *	@access protected
+	 *	@var 		array
+	 */
+	public $filters = array(); 
+	
+	/**
 	 *	An array of actions that implement caching, or 'all' to cache entire model.
 	 *	@access protected
 	 *	@var 		array
@@ -51,6 +59,35 @@ abstract class WXControllerBase extends ApplicationBase
   	header("Location:$route");
    	exit;
   }
+  
+  public function run_before_filters() {
+    foreach($this->filters as $key=>$filter) {
+      if($key == $this->action || $key == "all") {
+        if($filter[0]=="before") {
+          $this->$filter[1];
+        }
+      }
+    }
+  }
+  
+  public function run_after_filters() {
+    foreach($this->filters as $key=>$filter) {
+      if($key == $this->action || $key == "all") {
+        if($filter[0]=="after") {
+          $this->$filter[1];
+        }
+      }
+    }
+  }
+  
+  public function before_filter($action, $action_to_run) {
+    $this->filters[]=array($action=>array("before", $action_to_run));
+  }
+  
+  public function after_filter($action, $action_to_run) {
+    $this->filters[]=array($action=>array("after", $action_to_run));
+  }
+  
 
 	/**
  	 *	Allows overriding of the default routes.

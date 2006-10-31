@@ -128,10 +128,10 @@ class ApplicationBase
 	  $cnt->set_routes($final_route);
 	  $cnt->set_action($this->action);
 	  $cnt->controller_global();
-	  $cnt->before_action($cnt->action);
+	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
-		$cnt->after_action($cnt->action);
+		$cnt->run_after_filters();
 		return $cnt;   
 	}
 
