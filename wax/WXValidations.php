@@ -14,8 +14,11 @@ class WXValidations
 	  'uk_postcode'               => '/^(GIR0AA)|(TDCU1ZZ)|((([A-PR-UWYZ][0-9][0-9]?)|(([A-PR-UWYZ][A-HK-Y][0-9][0-9]?)|(([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))))[0-9][ABD-HJLNP-UW-Z]{2})$/',
 	  'usa_zipcode'               => '/[[:digit:]]{5}(-[[:digit:]]{4})?/',
 	  'usa_date'                  => '/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/',
+		'usa_timestamp'             => '/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/',
 	  'uk_date'                   => '/([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})/',
 	  'number'                    => '/^[+-]?[0-9]*\.?[0-9]+$/',
+		'integer'                   => '/^[0-9]*/',
+		'float'											=> '/^([0-9]{0,$first})\.?([0-9]{0,$second})$/',
 	  'currency'                  => '/^\$?([1-9]{1}[0-9]{0,2}(\,[0-9]{3})*(\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\.[0-9]{0,2})?|0(\.[0-9]{0,2})?|(\.[0-9]{1,2})?)$/',
     'simple_phone_number'       => '/^[[:digit:]]{6,20}/',
     'printable'                 => '/^[[:print:]]{1}/',
@@ -74,16 +77,20 @@ class WXValidations
 	}
 	
 	public function add_error($field, $message) {
+		
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	
-	protected function valid_format($field, $format, $message="is an invalid format", $optional=true) {
+	protected function valid_format($field, $format, $message="is an invalid format", $optional=true, $max_length=0) {
 		if(strlen($this->{$field})<1) {
 			$this->valid_required($field);
 			return false;
 		}
 		if(array_key_exists($format, $this->fixed_validations)) {
 			$format = $this->fixed_validations[$format];
+		}
+		if($max_length > 0){
+			self::valid_length($field, 0, $max_length);
 		}
 		if(preg_match($format, $this->{$field})) {
 			return true;
