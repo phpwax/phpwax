@@ -127,6 +127,13 @@ class ApplicationBase
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
 	  $cnt->set_action($this->action);
+	  if($this->is_public_method($cnt, $cnt->action)) {
+	    if(method_exists($cnt, 'missing_action')) {
+			  $cnt->missing_action(); exit;
+			  throw new WXException("No Action Defined for - ".$this->action, "Missing Action");
+			  exit;
+  		}
+		}
 	  $cnt->controller_global();
 	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
@@ -135,6 +142,13 @@ class ApplicationBase
 		return $cnt;   
 	}
 
+  private function is_public_method($object, $method) {
+    $this_method = new ReflectionMethod($object, $method);
+		if($this_method->isPublic()) {
+			return true;
+		}
+		return false;
+  }
 	
 	/**
 	 *	Constructs the Output.
