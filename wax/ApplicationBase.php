@@ -131,7 +131,7 @@ class ApplicationBase
 	    if(method_exists($cnt, 'missing_action')) {
 			  $cnt->missing_action(); exit;
 		  } else {
-			  throw new WXException("No Action Defined for - ".$this->action, "Missing Action");
+			  throw new WXException("No Public Action Defined for - ".$this->action, "Missing Action");
 			  exit;
   		}
 		}
