@@ -180,7 +180,7 @@ class DBAuthorise extends Authorise
 		if($current_user = $user->$method($username, $password)) {
 		  $this->user_id = $current_user->id;
 		  foreach($current_user as $col=>$val) {
-		    echo $col.":"$val."<br />"
+		    echo $col.":".$val."<br />"
 		  } 
 		  
 		  exit;
