@@ -64,19 +64,12 @@ abstract class WXControllerBase extends ApplicationBase
     foreach($this->filters as $key=>$filter) {
       if($key == $this->action || $key == "all") {
         if($filter[0]=="before") {
-					if($filter[2]) {
-						if(is_array($filter[2])) {
+					if($filter[2] && is_array($filter[2])) {
 							foreach($filter[2] as $filt) {
 								if($this->action !=$filt) {
 									$this->$filt();
 								}
 							}
-						} else {
-							if($this->action != $filter) {
-								$filter = $filter[1];
-		          	$this->$filter();
-							}
-						}
 					} else {
           	$filter = $filter[1];
           	$this->$filter();
