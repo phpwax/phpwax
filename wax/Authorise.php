@@ -47,7 +47,7 @@ abstract class Authorise
 	 *	@access public
 	 *	@return bool
 	 */ 
-  public static function check_logged_in() { 
+  public function check_logged_in() { 
 		if($this->user_id) {
 		  return true;
 		}
