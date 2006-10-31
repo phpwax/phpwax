@@ -159,9 +159,9 @@ class DBAuthorise extends Authorise
 	 *	@access public
 	 *	@var string 
 	 */
-	protected $database_table='User';
-	protected $username_column='username';
-	protected $password_column='password';
+	public $database_table='User';
+	public $username_column='username';
+	public $password_column='password';
 	protected $user_object=null;
 
 	
