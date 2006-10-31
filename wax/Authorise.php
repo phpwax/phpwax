@@ -178,12 +178,8 @@ class DBAuthorise extends Authorise
 	  $method = "findBy".ucfirst($this->username_column)."And".ucfirst($this->password_column);
 	  $current_user = $user->$method($username, $password);
 		if($current_user = $user->$method($username, $password)) {
+		  $current_user = $current_user[0];
 		  $this->user_id = $current_user->id;
-		  foreach($current_user as $col=>$val) {
-		    echo $col.":".$val."<br />";
-		  } 
-		  
-		  exit;
 		  $this->user_object = $current_user;
 		} else {
 		  return false;
