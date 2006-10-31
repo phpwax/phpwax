@@ -10,31 +10,52 @@
   */
 abstract class Authorise
 {
+
 	/**
-	 *	An array of users to check for access.
-	 *	@access public
-	 *	@var array
-	 */
-  public $users_array;
-	/**
-	 *	An randomising key.
+	 *	A randomising key.
 	 *	@access protected
 	 *	@var string
 	 */
-  protected $secureKey='TESTING';
-	
+  protected $secure_key='TESTING';
+
+  
+  /**
+	 *	Stores the current user id.
+	 *  Used as a test to see if a user is logged in.
+	 *	@access protected
+	 *	@var int
+	 */
+  protected $user_id=null;
+  
+  /**
+	 *	A simple flag, indicates whether passwords are encrypted
+	 *	@access protected
+	 *	@var boolean
+	 */
+  protected $encrypt_password=false;
+  protected $session_key = "loggedin_user";
+  
+	function __construct($username, $password) {
+	  if($username && $password) {
+	    $this->verify($username, $password);
+	  } elseif($sess_val = Session::get($this->session_key)) {
+	    $this->user_id = $sess_val;
+	  }
+	}
 	/**
 	 *	Sees if a loggedin_user is set in the session.
 	 *	@access public
 	 *	@return bool
 	 */ 
-  public static function check_logged_in()
-  { 
-		if(Session::get('loggedin_user')) {
-			return true;
-		} else {
-		return false;
+  public static function check_logged_in() { 
+		if($this->user_id) {
+		  return true;
 		}
+		return false;
+  }
+  
+  public static function is_logged_in() {
+    return $this->check_logged_in();
   }
 
 	/**
@@ -42,13 +63,12 @@ abstract class Authorise
 	 *	@access public
 	 *	@return bool
 	 */  
-  public function set_logged_in($user_id)
-  {
-	  if(!Session::isset_var('loggedin_user') && Session::set('loggedin_user', $user_id) )  {
-        return true;
-      } else {
+  public function set_logged_in($user_id) {
+	  if($this->user_id) {
 	    return false;
-      }	
+	  } else {
+	    $this->user_id = $user_id;
+	  }
   }
 
 	/**
@@ -57,14 +77,8 @@ abstract class Authorise
 	 *	@access public
 	 *	@return bool
 	 */
-  public static function logout()
-  {
-	if(Session::isset_var('loggedin_user')) { 
-	  if(Session::unset_var('loggedin_user')) { 
-		  return true;
-	  }
-	} 
-	return true;	
+  public function logout() {
+		$this->user_id = null;
   }
 
 	/**
@@ -86,12 +100,12 @@ abstract class Authorise
 	public function encrypt($string) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB); //get vector size on ECB mode 
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND); //Creating the vector
-		$encrypted = mcrypt_encrypt (MCRYPT_RIJNDAEL_256, $this->secureKey, $string, MCRYPT_MODE_ECB, $iv);
+		$encrypted = mcrypt_encrypt (MCRYPT_RIJNDAEL_256, $this->secure_key, $string, MCRYPT_MODE_ECB, $iv);
 	  return $encrypted;
 	}
 
 	/**
-	 *	Derypts a password using mcrypt.
+	 *	Decrypts a password using mcrypt.
 	 *	@access public
 	 *	@return string
 	 *	@param string
@@ -99,7 +113,7 @@ abstract class Authorise
 	public function decrypt($string) {
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB); 
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$decrypted = mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $this->secureKey, $string, MCRYPT_MODE_ECB, $iv);
+		$decrypted = mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $this->secure_key, $string, MCRYPT_MODE_ECB, $iv);
 	    return rtrim($decrypted);
 	}
 
@@ -112,14 +126,24 @@ abstract class Authorise
 	protected function makeRandomPassword($length) { 
 	 	$salt = "ABCDEFGHJKLMNPRSTUVWXYZ0123456789abchefghjkmnpqrstuvwxyz"; 
 		srand((double)microtime()*1000000); 
-  	    for($i = 0;$i < $length;$i++) { 
-  		  $num = rand() % 59; 
-  		  $tmp = substr($salt, $num, 1); 
-  		  $pass = $pass . $tmp; 
-  	    } 
-	    return $pass; 
+  	for($i = 0;$i < $length;$i++) { 
+  	  $num = rand() % 59; 
+  		$tmp = substr($salt, $num, 1); 
+  		$pass = $pass . $tmp; 
+  	} 
+	  return $pass; 
 	}
   
+  /**
+	 *	This method is provided by the subclass
+	 */
+  abstract protected function verify($username, $password);
+  
+  function __destruct() {
+    if($this->user_id) {
+      Session::set($this->session_key, $this->user_id);
+    }
+  }
 	
 }
 
@@ -135,14 +159,11 @@ class DBAuthorise extends Authorise
 	 *	@access public
 	 *	@var string 
 	 */
-	public  $table='User';
-	/**
-	 *	Sets whether verification is to be carried out on a
-	 *	plaintext or encrypted password.
-	 *	@access private
-	 *	@var string 
-	 */
-	private $plaintext_verify=false;
+	protected $database_table='User';
+	protected $username_column='username';
+	protected $password_column='password';
+	protected $user_object=null;
+
 	
 	/**
 	 *	Looks up the username and password in the database.
@@ -152,43 +173,15 @@ class DBAuthorise extends Authorise
 	 *	@param string $password
 	 *	@return bool
 	 */
-	public function verify($username, $password)
-	{
-	  $users=new $this->table;
-		  if($username) { 
-	    	  $this->users_array=$users->findByUsername($username);
-	      } else { 
-		    return false;
-		  }
-		
-	  $i=1;
-	  if(!$this->plaintext_verify) {
-	  	$password=$this->encrypt($password);
-	  }
-	  foreach($this->users_array as $user) {
-	    if($user->username==$username && $user->password==$password) { 
-		  $this->set_logged_in($i);
-		  return true;
+	public function verify($username, $password) {
+	  $user=new $this->database_table;
+	  $method = "findBy".ucfirst($this->username_column)."And".ucfirst($this->password_column);
+		if($current_user = $user->$method($username, $password)) {
+		  $this->user_id = $current_user->id;
+		  $this->user_object = $current_user;
+		} else {
+		  return false;
 		}
-		$i++;
-	  }
-	  $errors[]='Invalid username or password';
-	  Session::set('errors', $errors);	
-	  return false;
-	}
-
-	/**
-	 *	Looks up the username and password in the database.
-	 *	This method uses plaintext verification for unencrypted passwords.
-	 *	@access public
-	 *	@param string $username
-	 *	@param string $password
-	 *	@return bool
-	 */	
-	public function plaintext_verify($username, $password)
-	{
-		$this->plaintext_verify=true;
-		return $this->verify($username, $password);
 	}
 	
 }
@@ -205,17 +198,8 @@ class YamlAuthorise extends Authorise
 	 *	@access public
 	 *	@var string 
 	 */
-	public $configfile;
+	protected $configfile = "{APP_DIR}config/config.yml";
 
-	/**
-	 *	Sets up the default config file.
-	 *	@access public
-	 *	@return void 
-	 */	
-	function __construct()
-	{
-		$this->configfile=APP_DIR.'config/config.yml';
-	}
 
 	/**
 	 *	Verifies the supplied user/pass against the config file.
@@ -224,22 +208,20 @@ class YamlAuthorise extends Authorise
 	 *	@param string $password
 	 *	@return bool 
 	 */	
-	public function verify($username, $password)
-	{
+	public function verify($username, $password) {
 	  $this->config_array = Spyc::YAMLLoad($this->configfile);
-	  $this->users_array=$this->config_array['users'];
-	
-	$i=1;
-	  foreach($this->users_array as $user=>$pass)
-      {
-	      if($user==$username && $pass==$password) { 
+	  $users_array=$this->config_array['users'];
+	  $i=1;
+	  if(count($users_array)>1) {
+	    return false;
+	  }
+	  foreach($users_array as $user=>$pass) {
+	    if($user==$username && $pass==$password) { 
 		    $this->set_logged_in($i);
 		    return true;
 		  }
 		$i++;
-	    }
-	  $errors[]='Invalid username or password';
-	  Session::set('errors', $errors);	
+	  }	
 	  return false;
 	}
 		
