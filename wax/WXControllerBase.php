@@ -62,6 +62,19 @@ abstract class WXControllerBase extends ApplicationBase
   
   public function run_before_filters() {
     foreach($this->filters as $key=>$filter) {
+			if($key == "except") {
+				if(is_array($filter)) {
+					foreach($filter as $action) {
+						if($action != $this->action) {
+							$this->$action;
+						}
+					}
+				} else {
+					if($filter != $this->action) {
+						$this->$action;
+					}
+				}
+			}
       if($key == $this->action || $key == "all") {
         if($filter[0]=="before") {
           $filter = $filter[1];
