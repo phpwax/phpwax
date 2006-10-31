@@ -179,6 +179,7 @@ class DBAuthorise extends Authorise
 	  $current_user = $user->$method($username, $password);
 		if($current_user = $user->$method($username, $password)) {
 		  $this->user_id = $current_user->id;
+		  echo $current_user->id; exit;
 		  $this->user_object = $current_user;
 		} else {
 		  return false;
