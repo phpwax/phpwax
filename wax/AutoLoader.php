@@ -22,21 +22,7 @@ define('PLUGIN_DIR', WAX_ROOT . 'plugins/');
 
 
 function __autoload($class_name) {
-	switch(TRUE) {
-		case is_readable(FRAMEWORK_DIR.$class_name . ".php"): 
-			include_once(FRAMEWORK_DIR.$class_name . ".php"); break;
-		case is_readable(APP_DIR.'lib/'.$class_name.".php"):
-			include_once(APP_DIR.'lib/'.$class_name.".php"); break;
-		case is_readable(MODEL_DIR.$class_name.".php"):
-			include_once(MODEL_DIR.$class_name.".php"); break;
-		case is_readable(CONTROLLER_DIR.$class_name.".php"):
-			include_once(CONTROLLER_DIR.$class_name.".php"); break;
-		default:
-		  if(!is_readable($class_name. ".php" || !require_once($class_name. ".php")) ) {
-				return false;
-				throw new WXDependencyException("Cannot find ".$class_name. ".php in ".ini_get("include_path"));			
-			}
-	}
+  AutoLoader::include_from_registry($class_name);
 }
 
 function throw_wxexception() {
@@ -63,59 +49,27 @@ class AutoLoader
    *  Format $registry = array("responsibility"=>array("ClassName", "path/to/file"))
    */
   static public $registry = array();
-  static public $registry_chain = array("application", "plugin", "framework");
+  static public $registry_chain = array("user", "application", "plugin", "framework");
   
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility][$class]=$path;
   }
- 
-	static public function include_dir($dir) {
-  	//get a list of any classes included within the plugins directory
-  	$pluginClasses = get_declared_classes();	  
-		$fileArray=scandir($dir);
-	  foreach($fileArray as $file) {
-			if(is_dir($dir.$file) && substr($file,0,1)!="." ) {
-				self::include_dir($dir.$file);
-			} else {
-				if(preg_match("/^[a-zA-Z0-9_-]+\.php/",$file, $match)  ) { 
-  				$className = str_ireplace(".php", "", $match[0]);
-  				if( !in_array($className, $pluginClasses) && !class_exists($className) ) {
-  					if(!require_once($dir."/".$match[0])) {
-  						throw new WXException("Cannot include file - ".$include);
-  					}
-					}//end class exist check
-				}//end preg match
-			} //end if is_dir
-	  }//end foreach
-		return true;
-	}
-	
-	static public function add_plugin_directory($directory="./") 
-	{
-    self::$plugin_array[]=$directory;
-    $directory  = PLUGIN_DIR . $directory. "/lib/";
-    $included   = true;
-    $plugins    = glob($directory  ."*.php");    
-    if(empty($plugins)){return false;}
-    
-    foreach($plugins as $file)
-    {
-      $name = str_ireplace(PLUGIN_DIR, "", $file);
-      $name = str_ireplace($directory, "", $name);
-      if(class_exists($name)){ throw new WXException("Cannot include plugin file - " . $name); }
-      
-      if(!require_once($file)) 
-  		{
-  			throw new WXException("Cannot include file - ".$include);
-  		}
-    }      
-	}
+  
+  static public function include_from_registry($class_name) {
+    foreach(self::$registry_chain as $responsibility) {
+      if(is_array(self::$registry[$responsibility]) && array_key_exists($class_name, self::$registry[$responsibility])) {
+        if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
+      }
+    }
+    throw new WXException("Class Name - {$class_name} cannot be found in the registry.");
+  }
 	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
 	}
 	
 	static public function recursive_register($directory, $type) {
+	  if(!is_dir($directory)) { return false; }
 	  $dir = new RecursiveIteratorIterator(
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
@@ -134,12 +88,12 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-		AutoLoader::include_dir(FRAMEWORK_DIR);
+	  AutoLoader::recursive_register(APP_LIB_DIR, "user");
+	  AutoLoader::recursive_register(MODEL_DIR, "application");
+	  AutoLoader::recursive_register(CONTROLLER_DIR, "application");
+		AutoLoader::recursive_register(FRAMEWORK_DIR, "framework");
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxexception', 247 );
-		AutoLoader::include_dir(MODEL_DIR);				
-		AutoLoader::include_dir(CONTROLLER_DIR);
-		AutoLoader::include_dir(APP_LIB_DIR);
 		WXConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
