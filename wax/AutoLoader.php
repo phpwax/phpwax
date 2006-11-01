@@ -123,7 +123,7 @@ class AutoLoader
 		  $filename = substr(strrchr($file, "/"), 1);
 		  if(substr($filename,0,1) != "." && strrchr($filename, ".")==".php") {
 		    $classname = substr($filename, 0, strrpos($filename, "."));
-			  self::register($type, $classname, $directory.$filename);
+			  self::register($type, $classname, $file);
 			}	
 		}
 		print_r(self::$registry); exit;
