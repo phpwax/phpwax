@@ -40,6 +40,7 @@ abstract class Authorise
 	    $this->verify($username, $password);
 	  } elseif($sess_val = Session::get($this->session_key)) {
 	    $this->user_id = $sess_val;
+	    $this->verify(null, null, $this->user_id);
 	  }
 	}
 	/**
@@ -173,17 +174,24 @@ class DBAuthorise extends Authorise
 	 *	@param string $password
 	 *	@return bool
 	 */
-	public function verify($username, $password) {
-	  $user=new $this->database_table;
-	  $method = "findBy".ucfirst($this->username_column)."And".ucfirst($this->password_column);
-	  $current_user = $user->$method($username, $password);
-		if($current_user = $user->$method($username, $password)) {
-		  $current_user = $current_user[0];
-		  $this->user_id = $current_user->id;
+	public function verify($username, $password, $id=null) {
+	  if($id) {
+	    $user=new $this->database_table($id);
+	    $this->user_id = $current_user->id;
 		  $this->user_object = $current_user;
 		  return true;
-		} else {
-		  return false;
+	  } else {
+	    $user=new $this->database_table;
+  	  $method = "findBy".ucfirst($this->username_column)."And".ucfirst($this->password_column);
+  	  $current_user = $user->$method($username, $password);
+  		if($current_user = $user->$method($username, $password)) {
+  		  $current_user = $current_user[0];
+  		  $this->user_id = $current_user->id;
+  		  $this->user_object = $current_user;
+  		  return true;
+  		} else {
+  		  return false;
+  		}
 		}
 	}
 	
