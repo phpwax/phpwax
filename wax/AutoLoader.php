@@ -112,7 +112,7 @@ class AutoLoader
 	}
 	
 	static public function include_plugin($plugin) {
-	  self::recursive_register(PLUGIN_DIR.$plugin, "plugin");
+	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
 	}
 	
 	static public function recursive_register($directory, $type) {
