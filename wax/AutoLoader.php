@@ -117,7 +117,7 @@ class AutoLoader
 	
 	static public function recursive_register($directory, $type) {
 	  $dir = new RecursiveIteratorIterator(
-		           new RecursiveDirectoryIterator($directory), true);
+		           new RecursiveDirectoryIterator($directory));
 		foreach ( $dir as $file ) {
 		  $directory = substr($file,0,strrpos($file, "/"));
 		  $filename = substr(strrchr($file, "/"), 1);
