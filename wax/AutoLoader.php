@@ -55,7 +55,14 @@ class AutoLoader
  *	@access public
  *	@param string $dir The directory to include 
  */
-  static $plugin_array=array(); 
+  static $plugin_array=array();
+  
+  /**
+   *  The registry allows classes to be registered in a central location.
+   *  A responsibility chain then decides upon include order.
+   *  Format $registry = array("ClassName"=>array("location", "type"))
+   */
+  static $registry = array(); 
  
 	static public function include_dir($dir) {
   	//get a list of any classes included within the plugins directory
