@@ -117,14 +117,16 @@ class AutoLoader
 	
 	static public function recursive_register($directory, $type) {
 	  $dir = new RecursiveIteratorIterator(
-		           new RecursiveDirectoryIterator($directory));
+		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
 		  $directory = substr($file,0,strrpos($file, "/"));
 		  $filename = substr(strrchr($file, "/"), 1);
-		  if(substr($filename,0,1) != ".") {
-			  echo $filename."<br />";
+		  if(substr($filename,0,1) != "." && strrchr($filename, ".")==".php") {
+		    $classname = substr($filename, 0, strrpos($filename, "."));
+			  self::register($type, $classname, $directory.$filename);
 			}	
 		}
+		print_r(self::$registry); exit;
 	}
 	
 	
