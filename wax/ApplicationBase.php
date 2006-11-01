@@ -197,7 +197,7 @@ class ApplicationBase
   		} else { 
   			$view_path=$this->controller."/".$use_view.".html"; 
   		}
-  		echo $view_path;
+  		echo $view_path; exit;
   		if($cnt->use_plugin) {
   		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
   		}
