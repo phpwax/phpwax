@@ -125,7 +125,6 @@ class AutoLoader
 			  echo $filename."<br />";
 			}	
 		}
-		echo "<br /> Ending foreach loop <br />";
 	}
 	
 	
@@ -135,7 +134,6 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-  	include APP_DIR."config/environment.php";
 		AutoLoader::include_dir(FRAMEWORK_DIR);
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxexception', 247 );
