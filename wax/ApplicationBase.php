@@ -161,6 +161,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
+	  WXHelpers::__construct();  // Bit of a hack -- forces the helper functions to load
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;
   	$page_output = false;
