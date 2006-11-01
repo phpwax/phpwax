@@ -120,9 +120,9 @@ class AutoLoader
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
 		  $directory = substr($file,0,strrpos($file, "/"));
-		  $filename = substr(strrchr($file, "/"), 1);
-		  if(substr($filename,0,1) != "." && strrchr($filename, ".")==".php") {
-		    $classname = substr($filename, 0, strrpos($filename, "."));
+		  $filename = $file->getFilename;
+		  if(substr($file->getFilename,0,1) != "." && strrchr($file->getFilename, ".")==".php") {
+		    $classname = substr($file->getFilename, 0, strrpos($file->getFilename, "."));
 			  self::register($type, $classname, $file->getPathName());
 			}	
 		}
