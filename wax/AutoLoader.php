@@ -83,6 +83,10 @@ class AutoLoader
 	static public function add_plugin_directory($plugin) {
 	  self::include_plugin($plugin);
 	}
+	
+	static public function include_dir($directory) {
+	  return recursive_register($directory, "framework");
+	}
 
 	
 	
