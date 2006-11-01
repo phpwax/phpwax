@@ -83,6 +83,7 @@ class AutoLoader
 	static public function add_plugin_directory($plugin) {
 	  self::include_plugin($plugin);
 	}
+
 	
 	
 	

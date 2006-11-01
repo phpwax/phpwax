@@ -283,5 +283,11 @@ function error_messages_for($object) {
   return call_user_func_array(array($helper, 'error_messages_for'), $args);
 }
 
-Autoloader::include_dir(dirname(__FILE__).'/helpers');
+Autoloader::include_from_registry('asset_tag_helper');
+Autoloader::include_from_registry('form_helper');
+Autoloader::include_from_registry('form_options_helper');
+Autoloader::include_from_registry('url_helper');
+
+
+
 ?>
