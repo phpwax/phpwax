@@ -96,6 +96,7 @@ class AutoLoader
 	  AutoLoader::recursive_register(MODEL_DIR, "application");
 	  AutoLoader::recursive_register(CONTROLLER_DIR, "application");
 		AutoLoader::recursive_register(FRAMEWORK_DIR, "framework");
+		Autoloader::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxexception', 247 );
 		WXConfigBase::set_instance();
