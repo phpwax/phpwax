@@ -233,7 +233,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		  $row_list = $this->query($sql, "all");
 	  } catch(PDOException $e) {
 		  $err = $this->pdo->errorInfo();
-      throw new WXActiveRecordException( "{$err[0]}:{$sql}", "Error Preparing Database Query" );
+      throw new WXActiveRecordException( "{$err[1]}:{$sql}", "Error Preparing Database Query" );
     }
 		$item_list = array();
 		foreach( $row_list as $row ) {
