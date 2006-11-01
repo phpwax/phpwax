@@ -21,7 +21,6 @@ class WXException extends Exception
 	  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <html lang="en"><head>
       <meta http-equiv="content-type" content="text/html; charset=utf-8">
-      <meta name="robots" content="NONE,NOARCHIVE"><title>Welcome to wax-php</title>
       <style type="text/css">
         html * { padding:0; margin:0; }
         body * { padding:10px 20px; }
