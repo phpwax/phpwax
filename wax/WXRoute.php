@@ -38,27 +38,28 @@ class WXRoute extends ApplicationBase
 	  $route_array=$this->route_array;
 	  $tempController=$route_array[0];
 		if(is_dir(CONTROLLER_DIR.$route_array[0])) {
+			if(!$route_array[1]) { $route_array[1] = "page"; }
 			$tempController = $route_array[1];
 		} 
-	  $controllerDir=CONTROLLER_DIR;
    	switch(TRUE) {
-			case is_dir(CONTROLLER_DIR.$route_array[0]) && $this->check_controller($controllerDir.$route_array[0]."/".ucfirst($tempController)."Controller.php"):
+			case is_dir(CONTROLLER_DIR.$route_array[0]) && 
+				$this->check_controller(CONTROLLER_DIR.$route_array[0]."/".ucfirst($route_array[0]).ucfirst($tempController)."Controller.php"):
 				$controller=$route_array[0]."/".$tempController;
 				array_shift($route_array);
 				array_shift($route_array);
 			break;
- 	  	case $this->check_controller($controllerDir.ucfirst($tempController)."Controller.php"):
+ 	  	case $this->check_controller(CONTROLLER_DIR.ucfirst($tempController)."Controller.php"):
  	    	$controller=$tempController; 
  	    	array_shift($route_array);
  	    	$this->actions_array=$route_array;
  	    break;
       
- 	    case isset($this->config_array['route'][$tempController]) && $this->check_controller($controllerDir.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
+ 	    case isset($this->config_array['route'][$tempController]) && $this->check_controller(CONTROLLER_DIR.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
  	    	$controller=$this->config_array['route'][$tempController]; 
  	    	$this->actions_array=$route_array;
  	    break;
       
- 	    case isset($this->config_array['route']['default']) && $this->check_controller($controllerDir.ucfirst($this->config_array['route']['default'])."Controller.php"):
+ 	    case isset($this->config_array['route']['default']) && $this->check_controller(CONTROLLER_DIR.ucfirst($this->config_array['route']['default'])."Controller.php"):
  	    	$controller=$this->config_array['route']['default']; 
  	    	$this->actions_array=$route_array;
  	    break;
