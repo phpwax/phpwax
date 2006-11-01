@@ -121,7 +121,7 @@ class AutoLoader
 		foreach ( $dir as $file ) {
 		  $directory = substr($file,0,strrpos($file, "/"));
 		  $filename = substr(strrchr($file, "/"), 1);
-		  if(substr($filename,1)!=".") {
+		  if(substr($filename,0,1) != ".") {
 			  echo $filename."<br />";
 			}	
 		}
