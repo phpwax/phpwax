@@ -134,10 +134,7 @@ abstract class Authorise
   	} 
 	  return $pass; 
 	}
-	
-	public function logout() {
-	  $this->user_id = null;
-	}
+
   
   /**
 	 *	This method is provided by the subclass
