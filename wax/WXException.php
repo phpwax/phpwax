@@ -43,12 +43,8 @@ class WXException extends Exception
         #instructions { background:#f6f6f6; }
         #summary table { border:none; background:transparent; }
       </style>';
-  		$trace.="<title>{$this->error_heading}</title>";
-      $trace.='
-    </head>
-
-    <body>
-    <div id="summary">';
+  	$trace.="<title>{$this->error_heading}</title>";
+    $trace.='</head><body><div id="summary">';
     $trace.="<h1>{$e->error_heading}</h1>\n";
     $trace.="<h2>{$e->getMessage()}</h2>\n</div>";
     $trace.='<div id="instructions">';
