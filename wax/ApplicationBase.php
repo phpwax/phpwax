@@ -135,13 +135,14 @@ class ApplicationBase
 			  exit;
   		}
 		}
-		echo "got here"; exit;
 	  $cnt->controller_global();
 	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->run_after_filters();
-		return $cnt;   
+		return $cnt;
+		echo "got here"; exit;
+		
 	}
 
   private function is_public_method($object, $method) {
