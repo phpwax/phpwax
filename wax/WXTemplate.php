@@ -23,10 +23,7 @@ class WXTemplate
 	}
 	
 	public function parse( $pFile ) {
-	  $raw_view = substr(strrchr($pFile, "/"),1);
-	  
-	  echo $this->shared_dir.$raw_view; exit;
-	  
+	  $raw_view = substr(strrchr($pFile, "/"),1);	  
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
 		if(is_readable(VIEW_DIR.$pFile)) {
@@ -37,6 +34,8 @@ class WXTemplate
 		  $pFile = $this->view_base.$this->plugin_view_path;
 	  } elseif($this->shared_dir && is_readable($this->shared_dir.$raw_view)) {
 	    $pFile = $this->shared_dir.$raw_view;
+	    echo $pFile; exit;
+  	  
 		} else {
 			$pFile = VIEW_DIR.$pFile;
 		}
