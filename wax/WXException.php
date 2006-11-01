@@ -52,9 +52,7 @@ class WXException extends Exception
     $trace.="<h1>{$e->error_heading}</h1>\n";
     $trace.="<h2>{$e->getMessage()}</h2>\n</div>";
     $trace.='<div id="instructions">';
-    $trace.="<p>{$e->getTraceAsString()}</p>\n";
-    $trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px;\">";
-    $trace.="<pre style=\"background-color: #eee;padding:10px;font-size: 11px; margin-top:5px;\">";
+    $trace.="<pre><p>{$e->getTraceAsString()}</p>\n";
     $trace.="<code>{$e->getFile()}\nLine: {$e->getLine()}</code></pre>\n";
     $trace.="</div>\n";
 		return $trace;
