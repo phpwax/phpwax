@@ -37,7 +37,6 @@ class WXTemplate
 		} else {
 			$pFile = VIEW_DIR.$pFile;
 		}
-		echo "including $pFile <br />";
 		extract((array)$this);
 		if(!is_readable($pFile)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");

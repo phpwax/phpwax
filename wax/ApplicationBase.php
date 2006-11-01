@@ -161,7 +161,6 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
-	  Autoloader::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;
   	$page_output = false;
@@ -198,6 +197,7 @@ class ApplicationBase
   		} else { 
   			$view_path=$this->controller."/".$use_view.".html"; 
   		}
+  		echo $view_path;
   		if($cnt->use_plugin) {
   		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
   		}
