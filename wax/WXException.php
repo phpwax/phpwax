@@ -51,37 +51,4 @@ class WXException extends Exception
 	
 }
 
-class WXActiveRecordException extends WXException
-{
-	function __construct( $message ) {
-  	return parent::__construct( $message, "Database Error");
-  }
-}
-
-class WXPermissionsException extends WXException
-{
-	function __construct( $message ) {
-  	parent::__construct( $message, "File Permissions Error");
-  }
-}
-class WXEmailException extends WXException
-{
-	function __construct( $message ) {
-  	parent::__construct( $message, "Email Send Error");
-  }
-}
-class WXDependencyException extends WXException
-{
-	function __construct( $message, $code="Missing File Dependency" ) {
-  	parent::__construct( $message, $code);
-  }
-}
-class WXUserException extends WXException
-{
-	function __construct( $message, $code="Application Error" ) {
-  	parent::__construct( $message, $code);
-  }
-}
-
-
 ?>
