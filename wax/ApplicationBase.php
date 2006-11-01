@@ -150,7 +150,7 @@ class ApplicationBase
 			  return true;
 		  }
 	  } catch(ReflectionException $e) {
-	    echo $object.":".$method."<br />"; exit;
+	    echo print_r($object, 1).":".$method."<br />"; exit;
 	  }
 		return false;
   }
