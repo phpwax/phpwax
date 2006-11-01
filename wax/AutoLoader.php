@@ -60,9 +60,14 @@ class AutoLoader
   /**
    *  The registry allows classes to be registered in a central location.
    *  A responsibility chain then decides upon include order.
-   *  Format $registry = array("ClassName"=>array("location", "type"))
+   *  Format $registry = array("responsibility"=>array("ClassName", "path/to/file"))
    */
-  static $registry = array(); 
+  public $registry = array();
+  public $registry_chain = array("application", "plugin", "framework");
+  
+  static public function register($responsibility, $class, $path) {
+    $this->registry[$responsibility]=array($class, $path);
+  }
  
 	static public function include_dir($dir) {
   	//get a list of any classes included within the plugins directory
@@ -104,6 +109,18 @@ class AutoLoader
   			throw new WXException("Cannot include file - ".$include);
   		}
     }      
+	}
+	
+	static public function include_plugin($plugin) {
+	  self::recursive_register(PLUGIN_DIR.$plugin, "plugin");
+	}
+	
+	static public function recursive_register($directory, $type) {
+	  $dir = new RecursiveIteratorIterator(
+		           new RecursiveDirectoryIterator($directory), true);
+		foreach ( $dir as $file ) {
+			echo $file."<br />";			
+		}
 	}
 	
 	
