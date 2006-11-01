@@ -117,7 +117,7 @@ class AutoLoader
 	
 	static public function recursive_register($directory, $type) {
 	  $dir = new RecursiveIteratorIterator(
-		           new RecursiveDirectoryIterator($directory), SELF_FIRST);
+		           new RecursiveDirectoryIterator($directory), self::SELF_FIRST);
 		foreach ( $dir as $file ) {
 		  if(substr($file->getFilename(),0,1) != "." && strrchr($file->getFilename(), ".")==".php") {
 		    $classname = substr($file->getFilename(), 0, strrpos($file->getFilename(), "."));
