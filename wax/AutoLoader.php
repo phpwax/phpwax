@@ -125,6 +125,7 @@ class AutoLoader
 			  echo $filename."<br />";
 			}	
 		}
+		echo "<br /> Ending foreach loop <br />";
 	}
 	
 	
