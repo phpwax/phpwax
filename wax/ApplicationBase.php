@@ -123,6 +123,7 @@ class ApplicationBase
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
+	  echo $controller; exit;
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
