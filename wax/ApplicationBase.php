@@ -135,6 +135,7 @@ class ApplicationBase
 			  exit;
   		}
 		}
+		echo "got here"; exit;
 	  $cnt->controller_global();
 	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
@@ -146,7 +147,6 @@ class ApplicationBase
   private function is_public_method($object, $method) {
     $this_method = new ReflectionMethod($object, $method);
 		if($this_method->isPublic()) {
-		  echo "Is public"; exit;
 			return true;
 		}
 		return false;
