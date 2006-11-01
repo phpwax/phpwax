@@ -66,7 +66,7 @@ class AutoLoader
   static public $registry_chain = array("application", "plugin", "framework");
   
   static public function register($responsibility, $class, $path) {
-    self::$registry[$responsibility][]=array($class, $path);
+    self::$registry[$responsibility][$class]=$path;
   }
  
 	static public function include_dir($dir) {
