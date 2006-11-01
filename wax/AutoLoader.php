@@ -62,8 +62,8 @@ class AutoLoader
    *  A responsibility chain then decides upon include order.
    *  Format $registry = array("responsibility"=>array("ClassName", "path/to/file"))
    */
-  public $registry = array();
-  public $registry_chain = array("application", "plugin", "framework");
+  static public $registry = array();
+  static public $registry_chain = array("application", "plugin", "framework");
   
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility]=array($class, $path);
