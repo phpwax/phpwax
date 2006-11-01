@@ -177,8 +177,7 @@ class DBAuthorise extends Authorise
 	public function verify($username, $password, $id=null) {
 	  if($id) {
 	    $user=new $this->database_table($id);
-	    $this->user_id = $current_user->id;
-		  $this->user_object = $current_user;
+		  $this->user_object = $user;
 		  return true;
 	  } else {
 	    $user=new $this->database_table;
