@@ -285,6 +285,7 @@ function error_messages_for($object) {
 
 Autoloader::include_from_registry('asset_tag_helper');
 Autoloader::include_from_registry('form_helper');
+Autoloader::include_from_registry('form_tag_helper');
 Autoloader::include_from_registry('form_options_helper');
 Autoloader::include_from_registry('url_helper');
 
