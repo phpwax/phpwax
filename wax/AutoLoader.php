@@ -78,7 +78,6 @@ class AutoLoader
 			  self::register($type, $classname, $file->getPathName());
 			}	
 		}
-		echo "<pre>"; print_r(self::$registry); echo "</pre>"; exit;
 	}
 	
 	
