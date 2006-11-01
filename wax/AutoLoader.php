@@ -119,8 +119,10 @@ class AutoLoader
 	  $dir = new RecursiveIteratorIterator(
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
-		  if(substr($file,0,1 !=".")) {
-			  echo $file."<br />";
+		  $directory = substr($file,0,strrpos($file, "/"));
+		  $filename = substr(strrchr($file, "/"), 1);
+		  if(substr($filename,0,1 !=".")) {
+			  echo $filename."<br />";
 			}	
 		}
 	}
