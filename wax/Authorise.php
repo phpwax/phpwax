@@ -80,6 +80,7 @@ abstract class Authorise
 	 */
   public function logout() {
 		$this->user_id = null;
+		echo "killed user id";
   }
 
 	/**
