@@ -85,7 +85,7 @@ class ApplicationBase
    *  @return void
    */
 	private function load_config() {
-		$route=new WXroute;		
+		$route=new WXRoute;		
 		$this->controller=$route->make_controller_route();
 		$this->actions=$route->read_actions();
   }
