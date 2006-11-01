@@ -41,7 +41,6 @@ class WXTemplate
 		if(!is_readable($pFile)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");
 		}
-		echo "About to include $pFile";
 		if(!include($pFile) ) {
 			throw new WXUserException("PHP parse error in $pFile");
 		}
