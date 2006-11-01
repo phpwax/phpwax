@@ -85,7 +85,7 @@ class AutoLoader
 	}
 	
 	static public function include_dir($directory) {
-	  return recursive_register($directory, "framework");
+	  return self::recursive_register($directory, "framework");
 	}
 
 	
