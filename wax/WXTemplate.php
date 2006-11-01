@@ -25,7 +25,7 @@ class WXTemplate
 	public function parse( $pFile ) {
 	  $raw_view = substr(strrchr($pFile, "/"),1);
 	  
-	  echo $this->shared_dir.$raw_view;
+	  echo $this->shared_dir.$raw_view; exit;
 	  
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
