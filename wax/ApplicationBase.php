@@ -112,7 +112,6 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
-	  echo $this->controller; exit;
 		if(strpos($this->controller, "/")) {
 			$name ="_".str_replace('/', ' ', strtolower($this->controller));
       $controller = ltrim(str_replace(' ', '', ucwords($name)), '_');

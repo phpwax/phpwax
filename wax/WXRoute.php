@@ -37,6 +37,7 @@ class WXRoute extends ApplicationBase
 	public function make_controller_route() {
 	  $route_array=$this->route_array;
 	  $tempController=$route_array[0];
+	  print_r($route_array); exit;
 		if(is_dir(CONTROLLER_DIR.$route_array[0])) {
 			if(!$route_array[1]) { $route_array[1] = "page"; }
 			$tempController = $route_array[1];
