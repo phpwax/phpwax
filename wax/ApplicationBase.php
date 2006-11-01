@@ -112,6 +112,7 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
+	  echo $this->controller; exit;
 		if(strpos($this->controller, "/")) {
 			$name ="_".str_replace('/', ' ', strtolower($this->controller));
       $controller = ltrim(str_replace(' ', '', ucwords($name)), '_');
@@ -123,7 +124,6 @@ class ApplicationBase
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
 	  if(strlen($this->action)<1) { $this->action="index"; }
-	  echo $controller; exit;
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
