@@ -13,7 +13,8 @@ class WXTemplate
 	public $layout_content;
 	public $view_content;
 	public $preserve_buffer = null;
-	public $view_base = null; 
+	public $view_base = null;
+	public $shared_dir = null;
 	
 	public function __construct($preserve_buffer = null) {
 		if($preserve_buffer) {
@@ -22,6 +23,7 @@ class WXTemplate
 	}
 	
 	public function parse( $pFile ) {
+	  $raw_view = substr(strrchr($pFile, "/"),1);
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
 		if(is_readable(VIEW_DIR.$pFile)) {
@@ -30,6 +32,8 @@ class WXTemplate
 			$pFile = $this->view_base.$pFile;
 		} elseif($this->plugin_view_path) {
 		  $pFile = $this->view_base.$this->plugin_view_path;
+	  } elseif($this->shared_dir && is_readable($this->shared_dir.$raw_view)) {
+	    $pFile = $this->shared_dir.$raw_view;
 		} else {
 			$pFile = VIEW_DIR.$pFile;
 		}

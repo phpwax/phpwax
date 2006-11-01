@@ -177,6 +177,7 @@ class ApplicationBase
   		$tpl=new WXTemplate;
 			if($cnt->use_plugin) {
 				$tpl->view_base = PLUGIN_DIR.$cnt->use_plugin."/view/";
+				$tpl->shared_dir = PLUGIN_DIR.$cnt->use_plugin."/view/shared/";
 			}
   		$tpl->urlid=$cnt->action;
       foreach(get_object_vars($cnt) as $var=>$val) {
