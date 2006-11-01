@@ -147,6 +147,8 @@ abstract class Authorise
   function __destruct() {
     if($this->user_id) {
       Session::set($this->session_key, $this->user_id);
+    } else {
+      Session::unset_var($this->session_key);
     }
   }
 	
