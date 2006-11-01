@@ -144,7 +144,7 @@ class ApplicationBase
 	}
 
   private function is_public_method($object, $method) {
-    if(method_exists($object, $method)) {
+    if(!method_exists($object, $method)) {
       return false;
     }
     $this_method = new ReflectionMethod($object, $method);
