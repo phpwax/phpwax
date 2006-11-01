@@ -145,8 +145,8 @@ class ApplicationBase
 
   private function is_public_method($object, $method) {
     $this_method = new ReflectionMethod($object, $method);
-    print_r($this_method); exit;
 		if($this_method->isPublic()) {
+		  echo "Is public"; exit;
 			return true;
 		}
 		return false;
