@@ -194,6 +194,10 @@ class DBAuthorise extends Authorise
 		}
 	}
 	
+	public function logout() {
+	  $this->user_id = null;
+	}
+	
 }
 
 /**
