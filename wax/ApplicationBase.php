@@ -140,9 +140,7 @@ class ApplicationBase
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->run_after_filters();
-		return $cnt;
-		echo "got here"; exit;
-		
+		return $cnt;		
 	}
 
   private function is_public_method($object, $method) {
