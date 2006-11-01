@@ -36,7 +36,6 @@ class WXActiveRecord extends WXValidations implements Iterator
 		if( $class_name != 'WXActiveRecord' ) {
 			$this->table = $this->underscore( $class_name );
 		}
-		echo $this->table; exit;
 		
 		switch(true) {
 			case is_numeric($param):			
