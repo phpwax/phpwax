@@ -112,6 +112,7 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
+	  print_r($this->actions); exit;
 		$controller = $this->controller;
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
