@@ -308,7 +308,8 @@ function text_field($object, $field, $options = array())
   * Wrapper for text_field - adds label to the front
   */
 function label_text_field($object, $field, $options = array(), $label_name="")  {
-  return make_label($object, $field, $label_name) . text_field($object, $field, $options);
+  $labeled = make_label($object, $field, $label_name) . text_field($object, $field, $options);
+  return $labeled;
 }
 
 
