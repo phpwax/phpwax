@@ -22,26 +22,23 @@ class WXTemplate
 		}
 	}
 	
-	public function parse( $pFile ) {
-	  $raw_view = substr(strrchr($pFile, "/"),1);
+	public function parse( $view_file ) {
+	  $raw_view = substr(strrchr($view_file, "/"),1);
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
-		if(is_readable(VIEW_DIR.$pFile)) {
-			$pFile = VIEW_DIR.$pFile;
-		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
-			$pFile = $this->view_base.$pFile;
-		} elseif($this->plugin_view_path && is_readable($this->view_base.$this->plugin_view_path)) {
-		  $pFile = $this->view_base.$this->plugin_view_path;
-	  } elseif($this->shared_dir && is_readable($this->shared_dir.$raw_view)) {
-	    $pFile = $this->shared_dir.$raw_view;  	  
-		} else {
-			$pFile = VIEW_DIR.$pFile;
+		switch(true) {
+		  case is_readable(VIEW_DIR.$view_file): $view_file = VIEW_DIR.$view_file; break;
+		  case $this->view_base && is_readable($this->view_base.$view_file): $view_file = $this->view_base.$view_file; break;
+		  case $this->plugin_view_path && is_readable($this->view_base.$this->plugin_view_path): 
+		    $pFile = $this->view_base.$this->plugin_view_path; break;
+		  case $this->shared_dir && is_readable($this->shared_dir.$raw_view): $view_file = $this->shared_dir.$raw_view; break;
+		  default: $view_file = VIEW_DIR.$view_file;
 		}
 		extract((array)$this);
-		if(!is_readable($pFile)) {
+		if(!is_readable($view_file)) {
 			throw new WXException("Unable to find ".$pFile, "Missing Template File");
 		}
-		if(!include($pFile) ) {
+		if(!include($view_file) ) {
 			throw new WXUserException("PHP parse error in $pFile");
 		}
 		if($this->preserve_buffer) {
@@ -71,5 +68,5 @@ class WXTemplate
 	
   
 
-} // END class 
+}
 ?>
