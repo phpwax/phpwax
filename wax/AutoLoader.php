@@ -104,6 +104,9 @@ class AutoLoader
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxexception', 247 );
+		$arr = get_defined_functions();
+
+    print_r($arr); exit;
 		WXConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
