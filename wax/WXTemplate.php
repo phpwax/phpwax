@@ -24,9 +24,7 @@ class WXTemplate
 	
 	public function parse( $view_file ) {
 	  $raw_view = substr(strrchr($view_file, "/"),1);
-		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
-		echo $this->plugin_view_path.$view_file;
-		
+		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();		
 		ob_start();
 		switch(true) {
 		  case is_readable(VIEW_DIR.$view_file): $view_file = VIEW_DIR.$view_file; break;
