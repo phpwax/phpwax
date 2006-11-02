@@ -43,7 +43,7 @@ class WXRoute extends ApplicationBase
 	private function check_controller($controller) {
 		if(strpos($controller, "/")) {
 			$path = substr($controller, 0, strpos($controller, "/")+1);
-			$class = ucfirst(WXActiveRecord::camelize(rtrim (str_replace("/", "_", $controller), "_")))."Controller";
+			$class = slashcamelize($controller, true)."Controller";
 			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
 		}
 		$class = ucfirst($controller)."Controller";
