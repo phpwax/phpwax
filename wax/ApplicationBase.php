@@ -155,7 +155,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
-	  echo rtrim($this->controller, "Controller"); exit;
+	  echo str_replace("Controller", "", $this->controller); exit;
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;
   	$page_output = false;
