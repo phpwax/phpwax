@@ -6,7 +6,8 @@
  * @version $Id$
  * @package waxphp
  **/
-class WXInflections {
+class WXInflections 
+{
   
   public function camelize($underscored_word, $upper_first=false) {
     $camel = '_' . str_replace('_', ' ', strtolower($underscored_word));
@@ -34,14 +35,19 @@ class WXInflections {
     $slash = strtolower(preg_replace('/([a-z])([A-Z])/', "$1/$2", $camel_word));
     return $slash;
   }
+  
+  public function slashcamelize($slash_word) {
+    $camel = '_' . str_replace('/', ' ', strtolower($slash_word));
+    $camel = ltrim(str_replace(' ', '', ucwords($camel)), '/');
+    if($upper_first) return ucfirst($camel);
+    return $camel;
+  }
 }
 
 
 /**
  * Helper functions to be provided application-wide
  *
- * @return void
- * @author Ross Riley
  **/
 function camelize() {
  	$inflector = new WXInflections();
@@ -71,6 +77,12 @@ function slashify() {
  	$inflector = new WXInflections();
   $args = func_get_args();
   return call_user_func_array(array($inflector, 'slashify'), $args);
+}
+
+function slashcamelize() {
+ 	$inflector = new WXInflections();
+  $args = func_get_args();
+  return call_user_func_array(array($inflector, 'slashcamelize'), $args);
 }
 
 ?>
