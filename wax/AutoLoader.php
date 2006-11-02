@@ -26,6 +26,7 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($e) {
+  print_r($e);
 	$exc = new WXException("An unknown error has occurred", "Application Error");
 }
 
@@ -103,7 +104,7 @@ class AutoLoader
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxexception', 248 );
+		set_error_handler('throw_wxexception', 247 );
 		WXConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
