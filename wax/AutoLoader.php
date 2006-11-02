@@ -25,8 +25,8 @@ function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
 
-function throw_wxexception($e) {
-	$exc = new WXException($e->getMessage(), "Application Error");
+function throw_wxexception($exception) {
+	throw new WXException($exception->getMessage(), "Application Error");
 }
 
 
