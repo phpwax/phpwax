@@ -24,14 +24,13 @@ class WXTemplate
 	
 	public function parse( $pFile ) {
 	  $raw_view = substr(strrchr($pFile, "/"),1);
-	  echo $this->plugin_view_path; exit;
 		$this->preserve_buffer ? $buffer = ob_get_clean() : ob_clean();
 		ob_start();
 		if(is_readable(VIEW_DIR.$pFile)) {
 			$pFile = VIEW_DIR.$pFile;
 		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
 			$pFile = $this->view_base.$pFile;
-		} elseif($this->plugin_view_path && is_readable($this->plugin_view_path.$pFile)) {
+		} elseif($this->plugin_view_path && is_readable($this->view_base.$pFile)) {
 		  $pFile = $this->view_base.$this->plugin_view_path;
 	  } elseif($this->shared_dir && is_readable($this->shared_dir.$raw_view)) {
 	    $pFile = $this->shared_dir.$raw_view;  	  
