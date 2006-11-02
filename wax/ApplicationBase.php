@@ -159,6 +159,7 @@ class ApplicationBase
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;
   	$page_output = false;
+
   	/**
   	*  if the action has been selected to cache within the controller 
   	*  or the global all has been raised then pull data from the cache 
@@ -221,17 +222,7 @@ class ApplicationBase
 		}
 				
 	}
-	
 
-	
-	/**
-	 *	Maps errors to the standard exception handler.
-	 *  @access public
-   *  @return void
-   */	
-	 public function process_error($errno, $errstr, $errfile, $errline) {
-     throw new WXException($errstr, $errno);
-   }
 
 	/**
 	 *	Echos a formatted array to screen.
@@ -240,13 +231,7 @@ class ApplicationBase
    */	
 	public function inspect($array) {
 		echo "<pre>"; print_r($array); echo "</pre>"; 
-	}
-	
-	
-
-	
-
-	
+	}	
 
 }
 
