@@ -34,6 +34,7 @@ class WXTemplate
 		  case $this->shared_dir && is_readable($this->shared_dir.$raw_view): $view_file = $this->shared_dir.$raw_view; break;
 		  default: $view_file = VIEW_DIR.$view_file;
 		}
+		echo $view_file;
 		extract((array)$this);
 		if(!is_readable($view_file)) {
 			throw new WXException("Unable to find ".$view_file, "Missing Template File");
