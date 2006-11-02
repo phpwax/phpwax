@@ -26,7 +26,7 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($exception) {
-	throw new WXException($exception->getMessage(), "Application Error");
+	$exception->getMessage(); exit;
 }
 
 
