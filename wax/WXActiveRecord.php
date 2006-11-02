@@ -502,7 +502,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 
 	public function update_attributes($array) {
 		foreach($array as $k=>$v) {
-		  $this->$k=$v;
+		  if($this->$k) $this->$k=$v;
 		}
 	  return $this->save();
 	}
