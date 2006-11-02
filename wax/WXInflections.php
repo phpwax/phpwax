@@ -36,8 +36,8 @@ class WXInflections
     return $slash;
   }
   
-  public function slashcamelize($slash_word) {
-    $camel = '_' . str_replace('/', ' ', strtolower($slash_word));
+  public function slashcamelize($slash_word, $upper_first=false) {
+    $camel = '/' . str_replace('/', ' ', strtolower($slash_word));
     $camel = ltrim(str_replace(' ', '', ucwords($camel)), '/');
     if($upper_first) return ucfirst($camel);
     return $camel;
