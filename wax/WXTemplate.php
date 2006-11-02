@@ -30,7 +30,7 @@ class WXTemplate
 			$pFile = VIEW_DIR.$pFile;
 		} elseif($this->view_base && is_readable($this->view_base.$pFile)) {
 			$pFile = $this->view_base.$pFile;
-		} elseif($this->plugin_view_path && is_readable($this->view_base.$pFile)) {
+		} elseif($this->plugin_view_path && is_readable($this->view_base.$this->plugin_view_path)) {
 		  $pFile = $this->view_base.$this->plugin_view_path;
 	  } elseif($this->shared_dir && is_readable($this->shared_dir.$raw_view)) {
 	    $pFile = $this->shared_dir.$raw_view;  	  
