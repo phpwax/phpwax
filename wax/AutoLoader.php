@@ -26,7 +26,6 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($e) {
-  print_r($e);
 	$exc = new WXException("An unknown error has occurred", "Application Error");
 }
 
