@@ -44,6 +44,7 @@ class WXRoute extends ApplicationBase
 		if(strpos($controller, "/")) {
 			$path = substr($controller, 0, strpos($controller, "/")+1);
 			$class = slashcamelize($controller, true)."Controller";
+			echo $class."<br />";
 			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
 		}
 		$class = ucfirst($controller)."Controller";
