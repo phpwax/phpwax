@@ -515,7 +515,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$columns = array();
 		$describe = $this->describe();
 		foreach($this->describe() as $column=>$val) {
-			$columns[$val->Field]=$val->Type;
+			$columns[$val->Field]=array($val->Type, $val->Null, $val->Default);
 		}
 		return $columns;
 	}
