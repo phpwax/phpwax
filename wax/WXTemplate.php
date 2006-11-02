@@ -57,7 +57,7 @@ class WXTemplate
 	
 	public function execute() {
 		$this->content_for_layout = $this->parse($this->view_path);		
-		$this->layout_content = $this->content_for_layout;
+		$this->layout_content = $this->content_for_layout."<br />Layout:".$this->layout_path;
 		if($this->layout_path) {
 			return $this->parse($this->layout_path);
 		} else {
