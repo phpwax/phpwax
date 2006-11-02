@@ -25,7 +25,8 @@ function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
 
-function throw_wxexception() {
+function throw_wxexception($e) {
+  print_r($e); exit;
 	$exc = new WXException("An unknown error has occurred", "Application Error");
 }
 
