@@ -236,74 +236,51 @@ class FormHelper extends WXHelpers {
      *  @todo Document this method
      *  @uses add_default_name_and_id_and_value()
      */
-    function to_check_box_tag($options = array(), $checked_value = "1", $unchecked_value = "1") {
-        $options["type"] = "checkbox";
-        
-        if($this->get_value() == $checked_value)
-        {        
-          $options["checked"] = "checked";          
-        } 
-        else 
-        {
-            unset($options["checked"]);
-        }        
+  function to_check_box_tag($options = array(), $checked_value = "1", $unchecked_value = "1") {
+  	$options["type"] = "checkbox";
+    if($this->get_value() == $checked_value) {        
+    	$options["checked"] = "checked";          
+		} else {
+      unset($options["checked"]);
+    }        
+		$options = $this->add_default_name_and_id_and_value($options);
+		$options['value'] = $checked_value;        
+		return $this->tag("input", $options);
+  }
 
-        $options = $this->add_default_name_and_id_and_value($options);
-        $options['value'] = $checked_value;        
-        return $this->tag("input", $options);
-    }
-
-    /**
-     *  @todo Document this method
-     *  @uses add_default_name_and_id_and_value()
-     */
-    /***** REMOVED - JUST USE select in the FormOptionsHelper class
-    function to_boolean_select_tag($options = array()) {
-        $options = $this->add_default_name_and_id_and_value($options);
-        $tag_text = "<select ";
-        $tag_text .= $this->tag_options($options);
-        $tag_text .= ">\n";
-        $tag_text .= "<option value=\"0\"";
-        if($this->value() == false) {
-            $tag_text .= " selected";
-        }
-        $tag_text .= ">False</option>\n";
-        $tag_text .= "<option value=\"1\"";
-        if($this->value()) {
-            $tag_text .= " selected";
-        }
-        $tag_text .= ">True</option>\n";
-        $tag_text .= "</select>\n";
-        return $tag_text;
-    }
-    */
-    /** NOT BEING USED AT THE MOMENT
-     *  If this tag has an error, wrap it with a visual indicator
-     *
-     *  @param string HTML to be wrapped
-     *  @param boolean  true=>error, false=>no error
-     *  @return string
-     
-    function error_wrapping($html_tag, $has_error) {
-        return ($has_error
-                ? '<span class="fieldWithErrors">' . $html_tag . '</span>'
-                : $html_tag);
-    }    
-  */
+	public function form_for($object, $id=null, $options=array(), $exclude=array()) {
+		$obj = new $object($id);
+		foreach($obj->column_info() as $field=>$type) {
+			if($field==$obj->primary_key || in_array($field, $exclude)) continue;
+			$html .= $this->content_tag("p", $this->db_to_form_field($object, $field, $type) );
+		}
+		return $this->content_tag("form", $html, $options);
+	}
+	
+	public function db_to_form_field($object, $field, $type) {
+		switch(true) {
+			case $length = strstr($type, "varchar"): return label_text_field($object, $field); break;
+			case $length = strstr($type, "int"): return label_text_field($object, $field, array("size"=>10)); break;
+		}
+		return false;
+	}
 }
+
+function form_for() {
+	$form_helper = new FormHelper();
+  $args = func_get_args();
+  return call_user_func_array(array($form_helper, 'form_for'), $args);
+}
+
 
 /**
  * Creates a label based on the information passed in
  */
-function make_label($object, $field, $label_name="", $spacer = "_")
-{
+function make_label($object, $field, $label_name="", $spacer = "_") {
   $label_for = $object . $spacer . $field;
-  
-  if(empty($label_name))
-  {
+	if(empty($label_name)) {
     $label_name = $field;
   }
-  
   return "<label for=\"" . $label_for. "\">" . ucfirst($label_name)  . "</label><br />";
 }
 

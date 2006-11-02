@@ -18,7 +18,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	protected static $default_pdo = null;
 	protected $pdo = null;
   protected $table = null;
-  protected $primary_key="id";
+  public $primary_key="id";
   protected $row = array();
   protected $constraints = array();
   protected $children = array();
@@ -509,6 +509,19 @@ class WXActiveRecord extends WXValidations implements Iterator
 		
 	public function describe() {
     return $this->find_by_sql("DESCRIBE `{$this->table}`");
+	}
+	
+	public function column_info() {
+		$columns = array();
+		$describe = $this->describe();
+		foreach($this->describe() as $column=>$val) {
+			$columns[$val->Field]=$val->Type;
+		}
+		return $columns;
+	}
+	
+	public function describe_field($field) {
+		return $this->find_by_sql("DESCRIBE `{$this->table}` {$field}");
 	}
 		
   /**

@@ -283,11 +283,11 @@ function error_messages_for($object) {
   return call_user_func_array(array($helper, 'error_messages_for'), $args);
 }
 
-Autoloader::include_from_registry('asset_tag_helper');
-Autoloader::include_from_registry('form_helper');
-Autoloader::include_from_registry('form_tag_helper');
-Autoloader::include_from_registry('form_options_helper');
-Autoloader::include_from_registry('url_helper');
+Autoloader::include_from_registry('AssetTagHelper');
+Autoloader::include_from_registry('FormHelper');
+Autoloader::include_from_registry('FormTagHelper');
+Autoloader::include_from_registry('FormOptionsHelper');
+Autoloader::include_from_registry('UrlHelper');
 
 
 

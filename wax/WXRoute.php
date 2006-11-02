@@ -26,63 +26,46 @@ class WXRoute extends ApplicationBase
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
 		$conf=new WXConfigBase;
 		$this->config_array=$conf->return_config("all");		
-		$this->make_controller_route();
 	}
 	
-	
-	/**
-    *  Constructs a route from the url
-    *  @return string      The Controller
-    */
-	public function make_controller_route() {
-	  $route_array=$this->route_array;
-	  print_r($this->route_array); exit;
-	  $tempController=$route_array[0];
-		if($route_array[0] && is_dir(CONTROLLER_DIR.$route_array[0])) {
-			if(!$route_array[1]) { $route_array[1] = "page"; }
-			$tempController = $route_array[1];
-		} 
-   	switch(TRUE) {
-			case $route_array[0] && is_dir(CONTROLLER_DIR.$route_array[0]) && 
-				$this->check_controller(CONTROLLER_DIR.$route_array[0]."/".ucfirst($route_array[0]).ucfirst($tempController)."Controller.php"):
-				$controller=$route_array[0]."/".$tempController;
-				array_shift($route_array);
-				array_shift($route_array);
-			break;
- 	  	case $this->check_controller(CONTROLLER_DIR.ucfirst($tempController)."Controller.php"):
- 	    	$controller=$tempController; 
- 	    	array_shift($route_array);
- 	    	$this->actions_array=$route_array;
- 	    break;
-      
- 	    case isset($this->config_array['route'][$tempController]) && $this->check_controller(CONTROLLER_DIR.ucfirst($this->config_array['route'][$tempController])."Controller.php"):
- 	    	$controller=$this->config_array['route'][$tempController]; 
- 	    	$this->actions_array=$route_array;
- 	    break;
-      
- 	    case isset($this->config_array['route']['default']) && $this->check_controller(CONTROLLER_DIR.ucfirst($this->config_array['route']['default'])."Controller.php"):
- 	    	$controller=$this->config_array['route']['default']; 
- 	    	$this->actions_array=$route_array;
- 	    break;
-        
-   	  default: throw new WXException("Missing Controller - ".$tempController, "Controller Not Found");
+	public function pick_controller() {
+		while($this->route_array[1] && is_dir(CONTROLLER_DIR.$this->route_array[0])) {
+			$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
+			array_shift($this->route_array);
 		}
-		return $controller;
+		if($res = $this->check_controller($this->route_array[0])) return $res;
 	}
 	
 	/**
     *  Checks whether a file exists for the named controller
     *  @return boolean      If file exists true
     */
-	private function check_controller($file)
-	{
-	   if(is_file($file)) return true;
-	   else return false;
+	private function check_controller($controller) {
+		if(strpos($controller, "/")) {
+			$path = substr($controller, 0, strpos($controller, "/")+1);
+			$class = ucfirst(WXActiveRecord::camelize(rtrim (str_replace("/", "_", $controller), "_")))."Controller";
+			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
+		}
+		$class = ucfirst($controller)."Controller";
+		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
+		if($maps = $this->check_controller_mapping($controller)) return $maps;
+		throw new WXException("Missing Controller - ".$controller, "Controller Not Found");
+	  return false;
 	}
 	
-	public function read_actions()
-	{
-	   return $this->actions_array;
+	private function check_controller_mapping($controller) {
+		if($mapping = $this->config_array['route'][$controller]) {
+			return $this->check_controller($mapping);
+		} elseif($mapping = $this->config_array['route']['default']) {
+			return $this->check_controller($mapping);
+		}
+		return false;
+	}
+	
+	public function read_actions() {
+		$this->actions_array = $this->route_array; 
+		array_shift($this->actions_array);
+	  return $this->actions_array;
 	}
 	
 	

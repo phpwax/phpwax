@@ -86,7 +86,7 @@ class ApplicationBase
    */
 	private function load_config() {
 		$route=new WXRoute;		
-		$this->controller=$route->make_controller_route();
+		$this->controller=$route->pick_controller();
 		$this->actions=$route->read_actions();
   }
 	
@@ -112,13 +112,7 @@ class ApplicationBase
    *  @return obj
    */	
 	private function load_controller() {
-		if(strpos($this->controller, "/")) {
-			$name ="_".str_replace('/', ' ', strtolower($this->controller));
-      $controller = ltrim(str_replace(' ', '', ucwords($name)), '_');
-			$controller = ucfirst($controller)."Controller";
-		} else {
-	  	$controller=ucfirst($this->controller)."Controller";      
-		}
+		$controller = $this->controller;
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=$this->actions;
@@ -197,7 +191,6 @@ class ApplicationBase
   		} else { 
   			$view_path=$this->controller."/".$use_view.".html"; 
   		}
-  		echo $view_path; exit;
   		if($cnt->use_plugin) {
   		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
   		}
