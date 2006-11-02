@@ -155,7 +155,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
-	  $this->controller = strtolower(str_replace("Controller", "", $this->controller));
+	  $this->controller = slashify(str_replace("Controller", "", $this->controller));
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;
   	$page_output = false;
