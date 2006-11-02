@@ -129,6 +129,7 @@ class ApplicationBase
 			  exit;
   		}
 		}
+		echo "Trying ".$cnt->action; exit;
 	  $cnt->controller_global();
 	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
