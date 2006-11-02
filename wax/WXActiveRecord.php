@@ -579,6 +579,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 	public function is_posted() {
 		if(is_array($_POST[$this->underscore(get_class($this))])) {
 			return true;
+		} elseif(is_array($_FILES)) {
+		  return true;
 		} else {
 			return false;
 		}
