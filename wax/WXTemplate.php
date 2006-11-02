@@ -30,7 +30,7 @@ class WXTemplate
 		  case is_readable(VIEW_DIR.$view_file): $view_file = VIEW_DIR.$view_file; break;
 		  case $this->view_base && is_readable($this->view_base.$view_file): $view_file = $this->view_base.$view_file; break;
 		  case $this->plugin_view_path && is_readable($this->view_base.$this->plugin_view_path): 
-		    $pFile = $this->view_base.$this->plugin_view_path; break;
+		    $view_file = $this->view_base.$this->plugin_view_path; break;
 		  case $this->shared_dir && is_readable($this->shared_dir.$raw_view): $view_file = $this->shared_dir.$raw_view; break;
 		  default: $view_file = VIEW_DIR.$view_file;
 		}
@@ -39,7 +39,7 @@ class WXTemplate
 			throw new WXException("Unable to find ".$view_file, "Missing Template File");
 		}
 		if(!include($view_file) ) {
-			throw new WXUserException("PHP parse error in $pFile");
+			throw new WXUserException("PHP parse error in $view_file");
 		}
 		if($this->preserve_buffer) {
 			$content = ob_get_clean();
