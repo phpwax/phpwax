@@ -179,9 +179,8 @@ class FormHelper extends WXHelpers {
             
         $options = array_merge($this->default_field_options, $options);
 
-        if($field_type == "hidden") 
-        {
-            unset($options["size"]);
+        if($field_type == "hidden" || $field_type == "submit") {
+          unset($options["size"]);
         }
         $options["type"] = $field_type;  
                 
@@ -436,6 +435,11 @@ function radio_button($object, $field, $tag_value, $options = array()) {
 
 function label_radio_button($object, $field, $tag_value, $options = array(), $label_name="")  {
   return make_label($object, $field, $label_name) . radio_button($object, $field, $tag_value, $options); 
+}
+
+function submit_field($object, $field, $options=array()) {
+  $form = new FormHelper($object, $field);
+  return $form->to_input_field("submit", $options);
 }
 
 
