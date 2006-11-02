@@ -439,8 +439,8 @@ function label_radio_button($object, $field, $tag_value, $options = array(), $la
 
 function submit_field($object, $field="", $options=array()) {
   $form = new FormHelper($object, $field);
-  $options['name']  = $object . "[commit]" ;
-  $options['value']    = $field;
+  $options['name']  = $object . "[save_record]" ;
+  $options['value']    = "save_record";
   return $form->to_input_field_tag("submit", $options);
 }
 
