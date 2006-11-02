@@ -57,6 +57,7 @@ class WXRoute extends ApplicationBase
 		if($mapping = $this->config_array['route'][$controller]) {
 			return $this->check_controller($mapping);
 		} elseif($mapping = $this->config_array['route']['default']) {
+		  array_unshift($this->route_array, $this->config_array['route']['default']);
 			return $this->check_controller($mapping);
 		}
 		return false;
