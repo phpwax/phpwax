@@ -35,6 +35,7 @@ class WXTemplate
 		  default: $view_file = VIEW_DIR.$view_file;
 		}
 		extract((array)$this);
+		echo $view_file;
 		if(!is_readable($view_file)) {
 			throw new WXException("Unable to find ".$view_file, "Missing Template File");
 		}
@@ -57,7 +58,7 @@ class WXTemplate
 	
 	public function execute() {
 		$this->content_for_layout = $this->parse($this->view_path);		
-		$this->layout_content = $this->content_for_layout."<br />Layout:".$this->layout_path;
+		$this->layout_content = $this->content_for_layout;
 		if($this->layout_path) {
 			return $this->parse($this->layout_path);
 		} else {
