@@ -238,7 +238,7 @@ class WXHelpers {
 	function info_messages() {
 	  if($messages = Session::get('user_messages')) {
 		  foreach($messages as $message) {
-			  $html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_message"));
+			  $html.= $this->content_tag("li", $message, array("class"=>"user_message"));
 		  }
 		  Session::unset_var('user_messages');
 		  return $this->content_tag("ul", $html, array("class"=>"user_messages"));
