@@ -145,7 +145,7 @@ abstract class WXControllerBase extends ApplicationBase
 		}
 	}
 	
-	public function render_partial($path, $values) {
+	public function render_partial($path, $values=array()) {
 	  $tpl=new WXTemplate;
 		if($this->use_plugin) {
 			$tpl->view_base = PLUGIN_DIR.$this->use_plugin."/view/";
