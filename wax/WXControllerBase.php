@@ -144,6 +144,31 @@ abstract class WXControllerBase extends ApplicationBase
 			throw new WXException("Couldn't find file ".$view_name.".html", "Missing Template");
 		}
 	}
+	
+	public function render_partial($path, $values) {
+	  $tpl=new WXTemplate;
+		if($this->use_plugin) {
+			$tpl->view_base = PLUGIN_DIR.$this->use_plugin."/view/";
+			$tpl->shared_dir = PLUGIN_DIR.$this->use_plugin."/view/shared/";
+		}
+    foreach($values as $var=>$val) {
+      $tpl->{$var}=$val;
+    }
+    if(strpos($path, "/")) {
+      $partial = "_".substr(strrchr($path, "/"),1);
+      $path = substr($path, 0,strrpos($path, "/"))."/";
+    } else {
+      $partial = "_".$path;
+      $path = "";
+    }
+    $view_path = $path.$partial;
+
+		if($this->use_plugin) {
+		  $tpl->plugin_view_path=get_parent_class($this)."/".$use_view.".html";
+		}
+		$tpl->view_path=$view_path;
+		return $tpl->execute();
+	}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
