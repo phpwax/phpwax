@@ -132,7 +132,7 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	@param array $values Values to be passed to the template.
 	 *	@return string
  	 */
-	protected function view_to_string($view_path, $values=array()) {
+	public function view_to_string($view_path, $values=array()) {
   	$view_html='';
 		$view= new WXTemplate("preserve");
 		foreach($values as $k=>$v) {
