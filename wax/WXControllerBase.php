@@ -164,7 +164,7 @@ abstract class WXControllerBase extends ApplicationBase
     $view_path = $path.$partial;
 
 		if($this->use_plugin) {
-		  $tpl->plugin_view_path=get_parent_class($this)."/".$use_view.".html";
+		  $tpl->plugin_view_path=get_parent_class($this)."/".$view_path.".html";
 		}
 		$tpl->view_path=$view_path;
 		return $tpl->execute();
