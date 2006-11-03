@@ -243,7 +243,7 @@ class WXHelpers {
       $partial = "_".$path;
       $path = "";
     }
-    return WXControllerBase::view_to_string($partial.$path, $values);
+    return WXControllerBase::view_to_string($path.$partial, $values);
   }
 
 }
