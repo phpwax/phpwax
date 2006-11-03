@@ -2,6 +2,9 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
+set_error_handler('cli_wxerror', 247 );
+set_exception_handler('cli_wxexception', 247 );
+
 AutoLoader::include_dir(FRAMEWORK_DIR);
 $configFile=APP_DIR.'config/config.yml';
 $config_array = Spyc::YAMLLoad($configFile);
@@ -17,6 +20,7 @@ if($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
 } else {
 	AutoLoader::include_dir(APP_DIR."tests");
 }
+require_once 'PHPUnit/framework.php';
 require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 class WXAllTests
