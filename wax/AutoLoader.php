@@ -29,6 +29,10 @@ function throw_wxexception($e) {
 	$exc = new WXException("An unknown error has occurred", "Application Error");
 }
 
+function throw_wxerror($code, $error) {
+	$exc = new WXException($error, "Application Error $code");
+}
+
 
 /**
  *	A simple static class to Preload php files and commence the application.
@@ -103,7 +107,7 @@ class AutoLoader
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxexception', 247 );
+		set_error_handler('throw_wxerror', 247 );
 		WXConfigBase::set_instance();
 		$app=new ApplicationBase;
 	}
