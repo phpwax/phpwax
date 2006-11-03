@@ -223,6 +223,9 @@ class WXHelpers {
     }
 
     function error_messages_for($object) {
+      if(strpos($object, "_")) {
+        $object = camelize($object, 1);
+      }
 			$class= new $object;
 			$errors = $class->get_errors();
 			foreach($errors as $error) {
