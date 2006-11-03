@@ -141,7 +141,7 @@ abstract class WXControllerBase extends ApplicationBase
 		if($view_html=$view->parse($view_path.".html") ) {  
    		return $view_html;
 		} else {
-			throw new WXException("Couldn't find file ".$controller_name."/".$view_name.".html", "Missing Template");
+			throw new WXException("Couldn't find file ".$view_name.".html", "Missing Template");
 		}
 	}
 
