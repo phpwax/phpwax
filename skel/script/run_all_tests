@@ -2,8 +2,7 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
-set_error_handler('cli_wxerror', 247 );
-set_exception_handler('cli_wxexception', 247 );
+define("CLI_ENV", true);
 
 AutoLoader::include_dir(FRAMEWORK_DIR);
 $configFile=APP_DIR.'config/config.yml';
