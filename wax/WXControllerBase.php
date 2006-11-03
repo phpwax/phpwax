@@ -134,9 +134,6 @@ abstract class WXControllerBase extends ApplicationBase
  	 */
 	protected function view_to_string($view_path, $values=array()) {
   	$view_html='';
-    if(!$controller_name) { 
-			$controller_name=substr( $this->class_name,0,strpos($this->class_name,"_")); 
-		}
 		$view= new WXTemplate("preserve");
 		foreach($values as $k=>$v) {
 	  	$view->$k=$v;
