@@ -231,7 +231,8 @@ class WXHelpers {
 			foreach($errors as $error) {
 				$html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_error"));
 			}
-			return $this->content_tag("ul", $html, array("class"=>"user_errors"));
+			if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
+			return false;
 		}
 
 }
