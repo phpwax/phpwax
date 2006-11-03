@@ -238,7 +238,7 @@ class WXHelpers {
   function render_partial($path, $values=array()) {
     if(strpos($path, "/")) {
       $partial = "_".strrchr($path, "/");
-      $path = substr(0,strrpos($path, "/"));
+      $path = substr($path, 0,strrpos($path, "/"));
     } else {
       $partial = "_".$path;
       $path = "";
