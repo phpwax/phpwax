@@ -234,6 +234,18 @@ class WXHelpers {
 			if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
 			return false;
 		}
+	
+	function info_messages() {
+	  $messages = Session::get('user_messages');
+		foreach($messages as $message) {
+			$html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_message"));
+		}
+		if(count($messages)>0) {
+		  Session::unset_var('user_messages');
+		  return $this->content_tag("ul", $html, array("class"=>"user_messages"));
+	  }
+		return false;
+	}
 		
   function render_partial($path, $values=array()) {
     if(strpos($path, "/")) {
@@ -297,6 +309,13 @@ function error_messages_for() {
   $args = func_get_args();
   return call_user_func_array(array($helper, 'error_messages_for'), $args);
 }
+
+function info_messages() {
+	$helper = new WXHelpers();
+  $args = func_get_args();
+  return call_user_func_array(array($helper, 'info_messages'), $args);
+}
+
 
 function render_partial() {
   $helper = new WXHelpers();
