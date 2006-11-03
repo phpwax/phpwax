@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+ini_set("display_errors", "off");
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
 define("CLI_ENV", true);
