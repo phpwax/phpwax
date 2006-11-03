@@ -223,6 +223,7 @@ class WXHelpers {
     }
 
     function error_messages_for($object) {
+      echo $object; exit;
       if(strpos($object, "_")) {
         $object = camelize($object, 1);
       }
