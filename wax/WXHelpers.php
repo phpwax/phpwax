@@ -234,6 +234,17 @@ class WXHelpers {
 			if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
 			return false;
 		}
+		
+  function render_partial($path, $values=array()) {
+    if(strpos($path, "/")) {
+      $partial = "_".strrchr($path, "/");
+      $path = substr(0,strpos($path, "/"));
+    } else {
+      $partial = "_".$path;
+      $path = "";
+    }
+    return WXControllerBase::view_to_string($partial.$path, $values);
+  }
 
 }
 
@@ -281,10 +292,16 @@ function cdata_section() {
     return call_user_func_array(array($helper, 'cdata_section'), $args);
 }
 
-function error_messages_for($object) {
+function error_messages_for() {
 	$helper = new WXHelpers();
   $args = func_get_args();
   return call_user_func_array(array($helper, 'error_messages_for'), $args);
+}
+
+function render_partial() {
+  $helper = new WXHelpers();
+  $args = func_get_args();
+  return call_user_func_array(array($helper, 'render_partial'), $args);
 }
 
 Autoloader::include_from_registry('AssetTagHelper');
