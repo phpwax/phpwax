@@ -61,12 +61,14 @@ class AutoLoader
   
   static public function include_from_registry($class_name) {
     foreach(self::$registry_chain as $responsibility) {
-      if(is_array(self::$registry[$responsibility]) && array_key_exists($class_name, self::$registry[$responsibility])) {
+      if(isset(self::$registry[$responsibility]) && array_key_exists($class_name, self::$registry[$responsibility])) {
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
-    throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
-  }
+		if(!require_once($class_name)) {
+    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
+  	}
+	}
 	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
