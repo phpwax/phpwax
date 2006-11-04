@@ -11,6 +11,7 @@
  *  @todo Document this class
  */
 class UrlHelper extends WXHelpers {
+	
 
     /**
      * Creates a link tag of the given +name+ using an URL created by
@@ -106,7 +107,7 @@ class UrlHelper extends WXHelpers {
     function button_to($name, $options = array(), $html_options = null) {
         $html_options = (!is_null($html_options) ? $html_options : array());
         $this->convert_boolean_attributes($html_options, array('disabled'));
-        $this->convert_confirm_option_to_javascript($html_options);
+        $html_options = $this->convert_confirm_option_to_javascript($html_options);
         if (is_string($options)) {
             $url = $options;
             $name = (!is_null($name) ? $name : $options);
@@ -122,55 +123,11 @@ class UrlHelper extends WXHelpers {
             . $this->tag("input", $html_options) . "</div></form>";
     }
 
-    /**
-     * This tag is deprecated. Combine the link_to and
-     * AssetTagHelper::image_tag yourself instead, like: 
-     *   link_to(image_tag("rss", array("size" => "30x45"),
-     * array("border" => 0)), "http://www.example.com") 
-     *  @todo Document this method
-     */
-    function link_image_to($src, $options = array(),
-                           $html_options = array()) { 
-        $image_options = array("src" => (ereg("/", $src) ? $src : "/images/$src"));
-        if (!ereg(".", $image_options["src"])) $image_options["src"] .= ".png";
-
-        if (isset($html_options["alt"])) {
-            $image_options["alt"] = $html_options["alt"];
-            unset($html_options["alt"]);
-        } else {
-            $image_options["alt"] = ucfirst(end(explode("/", $src)));
-        }
-
-        if (isset($html_options["size"])) {
-            $image_options["width"]  = current(explode("x", $html_options["size"]));
-            $image_options["height"] = end(explode("x", $html_options["size"]));
-            unset($html_options["size"]);
-        }
-
-        if (isset($html_options["border"])) {
-            $image_options["border"] = $html_options["border"];
-            unset($html_options["border"]);
-        }
-
-        if (isset($html_options["align"])) {
-            $image_options["align"] = $html_options["align"];
-            unset($html_options["align"]);
-        }
-
-        return $this->link_to($this->tag("img", $image_options), $options, $html_options);
-    }
+    
 
     /**
      *  Generate URL based on current URL and optional arguments
      *
-     *  Output a URL with controller and optional action and id.
-     *  The output URL has the same method, host and
-     *  <samp>TRAX_URL_PREFIX</samp> as 
-     *  the current URL.  Controller is either the current controller
-     *  or a controller specified in $options.  Action and ID are
-     *  optionally specified in $options, or omitted.  The
-     *  <samp>':id'</samp> option will be ignored if the <samp>':action'</samp>
-     *  option is omitted.
      *  @param mixed[]
      *  <ul>
      *    <li><b>string:</b><br />
@@ -184,7 +141,6 @@ class UrlHelper extends WXHelpers {
      *     </ul>
      *  </ul>
      *  @return string
-     *  @uses controller_path
      */
     function url_for($options = array()) {
         $url_base = null;
@@ -219,10 +175,14 @@ class UrlHelper extends WXHelpers {
                     $url[] = $controller; 
                 }
             } else {
-                $controller = $this->controller_path;
+                $controller = $_GET['route'];
                 if(substr($controller, 0, 1) == "/") {
                     # remove the beginning slash
                     $controller = substr($controller, 1);        
+                }
+								if(substr($controller, -1) == "/") {
+                    # remove the beginning slash
+                    $controller = substr($controller, 0,-1);        
                 }
                 $url[] = $controller;
             }

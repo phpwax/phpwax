@@ -22,6 +22,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   protected $row = array();
   protected $constraints = array();
   protected $children = array();
+	protected $columns = array();
 
  /**
   *  constructor
@@ -35,6 +36,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 		
 		if( $class_name != 'WXActiveRecord' ) {
 			$this->table = $this->underscore( $class_name );
+			$this->columns = $this->column_info();
+			
 		}
 		
 		switch(true) {
@@ -314,7 +317,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     }
     
     $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
-    
     if (isset($this->row['id']) && $this->row['id']) {
       $sql .= " WHERE `{$this->table}`.id=:id;";
     } else if (count($id_list)) {
@@ -502,7 +504,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 
 	public function update_attributes($array) {
 		foreach($array as $k=>$v) {
-		  if($this->$k) $this->$k=$v;
+		  $this->$k=$v;
 		}
 	  return $this->save();
 	}

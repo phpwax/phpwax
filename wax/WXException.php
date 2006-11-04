@@ -4,14 +4,19 @@
  */
 class WXException extends Exception
 {
+	public $div = "------------------------------------------------------------------------------------------------------\n";
+
 	public function __construct($message, $heading, $code = "500") {
       parent::__construct($message, $code);
       $this->error_heading = $heading;
       $this->error_message = $this->format_trace($this);
 			$this->simple_error_message = $this->simple_error();
       $this->error_code = $code;
+			$this->cli_error_message = $this->cli_format_trace($this);
 			if(ENV =="production") {
 				$this->prod_giveup();
+			} elseif(defined('CLI_ENV')) {
+				$this->cli_giveup();
 			} else {
 				$this->dev_giveup();
 			}
@@ -71,6 +76,22 @@ class WXException extends Exception
 		error_log($message);
 		mail("ross@webxpress.com", "Application Error on production server", $message);
 		exit;
+	}
+	public function cli_giveup() {
+		echo $this->cli_error_message;
+		exit;
+	}
+	public function cli_format_trace($e) {
+		$trace.= $this->div;
+    $trace.="{$e->error_heading}\n";
+		$trace.= $this->div;
+    $trace.="{$e->getMessage()}\n";
+		$trace.= $this->div;
+    $trace.="{$e->getTraceAsString()}\n";
+		$trace.= $this->div;
+    $trace.="In {$e->getFile()} and on Line: {$e->getLine()}\n";
+		$trace.= $this->div;
+		return $trace;
 	}
 	
 }

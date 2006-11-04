@@ -19,8 +19,13 @@ abstract class File {
 		}
 	}
 	
-	static function safe_filename($file) {
+	static function safe_file_save($dir, $file) {
 		$file=preg_replace('/[^\w\.-_]+/', '', $file);
+		$i=1;
+		while(is_file($dir.$file)) {
+			$file = substr($file,0,strpos($file, "."))."_$i.".substr(strrchr($file, "."),1);
+			$i++;
+		}
 		return $file;
 	}
 	
