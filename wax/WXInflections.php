@@ -42,6 +42,15 @@ class WXInflections
     if($upper_first) return ucfirst($camel);
     return $camel;
   }
+
+	function truncate($substring, $max = 50, $rep = '...') {
+		if(strlen($substring) < 1) $string = $rep;
+	    else $string = $substring;
+		$leave = $max - strlen ($rep);
+		if(strlen($string) > $max) return substr_replace($string, $rep, $leave);
+		  else return $string;
+	}
+	
 }
 
 
@@ -83,6 +92,12 @@ function slashcamelize() {
  	$inflector = new WXInflections();
   $args = func_get_args();
   return call_user_func_array(array($inflector, 'slashcamelize'), $args);
+}
+
+function truncate() {
+ 	$inflector = new WXInflections();
+  $args = func_get_args();
+  return call_user_func_array(array($inflector, 'truncate'), $args);
 }
 
 ?>
