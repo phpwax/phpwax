@@ -15,9 +15,9 @@ $conf->init_db($config_array['db']);
 AutoLoader::include_dir(MODEL_DIR);
 AutoLoader::include_dir(CONTROLLER_DIR);
 if($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
-	AutoLoader::include_dir(PLUGIN_DIR.$argv[1]."/tests");
+	AutoLoader::include_dir(PLUGIN_DIR.$argv[1]."/tests", true);
 } else {
-	AutoLoader::include_dir(APP_DIR."tests");
+	AutoLoader::include_dir(APP_DIR."tests", true);
 }
 require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
