@@ -76,6 +76,11 @@ class UrlHelper extends WXHelpers {
                 "return confirm('".addslashes($html_options['confirm'])."');";
             unset($html_options['confirm']);
         }
+
+				if(array_key_exists('window', $html_options)) {
+					$html_options["onclick"] =
+						"window.open('".$html_options['window']."', 'window_name', 'window_options'); return false";
+				}
         return $html_options;
     }
 
@@ -142,90 +147,43 @@ class UrlHelper extends WXHelpers {
      *  </ul>
      *  @return string
      */
-    function url_for($options = array()) {
-        $url_base = null;
-        $url = array();
-        $extra_params = array();
-        if(is_string($options)) {
+  function url_for($options = array()) {
+		$routes_object = new WXRoute;
+    $url_base = "/";
+    $url = array();
+    $extra_params = array();
+    if(!is_array($options)) return $options;
+		
+		if(array_key_exists("controller", $options)) {
+    	$url[] = $options["controller"];
+			unset($options["controller"]);
+    } else {
+    	$url[] = $routes_object->get_url_controller();
+    }
+      
+    //  If controller found, get action from $options
+   	if(array_key_exists("action", $options)) {
+    	$url[] = $options["action"];
+			unset($options["action"]);
+    } 
+    
+		if(array_key_exists("id", $options)) {
+    	$url[] = $options["id"];
+			unset($options["id"]);
+    }
+          
+    if(count($options)) {
+    	foreach($options as $key => $value) {
+      	$extra_params[$key] = $value; 
+     	}    
+    }
 
-            //  Argument is a string, just return it
-            return $options;
-
-        } elseif(is_array($options)) {
-
-            //  Argument is a (possibly empty) array
-            //  Start forming URL with this host
-            $url_base = $_SERVER['HTTP_HOST'];
-            if(substr($url_base, -1) == "/") {
-                # remove the ending slash
-                $url_base = substr($url_base, 0, -1);
-            }           
-
-            //  Method is same as was used by the current URL
-            if($_SERVER['SERVER_PORT'] == 443) {
-                $url_base = "https://".$url_base;
-            } else {
-                $url_base = "http://".$url_base;
-            }
-
-            
-            //  Get controller from $options or $controller_path
-            if(array_key_exists(":controller", $options)) {
-                if($controller = $options[":controller"]) {
-                    $url[] = $controller; 
-                }
-            } else {
-                $controller = $_GET['route'];
-                if(substr($controller, 0, 1) == "/") {
-                    # remove the beginning slash
-                    $controller = substr($controller, 1);        
-                }
-								if(substr($controller, -1) == "/") {
-                    # remove the beginning slash
-                    $controller = substr($controller, 0,-1);        
-                }
-                $url[] = $controller;
-            }
-
-            //  If controller found, get action from $options
-            if(count($url)) {
-                if(array_key_exists(":action", $options)) {
-                    if($action = $options[":action"]) {
-                        $url[] = $action;
-                    }
-                } 
-            }
-
-            //  If controller and action found, get id from $actions
-            if(count($url) > 1) {
-                if(array_key_exists(":id", $options)) {
-                    if(is_object($options[":id"])) {
-                        if($id = $options[":id"]->id) {
-                            $url[] = $id;
-                        }
-                    } else {
-                        if($id = $options[":id"]) {
-                            $url[] = $id;
-                        }
-                    }
-                }
-            }
-            
-            if(count($options)) {
-                foreach($options as $key => $value) {
-                    if(!strstr($key, ":")) {
-                        $extra_params[$key] = $value; 
-                    }       
-                }    
-            }
-        }
-        
-        if(count($url) && substr($url_base,-1) != "/") {
-            $url_base .= "/";    
-        } 
-        return $url_base . implode("/", $url)
-            . (count($extra_params)
-               ? "?".http_build_query($extra_params) : null);
+		if(!count($extra_params)) {
+    	return $url_base . implode("/", $url);
+		} 
+    return $url_base . implode("/", $url)
+          . (count($extra_params)
+             ? "?".http_build_query($extra_params) : null);
     }    
 
 }

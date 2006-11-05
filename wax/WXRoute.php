@@ -69,6 +69,11 @@ class WXRoute extends ApplicationBase
 	  return $this->actions_array;
 	}
 	
+	public function get_url_controller() {
+		$url = rtrim($this->pick_controller(), "Controller");
+		return slashify($url);
+	}
+	
 	
 	
 } // END class 

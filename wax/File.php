@@ -51,7 +51,7 @@ abstract class File {
 	static function resize_image($source, $destination, $width, $overwrite=false) {
 		if(!self::is_image($source)) { return false;}
 		if($overwrite) {
-			$command="mogrify -size {$width}x{$width} $source -resize {$width}x{$width} $destination";
+			$command="mogrify -size {$width}x{$width} $source -resize {$width}x{$width}";
 		} else {
 			$command="convert -size {$width}x{$width} $source -resize {$width}x{$width} $destination";
 		}

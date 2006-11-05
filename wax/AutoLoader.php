@@ -88,7 +88,12 @@ class AutoLoader
 	  self::include_plugin($plugin);
 	}
 	
-	static public function include_dir($directory) {
+	static public function include_dir($directory, $force = false) {
+		if($force) {
+			foreach(scandir($directory) as $file) {
+				if(strpos($file, ".php")) require_once($file);
+			}
+		}
 	  return self::recursive_register($directory, "framework");
 	}
 
