@@ -2,8 +2,7 @@
 <?php
 // set the correct error reporting level 
 if (ini_get('error_reporting') != 4095) { 
-    echo "\nSetting Error Reporting to E_ALL | E_STRICT\n"; 
-    error_reporting(E_ALL | E_STRICT); 
+    error_reporting(E_ERROR); 
 }
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
