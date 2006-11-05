@@ -8,6 +8,7 @@ $configFile=APP_DIR.'config/config.yml';
 $config_array = Spyc::YAMLLoad($configFile);
 if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
 	$config_array['environment']=$argv[1];
+	unset($argv[1]);
 }
 $config_array = WXConfigBase::merge_environments($config_array);
 WXConfigBase::set_instance();
