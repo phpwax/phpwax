@@ -91,7 +91,7 @@ class AutoLoader
 	static public function include_dir($directory, $force = false) {
 		if($force) {
 			foreach(scandir($directory) as $file) {
-				if(strpos($file, ".php")) require_once($file);
+				if(strpos($file, ".php")) require_once($directory."/".$file);
 			}
 		}
 	  return self::recursive_register($directory, "framework");
