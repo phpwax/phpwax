@@ -46,36 +46,15 @@ class FormHelper extends WXHelpers {
      *  @uses default_radio_options
      *  @uses default_text_area_options
      */
-    function __construct($object_name="", $attribute_name="") 
-    {
-        parent::__construct($object_name, $attribute_name);
-                
-        $this->object_name    = $object_name;        
-        $this->attribute_name = $attribute_name;
-        
-        //  Set default attributes for input fields
-        $this->default_field_options = 
-            array_key_exists('DEFAULT_FIELD_OPTIONS',$GLOBALS)
-            ? $GLOBALS['DEFAULT_FIELD_OPTIONS']
-            : array("size" => 30);
-
-        //  Set default attributes for radio buttons
-        $this->default_radio_options =
-            array_key_exists('DEFAULT_RADIO_OPTIONS',$GLOBALS)
-            ? $GLOBALS['DEFAULT_RADIO_OPTIONS']
-            : array();
-
-        //  Set default attributes for text areas
-        $this->default_text_area_options =
-            array_key_exists('DEFAULT_TEXT_AREA_OPTIONS',$GLOBALS)
-            ? $GLOBALS['DEFAULT_TEXT_AREA_OPTIONS']
-            : array("cols" => 40, "rows" => 20);
-
-        //  Set default attributes for dates
-        $this->default_date_options =
-            array_key_exists('DEFAULT_Date_OPTIONS',$GLOBALS)
-            ? $GLOBALS['DEFAULT_DATE_OPTIONS']
-            : array(":discard_type" => true);
+    function __construct($object="", $attribute_name="") {
+    	parent::__construct($object, $attribute_name);
+      if(is_object($object) && !$object instanceof WXActiveRecord) {
+				$this->object = new $object;
+			}  
+			$this->object = $object;
+      $this->attribute_name = $attribute_name;
+			
+			$this->object_name = $this->object->table;
     }
 
       
@@ -169,83 +148,24 @@ class FormHelper extends WXHelpers {
      *  @uses tag()
      *  @uses value()
      */
-    function to_input_field_tag($field_type, $options = array()) 
-    {
-      
-        $default_size = $this->default_field_options['size'];
-               
-        $options["size"] = array_key_exists("size", $options)
-            ? $options["size"]: $default_size;
-            
-        $options = array_merge($this->default_field_options, $options);
-
-        if($field_type == "hidden" || $field_type == "submit") {
-          unset($options["size"]);
-        }
-        $options["type"] = $field_type;  
-                
-        $options = $this->add_default_name_and_id_and_value($options);
-        return $this->tag("input", $options);           
-       
+    function to_input_field_tag($field_type, $options = array()) {
+			if(!$options["size"] && $field_type != "hidden" && $field_type != "submit") $options["size"]=25;
+			$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+		  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+      $options["type"] = $field_type;
+			if(!isset($options["value"]) && $field_type !="file") {
+				$options["value"] = $this->object->{$this->attribute_name};
+			}
+			return $this->tag("input", $options);            
     }
 
-    /**
-     *  @todo Document this method
-     *  @uses add_default_name_and_id_and_value()
-     */
-    function to_radio_button_tag($tag_value, $options = array() ) 
-    {
-       $options["type"] = "radio";
-        
-        if($this->get_value() == $tag_value)
-        {        
-          $options["checked"] = "checked";          
-        } 
-        else 
-        {
-            unset($options["checked"]);
-        }        
-
-        $options = $this->add_default_name_and_id_and_value($options);
-        $options['value'] = $tag_value;        
-        return $this->tag("input", $options);
-    }
-
-    /**
-     *  @todo Document this method
-     *  @uses add_default_name_and_id_and_value()
-     */
-    function to_text_area_tag($options = array()) 
-    {
-        if (array_key_exists("size", $options)) 
-        {
-            $size = explode('x', $options["size"]);
-            $options["cols"] = reset($size);
-            $options["rows"] = end($size);
-            unset($options["size"]);
-        }
-        $options = array_merge($this->default_text_area_options, $options);
-        $options = $this->add_default_name_and_id_and_value($options);
-        
-        return $this->content_tag("textarea", htmlspecialchars($options['value']),$options);
-           
-    }
-
-    /**
-     *  @todo Document this method
-     *  @uses add_default_name_and_id_and_value()
-     */
-  function to_check_box_tag($options = array(), $checked_value = "1", $unchecked_value = "1") {
-  	$options["type"] = "checkbox";
-    if($this->get_value() == $checked_value) {        
-    	$options["checked"] = "checked";          
-		} else {
-      unset($options["checked"]);
-    }        
-		$options = $this->add_default_name_and_id_and_value($options);
-		$options['value'] = $checked_value;        
-		return $this->tag("input", $options);
-  }
+	function make_label($label_name="", $after_content="<br />") {
+	  $option = array("for" =>$this->object_name."_".$this->attribute_name);
+		if(empty($label_name)) {
+	    $label_name = $this->attribute_name;
+	  }
+		return $this->content_tag("label", ucfirst($label_name), $option).$after_content;
+	}
 
 	public function form_for($object, $id=null, $options=array(), $exclude=array()) {
 		$obj = new $object($id);
@@ -263,24 +183,87 @@ class FormHelper extends WXHelpers {
 		}
 		return false;
 	}
+	
+	function text_field($options = array(), $with_label=true, $after_content="<br />") {
+	  if($with_label) $html.= $this->make_label();
+	  $html.= $this->to_input_field_tag("text", $options);
+		return $html;
+	}
+	
+	function password_field($options = array(), $with_label=true, $after_content="<br />") {
+	  if($with_label) $html.= $this->make_label();
+	  $html.= $this->to_input_field_tag("password", $options);
+		return $html;
+	}
+	
+	function hidden_field($options = array()) {
+	  $html = $this->to_input_field_tag("hidden", $options);
+		return $html;
+	}
+	
+	function file_field($options = array(), $with_label=true, $after_content="<br />") {
+	  if($with_label) $html.= $this->make_label();
+	  $html.= $this->to_input_field_tag("file", $options);
+		return $html;
+	}
+	
+	function text_area($options = array(), $with_label=true, $after_content="<br />") {
+ 		if (!array_key_exists("cols", $options)) $options["cols"]=50;
+ 		if (!array_key_exists("rows", $options)) $options["cols"]=10;
+		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+		$options["value"] = $this->object->{$this->attribute_name};
+	  if($with_label) $html.= $this->make_label();
+		$content = $options['value'];
+		unset($options["value"]);
+    $html.= $this->content_tag("textarea", htmlspecialchars($content),$options);
+		return $html;
+  }
+
+	function submit_field($value="Save") {
+		$options["value"]= $value;
+	  return $this->to_input_field_tag("submit", $options);
+	}
+	
+	function check_box($options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true, $after_content="") {
+		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+  	$options['id']    = $this->object_name . "_" . $this->attribute_name;
+	  $options["type"] = "checkbox";
+	  if($this->object->{$this->attribute_name}) {        
+	  	$options["checked"] = "checked";          
+	  } else {
+	    unset($options["checked"]);
+	  }
+		if($with_label) $html.= $this->make_label("", "");
+	  $options['value'] = $checked_value;        
+	  $html.= $this->tag("input", $options);
+		return $html;
+	}
+	
+	function radio_button($tag_value, $options = array(), $with_label=true, $after_content="<br />") {
+		$options["type"] = "radio";
+    $options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+  	$options['id']    = $this->object_name . "_" . $this->attribute_name;
+  	if($this->object->{$this->attribute_name} == $tag_value) {        
+    	$options["checked"] = "checked";          
+    } else {
+    	unset($options["checked"]);
+    }        
+		$options['value'] = $tag_value;
+		if($with_label) $html.= $this->make_label("", "");  
+		$html.= $this->tag("input", $options);  
+    return $html;
+	}
+	
 }
+
+/*  End of main class... below are wrapper functions for methods in the main class */
+
 
 function form_for() {
 	$form_helper = new FormHelper();
   $args = func_get_args();
   return call_user_func_array(array($form_helper, 'form_for'), $args);
-}
-
-
-/**
- * Creates a label based on the information passed in
- */
-function make_label($object, $field, $label_name="", $spacer = "_") {
-  $label_for = $object . $spacer . $field;
-	if(empty($label_name)) {
-    $label_name = $field;
-  }
-  return "<label for=\"" . $label_for. "\">" . ucfirst($label_name)  . "</label><br />";
 }
 
 /**
@@ -295,22 +278,12 @@ function make_label($object, $field, $label_name="", $spacer = "_") {
  *    <samp>array('attr1' => 'value1'[, 'attr2' => 'value2']...)</samp>
  *  @uses FormHelper::to_input_field_tag()
  */
-function text_field($object, $field, $options = array()) 
-{
-    $form             = new FormHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;    
-    return $form->to_input_field_tag("text", $options);
+function text_field()  {
+  $args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+  return call_user_func_array(array($helper, 'text_field'), $args); 
 }
-
-/**
-  * Wrapper for text_field - adds label to the front
-  */
-function label_text_field($object, $field, $options = array(), $label_name="")  {
-  $labeled = make_label($object, $field, $label_name) . text_field($object, $field, $options);
-  return $labeled;
-}
-
 
 /**
  *  Works just like text_field, but returns a input tag of the "password" type instead.
@@ -319,19 +292,11 @@ function label_text_field($object, $field, $options = array(), $label_name="")  
  *  @uses FormHelper::to_input_field_tag()
  */
 function password_field($object, $field, $options = array()) {
-    $form = new FormHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;    
-    return $form->to_input_field_tag("password", $options);
+    $args = func_get_args();
+		$helper = new FormHelper($args[0], $args[1]);
+		array_shift($args); array_shift($args);
+	  return call_user_func_array(array($helper, 'password_field'), $args);
 }
-
-/**
- *  Wrapper function for password_field - adds a label infront of the password box
- */ 
-function label_password_field($object, $field, $options = array(), $label_name="") {
-  return make_label($object, $field, $label_name) . password_field($object, $field, $options); 
-}
-
 
 /**
  *  Works just like text_field, but returns a input tag of the "hidden" type instead.
@@ -340,14 +305,10 @@ function label_password_field($object, $field, $options = array(), $label_name="
  *  @uses FormHelper::to_input_field_tag()
  */
 function hidden_field($object, $field, $options = array()) {
-  $form = new FormHelper($object, $field);
-  $options['name']  = $object . "[" . $field . "]" ;
-  $options['id']    = $object . "_" . $field;    
-  return $form->to_input_field_tag("hidden", $options);
-}
-
-function label_hidden_field($object, $field, $options = array(), $label_name="") {
-  return make_label($object, $field, $label_name) . hidden_field($object, $field, $options); 
+  $args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+  return call_user_func_array(array($helper, 'hidden_field'), $args);
 }
 
 /**
@@ -355,16 +316,18 @@ function label_hidden_field($object, $field, $options = array(), $label_name="")
  *  @uses FormHelper::to_input_field_tag()
  */
 function file_field($object, $field, $options = array()) {
-	$form = new FormHelper($object, $field);
-	$options['name']  = $object . "[" . $field . "]" ;
-	$options['id']    = $object . "_" . $field;  
-	return $form->to_input_field_tag("file", $options);
+	$args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'file_field'), $args);
 }
 
-function label_file_field($object, $field, $options = array(), $label_name="") {
-  return make_label($object, $field, $label_name) . file_field($object, $field, $options); 
+function submit_field() {
+	$args = func_get_args();
+	$helper = new FormHelper($args[0], "save");
+	array_shift($args);
+	return call_user_func_array(array($helper, 'submit_field'), $args);
 }
-
 
 /**
  *  Example: text_area("post", "body", array("cols" => 20, "rows" => 40));
@@ -372,15 +335,12 @@ function label_file_field($object, $field, $options = array(), $label_name="") {
  *  @uses FormHelper::to_text_area_tag()
  */
 function text_area($object, $field, $options = array())  {
-  $form = new FormHelper($object, $field);
-  $options['name']  = $object . "[" . $field . "]" ;
-  $options['id']    = $object . "_" . $field;  
-  return $form->to_text_area_tag($options);
+	$args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'text_area'), $args);
 }
 
-function label_text_area($object, $field, $options = array(), $label_name="")  {
-  return make_label($object, $field, $label_name) . text_area($object, $field, $options); 
-}
 
 /**
  * Returns a checkbox tag tailored for accessing a specified attribute (identified by $field) on an object
@@ -403,17 +363,12 @@ function label_text_area($object, $field, $options = array(), $label_name="")  {
  *     <input name="puppy[gooddog]" type="hidden" value="no" />
    *  @uses FormHelper::to_check_box_tag()
  */
-function check_box($object, $field, $options = array(), $checked_value = "1", $unchecked_value = "0")  {
-  $form = new FormHelper($object, $field);
-  $options['name']  = $object . "[" . $field . "]" ;
-  $options['id']    = $object . "_" . $field;  
-  return $form->to_check_box_tag($options, $checked_value, $unchecked_value);
+function check_box()  {
+	$args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'check_box'), $args);
 }
-
-function label_check_box($object, $field, $options = array(), $checked_value="1", $unchecked_value="0", $label_name="") {
-  return make_label($object, $field, $label_name) . check_box($object, $field, $options, $checked_value, $unchecked_value); 
-}
-
 
 /**
  * Returns a radio button tag for accessing a specified attribute (identified by $field) on an object
@@ -428,22 +383,16 @@ function label_check_box($object, $field, $options = array(), $checked_value="1"
  *     <input type="radio" id="post_category" name="post[category] value="java" />
  *  @uses FormHelper::to_radio_button_tag()
  */
-function radio_button($object, $field, $tag_value, $options = array()) {
-    $form = new FormHelper($object, $field);
-    return $form->to_radio_button_tag($tag_value, $options);
+function radio_button() {
+	$args = func_get_args();
+	$helper = new FormHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'radio_button'), $args);
 }
 
-function label_radio_button($object, $field, $tag_value, $options = array(), $label_name="")  {
-  return make_label($object, $field, $label_name) . radio_button($object, $field, $tag_value, $options); 
-}
 
-function submit_field($object, $field="", $options=array()) {
-  $form = new FormHelper($object, $field);
-  $options['id']  = $object . "_submit" ;
-  $options['name']  = $object . "[save_record]" ;
-  $options['value']    = $field;
-  return $form->to_input_field_tag("submit", $options);
-}
+
+
 
 
 ?>

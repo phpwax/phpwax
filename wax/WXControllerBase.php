@@ -156,7 +156,7 @@ abstract class WXControllerBase extends ApplicationBase
 			$tpl->view_base = PLUGIN_DIR.$this->use_plugin."/view/";
 			$tpl->shared_dir = PLUGIN_DIR.$this->use_plugin."/view/shared/";
 		}
-    foreach($values as $var=>$val) {
+    foreach($this as $var=>$val) {
       $tpl->{$var}=$val;
     }
     if(strpos($path, "/")) {

@@ -17,7 +17,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 {
 	protected static $default_pdo = null;
 	protected $pdo = null;
-  protected $table = null;
+  public $table = null;
   public $primary_key="id";
   protected $row = array();
   protected $constraints = array();
@@ -36,8 +36,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		
 		if( $class_name != 'WXActiveRecord' ) {
 			$this->table = $this->underscore( $class_name );
-			$this->columns = $this->column_info();
-			
+			$this->columns = $this->column_info();	
 		}
 		
 		switch(true) {
@@ -115,12 +114,10 @@ class WXActiveRecord extends WXValidations implements Iterator
 			$class_name = $this->camelize( $name);
       if(class_exists( $class_name, false)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
-      } else {
-				throw new WXActiveRecordException("Can't access property '{$class_name}' - Maybe the class or table doesn't exist");
-			}
+      } 
     }
 
-    return null;
+    return false;
   }
 
 
@@ -174,8 +171,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		return $this->find_all(array("sql"=>$sql));
 	}
 	
-	public function query( $sql, $type="one" )
-	{
+	public function query( $sql, $type="one" ) {
 		try {
 			$sth = $this->pdo->prepare( $sql );
 			$binding_params = $this->_makeBindingParams( $this->constraints );
@@ -309,6 +305,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
   function update( $id_list = array() ) {
+		$this->clear_unwanted_values();
     $values = $this->row;
     unset($values['id']);
     if (! count( $values)) {
@@ -340,7 +337,8 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
   function insert() {
-    $this->row = array_merge( $this->constraints, $this->row );
+		$this->clear_unwanted_values();
+		$this->row = array_merge( $this->constraints, $this->row );
     $binding_params = $this->_makeBindingParams( $this->row );
     $sql = "INSERT INTO `{$this->table}` (" .
         implode( ', ', array_keys($this->row) ) . ') VALUES(' .
@@ -380,6 +378,12 @@ class WXActiveRecord extends WXValidations implements Iterator
       }
     return $id;
   }
+
+	function clear_unwanted_values() {
+		foreach($this->row as $key=>$value) {
+			if(!array_key_exists($key, $this->columns)) unset($this->row[$key]);
+		}
+	}
 
   function _makeANDConstraints( $array ) {
     foreach( $array as $key=>$value ) {
@@ -510,14 +514,13 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 		
 	public function describe() {
-    return $this->find_by_sql("DESCRIBE `{$this->table}`");
+    return $this->query("DESCRIBE `{$this->table}`", "all");
 	}
 	
 	public function column_info() {
 		$columns = array();
-		$describe = $this->describe();
-		foreach($this->describe() as $column=>$val) {
-			$columns[$val->Field]=array($val->Type, $val->Null, $val->Default);
+		foreach($this->describe() as $column) {
+			$columns[$column["Field"]]=array($column["Type"], $column["Null"], $column["Default"]);
 		}
 		return $columns;
 	}

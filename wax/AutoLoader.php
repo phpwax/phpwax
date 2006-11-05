@@ -65,9 +65,7 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
-		if(!require_once($class_name)) {
-    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
-  	}
+   	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	
 	static public function include_plugin($plugin) {

@@ -63,27 +63,7 @@ if(!array_key_exists('COUNTRIES',$GLOBALS)) {
  */
 class FormOptionsHelper extends FormHelper {
     
-    /**
-     *  Generate HTML option tags from a list of choices
-     *
-     *  Accepts an array of possible choices and returns a string of
-     *  option tags.  The value of each array element becomes the
-     *  visible text of an option, and the key of the element becomes
-     *  the value returned to the server.  For example:<br />
-     *  <samp>options_for_select(array('foo','bar'));</samp><br />
-     *  will return:<br />
-     *  <samp><option value="0">foo</option>\n</samp><br />
-     *  <samp><option value="1">bar</option></samp><br />
-     *
-     *  The optional second argument specifies the array key of an
-     *  option to be initially selected.
-     * 
-     *  NOTE: Only the option tags are returned, you have to wrap this
-     *  call in a regular HTML select tag.
-     *  @param string[]  Choices
-     *  @param integer   Selected choice
-     *  @return string
-     */
+
     function options_for_select($choices, $selected = null) {
         $options = array();
         if(is_array($choices)) {
@@ -120,89 +100,31 @@ class FormOptionsHelper extends FormHelper {
      *  @uses content_tag()
      *  @uses value()
      */
-    function to_select_tag($choices, $options) 
-    {           
-        $options = $this->add_default_name_and_id_and_value($options);
-        $content = $this->options_for_select($choices, $this->get_value());
-        unset($options['value']);
-        return $this->content_tag("select",$content,$options);           
-    }  
+    function select($choices, $options=array()) {           
+    	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
+      unset($options['value']);
+			$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+		  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+      return $this->content_tag("select",$content,$options);           
+    }
+
+	function country_select($options = array()) {
+		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+		return $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
+	}
 
   
 }
 
-/**
- *  Create a new FormOptionsHelper object and call its to_select_tag() method
- *
- *  Create a select tag and a series of contained option tags for the
- *  provided object and method.  The option currently held by the
- *  object will be selected, provided that the object is available. 
- *  See options_for_select for the required format of the choices parameter.
- *
- * Example with $post->person_id => 1:
- *   $person = new Person;
- *   $people = $person->find_all();
- *   foreach($people as $person) {
- *      $choices[$person->id] = $person->first_name;
- *   }
- *   select("post", "person_id", $choices, array("include_blank" => true))
- *
- * could become:
- *
- *   <select name="post[person_id]">
- *     <option></option>
- *     <option value="1" selected="selected">David</option>
- *     <option value="2">Sam</option>
- *     <option value="3">Tobias</option>
- *   </select>
- *
- *  This can be used to provide a functionault set of options in the
- *  standard way: before r}ering the create form, a new model instance
- *  is assigned the functional options and bound to
- *  @model_name. Usually this model is not saved to the
- *  database. Instead, a second model object is created when the
- *  create request is received.  This allows the user to submit a form
- *  page more than once with the expected results of creating multiple
- *  records.  In addition, this allows a single partial to be used to
- *  generate form inputs for both edit and create forms. 
- *  @todo Document this function
- */
-function select($object, $field, $choices, $options = array()) 
-{
-    $form             = new FormOptionsHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;     
-    return $form->to_select_tag($choices, $options);
+
+function select()  {
+	$args = func_get_args();
+	$helper = new FormOptionsHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'select'), $args);
 }
 
-function label_select($object, $field, $choices, $options = array(), $label_name="") 
-{
-    
-  return make_label($object, $field, $label_name) . select($object, $field, $choices, $options) ; 
-}
-/**
-  * no object name used, can be with or without a label - default is without (false)
-  * options is now required - in particular the name param
-  * if the name param is missing an exception is thrown
-  */
-function no_obj_select($options, $choices, $label_name="")
-{
-  if(empty($options['name']))
-  {
-    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
-  }
-  $name = $options['name'];
- 
-  $form = new FormHelper("", $name);
-  if(!$label)
-  {
-    return $form->to_select_tag($choices, $options);
-  }
-  else
-  {
-    return make_label("", $options['name'], "", "") . $form->to_select_tag($choices, $options);
-  }    
-}
 
 
 /**
@@ -212,50 +134,14 @@ function no_obj_select($options, $choices, $label_name="")
  *  @todo Document this function
  *  @uses FormOptionsHelper::country_select()
  */
-function country_select($object, $field, $options = array())  
-{
-    $form             = new FormOptionsHelper($object, $field);
-    $options['name']  = $object . "[" . $field . "]" ;
-    $options['id']    = $object . "_" . $field;     
-    return $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
-}
-
-function label_country_select($object, $field, $options = array(), $label_name="") 
-{
-    
-  return make_label($object, $field, $label_name) . country_select($object, $field, $options) ; 
+function country_select($object, $field, $options = array()) {
+	$args = func_get_args();
+	$helper = new FormOptionsHelper($args[0], $args[1]);
+	array_shift($args); array_shift($args);
+	return call_user_func_array(array($helper, 'select'), $args);
 }
 
 
-/**
-  * Alternative version - no object name used, can be with or 
-  * without a label - default is without (false)
-  * options is now required - in particular the name param
-  */
-function no_obj_country_select($options, $label_name="")
-{
-  if(empty($options['name']))
-  {
-    throw new WXException("Incorrect Formatting - 'name' is a required attribute");  
-  }
-  $name = $options['name'];
- 
-  $form = new FormHelper("", $name);
-  if(!$label)
-  {
-    return $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
-  }
-  else
-  {
-    return make_label("", $options['name'], "", "") . $form->to_select_tag($GLOBALS['COUNTRIES'], $options);
-  }    
-}
 
-// -- set Emacs parameters --
-// Local variables:
-// tab-width: 4
-// c-basic-offset: 4
-// c-hanging-comment-ender-p: nil
-// indent-tabs-mode: nil
-// End:
+
 ?>

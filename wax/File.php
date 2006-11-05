@@ -48,11 +48,16 @@ abstract class File {
 	  * @param $width The width of the new image
 	  @ @return bool
 	  */
-	static function resize_image($source, $destination, $width) {
+	static function resize_image($source, $destination, $width, $overwrite=false) {
 		if(!self::is_image($source)) { return false;}
-		$command="convert -size {$width}x{$width} $source -resize {$width}x{$width} $destination";
+		if($overwrite) {
+			$command="mogrify -size {$width}x{$width} $source -resize {$width}x{$width} $destination";
+		} else {
+			$command="convert -size {$width}x{$width} $source -resize {$width}x{$width} $destination";
+		}
 		system($command);
 		if(!is_file($destination)) { return false; }
+		chmod($destination, 0777);
 		return true;
 	}
 	
@@ -87,13 +92,12 @@ abstract class File {
 		return $rows;
 	}
 	
-	static function remove_item($within_base, $item) {
-		if(!strpos($item, $within_base)===0) { return false; }
+	static function recursively_delete($item) {
 		if(is_file($item)) { unlink($item); return true; }
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($item), 2);
 		foreach ( $iter as $file ) {
-				if($iter->isDir()) { rmdir($iter->getPath().'/'.$file); }
-				else { unlink($iter->getPath().'/'.$file); }
+				if($iter->isDir()) { rmdir($file); }
+				else { unlink($file); }
 		}
 		if(is_dir($item)) { rmdir($item); }
 		return true;
