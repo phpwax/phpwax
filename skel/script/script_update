@@ -5,7 +5,7 @@ $source_location = "svn://svn.webxpress.com/home/SVN/wxframework/trunk/skel/scri
 $output_dir = WAX_ROOT."script";
 
 $command = "svn export {$source_location} {$output_dir} --force";
-system(escapeshellarg($command));
+system($command);
 echo "All scripts have been updated to the latest versions.
 ";
 ?>
