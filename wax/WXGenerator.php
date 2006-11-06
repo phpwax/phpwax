@@ -9,7 +9,8 @@ class WXGenerator {
 	public $stdout = array();
   
   public function __construct($generator_type, $args) {
-    $this->new_{$generator_type}($args);
+		$method = "new_".$generator_type;
+    $this->{$method}($args);
   }
 
 	public function add_stdout($message, $type="info") {
