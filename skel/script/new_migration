@@ -2,11 +2,5 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 AutoLoader::include_dir(FRAMEWORK_DIR);
-$configFile=APP_DIR.'config/config.yml';
-$config_array = Spyc::YAMLLoad($configFile);
-$config_array = WXConfigBase::merge_environments($config_array);
-WXConfigBase::set_instance();
-$conf=new WXConfigBase;
-$conf->init_db($config_array['db']);
 $gen = new WXGenerator("migration", array_slice($argv, 1));
 ?>
