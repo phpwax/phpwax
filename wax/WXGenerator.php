@@ -22,7 +22,7 @@ class WXGenerator {
 	}
 	
 	private function run_shell($command) {
-		$command = escapeshellarg($command);
+		$command = escapeshellcmd($command);
 		return shell_exec($command);
 	}
 	
@@ -70,7 +70,7 @@ class WXGenerator {
   }
   
   public function new_test($args=array()) {
-		if(empty($args < 1)) {
+		if(count($args)< 1) {
 			$this->add_stdout("You must supply a test class name that you wish to create.", "error");
 		}
     $class = "Test".WXInflections::camelize($args[0], true);
@@ -83,7 +83,7 @@ class WXGenerator {
 	}
   
   public function new_model($args=array()) {
-		if(count($args < 1)) {
+		if(count($args)< 1) {
 			$this->add_stdout("You must supply a model name that you wish to create.", "error");
 		}
     $class = WXInflections::camelize($args[0], true);
@@ -95,12 +95,12 @@ class WXGenerator {
   }
   
   public function new_controller($args=array()) {
-		if(count($args < 1)) {
+		if(count($args)< 1) {
 			$this->add_stdout("You must supply a controller name that you wish to create.", "error");
 		}
     $path = explode("/", $args[0]);
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";
-    if(count($path > 1)) {
+    if(count($path)> 1) {
      $path = $path[0]."/"; 
      $this->run_shell("mkdir -p ".APP_DIR."controller/$path}");
     } else $path = "";    
@@ -108,7 +108,7 @@ class WXGenerator {
     $res = $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
 		if(!$res) $this->add_perm_error("app/controller/".$path.$class.".php"); return false;
 		$this->add_stdout("Created controller file at app/controller/".$path.$class.".php");
-    $this->make_view($path);
+    $this->make_view($args[0]);
   }
   
   public function make_view($name) {
@@ -119,7 +119,7 @@ class WXGenerator {
   }
   
   public function new_email($args=array()) {
-		if(count($args < 1)) {
+		if(count($args)< 1) {
 			$this->add_stdout("You must supply a test name that you wish to create.", "error");
 		}
     $class = WXInflections::camelize($args[0], true);
@@ -135,13 +135,14 @@ class WXGenerator {
 			$this->add_stdout("You must supply a migration name that you wish to create.", "error");
 		}
     $migrate = new WXMigrate;
-    $version = $migrate->increase_version_latest();
+    $migrate->increase_version_latest();
+		$version = $migrate->get_version_latest();
     $class = WXInflections::camelize($name, true);
     $this->final_output.= $this->start_php_file($class, "WXMigration");
     if($table) $this->add_function("up", "  \$this->create_table(\"$table\");");
     else $this->add_function("up");
 		$this->add_function("down");
-    $file = str_pad($new_version, 3, "0", STR_PAD_LEFT)."_".underscore($class);
+    $file = str_pad($version, 3, "0", STR_PAD_LEFT)."_".underscore($class);
     $res = $this->write_to_file(APP_DIR."db/migrate/".$file.".php");
 		if(!$res) $this->add_perm_error("app/db/migrate/".$file.".php"); return false;
 		$this->add_stdout("Created migration file at app/db/migrate/".$file.".php");
