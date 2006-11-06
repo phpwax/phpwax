@@ -7,7 +7,7 @@ if(!isset($argv[1]) ) {
 require_once dirname(__FILE__).'/../app/config/environment.php';
 AutoLoader::include_dir(FRAMEWORK_DIR);
 $testdir = dirname(__FILE__).'/../app/tests/';
-$test_name = camelize($argv[1], true);
+$test_name = WXInflections::camelize($argv[1], true);
 $content = "<?php
 class Test{$test_name} extends WXTestCase
 {
