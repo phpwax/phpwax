@@ -8,7 +8,7 @@ class WXGenerator {
   public $final_output="";
 	public $stdout = array();
   
-  public function __construct($generator_type, $args) {
+  public function __construct($generator_type, $args=array()) {
 		$method = "new_".$generator_type;
     $this->{$method}($args);
   }
@@ -69,20 +69,20 @@ class WXGenerator {
 		return false;
   }
   
-  public function new_test($args) {
-		if(count($args < 1)) {
+  public function new_test($args=array()) {
+		if(empty($args < 1)) {
 			$this->add_stdout("You must supply a test class name that you wish to create.", "error");
 		}
-    $class = WXInflections::camelize($args[0], true);
+    $class = "Test".WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXTestCase", array("setUp", "tearDown"));
     $this->final_output.= $this->add_line("  /* Add tests below here. all must start with the word 'test' */");
-    $res = $this->write_to_file(APP_DIR."tests/Test".$class.".php");
-		if($res) $this->add_stdout("Created test at app/tests/Test".$class.".php"); return true;
+    $res = $this->write_to_file(APP_DIR."tests/".$class.".php");
+		if($res) $this->add_stdout("Created test at app/tests/".$class.".php"); return true;
 		$this->add_perm_error("app/tests/Test".$class.".php");
   	return false;
 	}
   
-  public function new_model($args) {
+  public function new_model($args=array()) {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a model name that you wish to create.", "error");
 		}
@@ -94,7 +94,7 @@ class WXGenerator {
 		$this->new_migration("create_".underscore($class), underscore($class) );
   }
   
-  public function new_controller($args) {
+  public function new_controller($args=array()) {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a controller name that you wish to create.", "error");
 		}
@@ -118,7 +118,7 @@ class WXGenerator {
 		$this->add_stdout("Created view folder at app/view/$name");
   }
   
-  public function new_email($args) {
+  public function new_email($args=array()) {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a test name that you wish to create.", "error");
 		}
@@ -130,10 +130,10 @@ class WXGenerator {
   }
   
   public function new_migration($name, $table=null) {
-		if(count($args < 1)) {
+  	if(is_array($name)) $name = $name[0];
+		if(strlen($name)<1) {
 			$this->add_stdout("You must supply a migration name that you wish to create.", "error");
 		}
-    if(is_array($name)) $name = $name[0];
     $migrate = new WXMigrate;
     $version = $migrate->increase_version_latest();
     $class = WXInflections::camelize($name, true);
