@@ -70,6 +70,7 @@ class WXGenerator {
   }
   
   public function new_test($args) {
+		print_r($args); exit;
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a test class name that you wish to create.", "error");
 		}
