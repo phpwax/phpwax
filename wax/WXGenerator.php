@@ -31,8 +31,9 @@ class WXGenerator {
     return $output;
   }
   
-  public function add_function($name, $access="public") {
-    $output = "\n"."  $access function $name {"."\n"."\n";
+  public function add_function($name, $include_text=null) {
+    $output = "\n"."  public function $name() {"."\n"."\n";
+    if($include_text) $output.=$include_text;
     $output.= "  }"."\n";
     return $output;
   }
@@ -69,11 +70,31 @@ class WXGenerator {
     } else $path = "";    
     $this->final_output.= $this->start_php_file($class, "ApplicationController");
     $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
+    $this->make_view($path);
   }
   
-  public function make_view($name, $files=null) {
+  public function make_view($name) {
     $command = "mkdir -p ".VIEW_DIR.$name;
     system($command);
+  }
+  
+  public function new_email($args) {
+    $class = camelize($args[0], true);
+    $this->final_output.= $this->start_php_file($class, "WXEmail");
+    $this->write_to_file(APP_DIR."model/".$class.".php");
+  }
+  
+  public function new_migration($name, $table=null) {
+    if(is_array($name)) $name = $name[0];
+    $migrate = new WXMigrate;
+    $version = $migrate->increase_version_latest();
+    $class = camelize($name, true);
+    $this->final_output.= $this->start_php_file($class, "WXMigration");
+    if($table) {
+      $this->add_function("up", "  create_table(\"$table\");");
+    }
+    $file = str_pad($new_version, 3, "0", STR_PAD_LEFT)."_".underscore($class);
+    $this->write_to_file(APP_DIR."db/migrate/".$file.".php");
   }
   
   

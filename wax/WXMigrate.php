@@ -41,17 +41,17 @@ class WXMigrate
     return $row['version'];
   }
   
-  protected function set_version($version) {
+  public function set_version($version) {
     $this->pdo->query("UPDATE migration_info SET version=".$version);
   }
   
-  protected function increase_version() {
+  public function increase_version() {
     $version = $this->get_version() + 1;
     $this->pdo->query("UPDATE migration_info SET version=".$version);
     return $version;
   }
   
-  protected function decrease_version() {
+  public function decrease_version() {
     if($this->get_version()>0) {
       $version = $this->get_version() - 1;
       $this->pdo->query("UPDATE migration_info SET version=".$version);
@@ -64,6 +64,11 @@ class WXMigrate
   public function get_version_latest() {
     $row = $this->pdo->query("SELECT version_latest FROM migration_info")->fetch();
     return $row['version_latest'];
+  }
+  
+  public function increase_version_latest() {
+    $latest_ver = $this->get_version_latest() + 1;
+    return $this->pdo->query("UPDATE migration_info SET version_latest=".$latest_ver);
   }
   
   public function create_migration($name) {
