@@ -1,31 +1,6 @@
 #!/usr/bin/php
 <?php
-if(!isset($argv[1]) ) {
-  exit("[ERROR] You must supply a test class name that you wish to create. 
-");
-}
 require_once dirname(__FILE__).'/../app/config/environment.php';
 AutoLoader::include_dir(FRAMEWORK_DIR);
-$testdir = dirname(__FILE__).'/../app/tests/';
-$test_name = WXInflections::camelize($argv[1], true);
-$content = "<?php
-class Test{$test_name} extends WXTestCase
-{
-  public function setUp() {}
-	
-  public function tearDown() {}
-
-  /* Add tests below here. all must start with the word 'test' */
-}
-?>
-";
-if(is_readable($testdir."Test".$test_name.".php")) {
-  exit("[ERROR] Not written, a test of that name already exists.
-");
-}
-$command = "echo ".'"'.$content.'"'." > ".$testdir."Test".$test_name.".php";
-system($command);
-echo "Test class created in app/tests.
-";
-
+$gen = new WXGenerator("test");
 ?>
