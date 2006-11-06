@@ -73,7 +73,7 @@ class WXGenerator {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a test class name that you wish to create.", "error");
 		}
-    $class = camelize($args[0], true);
+    $class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXTestCase", array("setUp", "tearDown"));
     $this->final_output.= $this->add_line("  /* Add tests below here. all must start with the word 'test' */");
     $res = $this->write_to_file(APP_DIR."tests/Test".$class.".php");
@@ -86,7 +86,7 @@ class WXGenerator {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a model name that you wish to create.", "error");
 		}
-    $class = camelize($args[0], true);
+    $class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXActiveRecord");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) $this->add_perm_error("app/model/".$class.".php"); return false;
@@ -99,7 +99,7 @@ class WXGenerator {
 			$this->add_stdout("You must supply a controller name that you wish to create.", "error");
 		}
     $path = explode("/", $args[0]);
-    $class = camelize(implode("_", $path), true)."Controller";
+    $class = WXInflections::camelize(implode("_", $path), true)."Controller";
     if(count($path > 1)) {
      $path = $path[0]."/"; 
      $this->run_shell("mkdir -p ".APP_DIR."controller/$path}");
@@ -122,7 +122,7 @@ class WXGenerator {
 		if(count($args < 1)) {
 			$this->add_stdout("You must supply a test name that you wish to create.", "error");
 		}
-    $class = camelize($args[0], true);
+    $class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXEmail");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) $this->add_perm_error("app/model/".$path.".php"); return false;
@@ -136,7 +136,7 @@ class WXGenerator {
     if(is_array($name)) $name = $name[0];
     $migrate = new WXMigrate;
     $version = $migrate->increase_version_latest();
-    $class = camelize($name, true);
+    $class = WXInflections::camelize($name, true);
     $this->final_output.= $this->start_php_file($class, "WXMigration");
     if($table) $this->add_function("up", "  \$this->create_table(\"$table\");");
     else $this->add_function("up");
