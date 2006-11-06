@@ -9,6 +9,13 @@ class WXGenerator {
 	public $stdout = array();
   
   public function __construct($generator_type, $args=array()) {
+		$configFile=APP_DIR.'config/config.yml';
+		$config_array = Spyc::YAMLLoad($configFile);
+		$config_array = WXConfigBase::merge_environments($config_array);
+		WXConfigBase::set_instance();
+		$conf=new WXConfigBase;
+		$conf->init_db($config_array['db']);
+
 		$method = "new_".$generator_type;
     $this->{$method}($args);
   }
@@ -30,17 +37,15 @@ class WXGenerator {
 		$this->add_stdout("Couldn't create $file, maybe it exists, or perhaps a permissions problem.");
 	}
   
-  public function start_php_file($class_name, $extends=null, $functions=null) {
+  public function start_php_file($class_name, $extends=null, $functions=array()) {
     $output = "<?php"."\n";
     $output.= "class $class_name";
     if($extends) $output.= " extends $extends"."\n";
       else $output.="\n";
     $output.="{"."\n";
-    if($functions) {
       foreach($functions as $function) {
         $output.=$this->add_function($function);
       }
-    }
     return $output;
   }
   
@@ -51,7 +56,7 @@ class WXGenerator {
   }
   
   public function add_function($name, $include_text=null) {
-    $output = "\n"."  public function $name() {"."\n"."\n";
+    $output = "\n"."  public function $name() {"."\n";
     if($include_text) $output.=$include_text;
     $output.= "  }"."\n";
     return $output;
@@ -77,9 +82,11 @@ class WXGenerator {
     $this->final_output.= $this->start_php_file($class, "WXTestCase", array("setUp", "tearDown"));
     $this->final_output.= $this->add_line("  /* Add tests below here. all must start with the word 'test' */");
     $res = $this->write_to_file(APP_DIR."tests/".$class.".php");
-		if($res) $this->add_stdout("Created test at app/tests/".$class.".php"); return true;
-		$this->add_perm_error("app/tests/Test".$class.".php");
-  	return false;
+		if(!$res) {
+			$this->add_perm_error("app/tests/Test".$class.".php");
+	  	return false;
+		}
+		$this->add_stdout("Created test at app/tests/".$class.".php"); return true;
 	}
   
   public function new_model($args=array()) {
@@ -89,8 +96,12 @@ class WXGenerator {
     $class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXActiveRecord");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
-		if(!$res) $this->add_perm_error("app/model/".$class.".php"); return false;
+		if(!$res) {
+			$this->add_perm_error("app/model/".$class.".php"); 
+			return false;
+		}
 		$this->add_stdout("Created model file at app/model/".$class.".php");
+		$this->final_output="";
 		$this->new_migration("create_".underscore($class), underscore($class) );
   }
   
@@ -106,15 +117,21 @@ class WXGenerator {
     } else $path = "";    
     $this->final_output.= $this->start_php_file($class, "ApplicationController");
     $res = $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
-		if(!$res) $this->add_perm_error("app/controller/".$path.$class.".php"); return false;
-		$this->add_stdout("Created controller file at app/controller/".$path.$class.".php");
+		if(!$res) {
+			$this->add_perm_error("app/controller/".$path.$class.".php"); 
+			return false;
+		}
+		$this->add_stdout("Created controller file at app/controller/".$path.$class.".php");		
     $this->make_view($args[0]);
   }
   
   public function make_view($name) {
     $command = "mkdir -p ".VIEW_DIR.$name;
     $res = $this->run_shell($command);
-		if(!$res) $this->add_perm_error("app/view/".$name); return false;
+		if(!$res) {
+			$this->add_perm_error("app/view/".$name); 
+			return false;
+		}
 		$this->add_stdout("Created view folder at app/view/$name");
   }
   
@@ -125,8 +142,11 @@ class WXGenerator {
     $class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXEmail");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
-		if(!$res) $this->add_perm_error("app/model/".$path.".php"); return false;
-		$this->add_stdout("Created email file at app/model/".$path.".php");
+		if(!$res) {
+			$this->add_perm_error("app/model/".$class.".php"); 
+			return false;
+		}
+		$this->add_stdout("Created email file at app/model/".$class.".php");
   }
   
   public function new_migration($name, $table=null) {
@@ -138,13 +158,21 @@ class WXGenerator {
     $migrate->increase_version_latest();
 		$version = $migrate->get_version_latest();
     $class = WXInflections::camelize($name, true);
-    $this->final_output.= $this->start_php_file($class, "WXMigration");
-    if($table) $this->add_function("up", "  \$this->create_table(\"$table\");");
-    else $this->add_function("up");
-		$this->add_function("down");
+		$this->final_output.= $this->start_php_file($class, "WXMigration");
+    if($table) {
+			$this->final_output.=$this->add_function("up", sprintf('    \$this->create_table(\"%s\");', $table)."\n");
+			$this->final_output.=$this->add_function("down", sprintf('    \$this->drop_table(\"%s\");', $table)."\n");
+		}
+    else {
+			$this->final_output.=$this->add_function("up");
+			$this->final_output.=$this->add_function("down");
+		}
     $file = str_pad($version, 3, "0", STR_PAD_LEFT)."_".underscore($class);
     $res = $this->write_to_file(APP_DIR."db/migrate/".$file.".php");
-		if(!$res) $this->add_perm_error("app/db/migrate/".$file.".php"); return false;
+		if(!$res) {
+			$this->add_perm_error("app/db/migrate/".$file.".php"); 
+			return false;
+		}
 		$this->add_stdout("Created migration file at app/db/migrate/".$file.".php");
   }
 
