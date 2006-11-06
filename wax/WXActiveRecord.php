@@ -232,6 +232,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		  $row_list = $this->query($sql, "all");
 	  } catch(PDOException $e) {
 	    $error = $e->errorInfo[2];
+			print_r($e);
       throw new WXActiveRecordException( $error, "Error Preparing Database Query" );
     }
 		$item_list = array();
@@ -511,6 +512,14 @@ class WXActiveRecord extends WXValidations implements Iterator
 		  $this->$k=$v;
 		}
 	  return $this->save();
+	}
+	
+	public function set_attributes($array) {
+		if(!is_array($array)) return false;
+		foreach($array as $k=>$v) {
+		  $this->$k=$v;
+		}
+	  return true;
 	}
 		
 	public function describe() {

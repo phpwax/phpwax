@@ -4,8 +4,10 @@ if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply an Email Class name that you wish to create. 
 ");
 }
+require_once dirname(__FILE__).'/../app/config/environment.php';
+AutoLoader::include_dir(FRAMEWORK_DIR);
 $modeldir = dirname(__FILE__).'/../app/model/';
-$model_name = ucfirst($argv[1])."Email";
+$model_name = WXInflections::camelize($argv[1],true)."Email";
 $content = "<?php
 class {$model_name} extends WXEmail
 {

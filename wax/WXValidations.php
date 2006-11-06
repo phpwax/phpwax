@@ -72,8 +72,9 @@ class WXValidations
 			$this->valid_required($field);
 			return false;
 		}
-		if(array_key_exists($format, $this->fixed_validations)) {
-			$format = $this->fixed_validations[$format];
+		$format = strtoupper($format);
+		if(defined('self::'.$format)) {
+			$format = constant('self::'.$format);
 		}
 		if($max_length > 0){
 			self::valid_length($field, 0, $max_length);
@@ -112,6 +113,13 @@ class WXValidations
 		$obj = new $class;
 		if($obj->find_all(array("conditions"=>"{$field}='{$this->{$field}}'"))) {
 			$this->add_error($field, $message);
+			return false;
+		}
+	}
+	
+	protected function valid_confirm($field1, $field2, $message="do not match") {
+		if($this->{$field1} !== $this->{$field2}) {
+			$this->add_error($field1." and ".$field2, $message);
 			return false;
 		}
 	}
