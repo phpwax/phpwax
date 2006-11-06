@@ -45,7 +45,7 @@ class WXGenerator {
   }
   
   public function end_php_file() {
-    $output.="\n"."}"."\n";
+    $output ="\n"."}"."\n";
     $output.="?>"."\n";
     return $output;
   }
@@ -61,10 +61,10 @@ class WXGenerator {
     return "\n".$text."\n";
   }
   
-  public function write_to_file($file) {
+  private function write_to_file($file) {
     $this->final_output.= $this->end_php_file();
     $command = "echo ".'"'.$this->final_output.'"'." > ".$file;
-    $this->run_shell($command);
+    system($command);
 		if(is_readable($file)) return true;
 		return false;
   }
