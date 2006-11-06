@@ -4,8 +4,10 @@ if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a test class name that you wish to create. 
 ");
 }
+require_once dirname(__FILE__).'/../app/config/environment.php';
+AutoLoader::include_dir(FRAMEWORK_DIR);
 $testdir = dirname(__FILE__).'/../app/tests/';
-$test_name = ucfirst($argv[1]);
+$test_name = camelize($argv[1], true);
 $content = "<?php
 class Test{$test_name} extends WXTestCase
 {
