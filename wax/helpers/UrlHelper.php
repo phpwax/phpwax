@@ -179,7 +179,7 @@ class UrlHelper extends WXHelpers {
     }
 
 		if(!count($extra_params)) {
-    	return rtrim($url_base.implode("/", $url), "index");
+    	return $url_base.implode("/", $url);
 		} 
     return $url_base . implode("/", $url)
           . (count($extra_params)
