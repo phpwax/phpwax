@@ -28,18 +28,21 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
 class WXAllTests
 {
   public static function main($testdir) {
-                PHPUnit_TextUI_TestRunner::run(self::suite($testdir));
+    PHPUnit_TextUI_TestRunner::run(self::suite($testdir));
   }
 
   public static function suite($testdir) {
-          $suite = new PHPUnit_Framework_TestSuite('WX App');
-          foreach(scandir($testdir) as $file) {
-      if(is_readable($file) && substr($file, -3)=="php") {
-        $suite->addTestSuite(substr($file, -3));
-      }
-    }	
-                return $suite;
-   }
+    $suite = new PHPUnit_Framework_TestSuite('WX App');
+    foreach(scandir($testdir) as $file) {  	 
+      if(substr($file, -3)=="php" && substr($file,0,1)!=".") { 	 
+        $file = substr($file, 0,-4); 	 
+        AutoLoader::include_from_registry($file); 	 
+        $suite->addTestSuite($file); 	 
+      } 	 
+    }
+    return $suite;
+  }	
+    
 }
 
 WXAllTests::main($testdir);
