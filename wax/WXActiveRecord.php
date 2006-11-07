@@ -276,6 +276,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     *  @return boolean
     */
 	public function delete( $id ) {
+	  $this->before_delete();
   	if( is_numeric( $id ) && ! isset( $this->has_string_id ) ) {
     	$id = intval( $id );
     }
@@ -292,6 +293,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
     $this->row = array();
+    $this->after_delete();
     return $sth->rowCount() > 0;
   }
 
@@ -306,6 +308,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
   function update( $id_list = array() ) {
+    $this->before_update();
 		$this->clear_unwanted_values();
     $values = $this->row;
     unset($values['id']);
@@ -333,11 +336,13 @@ class WXActiveRecord extends WXValidations implements Iterator
     if (! $sth->execute($binding_params)) {
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
-    }     
+    }
+    $this->after_update();     
     return $sth->rowCount();
   }
 
   function insert() {
+    $this->before_insert();
 		$this->clear_unwanted_values();
 		$this->row = array_merge( $this->constraints, $this->row );
     $binding_params = $this->_makeBindingParams( $this->row );
@@ -359,6 +364,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       $this->row['id'] = $this->pdo->lastInsertId();
       return intval( $this->row['id'] );
     }
+    $this->after_insert();
     return $this->row['id'];
   }
 
@@ -582,13 +588,6 @@ class WXActiveRecord extends WXValidations implements Iterator
   public function valid() {
     return $this->current() !== false;
   }
-		
- /**
-	*  These are left deliberately empty in the base class
-	*  
-	*/	
-	public function before_save() {}
-	public function after_save() {}
 	
 	public function is_posted() {
 		if(is_array($_POST[$this->underscore(get_class($this))])) {
@@ -614,6 +613,19 @@ class WXActiveRecord extends WXValidations implements Iterator
       return $this->find_all($params);
     }
   }
+  
+  /**
+  	*  These are left deliberately empty in the base class
+  	*  
+  	*/	
+  	public function before_save() {}
+  	public function after_save() {}
+  	public function before_update() {}
+  	public function after_update() {}
+  	public function before_insert() {}
+  	public function after_insert() {}
+  	public function before_delete() {}
+  	public function after_delete() {}
 
 }
 
