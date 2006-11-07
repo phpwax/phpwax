@@ -23,6 +23,8 @@ if($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
 } else {
 	AutoLoader::include_dir(APP_DIR."tests", true);
 }
+$dbh = WXActiveRecord::getDefaultPDO();
+$dbh->beginTransaction();
 require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 class WXAllTests
@@ -43,4 +45,5 @@ class WXAllTests
 }
 
 WXAllTests::main();
+$dbh->rollback();
 ?>

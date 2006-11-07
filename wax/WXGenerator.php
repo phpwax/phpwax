@@ -72,7 +72,7 @@ class WXGenerator {
   private function write_to_file($file) {
     $this->final_output.= $this->end_php_file();
     $command = "echo ".'"'.$this->final_output.'"'." > ".$file;
-    system($command);
+    passthru($command);
 		if(is_readable($file)) return true;
 		return false;
   }
@@ -106,8 +106,8 @@ class WXGenerator {
 		$path = explode("/", $args[0]);
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";
     if(count($path)> 1) {
-     $path = $path[0]."/"; 
-     $this->run_shell("mkdir -p ".APP_DIR."controller/$path}");
+     	$path = $path[0]."/";
+     	$this->run_shell("mkdir -p ".APP_DIR."controller/$path");
     } else $path = "";    
     $this->final_output.= $this->start_php_file($class, "ApplicationController");
     $res = $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
@@ -121,8 +121,8 @@ class WXGenerator {
   
   public function make_view($name) {
     $command = "mkdir -p ".VIEW_DIR.$name;
-    $res = $this->run_shell($command);
-		if(!$res) {
+    $this->run_shell($command);
+		if(!is_dir(VIEW_DIR.$name)) {
 			$this->add_perm_error("app/view/".$name); 
 			return false;
 		}
