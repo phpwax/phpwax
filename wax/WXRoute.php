@@ -70,7 +70,7 @@ class WXRoute extends ApplicationBase
 	}
 	
 	public function get_url_controller() {
-		$url = rtrim($this->pick_controller(), "Controller");
+		$url = str_replace("Controller", "", $this->pick_controller());
 		return slashify($url);
 	}
 	
