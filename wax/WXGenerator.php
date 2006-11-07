@@ -64,7 +64,7 @@ class WXGenerator {
     $output.= "  }"."\n";
     return $output;
   }
-  
+  cd 
   public function add_line($text) {
     return "\n".$text."\n";
   }

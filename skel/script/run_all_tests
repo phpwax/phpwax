@@ -2,7 +2,7 @@
 <?php
 // set the correct error reporting level 
 if (ini_get('error_reporting') != 4095) { 
-    error_reporting(E_ERROR); 
+    error_reporting(E_ALL ^ E_NOTICE); 
 }
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
@@ -19,9 +19,9 @@ $conf->init_db($config_array['db']);
 AutoLoader::include_dir(MODEL_DIR);
 AutoLoader::include_dir(CONTROLLER_DIR);
 if($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
-	AutoLoader::include_dir(PLUGIN_DIR.$argv[1]."/tests", true);
+	$testdir = PLUGIN_DIR.$argv[1]."/tests";
 } else {
-	AutoLoader::include_dir(APP_DIR."tests", true);
+	$testdir = APP_DIR."tests";
 }
 $dbh = WXActiveRecord::getDefaultPDO();
 $dbh->beginTransaction();
@@ -29,21 +29,21 @@ require_once 'PHPUnit/Framework/TestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 class WXAllTests
 {
-	public static function main() {
-		PHPUnit_TextUI_TestRunner::run(self::suite());
+  public static function main($testdir) {
+		PHPUnit_TextUI_TestRunner::run(self::suite($testdir));
   }
 
-  public static function suite() {
+  public static function suite($testdir) {
   	$suite = new PHPUnit_Framework_TestSuite('WX App');
-		foreach(get_declared_classes() as $classes) {
-			if(substr($classes,0,4)=="Test") {
-				$suite->addTestSuite($classes);
-			}
-		}		
+  	foreach(scandir($testdir) as $file) {
+      if(is_readable($file) && substr($file, -3)=="php") {
+        $suite->addTestSuite(substr($file, -3));
+      }
+    }	
 		return $suite;
    }
 }
 
-WXAllTests::main();
+WXAllTests::main($testdir);
 $dbh->rollback();
 ?>
