@@ -15,7 +15,10 @@ class WXGenerator {
 		WXConfigBase::set_instance();
 		$conf=new WXConfigBase;
 		$conf->init_db($config_array['db']);
-
+		if(count($args)< 1) {
+			$this->add_stdout("You must supply a $generator_type name that you wish to create.", "error");
+			return false;
+		}
 		$method = "new_".$generator_type;
     $this->{$method}($args);
   }
@@ -34,7 +37,7 @@ class WXGenerator {
 	}
 	
 	public function add_perm_error($file) {
-		$this->add_stdout("Couldn't create $file, maybe it exists, or perhaps a permissions problem.");
+		$this->add_stdout("Couldn't create $file, maybe it already exists, or perhaps there's a permissions problem.");
 	}
   
   public function start_php_file($class_name, $extends=null, $functions=array()) {
@@ -75,10 +78,7 @@ class WXGenerator {
   }
   
   public function new_test($args=array()) {
-		if(count($args)< 1) {
-			$this->add_stdout("You must supply a test class name that you wish to create.", "error");
-		}
-    $class = "Test".WXInflections::camelize($args[0], true);
+		$class = "Test".WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXTestCase", array("setUp", "tearDown"));
     $this->final_output.= $this->add_line("  /* Add tests below here. all must start with the word 'test' */");
     $res = $this->write_to_file(APP_DIR."tests/".$class.".php");
@@ -90,10 +90,7 @@ class WXGenerator {
 	}
   
   public function new_model($args=array()) {
-		if(count($args)< 1) {
-			$this->add_stdout("You must supply a model name that you wish to create.", "error");
-		}
-    $class = WXInflections::camelize($args[0], true);
+		$class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXActiveRecord");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) {
@@ -106,10 +103,7 @@ class WXGenerator {
   }
   
   public function new_controller($args=array()) {
-		if(count($args)< 1) {
-			$this->add_stdout("You must supply a controller name that you wish to create.", "error");
-		}
-    $path = explode("/", $args[0]);
+		$path = explode("/", $args[0]);
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";
     if(count($path)> 1) {
      $path = $path[0]."/"; 
@@ -136,10 +130,7 @@ class WXGenerator {
   }
   
   public function new_email($args=array()) {
-		if(count($args)< 1) {
-			$this->add_stdout("You must supply a test name that you wish to create.", "error");
-		}
-    $class = WXInflections::camelize($args[0], true);
+		$class = WXInflections::camelize($args[0], true);
     $this->final_output.= $this->start_php_file($class, "WXEmail");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) {
@@ -151,10 +142,7 @@ class WXGenerator {
   
   public function new_migration($name, $table=null) {
   	if(is_array($name)) $name = $name[0];
-		if(strlen($name)<1) {
-			$this->add_stdout("You must supply a migration name that you wish to create.", "error");
-		}
-    $migrate = new WXMigrate;
+		$migrate = new WXMigrate;
     $migrate->increase_version_latest();
 		$version = $migrate->get_version_latest();
     $class = WXInflections::camelize($name, true);
