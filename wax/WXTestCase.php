@@ -6,8 +6,6 @@ class WXTestCase extends PHPUnit_Framework_TestCase
     if (ini_get('error_reporting') != 4095) { 
         error_reporting(E_ALL ^ E_NOTICE); 
     }
-    require_once 'PHPUnit/Framework/TestSuite.php';
-    require_once 'PHPUnit/TextUI/TestRunner.php';
     $configFile=APP_DIR.'config/config.yml';
     $config_array = Spyc::YAMLLoad($configFile);
     $config_array['environment']="test";
