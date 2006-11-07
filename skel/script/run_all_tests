@@ -2,6 +2,7 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 require_once 'wax/AutoLoader.php';
+AutoLoader::include_dir(FRAMEWORK_DIR);
 define("CLI_ENV", true);
 $tests = new WXTestCase($argv);
 

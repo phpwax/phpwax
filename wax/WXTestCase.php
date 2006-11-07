@@ -3,7 +3,6 @@
 class WXTestCase extends PHPUnit_Framework_TestCase
 {
   public function __construct($args) {
-    AutoLoader::include_dir(FRAMEWORK_DIR);
     if (ini_get('error_reporting') != 4095) { 
         error_reporting(E_ALL ^ E_NOTICE); 
     }
