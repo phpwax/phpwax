@@ -56,11 +56,6 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	@param string $route
  	 */   
 	public function redirect_to($route) {
-		if(!strpos($route, "/")) {
-			$controller = str_replace("controller", "", slashify($this->controller));
-			if($route == "index") $route = "/".$controller;
-			  else $route = "/".$controller.$route;
-		}
 		$route = "http://".$_SERVER['HTTP_HOST'].$route;
 		echo $route; exit;
   	header("Location:$route");
