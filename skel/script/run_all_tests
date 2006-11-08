@@ -7,7 +7,11 @@ define("CLI_ENV", true);
 AutoLoader::include_dir(FRAMEWORK_DIR);
 set_exception_handler('throw_wxexception');
 set_error_handler('throw_wxerror', 0);
-if( (!include 'simpletest/unit_tester.php') || (!include 'simpletest/reporter.php')) {
+if(  (!include 'simpletest/unit_tester.php') 
+  || (!include 'simpletest/reporter.php') 
+  || (!include 'simpletest/web_tester.php')
+  || (!include 'simpletest/mock_objects.php')
+  ) {
   throw new WXDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
 }
 
@@ -36,6 +40,8 @@ foreach(scandir($testdir) as $file) {
     $test->addTestClass($class); 	 
   } 	 
 }
-
-$test->run(new TextReporter());
+if(TextReporter::inCli()) {
+  exit( $test->run(new TextReporter()) ? 0 : 1);
+}
+$test->run(new HtmlReporter());
 ?>
