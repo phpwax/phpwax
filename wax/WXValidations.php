@@ -79,7 +79,7 @@ class WXValidations
 		if($max_length > 0){
 			self::valid_length($field, 0, $max_length);
 		}
-		echo $format; exit;
+		echo $this->{$field}; exit;
 		if(preg_match($format, $this->{$field})) {
 			return true;
 		} else {
