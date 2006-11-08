@@ -59,7 +59,6 @@ abstract class WXControllerBase extends ApplicationBase
 		if(substr($route, 0,1) != "/") {
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
-			echo $route; exit;
 		}
 		$route = "http://".$_SERVER['HTTP_HOST'].$route;
   	header("Location:$route");
