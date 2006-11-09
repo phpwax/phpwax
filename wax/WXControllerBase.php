@@ -18,7 +18,7 @@ abstract class WXControllerBase extends ApplicationBase
   public $use_layout='application';
   public $use_view=null;
   private $class_name='';
-  protected $referrer;
+  public $referrer;
 	protected $use_plugin=false;
 	
 	/**
