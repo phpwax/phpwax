@@ -41,6 +41,7 @@ class WXConfigBase
 				if(defined('ENV')) {
 				  $this->config_array = Spyc::YAMLLoad($configFile);
   				$this->config_array['environment']=ENV;
+  				print_r($this->config_array); exit;
 				  $this->config_array=$this->merge_environments($this->config_array);
 				  echo ENV."<br /><br />";
 				  print_r($this->config_array); exit;
