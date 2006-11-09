@@ -175,6 +175,11 @@ abstract class WXControllerBase extends ApplicationBase
 		$tpl->view_path=$view_path;
 		return $tpl->execute();
 	}
+	
+	public function set_referrer() {
+	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
+		else Session::set('referrer', "/".$_GET['route']);
+	}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,

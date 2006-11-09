@@ -102,12 +102,6 @@ class ApplicationBase
 		return false;
 	}
 	
-	
-	protected function set_referrer() {
-	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
-		else Session::set('referrer', "/".$_GET['route']);
-	}
-	
 		
 	/**
 	 *	Maps the controller to the controller file.
@@ -141,6 +135,7 @@ class ApplicationBase
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->run_after_filters();
+		$cnt->set_referrer();
 		return $cnt;		
 	}
 
@@ -221,7 +216,6 @@ class ApplicationBase
     if($write_to_cache) {
       WXCache::write_to_cache($page_output, $cache_file); 
     }
-    $this->set_referrer();		
 	}
 
 
