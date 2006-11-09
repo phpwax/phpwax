@@ -111,6 +111,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
+		self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
@@ -120,7 +121,6 @@ class AutoLoader
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );
 		WXConfigBase::set_instance();
-		self::detect_test_mode();
 		$app=new ApplicationBase;
 	}
 
