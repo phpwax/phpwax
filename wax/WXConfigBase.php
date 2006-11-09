@@ -39,7 +39,7 @@ class WXConfigBase
 	  	$this->load_config();
 			if(!WXActiveRecord::getDefaultPDO()) {
 				if(defined('ENV')) {
-				  $config = $this->config_array();
+				  $config = $this->config_array;
 				  $config['environment']=ENV;
 				  $config = $this->merge_environments($config);
 				  $db = $config['db'];
