@@ -76,6 +76,7 @@ class ApplicationBase
     $_GET=$filter->process($_GET);    		
     $this->controller_object=$this->load_controller();
     $this->create_page($this->controller_object);
+    $this->controller_object->set_referrer();
   }
 
  
@@ -135,7 +136,6 @@ class ApplicationBase
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
 		$cnt->run_after_filters();
-		$cnt->set_referrer();
 		return $cnt;		
 	}
 
