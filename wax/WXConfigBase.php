@@ -41,6 +41,7 @@ class WXConfigBase
 				if(defined('ENV')) {
 				  $this->config_array['environment']=ENV;
 				  $this->config_array = $this->merge_environments($this->config_array);
+				  echo ENV."<br /><br />";
 				  print_r($this->config_array); exit;
 				} else {
 				  define ('ENV', $this->return_config("environment"));
