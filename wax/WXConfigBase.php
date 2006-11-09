@@ -38,9 +38,16 @@ class WXConfigBase
 			$this->cachedest='config_cache';			
 	  	$this->load_config();
 			if(!WXActiveRecord::getDefaultPDO()) {
-				$db=$this->return_config('db');
-				define ('ENV', $this->return_config("environment"));
-	  		$this->init_db($db);	
+				if(defined('ENV')) {
+				  $config = $this->config_array();
+				  $config['environment']=ENV;
+				  $config = $this->merge_environments($config);
+				  $db = $config['db'];
+				} else {
+				  define ('ENV', $this->return_config("environment"));
+				  $db=$this->return_config('db');
+				}
+	  		$this->init_db($db);
 			}			
 		}
 	}
@@ -132,6 +139,7 @@ class WXConfigBase
 			return WXCache::write_to_cache(serialize($this->config_array), $this->cachedest, $this->cache_length);
 		}
 	}
+	
 	
 	function __destruct() {
 		if(!file_exists($this->cachedest)) {

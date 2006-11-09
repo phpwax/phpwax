@@ -62,8 +62,7 @@ class WXValidations
 		return false;
 	}
 	
-	public function add_error($field, $message) {
-		
+	public function add_error($field, $message) {		
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	

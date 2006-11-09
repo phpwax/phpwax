@@ -96,7 +96,7 @@ class ApplicationBase
 	 *  @access protected
    *  @return array
    */
-	protected function fetch_config($config) {
+	public function fetch_config($config) {
 		$obj = new WXConfigBase;
 		return $obj->return_config($config);	
 		return false;
