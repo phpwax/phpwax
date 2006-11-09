@@ -38,14 +38,7 @@ class WXConfigBase
 			$this->cachedest='config_cache';			
 	  	$this->load_config();
 			if(!WXActiveRecord::getDefaultPDO()) {
-				if(defined('ENV')) {
-				  $this->config_array = Spyc::YAMLLoad($configFile);
-  				$this->config_array['environment']=ENV;
-  				print_r($this->config_array); exit;
-				  $this->config_array=$this->merge_environments($this->config_array);
-				  echo ENV."<br /><br />";
-				  print_r($this->config_array); exit;
-				} else {
+				if(!defined('ENV')) {
 				  define ('ENV', $this->return_config("environment"));
 				}
 				$db=$this->return_config('db');
@@ -72,6 +65,9 @@ class WXConfigBase
 	  	$configFile=APP_DIR.'/config/config.yml';
 	    if(is_readable($configFile)){
 				$this->config_array = Spyc::YAMLLoad($configFile);
+				if(defined('ENV')) {
+  				$this->config_array['environment']=ENV;
+				}
 				$this->config_array=$this->merge_environments($this->config_array);		
 				} else {
 				throw new WXException("Missing Configuration file at -".APP_DIR.'config/config.yml');
