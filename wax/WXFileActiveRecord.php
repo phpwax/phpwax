@@ -9,6 +9,7 @@
 class WXFileActiveRecord extends WXActiveRecord
 {
   public $file_base = "public/files/";
+  public $url_base = "files/";
   public $max_image_size = 0;
   public $write_image_thumbs=true;
   public $thumb_base = "images/thumbs/";
@@ -16,6 +17,11 @@ class WXFileActiveRecord extends WXActiveRecord
   public $file_column = "filename";
   public $type_column = "type";
   public $create_thumbs = array("thumb"=>"80", "medium"=>"150");
+  
+  public function __construct() {
+    parent::__construct();
+    if($this->url_base) $this->url_path = $this->url_base.$this->{$this->file_column};
+  }
     
   public function save() {
     $this->handle_file();
