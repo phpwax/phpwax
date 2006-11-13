@@ -45,8 +45,7 @@ abstract class WXControllerBase extends ApplicationBase
    */
    public $accept_routes=0;
   
-	function __construct() {      
-      $this->class_name=get_class($this);
+	function __construct() {            $this->class_name=get_class($this);
       $this->referrer=Session::get('referrer');
   }
 
