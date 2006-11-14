@@ -45,8 +45,9 @@ abstract class WXControllerBase extends ApplicationBase
    */
    public $accept_routes=0;
   
-	function __construct() {            $this->class_name=get_class($this);
-      $this->referrer=Session::get('referrer');
+	function __construct() {            
+	  $this->class_name=get_class($this);
+    $this->referrer=Session::get('referrer');
   }
 
 	/**
@@ -66,48 +67,45 @@ abstract class WXControllerBase extends ApplicationBase
   }
   
   public function run_before_filters() {
-    foreach($this->filters as $key=>$filter) {
-      if($key == $this->action || $key == "all") {
-        if($filter[0]=="before") {
-					if($filter[2] && is_array($filter[2])) {
-							foreach($filter[2] as $excluded_filter) {
-								if($this->action !=$excluded_filter) {
-									$filter = $filter[1];
-									$this->$filter();
-								}
-							}
-					} else {
-          	$filter = $filter[1];
-          	$this->$filter();
-					}
+    foreach($this->filters["before"] as $action=>$filter) {
+      if(is_array($filter) && $action=="all") {
+        foreach($filter[1] as $excluded_action) {
+          if($excluded_action != $this->action) $this->$filter[0];
         }
+      }
+      elseif($action == $this->action || $action == "all") {
+          $this->$filter();
       }
     }
   }
   
   public function run_after_filters() {
-    foreach($this->filters as $key=>$filter) {
-      if($key == $this->action || $key == "all") {
-        if($filter[0]=="after") {
-          $filter = $filter[1];
-          $this->$filter();
+    foreach($this->filters["after"] as $action=>$filter) {
+      if(is_array($filter) && $action=="all") {
+        foreach($filter[1] as $excluded_action) {
+          if($excluded_action != $this->action) $this->$filter[0];
         }
+      }
+      elseif($action == $this->action || $action == "all") {
+          $this->$filter();
       }
     }
   }
   
   public function before_filter($action, $action_to_run, $except=null) {
-    $this->filters[$action]=array("before", $action_to_run);
-		if($except) {
-			$this->filters[$action][2]=$except;
+    if($except) {
+			$this->filters["before"][$action]=array($action_to_run, $except);
+			return true;
 		}
+    $this->filters["before"][$action]=$action_to_run;
   }
   
   public function after_filter($action, $action_to_run, $except=null) {
-    $this->filters[$action]=array("after", $action_to_run);
-		if($except) {
-			$this->filters[$action][2]=$except;
+    if($except) {
+			$this->filters["after"][$action]=array($action_to_run, $except);
+			return true;
 		}
+    $this->filters["after"][$action]=$action_to_run;
   }
   
 
