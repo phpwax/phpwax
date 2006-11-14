@@ -28,7 +28,7 @@ AutoLoader::include_dir(CONTROLLER_DIR);
 AutoLoader::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 AutoLoader::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 if($argv[1] == "wax") {
-  $testdir = WAX_ROOT."/tests";
+  $testdir = FRAMEWORK_DIR."/tests";
 } elseif($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
   $testdir = PLUGIN_DIR.$argv[1]."/tests";
 } else {
