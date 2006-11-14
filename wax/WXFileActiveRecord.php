@@ -18,51 +18,60 @@ class WXFileActiveRecord extends WXActiveRecord
   public $type_column = "type";
   public $create_thumbs = array("thumb"=>"80", "medium"=>"150");
   
-  public function __construct() {
-    parent::__construct();
-    if($this->url_base) $this->url_path = $this->url_base.$this->{$this->file_column};
+  public function __construct($param=null) {
+    parent::__construct($param);
+    if(!is_dir(WAX_ROOT.$this->file_base)) mkdir(WAX_ROOT.$this->file_base, 0777);
+		if(!is_dir(PUBLIC_DIR.$this->thumb_base )) mkdir(PUBLIC_DIR.$this->thumb_base, 0777);
   }
     
   public function save() {
-    $this->handle_file();
-    $this->resize_image();
-    $this->write_thumbs();
-    parent::save();
+		if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmp_name'])) {
+    	$this->handle_file($this->{$this->file_column});
+    	$this->resize_image();
+			$new_id = parent::save();
+    	$this->write_thumbs($new_id);
+			return $new_id;
+		} else return parent::save();
   }
+
   
   public function delete($id) {
     $record = $this->find($id);
-    unlink(WAX_ROOT.$this->file_base.$record->{$this->file_column});
-    $this->clear_thumbs();
-    parent::delete($id);
+		if($record->{$this->file_column}) {
+			$file_to_delete = WAX_ROOT.$this->file_base.$record->{$this->file_column};
+    	if(is_file($file_to_delete) ) unlink($file_to_delete);
+    	$this->clear_thumbs();
+		}
+		parent::delete($id);
   }
   
-  protected function handle_file() {
-    if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmpname'])) {
-      $up_tmp_name = $this->{$this->file_column}['tmpname'][$this->{$this->file_column}];
-      $new_name = $this->{$this->file_column}['name'][$this->{$this->file_column}];
-      $this->{$this->type_column} = $this->{$this->file_column}['type'][$this->{$this->file_column}];
-      if(move_uploaded_file($up_tmp_name, WAX_ROOT.$this->file_base.File::safe_file_save($this->file_base, $new_name)) ) {
- 			  chmod($path.$filename, 0777);
- 			  $this->{$this->file_column}=$new_name;
-      }
+  protected function handle_file($file) {
+    $up_tmp_name = $file['tmp_name'][$this->file_column];
+    $new_name = $file['name'][$this->file_column];
+		$destination = WAX_ROOT.$this->file_base;
+		$this->{$this->path_column} = $destination;
+    $this->{$this->type_column} = $file['type'][$this->file_column];
+		$destination = $destination.File::safe_file_save($this->file_base, $new_name);
+    if(move_uploaded_file($up_tmp_name, $destination) ) {
+ 		  chmod($destination, 0777);
+ 		  $this->{$this->file_column}=$new_name;
     }
   }
     
   protected function resize_image() {
-    $original = $this->file_base.$this->{$this->path_column}.$this->{$this->file_column};
+    $original = $this->{$this->path_column}.$this->{$this->file_column};
     if($this->max_image_size >0 && File::is_image($original)) {
   		File::resize_image($original, $original, $this->max_image_size, true);
   		return true;
   	} else return false;
   }
     
-  protected function write_thumbs() {
-    $original = $this->file_base.$this->{$this->path_column}.$this->{$this->file_column};
-  	if(!$this->write_image_thumbs) {
+  protected function write_thumbs($id) {
+    $original = $this->{$this->path_column}.$this->{$this->file_column};
+  	if(!$this->write_image_thumbs || !File::is_image($original)) {
   	  return false;
 	  }
-  	$thumb_dir = PUBLIC_DIR.$this->thumb_base.$this->id."/";
+  	$thumb_dir = PUBLIC_DIR.$this->thumb_base.$id."/";
   	if(!is_dir($thumb_dir)) mkdir($thumb_dir, 0777);
   	foreach($this->create_thumbs as $thumb=>$size) {
   		if(!is_dir($thumb_dir.$thumb)) mkdir($thumb_dir.$thumb, 0777);
@@ -75,6 +84,14 @@ class WXFileActiveRecord extends WXActiveRecord
   protected function clear_thumbs() {
 		if(File::recursively_delete($this->thumb_base.$this->id) ) return true;
 		return false;
+	}
+	
+	public function file_url() {
+		return "/".$this->url_base.$this->{$this->file_column};
+	}
+	
+	public function thumb_url($thumb_name) {
+		return "/".$this->thumb_base.$this->id."/$thumb_name/".$this->{$this->file_column};
 	}
 
 } 
