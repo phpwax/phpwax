@@ -21,9 +21,8 @@ class TestWXControllerBase extends WXTestCase
     }
     
     public function test_run_filters() {
-      die(print_r(get_class_methods('TestController')));
       Mock::generate('TestController');
-      exit;
+      die(print_r(get_class_methods('MockTestController')));
       $controller = new MockTestController();
       $controller->setReturnValue('before_filter', false);
       $res = $controller->before_filter("all", "test");
