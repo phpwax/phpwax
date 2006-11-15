@@ -38,11 +38,11 @@ class WXFileActiveRecord extends WXActiveRecord
   public function delete($id) {
     $record = $this->find($id);
 		if($record->{$this->file_column}) {
-			$file_to_delete = WAX_ROOT.$this->file_base.$record->{$this->file_column};
+			$file_to_delete = $record->{$this->path_column}.$record->{$this->file_column};
     	if(is_file($file_to_delete) ) unlink($file_to_delete);
-    	$this->clear_thumbs();
+    	$this->clear_thumbs($id);
 		}
-		parent::delete($id);
+		return parent::delete($id);
   }
   
   protected function handle_file($file) {
@@ -51,10 +51,10 @@ class WXFileActiveRecord extends WXActiveRecord
 		$destination = WAX_ROOT.$this->file_base;
 		$this->{$this->path_column} = $destination;
     $this->{$this->type_column} = $file['type'][$this->file_column];
-		$destination = $destination.File::safe_file_save($this->file_base, $new_name);
+    $this->{$this->file_column} = File::safe_file_save($destination, $new_name);
+		$destination = $destination.$this->{$this->file_column};
     if(move_uploaded_file($up_tmp_name, $destination) ) {
  		  chmod($destination, 0777);
- 		  $this->{$this->file_column}=$new_name;
     }
   }
     
@@ -81,8 +81,8 @@ class WXFileActiveRecord extends WXActiveRecord
   	return true;
   }
   
-  protected function clear_thumbs() {
-		if(File::recursively_delete($this->thumb_base.$this->id) ) return true;
+  protected function clear_thumbs($id) {
+		if(File::recursively_delete($this->thumb_base.$id) ) return true;
 		return false;
 	}
 	

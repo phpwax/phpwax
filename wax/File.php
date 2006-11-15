@@ -20,20 +20,15 @@ abstract class File {
 	}
 	
 	static function safe_file_save($dir, $file) {
-		$file=preg_replace('/[^\w\.-_]+/', '', $file);
+		$file=preg_replace('/[^\w\.\-_]/', '', $file);
 		while(is_file($dir.$file)) {
 			$file = substr($file,0,strpos($file, "."))."_1.".substr(strrchr($file, "."),1);
 		}
 		return $file;
 	}
 	
-	static function is_file($file) {
-		if(is_file($file)) { return true; }
-		return false;
-	}
-	
 	static function is_image($file) {
-		if(!self::is_file($file)) { return false; }
+		if(!is_file($file)) { return false; }
 		if(getImageSize($file)) {
 			return true;
 		}
