@@ -67,6 +67,7 @@ abstract class WXControllerBase extends ApplicationBase
   }
   
   public function run_before_filters() {
+    if(!is_array($this->filters["before"])) return false;
     foreach($this->filters["before"] as $action=>$filter) {
       if(is_array($filter) && $action=="all") {
         foreach($filter[1] as $excluded_action) {
@@ -80,6 +81,7 @@ abstract class WXControllerBase extends ApplicationBase
   }
   
   public function run_after_filters() {
+    if(!is_array($this->filters["after"])) return false;
     foreach($this->filters["after"] as $action=>$filter) {
       if(is_array($filter) && $action=="all") {
         foreach($filter[1] as $excluded_action) {
