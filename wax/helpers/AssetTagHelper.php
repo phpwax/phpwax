@@ -24,7 +24,7 @@ class AssetTagHelper extends WXHelpers {
      */
     function __construct() {
         parent::__construct();
-        $this->javascript_default_sources =	array('prototype', 'effects', 'dragdrop', 'controls', 'slider', 'builder');    
+        $this->javascript_default_sources =	array('prototype', 'scriptaculous');    
     }
     
     /**
