@@ -81,6 +81,7 @@ class WXValidations
 		if(preg_match($format, $this->{$field})) {
 			return true;
 		} else {
+		  $message = $this->{$field}." ".$message;
 			$this->add_error($field, $message);
 			return false;
 		}
