@@ -228,6 +228,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$params['join'] = $join;
 		
 		$sql = $this->build_query($params);
+		echo $sql;
 		try {
 		  $row_list = $this->query($sql, "all");
 	  } catch(PDOException $e) {
@@ -609,6 +610,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 			}else{
 				$conds=$what[0]."='".$args[0]."'";
 			}
+			if(is_array($args[1]) && isset($args[1]["conditions"])) $conds.=" AND ".$args[1]["conditions"];
+			  elseif(is_array($args[2]) && isset($args[2]["conditions"])) $conds.=" AND ".$args[2]["conditions"];
 			$params = array("conditions"=>$conds);
       return $this->find_all($params);
     }
