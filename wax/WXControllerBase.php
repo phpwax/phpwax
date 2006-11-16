@@ -48,6 +48,8 @@ abstract class WXControllerBase extends ApplicationBase
 	function __construct() {            
 	  $this->class_name=get_class($this);
     $this->referrer=Session::get('referrer');
+    $this->filters["before"]=array();
+    $this->filters["after"]=array();
   }
 
 	/**
@@ -83,7 +85,7 @@ abstract class WXControllerBase extends ApplicationBase
   public function run_after_filters() {
     if(!is_array($this->filters["after"])) return false;
     foreach($this->filters["after"] as $action=>$filter) {
-      if(is_array($filter) && $action=="all") {
+      if(is_array($filter) && $action=="all" && is_array($filter[1])) {
         foreach($filter[1] as $excluded_action) {
           if($excluded_action != $this->action) $this->$filter[0];
         }

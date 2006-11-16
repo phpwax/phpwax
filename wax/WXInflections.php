@@ -16,6 +16,10 @@ class WXInflections
     return $camel;
   }
   
+  public function capitalize($word) {
+    return ucwords($word);
+  }
+  
   public function dasherize($underscored_word) {
     $dashed = str_replace('_', '-', strtolower($underscored_word));
     return $dashed;
@@ -62,6 +66,12 @@ function camelize() {
  	$inflector = new WXInflections();
   $args = func_get_args();
   return call_user_func_array(array($inflector, 'camelize'), $args);
+}
+
+function capitalize() {
+ 	$inflector = new WXInflections();
+  $args = func_get_args();
+  return call_user_func_array(array($inflector, 'capitalize'), $args);
 }
 
 function dasherize() {

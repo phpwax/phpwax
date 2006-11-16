@@ -124,6 +124,26 @@ abstract class File {
 		return $imagearray;
 	}
 	
+	static public function scandir($directory) {
+	  $list = array();
+	  foreach(scandir($directory) as $item) {
+	    if ($item != "." && $item != ".." && substr($item, 0,1)!='.') {
+	      $list[]=$item;
+	    }
+	  }
+	  return $list;
+	}
+	
+	static public function render_temp_image($original, $size) {
+	  if(self::is_image($original)) {
+	    $destination = tempnam(CACHE_DIR, "file_image_");
+	    self::resize_image($original, $destination, $size, $overwrite=false);
+	    self::display_image($destination);
+	    return true;
+	  }
+	  return false;
+	}
+	
 	static function write_to_file($filename, $filecontents) {
 		if(! $res = file_put_contents($filename, $filecontents) ) {
 			return false;

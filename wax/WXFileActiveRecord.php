@@ -23,7 +23,7 @@ class WXFileActiveRecord extends WXActiveRecord
     if(!is_dir(WAX_ROOT.$this->file_base)) mkdir(WAX_ROOT.$this->file_base, 0777);
 		if(!is_dir(PUBLIC_DIR.$this->thumb_base )) mkdir(PUBLIC_DIR.$this->thumb_base, 0777);
   }
-    
+  
   public function save() {
 		if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmp_name'])) {
     	$this->handle_file($this->{$this->file_column});
@@ -85,6 +85,15 @@ class WXFileActiveRecord extends WXActiveRecord
 		if(File::recursively_delete($this->thumb_base.$id) ) return true;
 		return false;
 	}
+	
+	public function get_root_path() {
+    return WAX_ROOT.$this->file_base;
+  }
+  
+  public function list_path($path, $params=null) {
+    $method = "findBy".ucfirst($this->path_column);
+    return $this->{$method}($path, $params);
+  }
 	
 	public function file_url() {
 		return "/".$this->url_base.$this->{$this->file_column};

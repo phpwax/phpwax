@@ -114,8 +114,6 @@ class JavascriptHelper extends WXHelpers {
   # (using the url_for() format) that's called in the background using 
   # XMLHttpRequest. The result of that request can then be inserted into a
   # DOM object whose id can be specified with <tt>$options['update']</tt>. 
-  # Usually, the result would be a partial prepared by the controller with
-  # render_partial. 
   #
   # Examples:
   #  link_to_remote("Delete this post", array("update" => "posts", array("url" => array(":action" => "destroy", ":id" => $post->id)))
