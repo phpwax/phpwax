@@ -59,12 +59,26 @@ abstract class File {
 		$length=filesize($image);
 		$imagecontent=substr(file_get_contents($image),0 ,-1);
 		if($imagecontent) { 
-			header("Content-Type: " . image_type_to_mime_type($info[2]).'\n');
+			header("Content-Type: " . image_type_to_mime_type($info[2])."\n");
 			header("Content-Length: ".$length.'\n');
-			header("Content-disposition: inline; filename=".basename($imagecontent).'\n');
-			header("Connection: close".'\n');
+			header("Content-disposition: inline; filename=".basename($image)."\n");
+			header("Connection: close"."\n");
 			ob_end_clean();
 			print trim($imagecontent); exit;
+		}
+		return false;
+	}
+	
+	static function stream_file($file) {
+	  $length=filesize($file);
+		$file_content=substr(file_get_contents($file),0 ,-1);
+		if($file_content) { 
+			header("Content-Type: application/force-download"."\n");
+			header("Content-Length: ".$length.'\n');
+			header("Content-disposition: inline; filename=".basename($file)."\n");
+			header("Connection: close"."\n");
+			ob_end_clean();
+			print trim($file_content); exit;
 		}
 		return false;
 	}
