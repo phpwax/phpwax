@@ -30,15 +30,6 @@ class WXHelpers {
      */
     public $attribute_name;
 
-
-    /**
-     *  Construct a Helpers object
-     *
-     */
-    function __construct() {
-    	
-    }
-
   
     /**
      *  Get value of current attribute in the current ActiveRecord object
@@ -50,8 +41,7 @@ class WXHelpers {
      *  @uses object_name
      *  @uses ActiveRecord::send()
      */
-    protected function value() 
-    {
+    protected function value() {
         if (array_key_exists($this->object_name, $_REQUEST)
             && array_key_exists($this->attribute_name,
                                  $_REQUEST[$this->object_name])) {
@@ -63,8 +53,7 @@ class WXHelpers {
      *  Replacement for value. Merges the session information and posted
      *  
      */
-    protected function get_value()
-    {
+    protected function get_value() {
       $name       = $this->object_name;
       $attribute  = $this->attribute_name;      
       $data       = array_merge($_REQUEST, $_SESSION);
@@ -152,7 +141,7 @@ class WXHelpers {
      *  @param string $content  Content to wrap
      *  @return string          Wrapped argument
      */
-    function cdata_section($content) {
+    protected function cdata_section($content) {
         return "<![CDATA[".$content."]]>";
     }    
 
@@ -176,13 +165,11 @@ class WXHelpers {
      *  @return string The generated tag, followed by "\n"
      *  @uses tag_options()
      */
-    function tag($name, $options = array(), $open = false) 
-    {
-        $html = "<$name ";
-        $html .= $this->tag_options($options);
-        $html .= $open ? ">" : " />";
-        
-        return $html."\n";
+    protected function tag($name, $options = array(), $open = false) {
+      $html = "<$name ";
+      $html .= $this->tag_options($options);
+      $html .= $open ? ">" : " />";
+      return $html."\n";
     }
 
     /**
@@ -206,7 +193,7 @@ class WXHelpers {
      *  @return string Text wrapped with tag and attributes,
      *                 followed by "\n"
      */
-    function content_tag($name, $content, $options = array()) {
+    protected function content_tag($name, $content, $options = array()) {
         $html = "<$name ";
         $html .= $this->tag_options($options);
         $html .= ">$content</$name>";
@@ -218,24 +205,24 @@ class WXHelpers {
      *  @uses content_tag()
      *  @uses value()
      */    
-    function to_content_tag($tag_name, $options = array()) {
+  protected function to_content_tag($tag_name, $options = array()) {
         return $this->content_tag($tag_name, $this->value(), $options);
     }
 
-    function error_messages_for($object) {
-      if(strpos($object, "_")) {
-        $object = camelize($object, 1);
-      }
-			$class= new $object;
-			$errors = $class->get_errors();
-			foreach($errors as $error) {
-				$html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_error"));
-			}
-			if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
-			return false;
+  public function error_messages_for($object) {
+    if(strpos($object, "_")) {
+      $object = camelize($object, 1);
+    }
+		$class= new $object;
+		$errors = $class->get_errors();
+		foreach($errors as $error) {
+			$html.= $this->content_tag("li", $error['field']." ".$error['message'], array("class"=>"user_error"));
 		}
+		if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
+		return false;
+	}
 	
-	function info_messages() {
+	public function info_messages() {
 	  if($messages = Session::get('user_messages')) {
 		  foreach($messages as $message) {
 			  $html.= $this->content_tag("li", $message, array("class"=>"user_message"));
@@ -245,81 +232,7 @@ class WXHelpers {
 	  }
 		return false;
 	}
-		
-  function render_partial($path, $values=array()) {
-    if(strpos($path, "/")) {
-      $partial = "_".substr(strrchr($path, "/"),1);
-      $path = substr($path, 0,strrpos($path, "/"))."/";
-    } else {
-      $partial = "_".$path;
-      $path = "";
-    }
-    return WXControllerBase::view_to_string($path.$partial, $values);
-  }
 
-}
-
-/**
- *  Create a Helpers object and call its content_tag() method
- *
- *  @see Helpers::content_tag()
- *  @param string $name    Tag to wrap around $content
- *  @param string $content Text to put between tags
- *  @param string[] $options Tag attributes to apply
- *  @return string Text wrapped with tag and attributes,
- *                 followed by "\n"
- */
-function content_tag() {
-    $helper = new WXHelpers();
-    $args = func_get_args();
-    return call_user_func_array(array($helper, 'content_tag'), $args);
-}
-
-/**
- *  Create a Helpers object and call its tag() method
- *
- *  @see Helpers::tag()
- *  @param string $name    Tag name
- *  @param string[] $options Tag attributes to apply
- *  @param boolean $open
- *  <ul>
- *    <li>true =>  make opening tag (end with '>')</li>
- *    <li>false => make self-terminating tag (end with ' \>')</li>
- *  </ul>
- *  @return string The tag, followed by "\n"
- */
-function tag() {
-    $helper = new WXHelpers();
-    $args = func_get_args();
-    return call_user_func_array(array($helper, 'tag'), $args);
-}
-
-/**
- *  Create a Helpers object and call its cdata_section() method
- */
-function cdata_section() {
-    $helper = new WXHelpers();
-    $args = func_get_args();
-    return call_user_func_array(array($helper, 'cdata_section'), $args);
-}
-
-function error_messages_for() {
-	$helper = new WXHelpers();
-  $args = func_get_args();
-  return call_user_func_array(array($helper, 'error_messages_for'), $args);
-}
-
-function info_messages() {
-	$helper = new WXHelpers();
-  $args = func_get_args();
-  return call_user_func_array(array($helper, 'info_messages'), $args);
-}
-
-
-function render_partial() {
-  $helper = new WXHelpers();
-  $args = func_get_args();
-  return call_user_func_array(array($helper, 'render_partial'), $args);
 }
 
 Autoloader::include_from_registry('AssetTagHelper');

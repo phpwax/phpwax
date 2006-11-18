@@ -15,7 +15,7 @@ class FormTagHelper extends WXHelpers {
     /**
      *  @todo Document this method
      */
-    function form_tag($url_for_options = array(), $options = array()) {
+    public function form_tag($url_for_options = array(), $options = array()) {
         $html_options = array_merge(array("method" => "post"), $options);
 
         if(array_key_exists('multipart',$html_options)
@@ -32,7 +32,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function start_form_tag() {
+    public function start_form_tag() {
         $args = func_get_args();
         return call_user_func_array(array($this, 'form_tag'), $args);
     }
@@ -41,7 +41,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function select_tag($name, $option_tags = null, $options = array()) {
+    public function select_tag($name, $option_tags = null, $options = array()) {
         return $this->content_tag("select", $option_tags, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
 
@@ -49,7 +49,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function text_field_tag($name, $value = null, $options = array()) {
+    public function text_field_tag($name, $value = null, $options = array()) {
         return $this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
     }
 
@@ -57,7 +57,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function hidden_field_tag($name, $value = null, $options = array()) {
+    public function hidden_field_tag($name, $value = null, $options = array()) {
         return $this->text_field_tag($name, $value, array_merge($options, array("type" => "hidden")));
     }
 
@@ -65,7 +65,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function file_field_tag($name, $options = array()) {
+    public function file_field_tag($name, $options = array()) {
         return $this->text_field_tag($name, null, array_merge($this->convert_options($options), array("type" => "file")));
     }
 
@@ -73,7 +73,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function password_field_tag($name = "password", $value = null, $options = array()) {
+    public function password_field_tag($name = "password", $value = null, $options = array()) {
         return $this->text_field_tag($name, $value, array_merge($this->convert_options($options), array("type" => "password")));
     }
 
@@ -81,7 +81,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function text_area_tag($name, $content = null, $options = array()) {
+    public function text_area_tag($name, $content = null, $options = array()) {
         if ($options["size"]) {
             $size = explode('x', $options["size"]);
             $options["cols"] = reset($size);
@@ -96,7 +96,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function check_box_tag($name, $value = "1", $checked = false, $options = array()) {
+    public function check_box_tag($name, $value = "1", $checked = false, $options = array()) {
         $html_options = array_merge(array("type" => "checkbox", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
         return $this->tag("input", $html_options);
@@ -106,7 +106,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function radio_button_tag($name, $value, $checked = false, $options = array()) {
+    public function radio_button_tag($name, $value, $checked = false, $options = array()) {
         $html_options = array_merge(array("type" => "radio", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
         return $this->tag("input", $html_options);
@@ -116,7 +116,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    function submit_tag($value = "Save changes", $options = array()) {
+    public function submit_tag($value = "Save changes", $options = array()) {
         return $this->tag("input", array_merge(array("type" => "submit", "name" => "commit", "value" => $value), $this->convert_options($options)));
     }
 
@@ -125,7 +125,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *  @uses tag()
      */
-    function image_submit_tag($source, $options = array()) {
+    public function image_submit_tag($source, $options = array()) {
         return $this->tag("input",
 			  array_merge(array("type" => "image",
 					    "src" => image_path($source)),
@@ -134,131 +134,6 @@ class FormTagHelper extends WXHelpers {
 
 }
 
-/**
- *  @todo Document this method
- *  Avialble functions for use in views
- */
-function form_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'form_tag'), $args);
-}
 
-/**
- *  @todo Document this method
- *
- */
-function start_form_tag() {
-    $args = func_get_args();
-    return call_user_func_array('form_tag', $args);
-}
-
-/**
- *  @todo Document this method
- *
- */
-function end_form_tag() {
-    return "</form>";
-}
-
-/**
- *  @todo Document this method
- *
- */
-function select_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'select_tag'), $args);
-}
-
-/**
- *  @todo Document this method
- *
- */
-function text_field_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'text_field_tag'), $args);
-}
-
-/**
- *  @todo Document this method
- *
- */
-function hidden_field_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'hidden_field_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function file_field_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'file_field_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function password_field_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'password_field_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function text_area_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'text_area_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function check_box_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'check_box_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function radio_button_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'radio_button_tag'), $args);
-}
-
-/**
- *
- *  @todo Document this method
- */
-function submit_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'submit_tag'), $args);
-}
-
-/**
- *  @todo Document this method
- *
- */
-function image_submit_tag() {
-    $form_tag_helper = new FormTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($form_tag_helper, 'image_submit_tag'), $args);
-}
 
 ?>

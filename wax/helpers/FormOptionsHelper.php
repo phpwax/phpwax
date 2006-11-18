@@ -64,7 +64,7 @@ if(!array_key_exists('COUNTRIES',$GLOBALS)) {
 class FormOptionsHelper extends FormHelper {
     
 
-    function options_for_select($choices, $selected = null) {
+    public function options_for_select($choices, $selected = null) {
         $options = array();
         if(is_array($choices)) {
             foreach($choices as $choice_value => $choice_text) {
@@ -100,15 +100,15 @@ class FormOptionsHelper extends FormHelper {
      *  @uses content_tag()
      *  @uses value()
      */
-    function select($choices, $options=array()) {           
-    	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
-      unset($options['value']);
-			$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
-		  $options['id']    = $this->object_name . "_" . $this->attribute_name;
-      return $this->content_tag("select",$content,$options);           
-    }
+  public function select($choices, $options=array()) {           
+  	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
+    unset($options['value']);
+		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+    return $this->content_tag("select",$content,$options);           
+  }
 
-	function country_select($options = array()) {
+	public function country_select($options = array()) {
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
 		return $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
@@ -116,31 +116,6 @@ class FormOptionsHelper extends FormHelper {
 
   
 }
-
-
-function select()  {
-	$args = func_get_args();
-	$helper = new FormOptionsHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'select'), $args);
-}
-
-
-
-/**
- *  Create a new FormOptionsHelper object and call its to_country_select_tag() method
- *
- * Return select and option tags for the given object and method, using country_options_for_select to generate the list of option tags.
- *  @todo Document this function
- *  @uses FormOptionsHelper::country_select()
- */
-function country_select($object, $field, $options = array()) {
-	$args = func_get_args();
-	$helper = new FormOptionsHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'select'), $args);
-}
-
 
 
 

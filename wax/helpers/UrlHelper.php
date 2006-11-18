@@ -35,7 +35,7 @@ class UrlHelper extends WXHelpers {
      *  @uses convert_confirm_option_to_javascript()
      *  @uses url_for()
      */
-    function link_to($name, $options = array(), $html_options = array()) {
+    public function link_to($name, $options = array(), $html_options = array()) {
         $html_options =
             $this->convert_confirm_option_to_javascript($html_options);
         if(is_string($options)) {
@@ -70,7 +70,7 @@ class UrlHelper extends WXHelpers {
      *  @param string[] Options
      *  @return string
      */
-    function convert_confirm_option_to_javascript($html_options) {
+    protected function convert_confirm_option_to_javascript($html_options) {
         if(array_key_exists('confirm', $html_options)) {
             $html_options['onclick'] =
                 "return confirm('".addslashes($html_options['confirm'])."');";
@@ -90,7 +90,7 @@ class UrlHelper extends WXHelpers {
      *  @param mixed[]
      *  @return mixed[]
      */
-    function convert_boolean_attributes(&$html_options, $bool_attrs) {
+    protected function convert_boolean_attributes(&$html_options, $bool_attrs) {
         foreach($bool_attrs as $x) {
             if(@array_key_exists($x, $html_options)) {
                 $html_options[$x] = $x;
@@ -109,7 +109,7 @@ class UrlHelper extends WXHelpers {
      *  @uses convert_confirm_option_to_javascript()
      *  @uses url_for()
      */
-    function button_to($name, $options = array(), $html_options = null) {
+  public function button_to($name, $options = array(), $html_options = null) {
         $html_options = (!is_null($html_options) ? $html_options : array());
         $this->convert_boolean_attributes($html_options, array('disabled'));
         $html_options = $this->convert_confirm_option_to_javascript($html_options);
@@ -126,7 +126,7 @@ class UrlHelper extends WXHelpers {
         return "<form method=\"post\" action=\"" .  htmlspecialchars($url)
             . "\" class=\"button-to\"><div>"
             . $this->tag("input", $html_options) . "</div></form>";
-    }
+  }
 
     
 
@@ -147,7 +147,7 @@ class UrlHelper extends WXHelpers {
      *  </ul>
      *  @return string
      */
-  function url_for($options = array()) {
+  public function url_for($options = array()) {
 		$routes_object = new WXRoute;
     $url_base = "/";
     $url = array();
@@ -187,42 +187,6 @@ class UrlHelper extends WXHelpers {
              ? "?".http_build_query($extra_params) : null);
     }    
 
-}
-
-/**
- *  Make a new UrlHelper object and call its link_to() method
- *  @uses UrlHelper::link_to()
- */
-function link_to($name, $options = array(), $html_options = array()) {
-    $url_helper = new UrlHelper();
-    return $url_helper->link_to($name, $options, $html_options);
-}
-
-/**
- *  Make a new UrlHelper object and call its link_image_to() method
- *  @uses UrlHelper::link_image_to()
- */
-function link_image_to($src, $options = array(), $html_options = array()) {
-    $url_helper = new UrlHelper();
-    return $url_helper->link_image_to($src, $options, $html_options);        
-}
-
-/**
- *  Make a new UrlHelper object and call its button_to() method
- *  @uses UrlHelper::button_to()
- */
-function button_to($name, $options = array(), $html_options = null) {
-    $url_helper = new UrlHelper();
-    return $url_helper->button_to($name, $options, $html_options);    
-}
-
-/**
- *  Make a new UrlHelper object and call its url_for() method
- *  @uses UrlHelper::url_for()
- */
-function url_for($options = array()) {
-    $url_helper = new UrlHelper();
-    return $url_helper->url_for($options);
 }
 
 ?>

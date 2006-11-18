@@ -58,13 +58,20 @@ class WXGenerator {
     return $output;
   }
   
-  public function add_function($name, $include_text=null) {
-    $output = "\n"."  public function $name() {"."\n";
+  public function add_function($name, $include_text=null, $visibility="public") {
+    $output = "\n"."  $visibility function $name() {"."\n";
     if($include_text) $output.=$include_text;
     $output.= "  }"."\n";
     return $output;
   }
-  cd 
+  
+  static public function new_helper_wrapper($helper_class, $helper_name) {
+    $code ="\$args = func_get_args();
+  	        \$helper = new $helper_class();
+  	        return call_user_func_array(array(\$helper, '$helper_name'), \$args);";
+  	eval(self::add_function($helper_name, $code, ""));
+  }
+   
   public function add_line($text) {
     return "\n".$text."\n";
   }

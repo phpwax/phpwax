@@ -10,7 +10,6 @@
 class JavascriptHelper extends WXHelpers {
   
   function __construct() {
-    parent::__construct();
     $this->javascript_callbacks = array('uninitialized', 'loading', 'loaded', 'interactive', 'complete', 'failure', 'success');    
     $this->ajax_options = array_merge(array('before', 'after', 'condition', 'url', 'asynchronous', 'method', 'insertion', 'position', 'form', 'with', 'update', 'script'), $this->javascript_callbacks);
     $this->javascript_path = '/javascripts';
@@ -106,7 +105,7 @@ class JavascriptHelper extends WXHelpers {
   # Examples:
   #   link_to_function("Greeting", "alert('Hello world!')")
   #   link_to_function(image_tag("delete"), "if confirm('Really?'){ do_delete(); }")
-  function link_to_function($name, $function, $html_options = array()) {
+  public function link_to_function($name, $function, $html_options = array()) {
       return $this->content_tag("a", $name, array_merge(array('href' => "#", 'onclick' => "{$function}; return false;"), $html_options));
   }
   
@@ -194,14 +193,14 @@ class JavascriptHelper extends WXHelpers {
   #                          default this is the current form, but
   #                          it could just as well be the ID of a
   #                          table row or any other DOM element.
-  function link_to_remote($name, $options = array(), $html_options = array()) {
+  public function link_to_remote($name, $options = array(), $html_options = array()) {
       return $this->link_to_function($name, $this->remote_function($options), $html_options);
   }
   
   # Periodically calls the specified url (<tt>$options['url']</tt>) every <tt>options[:frequency]</tt> seconds (default is 10).
   # Usually used to update a specified div (<tt>$options['update']</tt>) with the results of the remote call.
   # The options for specifying the target with 'url' and defining callbacks is the same as link_to_remote().
-  function periodically_call_remote($options = array()) {
+  public function periodically_call_remote($options = array()) {
       $frequency = $options['frequency'] ? $options['frequency'] : 10; # every ten seconds by default
       $code = "new PeriodicalExecuter(function() {" . $this->remote_function($options) . "}, {$frequency})";
       return $this->javascript_tag($code);
@@ -218,7 +217,7 @@ class JavascriptHelper extends WXHelpers {
   # The Hash passed to the 'html' key is equivalent to the options (2nd) argument in the FormTagHelper::form_tag() method.
   #
   # By default the fall-through action is the same as the one specified in the 'url' (and the default method is 'post').
-  function form_remote_tag($options = array()) {
+  public function form_remote_tag($options = array()) {
       $options['form'] = true;       
       if (!$options['html']) {
           $options['html'] = array();
@@ -237,7 +236,7 @@ class JavascriptHelper extends WXHelpers {
       
   # Returns a button input tag that will submit form using XMLHttpRequest in the background instead of regular
   # reloading POST arrangement. <tt>$options</tt> argument is the same as in <tt>form_remote_tag()</tt>
-  function submit_to_remote($name, $value, $options = array()) {
+  public function submit_to_remote($name, $value, $options = array()) {
       if(!isset($options['with'])) {
           $options['with'] = 'Form.serialize(this.form)';
       }
@@ -288,7 +287,7 @@ class JavascriptHelper extends WXHelpers {
   #     You've bought a new product!
   #    end 
   #
-  function update_element_function($element_id, $options = array(), $block = null) {   
+  public function update_element_function($element_id, $options = array(), $block = null) {   
       $content = $this->escape_javascript(($options['content'] ? $options['content'] : null));
       if(!is_null($block)) {
           $content = $this->escape_javascript($this->capture($block));
@@ -316,7 +315,7 @@ class JavascriptHelper extends WXHelpers {
   
   # Returns 'eval(request.responseText)' which is the Javascript function that form_remote_tag can call in :complete to
   # evaluate a multiple update return document using update_element_function calls.
-  function evaluate_remote_response() {
+  public function evaluate_remote_response() {
       return "eval(request.responseText)";
   }
   
@@ -331,7 +330,7 @@ class JavascriptHelper extends WXHelpers {
   #     <option value="1">World</option>
   #   </select>
   */
-  function remote_function($options) {
+  public function remote_function($options) {
       $javascript_options = $this->options_for_ajax($options);       
       $update = '';
       if(is_array($options['update'])) {
@@ -366,30 +365,6 @@ class JavascriptHelper extends WXHelpers {
       return $function;
   }
   
-  # Includes the Action Pack JavaScript libraries inside a single <script> 
-  # tag. The function first includes prototype.js and then its core extensions,
-  # (determined by filenames starting with "prototype").
-  # Afterwards, any additional scripts will be included in random order.
-  #
-  # Note: The recommended approach is to copy the contents of
-  # action_view/helpers/javascripts/ into your application's
-  # public/javascripts/ directory, and use javascript_include_tag() to 
-  # create remote <script> links.
-  function define_javascript_functions() {
-      $javascript = '<script type="text/javascript">';
-      
-      # load prototype.js and all .js files
-      $prototype_libs = glob($this->javascript_path.'/*.js');
-      if(count($prototype_libs)) {
-          rsort($prototype_libs);
-          foreach($prototype_libs as $filename) { 
-              $javascript .= "\n" . file_get_contents($filename);
-          }
-      }
-      
-      return $javascript . '</script>';
-  }
-  
   # Observes the field with the DOM ID specified by +field_id+ and makes
   # an AJAX call when its contents have changed.
   # 
@@ -413,7 +388,7 @@ class JavascriptHelper extends WXHelpers {
   #
   # Additionally, you may specify any of the options documented in
   # link_to_remote().
-  function observe_field($field_id, $options = array()) {
+  public function observe_field($field_id, $options = array()) {
       if($options['frequency'] > 0) {
           return $this->build_observer('Form.Element.Observer', $field_id, $options);
       } else {
@@ -425,7 +400,7 @@ class JavascriptHelper extends WXHelpers {
   # DOM ID $form_id. $options are the same as observe_field(), except 
   # the default value of the <tt>with</tt> option evaluates to the
   # serialized (request string) value of the form.
-  function observe_form($form_id, $options = array()) {
+  public function observe_form($form_id, $options = array()) {
       if($options['frequency']) {
           return $this->build_observer('Form.Observer', $form_id, $options);
       } else {
@@ -453,7 +428,7 @@ class JavascriptHelper extends WXHelpers {
   #
   # You can change the behaviour with various options, see
   # http://script.aculo.us for more documentation.
-  function visual_effect($name, $element_id = false, $js_options = array()) {
+  public function visual_effect($name, $element_id = false, $js_options = array()) {
       $element = ($element_id ? "'{$element_id}'" : "element");
       if($js_options['queue']) {
           $js_options['queue'] = "'{$js_options['queue']}'";
@@ -477,7 +452,7 @@ class JavascriptHelper extends WXHelpers {
   #
   # You can change the behaviour with various options, see
   # http://script.aculo.us for more documentation.
-  function sortable_element($element_id, $options = array()) {
+  public function sortable_element($element_id, $options = array()) {
       if(!$options['with']) {
           $options['with'] = "Sortable.serialize('{$element_id}')";
       }
@@ -509,7 +484,7 @@ class JavascriptHelper extends WXHelpers {
   # 
   # You can change the behaviour with various options, see
   # http://script.aculo.us for more documentation. 
-  function draggable_element($element_id, $options = array()) {
+  public function draggable_element($element_id, $options = array()) {
       return $this->javascript_tag("new Draggable('{$element_id}', " . $this->options_for_javascript($options) . ")");
   }
   
@@ -525,7 +500,7 @@ class JavascriptHelper extends WXHelpers {
   #
   # You can change the behaviour with various options, see
   # http://script.aculo.us for more documentation.
-  function drop_receiving_element($element_id, $options = array()) {
+  public function drop_receiving_element($element_id, $options = array()) {
       if(!$options['with']) {
           $options['with'] = "'id=' + encodeURIComponent(element.id)";
       }
@@ -543,7 +518,7 @@ class JavascriptHelper extends WXHelpers {
   }
   
   # Escape carrier returns and single and double quotes for JavaScript segments.
-  function escape_javascript($javascript) {
+  public function escape_javascript($javascript) {
       return preg_replace('/\r\n|\n|\r/', "\\n",
              preg_replace_callback('/["\']/', create_function('$m', 'return "\\{$m}";'),
              (!is_null($javascript) ? $javascript : '')));
@@ -551,170 +526,15 @@ class JavascriptHelper extends WXHelpers {
   
   # Returns a JavaScript tag with the $content inside. Example:
   #   javascript_tag("alert('All is good')") => <script type="text/javascript">alert('All is good')</script>
-  function javascript_tag($content) {
+  public function javascript_tag($content) {
       return $this->content_tag("script", $this->javascript_cdata_section($content), array('type' => "text/javascript"));
   }
   
-  function javascript_cdata_section($content) {
+  public function javascript_cdata_section($content) {
       return "\n//" . $this->cdata_section("\n{$content}\n//") . "\n";
   }
   
   
-}
-
-/**
-  *  Avialble functions for use in views
-  *  link_to_remote($name, $options = array(), $html_options = array())
-  */
-function link_to_remote() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'link_to_remote'), $args);
-}
-
-/**
-  *  link_to_function($name, $function, $html_options = array())
-  */
-function link_to_function() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'link_to_function'), $args);
-}
-
-
-/**
-  *  periodically_call_remote($options = array())
-  */
-function periodically_call_remote() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'periodically_call_remote'), $args);
-}
-
-/**
-  *  form_remote_tag($options = array())
-  */
-function form_remote_tag() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'form_remote_tag'), $args);
-} 
-
-/**
-  *  submit_to_remote($name, $value, $options = array())
-  */
-function submit_to_remote() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'submit_to_remote'), $args);
-} 
-
-/**
-  *  update_element_function($element_id, $options = array(), $block = null)
-  */
-function update_element_function() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'update_element_function'), $args);
-} 
-
-/**
-  *  evaluate_remote_response()
-  */
-function evaluate_remote_response() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'evaluate_remote_response'), $args);
-} 
-
-/**
-  *  remote_function($options)
-  */
-function remote_function() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'remote_function'), $args);
-} 
-
-/**
-  *  observe_field($field_id, $options = array())
-  */
-function observe_field() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'observe_field'), $args);
-} 
-
-/**
-  *  observe_form($form_id, $options = array())
-  */
-function observe_form() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'observe_form'), $args);
-} 
-
-/**
-  *  visual_effect($name, $element_id = false, $js_options = array())
-  */
-function visual_effect() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'visual_effect'), $args);
-} 
-
-/**
-  *  sortable_element($element_id, $options = array())
-  */
-function sortable_element() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'sortable_element'), $args);
-} 
-
-/**
-  *  draggable_element($element_id, $options = array())
-  */
-function draggable_element() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'draggable_element'), $args);
-}
-
-/**
-  *  drop_receiving_element($element_id, $options = array()) 
-  */
-function drop_receiving_element() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'drop_receiving_element'), $args);
-}
-
-/**
-  *  escape_javascript($javascript)
-  */
-function escape_javascript() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'escape_javascript'), $args);
-}
-
-/**
-  *  javascript_tag($content)
-  */
-function javascript_tag() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'javascript_tag'), $args);
-}
-
-/**
-  *  javascript_cdata_section($content)
-  */
-function javascript_cdata_section() {
-    $javascript_helper = new JavaScriptHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($javascript_helper, 'javascript_cdata_section'), $args);
 }
 
 ?>

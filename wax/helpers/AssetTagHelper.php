@@ -23,7 +23,6 @@ class AssetTagHelper extends WXHelpers {
      *  @uses javascript_default_sources
      */
     function __construct() {
-        parent::__construct();
         $this->javascript_default_sources =	array('prototype', 'scriptaculous');    
     }
     
@@ -72,7 +71,7 @@ class AssetTagHelper extends WXHelpers {
      *  @return string Public path to the javascript asset
      *  @uses compute_public_path()
      */
-    function javascript_path($source) {
+    protected function javascript_path($source) {
         return $this->compute_public_path($source, 'javascripts', 'js');
     }
     
@@ -98,7 +97,7 @@ class AssetTagHelper extends WXHelpers {
      *  @uses javascript_default_sources
      *  @uses javascript_path()
      */
-    function javascript_include_tag() {
+    public function javascript_include_tag() {
         if(func_num_args() > 0) {
             $sources = func_get_args();     
             $options = (is_array(end($sources))
@@ -137,7 +136,7 @@ class AssetTagHelper extends WXHelpers {
      *  @return string Public path to the stylesheet asset
      *  @uses compute_public_path()
      */
-    function stylesheet_path($source) {
+    protected function stylesheet_path($source) {
         return $this->compute_public_path($source, 'stylesheets', 'css');
     }
     
@@ -164,7 +163,7 @@ class AssetTagHelper extends WXHelpers {
      *  @uses stylesheet_path()
      *  @uses tag()
      */
-    function stylesheet_link_tag() {
+    public function stylesheet_link_tag() {
         if(func_num_args() > 0) {
             $sources = func_get_args();     
             $options = (is_array(end($sources))
@@ -194,7 +193,7 @@ class AssetTagHelper extends WXHelpers {
      *  @return string Public path to the image asset
      *  @uses compute_public_path()
      */
-    function image_path($source) {
+    protected function image_path($source) {
         return $this->compute_public_path($source, 'images', 'png');
     }
     
@@ -224,52 +223,21 @@ class AssetTagHelper extends WXHelpers {
      *  @uses image_path()
      *  @uses tag()
      */
-    function image_tag($source, $options = array()) {
-        $options['src'] = $this->image_path($source);
-        $options['alt'] = array_key_exists('alt',$options)
-            ? $options['alt']
-            : ucfirst(reset($file_array =
-                             explode('.', basename($options['src']))));
-        if(isset($options['size'])) {
-            $size = explode('x', $options["size"]);         
-            $options['width'] = reset($size);
-            $options['height'] = end($size);
-            unset($options['size']);
-        }
-        return $this->tag("img", $options);
+  public function image_tag($source, $options = array()) {
+    $options['src'] = $this->image_path($source);
+    $options['alt'] = array_key_exists('alt',$options)
+        ? $options['alt']
+        : ucfirst(reset($file_array =
+                         explode('.', basename($options['src']))));
+    if(isset($options['size'])) {
+        $size = explode('x', $options["size"]);         
+        $options['width'] = reset($size);
+        $options['height'] = end($size);
+        unset($options['size']);
     }
+    return $this->tag("img", $options);
+  }
     
-}
-
-
-/**
- *  Make a new AssetTagHelper object and call its image_tag() method
- *  @uses AssetTagHelper::image_tag()
- */
-function image_tag() {
-    $asset_helper = new AssetTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($asset_helper, 'image_tag'), $args);
-}
-
-/**
- *  Make a new AssetTagHelper object and call its stylesheet_link_tag() method
- *  @uses AssetTagHelper::stylesheet_link_tag()
- */
-function stylesheet_link_tag() {
-    $asset_helper = new AssetTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($asset_helper, 'stylesheet_link_tag'), $args);
-}
-
-/**
- *  Make a new AssetTagHelper object and call its javascript_include_tag() method
- *  @uses AssetTagHelper::javascript_include_tag()
- */
-function javascript_include_tag() {
-    $asset_helper = new AssetTagHelper();
-    $args = func_get_args();
-    return call_user_func_array(array($asset_helper, 'javascript_include_tag'), $args);
 }
 
 ?>

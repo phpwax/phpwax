@@ -41,50 +41,48 @@ class FormHelper extends WXHelpers {
     
     /**
      *  @todo Document this method
-     *  @uses default_date_options
-     *  @uses default_field_options
-     *  @uses default_radio_options
-     *  @uses default_text_area_options
+     *  Initialises helper with model and attribute
      */
     function __construct($object="", $attribute_name="") {
-    	parent::__construct($object, $attribute_name);
-      if(is_object($object) && !$object instanceof WXActiveRecord) {
+      
+    }
+
+    protected function initialise($object="", $attribute_name="") {
+      if(!is_object($object)) {
 				$this->object = new $object;
 			}  
 			$this->object = $object;
       $this->attribute_name = $attribute_name;
 			
 			$this->object_name = $this->object->table;
-    }
-
-      
+    }  
     
     
     /**
      *  @todo Document this method
      */
-    function tag_name() {
+    protected function tag_name() {
         return "{$this->object_name}[{$this->attribute_name}]";
     }
 
     /**
      *  @todo Document this method
      */
-    function tag_name_with_index($index) {
+    protected function tag_name_with_index($index) {
         return "{$this->object_name}[{$index}][{$this->attribute_name}]";
     }
 
     /**
      *  @todo Document this method
      */
-    function tag_id() {
+    protected function tag_id() {
         return "{$this->object_name}_{$this->attribute_name}";
     }
 
     /**
      *  @todo Document this method
      */
-    function tag_id_with_index($index) {
+    protected function tag_id_with_index($index) {
         return "{$this->object_name}_{$index}_{$this->attribute_name}";
     }
 
@@ -97,8 +95,7 @@ class FormHelper extends WXHelpers {
      *  @uses tag_id_with_index()
      *  @uses tag_name_with_index()
      */
-    function add_default_name_and_id_and_value($options) 
-    {  	
+    protected function add_default_name_and_id_and_value($options) {  	
         if(!array_key_exists("value", $options))
         {
           $options['value'] = $this->get_value();
@@ -148,18 +145,18 @@ class FormHelper extends WXHelpers {
      *  @uses tag()
      *  @uses value()
      */
-    function to_input_field_tag($field_type, $options = array()) {
-			if(!$options["size"] && $field_type != "hidden" && $field_type != "submit") $options["size"]=25;
-			$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
-		  $options['id']    = $this->object_name . "_" . $this->attribute_name;
-      $options["type"] = $field_type;
-			if(!isset($options["value"]) && $field_type !="file") {
-				$options["value"] = $this->object->{$this->attribute_name};
-			}
-			return $this->tag("input", $options);            
-    }
+  protected function to_input_field_tag($field_type, $options = array()) {
+		if(!$options["size"] && $field_type != "hidden" && $field_type != "submit") $options["size"]=25;
+		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+    $options["type"] = $field_type;
+		if(!isset($options["value"]) && $field_type !="file") {
+			$options["value"] = $this->object->{$this->attribute_name};
+		}
+		return $this->tag("input", $options);            
+  }
 
-	function make_label($label_name="", $after_content="<br />") {
+	protected function make_label($label_name="", $after_content="<br />") {
 	  $option = array("for" =>$this->object_name."_".$this->attribute_name);
 		if(!is_string($label_name)) {
 	    $label_name = $this->attribute_name;
@@ -176,38 +173,35 @@ class FormHelper extends WXHelpers {
 		return $this->content_tag("form", $html, $options);
 	}
 	
-	public function db_to_form_field($object, $field, $type) {
-		switch(true) {
-			case $length = strstr($type, "varchar"): return label_text_field($object, $field); break;
-			case $length = strstr($type, "int"): return label_text_field($object, $field, array("size"=>10)); break;
-		}
-		return false;
-	}
-	
-	function text_field($options = array(), $with_label=true, $after_content="<br />") {
+	public function text_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("text", $options);
 		return $html;
 	}
 	
-	function password_field($options = array(), $with_label=true, $after_content="<br />") {
+	public function password_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("password", $options);
 		return $html;
 	}
 	
-	function hidden_field($options = array()) {
+	public function hidden_field($obj, $att, $options = array()) {
+		$this->initialise($obj, $att);
 	  $html = $this->to_input_field_tag("hidden", $options);
 		return $html;
 	}
 	
-	function file_field($options = array(), $with_label=true, $after_content="<br />") {
+	public function file_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("file", $options);
 		return $html;
 	}
 	
-	function text_area($options = array(), $with_label=true, $after_content="<br />") {
+	public function text_area($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
  		if (!array_key_exists("cols", $options)) $options["cols"]=50;
  		if (!array_key_exists("rows", $options)) $options["cols"]=10;
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
@@ -220,12 +214,14 @@ class FormHelper extends WXHelpers {
 		return $html;
   }
 
-	function submit_field($value="Save") {
+	public function submit_field($obj, $value="Save") {
+	  $this->initialise($obj, "save");
 		$options["value"]= $value;
 	  return $this->to_input_field_tag("submit", $options);
 	}
 	
-	function check_box($options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true, $after_content="") {
+	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true, $after_content="") {
+		$this->initialise($obj, $att);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  $options["type"] = "checkbox";
@@ -240,7 +236,8 @@ class FormHelper extends WXHelpers {
 		return $html;
 	}
 	
-	function radio_button($tag_value, $options = array(), $with_label=true, $after_content="<br />") {
+	public function radio_button($obj, $att, $tag_value, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
 		$options["type"] = "radio";
     $options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
@@ -256,79 +253,6 @@ class FormHelper extends WXHelpers {
 	}
 	
 }
-
-/*  End of main class... below are wrapper functions for methods in the main class */
-
-
-function form_for() {
-	$form_helper = new FormHelper();
-  $args = func_get_args();
-  return call_user_func_array(array($form_helper, 'form_for'), $args);
-}
-
-
-function text_field()  {
-  $args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-  return call_user_func_array(array($helper, 'text_field'), $args); 
-}
-
-
-function password_field() {
-  $args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'password_field'), $args);
-}
-
-
-function hidden_field() {
-  $args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-  return call_user_func_array(array($helper, 'hidden_field'), $args);
-}
-
-
-function file_field() {
-	$args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'file_field'), $args);
-}
-
-function submit_field() {
-	$args = func_get_args();
-	$helper = new FormHelper($args[0], "save");
-	array_shift($args);
-	return call_user_func_array(array($helper, 'submit_field'), $args);
-}
-
-
-function text_area()  {
-	$args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'text_area'), $args);
-}
-
-
-function check_box()  {
-	$args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'check_box'), $args);
-}
-
-
-function radio_button() {
-	$args = func_get_args();
-	$helper = new FormHelper($args[0], $args[1]);
-	array_shift($args); array_shift($args);
-	return call_user_func_array(array($helper, 'radio_button'), $args);
-}
-
 
 
 

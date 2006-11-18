@@ -103,7 +103,17 @@ class AutoLoader
 	  }
 	}
 
-	
+	static public function register_helpers() {
+	  foreach(get_declared_classes() as $class) {
+	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class == "WXInflections") {
+	      foreach(get_class_methods($class) as $method) {
+	        if(substr($method,0,1)!="_" && !function_exists($method)) {
+	          WXGenerator::new_helper_wrapper($class, $method);
+          }
+	      }
+	    }
+	  }
+	}
 	
 	
 	/**
@@ -118,6 +128,7 @@ class AutoLoader
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
+		self::register_helpers();
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );
 		WXConfigBase::set_instance();
