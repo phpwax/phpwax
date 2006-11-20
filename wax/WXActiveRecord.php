@@ -122,9 +122,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       if(class_exists($class_name)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
       } 
-    } elseif(class_exists($class_name)) {
-      return new $class_name;
-    }
+    } 
 
     return false;
   }
