@@ -100,18 +100,24 @@ class FormOptionsHelper extends FormHelper {
      *  @uses content_tag()
      *  @uses value()
      */
-  public function select($choices, $options=array()) {           
+  public function select($obj, $att, $choices, $options=array(), $with_label=true, $after_content="<br />") {         
+		$this->initialise($obj, $att);
   	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
     unset($options['value']);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
-    return $this->content_tag("select",$content,$options);           
+    if($with_label) $html.= $this->make_label($with_label);
+    $html.= $this->content_tag("select",$content,$options);
+    return $html;           
   }
 
-	public function country_select($options = array()) {
+	public function country_select($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+		$this->initialise($obj, $att);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
-		return $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
+	  if($with_label) $html.= $this->make_label($with_label);
+	  $html.= $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
+		return $html;
 	}
 
   

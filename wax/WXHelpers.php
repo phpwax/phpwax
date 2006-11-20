@@ -39,7 +39,6 @@ class WXHelpers {
      *  @uses attribute_name
      *  @uses object()
      *  @uses object_name
-     *  @uses ActiveRecord::send()
      */
     protected function value() {
         if (array_key_exists($this->object_name, $_REQUEST)
@@ -74,7 +73,7 @@ class WXHelpers {
       }
       else
       {
-        return "";  
+        return false;  
       }
      
     }

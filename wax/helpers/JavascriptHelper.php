@@ -433,7 +433,7 @@ class JavascriptHelper extends WXHelpers {
       if($js_options['queue']) {
           $js_options['queue'] = "'{$js_options['queue']}'";
       }
-      return "new Effect." . camelize($name) . "({$element}," . $this->options_for_javascript($js_options) . ");";
+      return "new Effect." . camelize($name, true) . "({$element}," . $this->options_for_javascript($js_options) . ")";
   }
   
   # Makes the element with the DOM ID specified by +element_id+ sortable

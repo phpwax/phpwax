@@ -152,7 +152,9 @@ class UrlHelper extends WXHelpers {
     $url_base = "/";
     $url = array();
     $extra_params = array();
-    if(!is_array($options)) return $options;
+    if(!is_array($options)) {
+      $options=array("action"=>$options);
+    }
 		
 		if(array_key_exists("controller", $options)) {
     	$url[] = $options["controller"];

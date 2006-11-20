@@ -164,15 +164,18 @@ abstract class WXControllerBase extends ApplicationBase
     if(strpos($path, "/")) {
       $partial = "_".substr(strrchr($path, "/"),1);
       $path = substr($path, 0,strrpos($path, "/"))."/";
+      $view_path = $path.$partial.".html";
     } else {
       $partial = "_".$path;
       $path = "";
+      $controller = slashify(str_replace("Controller", "", $this->controller));
+  		$view_path = slashify($controller)."/".$partial.".html";
     }
-    $view_path = $path.$partial;
 
 		if($this->use_plugin) {
-		  $tpl->plugin_view_path=get_parent_class($this)."/".$view_path.".html";
+		  $tpl->plugin_view_path=get_parent_class($this)."/".$partial.".html";
 		}
+		
 		$tpl->view_path=$view_path;
 		return $tpl->execute();
 	}

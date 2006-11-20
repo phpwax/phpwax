@@ -106,7 +106,7 @@ class WXGenerator {
 		}
 		$this->add_stdout("Created model file at app/model/".$class.".php");
 		$this->final_output="";
-		$this->new_migration("create_".underscore($class), underscore($class) );
+		$this->new_migration("create_".WXInflections::underscore($class), WXInflections::underscore($class) );
   }
   
   public function new_controller($args=array()) {
@@ -153,7 +153,7 @@ class WXGenerator {
     $migrate->increase_version_latest();
 		$version = $migrate->get_version_latest();
     $class = WXInflections::camelize($name, true);
-		$this->final_output.= $this->start_php_file($class, "WXMigration");
+		$this->final_output.= $this->start_php_file($class, "WXMigrate");
     if($table) {
 			$this->final_output.=$this->add_function("up", sprintf('    \$this->create_table(\"%s\");', $table)."\n");
 			$this->final_output.=$this->add_function("down", sprintf('    \$this->drop_table(\"%s\");', $table)."\n");
@@ -162,7 +162,7 @@ class WXGenerator {
 			$this->final_output.=$this->add_function("up");
 			$this->final_output.=$this->add_function("down");
 		}
-    $file = str_pad($version, 3, "0", STR_PAD_LEFT)."_".underscore($class);
+    $file = str_pad($version, 3, "0", STR_PAD_LEFT)."_".WXInflections::underscore($class);
     $res = $this->write_to_file(APP_DIR."db/migrate/".$file.".php");
 		if(!$res) {
 			$this->add_perm_error("app/db/migrate/".$file.".php"); 

@@ -83,7 +83,7 @@ class WXActiveRecord extends WXValidations implements Iterator
    */
 
 	static function get_relation($class, $pdo, $foreign_key, $id) {
-		$child = new $class();
+		$child = new $class($pdo);
 		$child->setConstraint( $foreign_key, $id );
 		return $child;
 	}
@@ -100,21 +100,30 @@ class WXActiveRecord extends WXValidations implements Iterator
     if( array_key_exists( $name, $this->row ) ) {
     	return $this->row[$name];
     }
+	  
+  /**
+   *    Then we see if the attribute has a dedicated method
+   */ 
+   if(method_exists($this, $name)) {
+     return $this->{$name}();
+   } 
 
 	 /**
     *  Next we try and link to a child object of the same name
 	  */
     $id = $this->row[$this->primary_key];
+    $class_name = camelize($name, true);
     if($id) {
     	$foreign_key = $this->table . '_id';
 			if(array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
       	// return cached instance
         return $this->children[$name];
       }
-			$class_name = $this->camelize( $name);
-      if(class_exists( $class_name, false)) {
+      if(class_exists($class_name)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
       } 
+    } elseif(class_exists($class_name)) {
+      return new $class_name;
     }
 
     return false;
