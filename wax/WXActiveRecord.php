@@ -35,7 +35,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$class_name =  get_class($this) ;
 		
 		if( $class_name != 'WXActiveRecord' ) {
-			$this->table = $this->underscore( $class_name );
+			$this->table = WXInflections::underscore( $class_name );
 			$this->columns = $this->column_info();	
 		}
 		
@@ -112,7 +112,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     *  Next we try and link to a child object of the same name
 	  */
     $id = $this->row[$this->primary_key];
-    $class_name = camelize($name, true);
+    $class_name = WXInflections::camelize($name, true);
     if($id) {
     	$foreign_key = $this->table . '_id';
 			if(array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
@@ -597,7 +597,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 	
 	public function is_posted() {
-		if(is_array($_POST[$this->underscore(get_class($this))])) {
+		if(is_array($_POST[WXInflections::underscore(get_class($this))])) {
 			return true;
 		} else {
 			return false;
@@ -605,13 +605,15 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 	
 	public function __call( $func, $args ) {
-		$what=substr( $func, 6 );
-		$what=explode("And", $what);
-		for($i=0;$i<count($what); $i++) {
-			$what[$i]=$this->underscore($what[$i]);
-		}			
+	  $func = WXInflections::underscore($func);
+	  $finder = explode("by", $func);
+		$what=explode("and", $finder[1]);
+		foreach($what as $key=>$val) {
+		  $what[$key]=str_replace("_","",$val);
+		}
+		
     if( $args ) {
-			if(count($what)>1 && count($args)>1) { 
+			if(count($what)==2) { 
 				$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
 			}else{
 				$conds=$what[0]."='".$args[0]."'";
@@ -619,7 +621,11 @@ class WXActiveRecord extends WXValidations implements Iterator
 			if(is_array($args[1]) && isset($args[1]["conditions"])) $conds.=" AND ".$args[1]["conditions"];
 			  elseif(is_array($args[2]) && isset($args[2]["conditions"])) $conds.=" AND ".$args[2]["conditions"];
 			$params = array("conditions"=>$conds);
-      return $this->find_all($params);
+			if($finder[0]=="find_all_") {
+        return $this->find_all($params);
+      } else {
+        return $this->find_first($params);
+      }
     }
   }
   

@@ -23,7 +23,7 @@ class AssetTagHelper extends WXHelpers {
      *  @uses javascript_default_sources
      */
     function __construct() {
-        $this->javascript_default_sources =	array('prototype', 'scriptaculous', 'effects');    
+        $this->javascript_default_sources =	array('prototype', 'effects', 'controls', 'dragdrop', 'builder');    
     }
     
     /**
