@@ -536,21 +536,6 @@ class JavascriptHelper extends WXHelpers {
   
   /**
    * wrapper for script.aculo.us/prototype Ajax.Autocompleter.
-   * @param string name id of field that can be edited
-   * @param string url of module/action to be called when ok is clicked
-   * @param array editor tag options. (rows, cols, highlightcolor, highlightendcolor, etc...)
-   *
-   * @return string javascript to manipulate the id field to allow click and edit functionality
-   */
-  public function in_place_editor($name, $url, $editor_options = array()) {
-    $editor_options = $this->javascript_options($editor_options);
-    $default_options = array('tag' => 'span', 'id' => '\''.$name.'_in_place_editor', 'class' => 'in_place_editor_field');
-  
-    return $this->build_in_place_editor($name, $url, array_merge($default_options, $editor_options));
-  }
-  
-  /**
-   * wrapper for script.aculo.us/prototype Ajax.Autocompleter.
    * @param string id value of input field
    * @param string url of module/action to execute for autocompletion
    * @param array completion options
@@ -577,6 +562,20 @@ class JavascriptHelper extends WXHelpers {
     if (isset($options['after_update_element'])) $js_options['afterUpdateElement'] = $options['after_update_element'];
     $javascript .= ', '.$this->options_for_javascript($js_options).');';
     return $this->javascript_tag($javascript);
+  }
+  
+  /**
+   * wrapper for script.aculo.us/prototype Ajax.Autocompleter.
+   * @param string name id of field that can be edited
+   * @param string url of module/action to be called when ok is clicked
+   * @param array editor tag options. (rows, cols, highlightcolor, highlightendcolor, etc...)
+   *
+   * @return string javascript to manipulate the id field to allow click and edit functionality
+   */
+  public function in_place_editor($name, $url, $editor_options = array()) {
+    $default_options = array('tag' => 'span', 'id' => '\''.$name.'_in_place_editor', 'class' => 'in_place_editor_field');
+  
+    return $this->build_in_place_editor($name, $url, array_merge($default_options, $editor_options));
   }
   
   /*
