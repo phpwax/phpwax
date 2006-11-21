@@ -2,7 +2,7 @@
 
 class TestModel extends WXActiveRecord {}
 class TestModel2 extends WXActiveRecord {}
-class TestMigration extends WXMigrate {
+class TestARMigration extends WXMigrate {
   public function up() {
     $this->create_column("username");
     $this->create_column("password");
@@ -18,7 +18,7 @@ class TestMigration extends WXMigrate {
 class TestWXActiveRecord extends WXTestCase 
 {
     public function setUp() {
-      $migrate = new TestMigration;
+      $migrate = new TestARMigration;
       $migrate->up();
       $this->model = new TestModel();
       $this->model1 = new TestModel();
@@ -30,7 +30,7 @@ class TestWXActiveRecord extends WXTestCase
     }
     
     public function tearDown() {
-      $migrate = new TestMigration;
+      $migrate = new TestARMigration;
       $migrate->down();
     }
     

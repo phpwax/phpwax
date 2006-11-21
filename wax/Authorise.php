@@ -55,7 +55,7 @@ abstract class Authorise
 		return false;
   }
   
-  public static function is_logged_in() {
+  public function is_logged_in() {
     return $this->check_logged_in();
   }
 
@@ -80,7 +80,8 @@ abstract class Authorise
 	 */
   public function logout() {
 		$this->user_id = null;
-		echo "killed user id";
+		$this->user_object=null;
+		return true;
   }
 
 	/**
@@ -151,93 +152,3 @@ abstract class Authorise
   }
 	
 }
-
-
-/**
-	*	Extends the Authorise base class to handle database authentication.
-  *  @package wx.php.core
-  */
-class DBAuthorise extends Authorise
-{
-	/**
-	 *	Sets the default database table name.
-	 *	@access public
-	 *	@var string 
-	 */
-	public $database_table='User';
-	public $username_column='username';
-	public $password_column='password';
-	protected $user_object=null;
-
-	
-	/**
-	 *	Looks up the username and password in the database.
-	 *	If there's a match, setup the user as logged in.
-	 *	@access public
-	 *	@param string $username
-	 *	@param string $password
-	 *	@return bool
-	 */
-	public function verify($username, $password, $id=null) {
-	  if($id) {
-	    $user=new $this->database_table($id);
-		  $this->user_object = $user;
-		  return true;
-	  } else {
-	    $user=new $this->database_table;
-  	  $method = "find_by_".$this->username_column."_and_".$this->password_column;
-  	  $current_user = $user->$method($username, $password);
-  		if($current_user = $user->$method($username, $password)) {
-  		  $this->user_id = $current_user->id;
-  		  $this->user_object = $current_user;
-  		  return true;
-  		} else {
-  		  return false;
-  		}
-		}
-	}
-	
-}
-
-/**
-	*	Extends the Authorise base class to handle flat file authentication.
-	*	Users are configured in an array named 'users' inside the YAML config.
-  *  @package wx.php.core
-  */
-class YamlAuthorise extends Authorise
-{
-	/**
-	 *	Sets the default config file.
-	 *	@access public
-	 *	@var string 
-	 */
-	protected $configfile = "{APP_DIR}config/config.yml";
-
-
-	/**
-	 *	Verifies the supplied user/pass against the config file.
-	 *	@access public
-	 *	@param string $username
-	 *	@param string $password
-	 *	@return bool 
-	 */	
-	public function verify($username, $password) {
-	  $this->config_array = Spyc::YAMLLoad($this->configfile);
-	  $users_array=$this->config_array['users'];
-	  $i=1;
-	  if(count($users_array)>1) {
-	    return false;
-	  }
-	  foreach($users_array as $user=>$pass) {
-	    if($user==$username && $pass==$password) { 
-		    $this->set_logged_in($i);
-		    return true;
-		  }
-		$i++;
-	  }	
-	  return false;
-	}
-		
-	
-} 
-
