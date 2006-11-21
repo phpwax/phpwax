@@ -504,8 +504,8 @@ class JavascriptHelper extends WXHelpers {
       if(!$options['with']) {
           $options['with'] = "'id=' + encodeURIComponent(element.id)";
       }
-      if(!$options['onUpdate']) {
-          $options['onUpdate'] = "function(element){" . $this->remote_function($options) . "}";
+      if(!$options['onDrop']) {
+          $options['onDrop'] = "function(element){" . $this->remote_function($options) . "}";
       }
       $options = $this->remove_ajax_options($options);
       if($options['accept']) {

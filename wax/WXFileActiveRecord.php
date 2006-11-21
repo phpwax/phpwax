@@ -22,6 +22,7 @@ class WXFileActiveRecord extends WXActiveRecord
     parent::__construct($param);
     if(!is_dir(WAX_ROOT.$this->file_base)) mkdir(WAX_ROOT.$this->file_base, 0777);
 		if(!is_dir(PUBLIC_DIR.$this->thumb_base )) mkdir(PUBLIC_DIR.$this->thumb_base, 0777);
+		if(!is_writable(WAX_ROOT.$this->file_base)) throw new WXPermissionsException("Files directory is not writable");
   }
   
   public function save() {
@@ -91,7 +92,7 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   public function list_path($path, $params=null) {
-    $method = "findBy".ucfirst($this->path_column);
+    $method = "find_all_by_".$this->path_column;
     return $this->{$method}($path, $params);
   }
 	

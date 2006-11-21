@@ -411,7 +411,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 
   function _makeUPDATEValues( $array ) {
     foreach( $array as $key=>$value ) {
-      $expressions[] ="{$key}=:{$key}";
+      $expressions[] ="`{$key}`=:{$key}";
     }
     return implode( ', ', $expressions );
   }

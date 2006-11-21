@@ -180,6 +180,12 @@ abstract class WXControllerBase extends ApplicationBase
 		return $tpl->execute();
 	}
 	
+	public function require_route($level) {
+	  $this->accept_routes = $level;
+	  if($level==1) return $this->route_array[0];
+	    else return $this->route_array;
+	}
+	
 	public function set_referrer() {
 	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
 		else Session::set('referrer', "/".$_GET['route']);
