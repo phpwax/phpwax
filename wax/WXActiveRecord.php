@@ -168,7 +168,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     return $record->_find( $id, $params ) ? $record : null;
   }
 
-	public function find_first($params) {
+	public function find_first($params=array()) {
 	  $params = array_merge($params, array("limit"=>"1"));
 		$list = $this->find_all($params);
 		$list = array_values($list);
@@ -610,7 +610,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	  $finder = explode("by", $func);
 		$what=explode("and", $finder[1]);
 		foreach($what as $key=>$val) {
-		  $what[$key]=str_replace("_","",$val);
+		  $what[$key]=rtrim(ltrim($val, "_"), "_");
 		}
 		
     if( $args ) {
