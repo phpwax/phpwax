@@ -129,7 +129,7 @@ class FormHelper extends WXHelpers {
 		return $this->tag("input", $options);            
   }
 
-	protected function make_label($label_name="", $after_content="<br />") {
+	protected function make_label($label_name="", $after_content="") {
 	  $option = array("for" =>$this->object_name."_".$this->attribute_name);
 		if(!is_string($label_name)) {
 	    $label_name = $this->attribute_name;
@@ -137,14 +137,7 @@ class FormHelper extends WXHelpers {
 		return $this->content_tag("label", humanize($label_name), $option).$after_content;
 	}
 
-	public function form_for($object, $id=null, $options=array(), $exclude=array()) {
-		$obj = new $object($id);
-		foreach($obj->column_info() as $field=>$type) {
-			if($field==$obj->primary_key || in_array($field, $exclude)) continue;
-			$html .= $this->content_tag("p", $this->db_to_form_field($object, $field, $type) );
-		}
-		return $this->content_tag("form", $html, $options);
-	}
+	
 	
 	public function text_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
 		$this->initialise($obj, $att);

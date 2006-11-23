@@ -27,6 +27,14 @@ class FormTagHelper extends WXHelpers {
         $html_options['action'] = url_for($url_for_options);
         return $this->tag("form", $html_options, true);
     }
+    
+    protected function make_label($id, $label_name="") {
+  	  $option = array("for" =>$id);
+  		if(!is_string($label_name) || strlen($label_name < 1)) {
+  	    $label_name = $id;
+  	  }
+  		return $this->content_tag("label", humanize($label_name), $option).$after_content;
+  	}
 
     /**
      *  @todo Document this method
@@ -41,16 +49,18 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    public function select_tag($name, $option_tags = null, $options = array()) {
-        return $this->content_tag("select", $option_tags, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
+    public function select_tag($name, $option_tags = null, $options = array(), $with_label=true) {
+      if($with_label) $html = $this->make_label($name);
+      return $this->content_tag("select", $html.$option_tags, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
 
     /**
      *  @todo Document this method
      *
      */
-    public function text_field_tag($name, $value = null, $options = array()) {
-        return $this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
+    public function text_field_tag($name, $value = null, $options = array(), $with_label=true) {
+      if($with_label) $html = $this->make_label($name);
+      return $html.$this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
     }
 
     /**
@@ -66,7 +76,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function file_field_tag($name, $options = array()) {
-        return $this->text_field_tag($name, null, array_merge($this->convert_options($options), array("type" => "file")));
+      return $this->text_field_tag($name, null, array_merge($this->convert_options($options), array("type" => "file")));
     }
 
     /**
@@ -81,35 +91,37 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    public function text_area_tag($name, $content = null, $options = array()) {
+    public function text_area_tag($name, $content = null, $options = array(), $with_label=true) {
         if ($options["size"]) {
             $size = explode('x', $options["size"]);
             $options["cols"] = reset($size);
             $options["rows"] = end($size);
             unset($options["size"]);
         }
-
-        return $this->content_tag("textarea", $content, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
+      if($with_label) $html = $this->make_label($name);
+      return $html.$this->content_tag("textarea", $content, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
 
     /**
      *  @todo Document this method
      *
      */
-    public function check_box_tag($name, $value = "1", $checked = false, $options = array()) {
+    public function check_box_tag($name, $value = "1", $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "checkbox", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
-        return $this->tag("input", $html_options);
+        if($with_label) $html = $this->make_label($name);
+        return $this->tag("input", $html_options).$html;
     }
 
     /**
      *  @todo Document this method
      *
      */
-    public function radio_button_tag($name, $value, $checked = false, $options = array()) {
+    public function radio_button_tag($name, $value, $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "radio", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
-        return $this->tag("input", $html_options);
+        if($with_label) $html = $this->make_label($name);
+        return $this->tag("input", $html_options).$html;
     }
 
     /**
