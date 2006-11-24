@@ -344,7 +344,8 @@ class WXActiveRecord extends WXValidations implements Iterator
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-    $this->after_update();     
+    $this->after_update();
+    if($sth->rowCount()===0) return true;     
     return $sth->rowCount();
   }
 
@@ -521,7 +522,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
 	public function update_attributes($array) {
-	  $this->get_errors();
+	  $this->clear_errors();
 		foreach($array as $k=>$v) {
 		  $this->$k=$v;
 		}
@@ -603,6 +604,14 @@ class WXActiveRecord extends WXValidations implements Iterator
 		} else {
 			return false;
 		}
+	}
+	
+	public function handle_post($attributes=null) {
+	  if($this->is_posted()) {
+	    if(!$attributes) $attributes = $_POST[WXInflections::underscore(get_class($this))];
+	    return $this->update_attributes($attributes);
+	  }
+	  return false;
 	}
 	
 	public function __call( $func, $args ) {

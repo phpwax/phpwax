@@ -23,8 +23,8 @@ class FormTagHelper extends WXHelpers {
             $html_options['enctype'] = "multipart/form-data";
             unset($html_options['multipart']);
         }
-
-        $html_options['action'] = url_for($url_for_options);
+        if($url_for_options=="") $html_options["action"]="";
+        else $html_options['action'] = url_for($url_for_options);
         return $this->tag("form", $html_options, true);
     }
     
