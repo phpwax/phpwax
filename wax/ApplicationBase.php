@@ -5,14 +5,8 @@
 
 /**
 	* 	@package wx.php.core
-  *   The absolute base class. This will instantiate all of the other 
-  *   four base classes, WXConfigBase, WXActiveRecord, WXControllerBase, WXTemplate.
+  *   The absolute base class. Runs the application.
   *
-  *   Methods Available to sub-classes.....
-  *   fetch_config()
-  *   process_exception()
-  *   process_error()
-  *   inspect()
   */
 class ApplicationBase
 {
@@ -157,6 +151,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
+	  if($cnt->use_view == "none") retun true;
 	  $this->controller = slashify(str_replace("Controller", "", $this->controller));
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;

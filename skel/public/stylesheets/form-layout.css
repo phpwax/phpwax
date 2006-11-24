@@ -1,0 +1,77 @@
+.form_container {
+  margin:10px;
+  padding:10px;
+  font-family:'Lucida Grande', Tahoma, sans-serif;
+  color:#444444;
+  width:90%;
+}
+.form_container h3 {
+  font-size:140%;
+  margin:7px 0;
+  border-bottom:1px dotted #CCCCCC;
+  width:100%;
+}
+.form_container fieldset {
+  border:0;
+  clear:both;
+}
+
+.form_container fieldset div {
+  margin:0 14px 0 0;
+  padding:1%;
+}
+
+.form_container fieldset label {
+  margin:0 0 4px 0;
+  font-size:85%;
+  display:block;
+}
+
+.form_container fieldset .check_box_label,
+.form_container fieldset .radio_button_label {
+  display:inline;
+  padding-right:15px;
+  line-height:2.5em;
+}
+.form_container fieldset .tiny {
+  float:left;
+  width:8%;
+}
+.form_container fieldset .small {
+  float:left;
+  width:20%;
+}
+.form_container fieldset .medium {
+  float:left;
+  width:45%;
+}
+.form_container fieldset .large {
+  float:left;
+  width:90%;
+}
+.form_container fieldset hr {
+  height:2px;
+  border:0;
+  color:white;
+  clear:both;
+}
+
+.form_container fieldset .input_field {
+  width:98%;
+  font-size:130%;
+  padding:3px 2px;
+  border-color:#CCCCCC;
+  clear:right;
+}
+
+.form_container fieldset .select_field {
+  width:98%;
+  padding:0;
+  font-size:110%;;
+}
+.form_container fieldset .check_box_field,
+.form_container fieldset .radio_button_field {
+  width:auto;
+  font-size:110%;
+  border:0;
+}
