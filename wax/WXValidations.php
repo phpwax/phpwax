@@ -22,12 +22,12 @@ class WXValidations
 	 * the customisable extras array. In the event that neither
 	 * are found it returns false
 	 */
-	function __get($field)
-	{  	
+	function __get($field) { 
+	  $constant = strtoupper($field); 	
   	if(isset($this->extra_validations[$field])) {
       return $this->extra_validations[$field];	
-  	} elseif(defined(self::strtoupper($field))) {
-      return self::strtoupper($field);		
+  	} elseif(defined("self::$constant")) {
+      return constant("self::$constant");		
   	} else {
       return false;	
   	}
@@ -55,7 +55,11 @@ class WXValidations
 		return $ret;
 	}
 	
-	protected function validate() {
+	public function clear_errors() {
+	  $this->get_errors();
+	}
+	
+	public function validate() {
 		if(count(self::$errors) <1) {
 			return true;
 		}
@@ -66,14 +70,13 @@ class WXValidations
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	
-	protected function valid_format($field, $format, $message="is an invalid format", $optional=true, $max_length=0) {
+	public function valid_format($field, $format, $message="is an invalid format", $optional=true, $max_length=0) {
 		if(strlen($this->{$field})<1) {
 			$this->valid_required($field);
 			return false;
 		}
-		$format = strtoupper($format);
-		if(defined('self::'.$format)) {
-			$format = constant('self::'.$format);
+		if(defined('self::'.strtoupper($format))) {
+			$format = constant('self::'.strtoupper($format));
 		}
 		if($max_length > 0){
 			self::valid_length($field, 0, $max_length);
@@ -87,14 +90,14 @@ class WXValidations
 		}
 	}
 	
-	protected function valid_required($field, $message="is a required field") {
+	public function valid_required($field, $message="is a required field") {
 		if(strlen($this->{$field}) < 1 ) {
 			$this->add_error($field, $message);
 			return false;
 		}
 	}
 	
-	protected function valid_length($field, $min, $max=0, $message_short="must be at least", $message_long="must be less than") {
+	public function valid_length($field, $min, $max=0, $message_short="must be at least", $message_long="must be less than") {
 		if(strlen($this->{$field}) < $min && $min >0 ) {
 			$this->add_error($fieginld, $message_short." {$min} characters");
 			return false;
@@ -105,7 +108,7 @@ class WXValidations
 		}
 	}
 	
-	protected function valid_unique($field, $message="is already taken") {
+	public function valid_unique($field, $message="is already taken") {
 		if(!$this->{$field}) {
 			return false;
 		}
@@ -120,7 +123,7 @@ class WXValidations
 		}
 	}
 	
-	protected function valid_confirm($field1, $field2, $message="do not match") {
+	public function valid_confirm($field1, $field2, $message="do not match") {
 		if($this->{$field1} !== $this->{$field2}) {
 			$this->add_error($field1." and ".$field2, $message);
 			return false;

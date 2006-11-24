@@ -151,7 +151,7 @@ class ApplicationBase
    *  @return void
    */	
 	private function create_page($cnt) {
-	  if($cnt->use_view == "none") retun true;
+	  if($cnt->use_view == "none") return true;
 	  $this->controller = slashify(str_replace("Controller", "", $this->controller));
   	$write_to_cache = false;
    	$cache_file   = $this->controller . "_" . $cnt->action;

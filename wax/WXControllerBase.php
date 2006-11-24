@@ -118,7 +118,7 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	@access protected
 	 *	@param array $route_array
  	 */
-  protected function set_routes($route_array) {
+  public function set_routes($route_array) {
    	$this->route_array=$route_array;
   }
 
@@ -127,7 +127,7 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	@access protected
 	 *	@param string $action
  	 */
-  protected function set_action($action) {
+  public function set_action($action) {
    	$this->action=$action;
   }
 

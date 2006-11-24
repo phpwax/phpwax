@@ -17,7 +17,7 @@ class FormBuilderHelper extends FormHelper {
   }
   
   public function form_heading($content) {
-    return $this->content_tag("h2", $content);
+    return $this->content_tag("h3", $content);
   }
   
   public function form_divider() {

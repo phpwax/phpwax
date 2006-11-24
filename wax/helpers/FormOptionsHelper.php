@@ -100,19 +100,22 @@ class FormOptionsHelper extends FormHelper {
      *  @uses content_tag()
      *  @uses value()
      */
-  public function select($obj, $att, $choices, $options=array(), $with_label=true, $after_content="<br />") {         
+  public function select($obj, $att, $choices, $options=array(), $with_label=true) {         
 		$this->initialise($obj, $att);
   	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
     unset($options['value']);
+    if(!$options["class"]) $options["class"]="input_field select_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
     if($with_label) $html.= $this->make_label($with_label);
     $html.= $this->content_tag("select",$content,$options);
     return $html;           
   }
+  
 
-	public function country_select($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+	public function country_select($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
+		if(!$options["class"]) $options["class"]="input_field select_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  if($with_label) $html.= $this->make_label($with_label);

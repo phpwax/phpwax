@@ -28,12 +28,12 @@ class FormTagHelper extends WXHelpers {
         return $this->tag("form", $html_options, true);
     }
     
-    protected function make_label($id, $label_name="") {
-  	  $option = array("for" =>$id);
-  		if(!is_string($label_name) || strlen($label_name < 1)) {
+    protected function make_label($id, $label_name="", $options=array()) {
+  	  $option = array_merge($options, array("for" =>$id));
+  		if(!is_string($label_name) || strlen($label_name < 2)) {
   	    $label_name = $id;
   	  }
-  		return $this->content_tag("label", humanize($label_name), $option).$after_content;
+  		return $this->content_tag("label", humanize($label_name), $option);
   	}
 
     /**
@@ -50,8 +50,9 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function select_tag($name, $option_tags = null, $options = array(), $with_label=true) {
-      if($with_label) $html = $this->make_label($name);
-      return $this->content_tag("select", $html.$option_tags, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
+      if($with_label) $html = $this->make_label($name, $with_label);
+      $option_tags = FormOptionsHelper::options_for_select($option_tags);
+      return $html.$this->content_tag("select", $option_tags, array_merge(array("name" => $name, "id" => $name, "class"=>"input_field select_field"), $this->convert_options($options)));
     }
 
     /**
@@ -108,11 +109,12 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
+
     public function check_box_tag($name, $value = "1", $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "checkbox", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
         if(!$html_options["class"]) $html_options["class"]="input_field check_field";
-        if($with_label) $html = $this->make_label($name);
+        if($with_label) $html = $this->make_label($name, $with_label, array("class"=>"check_box_label"));
         return $this->tag("input", $html_options).$html;
     }
 
@@ -124,7 +126,7 @@ class FormTagHelper extends WXHelpers {
         $html_options = array_merge(array("type" => "radio", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
         if(!$html_options["class"]) $html_options["class"]="input_field check_field";
-        if($with_label) $html = $this->make_label($name);
+        if($with_label) $html = $this->make_label($name, $with_label, array("class"=>"radio_button_label"));
         return $this->tag("input", $html_options).$html;
     }
 

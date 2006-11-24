@@ -118,7 +118,7 @@ class FormHelper extends WXHelpers {
      *  @uses value()
      */
   protected function to_input_field_tag($field_type, $options = array()) {
-		if(!$options["size"] && $field_type != "hidden" && $field_type != "submit") $options["size"]=25;
+    if(!$options["class"]) $options["class"]="input_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
     $options["type"] = $field_type;
@@ -129,24 +129,24 @@ class FormHelper extends WXHelpers {
 		return $this->tag("input", $options);            
   }
 
-	protected function make_label($label_name="", $after_content="") {
-	  $option = array("for" =>$this->object_name."_".$this->attribute_name);
+	protected function make_label($label_name="", $options=array()) {
+	  $options = array_merge($options, array("for" =>$this->object_name."_".$this->attribute_name));
 		if(!is_string($label_name)) {
 	    $label_name = $this->attribute_name;
 	  }
-		return $this->content_tag("label", humanize($label_name), $option).$after_content;
+		return $this->content_tag("label", humanize($label_name), $options);
 	}
 
 	
 	
-	public function text_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+	public function text_field($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("text", $options);
 		return $html;
 	}
 	
-	public function password_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+	public function password_field($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("password", $options);
@@ -159,17 +159,18 @@ class FormHelper extends WXHelpers {
 		return $html;
 	}
 	
-	public function file_field($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+	public function file_field($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
 	  if($with_label) $html.= $this->make_label($with_label);
 	  $html.= $this->to_input_field_tag("file", $options);
 		return $html;
 	}
 	
-	public function text_area($obj, $att, $options = array(), $with_label=true, $after_content="<br />") {
+	public function text_area($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
  		if (!array_key_exists("cols", $options)) $options["cols"]=50;
  		if (!array_key_exists("rows", $options)) $options["cols"]=10;
+ 		if(!$options["class"]) $options["class"]="input_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  if($with_label) $html.= $this->make_label($with_label);
@@ -191,6 +192,7 @@ class FormHelper extends WXHelpers {
 	
 	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true, $after_content="") {
 		$this->initialise($obj, $att);
+		if(!$options["class"]) $options["class"]="input_field check_box_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  $options["type"] = "checkbox";
@@ -199,14 +201,15 @@ class FormHelper extends WXHelpers {
 	  } else {
 	    unset($options["checked"]);
 	  }
-		if($with_label) $html.= $this->make_label("", "");
+		if($with_label) $html.= $this->make_label($with_label, array("class"=>"check_box_label"));
 	  $options['value'] = $checked_value;        
 	  $html.= $this->tag("input", $options);
 		return $html;
 	}
 	
-	public function radio_button($obj, $att, $tag_value, $options = array(), $with_label=true, $after_content="<br />") {
+	public function radio_button($obj, $att, $tag_value, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
+		if(!$options["class"]) $options["class"]="input_field radio_button_field";
 		$options["type"] = "radio";
     $options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
@@ -216,7 +219,7 @@ class FormHelper extends WXHelpers {
     	unset($options["checked"]);
     }        
 		$options['value'] = $tag_value;
-		if($with_label) $html.= $this->make_label("", "");  
+		if($with_label) $html.= $this->make_label($with_label, array("class"=>"radio_button_label"));  
 		$html.= $this->tag("input", $options);  
     return $html;
 	}
