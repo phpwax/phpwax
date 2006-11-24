@@ -29,11 +29,12 @@ class WXRoute extends ApplicationBase
 	}
 	
 	public function pick_controller() {
-		while($this->route_array[1] && is_dir(CONTROLLER_DIR.$this->route_array[0])) {
-			$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
-			array_shift($this->route_array);
-		}
-		if($res = $this->check_controller($this->route_array[0])) return $res;
+	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['route']['default'];
+	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
+    	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
+    	array_shift($this->route_array);
+    }
+	  if($res = $this->check_controller($this->route_array[0])) return $res;
 	}
 	
 	/**
@@ -48,19 +49,7 @@ class WXRoute extends ApplicationBase
 		}
 		$class = ucfirst($controller)."Controller";
 		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
-		if($maps = $this->check_controller_mapping($controller)) return $maps;
-		throw new WXException("Missing Controller - ".$controller, "Controller Not Found");
-	  return false;
-	}
-	
-	private function check_controller_mapping($controller) {
-		if($mapping = $this->config_array['route'][$controller]) {
-			return $this->check_controller($mapping);
-		} elseif($mapping = $this->config_array['route']['default']) {
-		  array_unshift($this->route_array, $this->config_array['route']['default']);
-			return $this->check_controller($mapping);
-		}
-		return false;
+		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
 	}
 	
 	public function read_actions() {
