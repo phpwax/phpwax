@@ -59,6 +59,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function text_field_tag($name, $value = null, $options = array(), $with_label=true) {
+      if(!$options["class"]) $options["class"]="input_field";
       if($with_label) $html = $this->make_label($name);
       return $html.$this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
     }
@@ -92,12 +93,13 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function text_area_tag($name, $content = null, $options = array(), $with_label=true) {
-        if ($options["size"]) {
-            $size = explode('x', $options["size"]);
-            $options["cols"] = reset($size);
-            $options["rows"] = end($size);
-            unset($options["size"]);
-        }
+      if ($options["size"]) {
+        $size = explode('x', $options["size"]);
+        $options["cols"] = reset($size);
+        $options["rows"] = end($size);
+        unset($options["size"]);
+      }
+      if(!$options["class"]) $options["class"]="input_field textarea_field";
       if($with_label) $html = $this->make_label($name);
       return $html.$this->content_tag("textarea", $content, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
@@ -109,6 +111,7 @@ class FormTagHelper extends WXHelpers {
     public function check_box_tag($name, $value = "1", $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "checkbox", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
+        if(!$html_options["class"]) $html_options["class"]="input_field check_field";
         if($with_label) $html = $this->make_label($name);
         return $this->tag("input", $html_options).$html;
     }
@@ -120,6 +123,7 @@ class FormTagHelper extends WXHelpers {
     public function radio_button_tag($name, $value, $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "radio", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
+        if(!$html_options["class"]) $html_options["class"]="input_field check_field";
         if($with_label) $html = $this->make_label($name);
         return $this->tag("input", $html_options).$html;
     }
