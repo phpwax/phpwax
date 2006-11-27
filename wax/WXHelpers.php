@@ -192,7 +192,7 @@ class WXHelpers {
      *  @return string Text wrapped with tag and attributes,
      *                 followed by "\n"
      */
-    protected function content_tag($name, $content, $options = array()) {
+    public function content_tag($name, $content, $options = array()) {
         $html = "<$name ";
         $html .= $this->tag_options($options);
         $html .= ">$content</$name>";
@@ -227,10 +227,11 @@ class WXHelpers {
 			  $html.= $this->content_tag("li", $message, array("class"=>"user_message"));
 		  }
 		  Session::unset_var('user_messages');
-		  return $this->content_tag("ul", $html, array("class"=>"user_messages"));
+		  return $this->content_tag("ul", $html, array("class"=>"user_messages", "id"=>"user_message_box"));
 	  }
 		return false;
 	}
+
 
 }
 

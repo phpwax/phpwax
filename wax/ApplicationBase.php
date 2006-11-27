@@ -67,7 +67,7 @@ class ApplicationBase
 		Session::start();
     $filter=new InputFilter(array(), array(), 1,1);
     $_POST=$filter->process($_POST);
-    $_GET=$filter->process($_GET);    		
+    $_GET=$filter->process($_GET);   		
     $this->controller_object=$this->load_controller();
     $this->create_page($this->controller_object);
     $this->controller_object->set_referrer();
@@ -111,7 +111,8 @@ class ApplicationBase
 		$controller = $this->controller;
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
-	  $final_route=$this->actions;
+	  $final_route=array_merge($_GET, $this->actions);
+	  unset($final_route['route']);
 	  if(strlen($this->action)<1) { $this->action="index"; }
 	  $cnt=new $controller();
 		$cnt->controller = $this->controller;

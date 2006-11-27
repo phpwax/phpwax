@@ -182,8 +182,18 @@ abstract class WXControllerBase extends ApplicationBase
 	
 	public function require_route($level) {
 	  $this->accept_routes = $level;
-	  if($level==1) return $this->route_array[0];
-	    else return $this->route_array;
+	  if($level==1 && $val = $this->param("id") ) return $val;
+	  else {
+	    $this->route_array["id"]=$this->route_array[0];
+	    unset($this->route_array[0]);
+	    return $this->route_array;
+    }
+	}
+	
+	public function param($param) {
+	  if($param=="id") return $this->route_array[0];
+	  if($val = $this->route_array[$param]) return $val;
+	  return false;
 	}
 	
 	public function set_referrer() {

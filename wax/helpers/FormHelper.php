@@ -136,8 +136,6 @@ class FormHelper extends WXHelpers {
 	  }
 		return $this->content_tag("label", humanize($label_name), $options);
 	}
-
-	
 	
 	public function text_field($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
@@ -190,7 +188,7 @@ class FormHelper extends WXHelpers {
 	  return $this->to_input_field_tag("submit", $options);
 	}
 	
-	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true, $after_content="") {
+	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true) {
 		$this->initialise($obj, $att);
 		if(!$options["class"]) $options["class"]="input_field check_box_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
@@ -201,9 +199,10 @@ class FormHelper extends WXHelpers {
 	  } else {
 	    unset($options["checked"]);
 	  }
-		if($with_label) $html.= $this->make_label($with_label, array("class"=>"check_box_label"));
 	  $options['value'] = $checked_value;        
 	  $html.= $this->tag("input", $options);
+	  $html.= $this->tag("input", array("name" => $options["name"], "type" => "hidden", "value" => $unchecked_value));
+	  if($with_label) $html.= $this->make_label($with_label, array("class"=>"check_box_label"));
 		return $html;
 	}
 	

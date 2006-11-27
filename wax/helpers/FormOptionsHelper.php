@@ -122,6 +122,16 @@ class FormOptionsHelper extends FormHelper {
 	  $html.= $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
 		return $html;
 	}
+  
+  public function options_from_collection($collection, $attribute_value, $attribute_text, $blank=null) {
+    if(is_array($collection)) {
+      if($blank) $array[0]=$blank;
+      foreach($collection as $object) {
+        $array[$object->{$attribute_value}] = $object->{$attribute_text};            
+      }    
+    }
+    return $array;
+  }
 
   
 }

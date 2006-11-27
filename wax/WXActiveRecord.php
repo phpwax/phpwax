@@ -164,6 +164,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   *  @return WXActiveRecord    this instance, or null if failed
   */
 	public function find( $id = null, $params = null ) {
+	  if(is_array($id)) return $this->array_of_ids($id);
   	$record = clone( $this );
     return $record->_find( $id, $params ) ? $record : null;
   }
@@ -219,6 +220,14 @@ class WXActiveRecord extends WXValidations implements Iterator
 		}
 		$this->row = $row;
  		return true;
+  }
+  
+  public function array_of_ids($array) {
+    $collection = array();
+    foreach($array as $id) {
+      if($res = $this->find($id)) $collection[] = $res;
+    }    
+    return $collection;
   }
 
  /**
