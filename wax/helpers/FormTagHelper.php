@@ -69,7 +69,7 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    public function hidden_field_tag($name, $value = null, $options = array()) {
+    public function hidden_field_tag($name, $value = null, $options = array(), false) {
         return $this->text_field_tag($name, $value, array_merge($options, array("type" => "hidden")));
     }
 
