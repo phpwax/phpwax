@@ -125,8 +125,8 @@ class WXMigrate
     $this->set_version("0");
     return "0";
   }
-  
-  public function version_less_migrate($directory) {
+
+  public function version_less_migrate($directory, $direction="up") {
     if(!is_readable($directory)) return "Invalid directory";
     $migrations=File::scandir_recursive($directory);
     if(count($migrations)<1) return "No migrations in supplied directory";
@@ -135,7 +135,7 @@ class WXMigrate
       include_once($directory.$migration);
       $class = $this->get_class_from_file($migration);
       $instance = new $class;
-      $instance->up();
+      $instance->{$direction}();
     }
     return "Database setup completed";
   }

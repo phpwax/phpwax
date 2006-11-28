@@ -17,6 +17,8 @@ $conf->init_db($config_array['db']);
 
 if($argv[1] =="directory" && isset($argv[2])) {
   $migrate = new WXMigrate();
+  $dir = "up";
+  if(isset($argv[3])) $dir="down";
   $result = $migrate->version_less_migrate($argv[2]); 
   exit($result."\n");
 } 
