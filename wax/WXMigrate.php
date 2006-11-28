@@ -127,12 +127,15 @@ class WXMigrate
   }
   
   public function version_less_migrate($directory) {
+    if(!is_dir($directory)) return "Invalid directory";
     $migrations=File::scandir_recursive($directory);
+    if(count($migrations)<1) return "No migrations in supplied directory";
     foreach($migrations as $migration) {
       include_once($migration);
       $instance = new $this->get_class_from_file($migration);
       $instance->up();
     }
+    return "Database setup completed";
   }
   
   public function migrate($directory, $target_version=false) {
