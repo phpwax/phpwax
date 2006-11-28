@@ -131,7 +131,7 @@ class WXMigrate
     $migrations=File::scandir_recursive($directory);
     if(count($migrations)<1) return "No migrations in supplied directory";
     foreach($migrations as $migration) {
-      if(!strpos($migration, ".php")) return "Only directories of PHP files are allowed"; 
+      if(!strpos($migration, ".php")) return "Only directories of PHP migration files are allowed"; 
       include_once($migration);
       $instance = new $this->get_class_from_file($migration);
       $instance->up();
