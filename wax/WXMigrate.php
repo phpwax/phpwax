@@ -95,7 +95,7 @@ class WXMigrate
   }
   
   protected function get_class_from_file($file) {
-    return rtrim(ucfirst(WXActiveRecord::camelize(ltrim(strstr($file, "_"),"_"))), ".php" );
+    return WXInflections::camelize(str_replace(".php", "", $file), true);
   }
   
   protected function create_migration_array($directory) {   
@@ -124,6 +124,15 @@ class WXMigrate
     }
     $this->set_version("0");
     return "0";
+  }
+  
+  public function version_less_migrate($directory) {
+    $migrations=File::scandir_recursive($directory);
+    foreach($migrations as $migration) {
+      include_once($migration);
+      $instance = new $this->get_class_from_file($migration);
+      $instance->up();
+    }
   }
   
   public function migrate($directory, $target_version=false) {
