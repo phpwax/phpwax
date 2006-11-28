@@ -133,7 +133,8 @@ class WXMigrate
     foreach($migrations as $migration) {
       if(!strpos($migration, ".php")) return "Only directories of PHP migration files are allowed"; 
       include_once($directory.$migration);
-      $instance = new $this->get_class_from_file($migration);
+      $class = $this->get_class_from_file($migration);
+      $instance = new $class;
       $instance->up();
     }
     return "Database setup completed";
