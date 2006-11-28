@@ -132,7 +132,7 @@ class WXMigrate
     if(count($migrations)<1) return "No migrations in supplied directory";
     foreach($migrations as $migration) {
       if(!strpos($migration, ".php")) return "Only directories of PHP migration files are allowed"; 
-      include_once($migration);
+      include_once($directory.$migration);
       $instance = new $this->get_class_from_file($migration);
       $instance->up();
     }
