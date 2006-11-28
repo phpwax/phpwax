@@ -8,3 +8,5 @@ function add_form_listeners() {
 }
 
 Event.observe(window, "load", add_form_listeners);
+
+/**** Add application wide javascripts below this point  ******/

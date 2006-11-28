@@ -23,6 +23,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   protected $constraints = array();
   protected $children = array();
 	protected $columns = array();
+	protected $has_many_throughs = array();
 
  /**
   *  constructor
@@ -224,10 +225,18 @@ class WXActiveRecord extends WXValidations implements Iterator
   
   public function array_of_ids($array) {
     $collection = array();
+    $sql= "id IN(";
     foreach($array as $id) {
-      if($res = $this->find($id)) $collection[] = $res;
-    }    
+      $sql .= "$id,";
+    }
+    $sql = rtrim($sql, ",");
+    $sql.=")";
+    return $this->find_all(array("conditions"=>$sql));
     return $collection;
+  }
+  
+  public function has_many($join, $through, $on) {
+    $this->has_many_throughs[]=array($join, $through, $on);
   }
 
  /**

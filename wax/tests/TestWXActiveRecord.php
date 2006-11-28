@@ -61,6 +61,10 @@ class TestWXActiveRecord extends WXTestCase
       $this->assertEqual(count($search), 1);
     }
     
+    public function test_find_array() {
+      
+    }
+    
     public function test_simple_dynamic_finders() {
       $search = $this->model->find_by_username("test1");
       $this->assertIsA($search, "WXActiveRecord");
