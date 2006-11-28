@@ -127,7 +127,7 @@ class WXMigrate
   }
   
   public function version_less_migrate($directory) {
-    if(!is_dir($directory)) return "Invalid directory";
+    if(!is_readable($directory)) return "Invalid directory";
     $migrations=File::scandir_recursive($directory);
     if(count($migrations)<1) return "No migrations in supplied directory";
     foreach($migrations as $migration) {
