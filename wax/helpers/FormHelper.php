@@ -176,7 +176,7 @@ class FormHelper extends WXHelpers {
 		if(!isset($options["value"])) {
 			$options["value"] = $this->object->{$this->attribute_name};
 		}
-		if(!isset($options["value"]) && $force_content) $options["value"]=$force_content;
+		if(strlen($options["value"])<1 && $force_content) $options["value"]=$force_content;
 		$content = $options['value'];
 		unset($options["value"]);
     $html.= $this->content_tag("textarea", htmlspecialchars($content),$options);
