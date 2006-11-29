@@ -94,7 +94,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function text_area_tag($name, $content = null, $options = array(), $with_label=true, $force_content=false) {
-      if($force_content && !$content) $content=$force_content;
+  		if(strlen($content)<1 && $force_content) $content=$force_content;
       if ($options["size"]) {
         $size = explode('x', $options["size"]);
         $options["cols"] = reset($size);
