@@ -93,7 +93,8 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *
      */
-    public function text_area_tag($name, $content = null, $options = array(), $with_label=true) {
+    public function text_area_tag($name, $content = null, $options = array(), $with_label=true, $force_content=false) {
+      if($force_content && !$content) $content=$force_content;
       if ($options["size"]) {
         $size = explode('x', $options["size"]);
         $options["cols"] = reset($size);
@@ -101,6 +102,7 @@ class FormTagHelper extends WXHelpers {
         unset($options["size"]);
       }
       if(!$options["class"]) $options["class"]="input_field textarea_field";
+      else $options["class"]=$options["class"]." input_field textarea_field";
       if($with_label) $html = $this->make_label($name);
       return $html.$this->content_tag("textarea", $content, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
