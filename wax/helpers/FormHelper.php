@@ -164,7 +164,7 @@ class FormHelper extends WXHelpers {
 		return $html;
 	}
 	
-	public function text_area($obj, $att, $options = array(), $with_label=true) {
+	public function text_area($obj, $att, $options = array(), $with_label=true, $force_content=false) {
 		$this->initialise($obj, $att);
  		if (!array_key_exists("cols", $options)) $options["cols"]=50;
  		if (!array_key_exists("rows", $options)) $options["cols"]=10;
@@ -175,7 +175,8 @@ class FormHelper extends WXHelpers {
     $options = $this->add_default_name_and_id_and_value($options);
 		if(!isset($options["value"])) {
 			$options["value"] = $this->object->{$this->attribute_name};
-		}		
+		}
+		if(!isset($options["value"]) && $force_content) $options["value"]=$force_content;
 		$content = $options['value'];
 		unset($options["value"]);
     $html.= $this->content_tag("textarea", htmlspecialchars($content),$options);
