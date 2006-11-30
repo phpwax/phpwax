@@ -35,6 +35,7 @@ class WXRoute extends ApplicationBase
     	array_shift($this->route_array);
     }
 	  if($res = $this->check_controller($this->route_array[0])) return $res;
+	  return $this->config_array['route']['default'];
 	}
 	
 	/**
