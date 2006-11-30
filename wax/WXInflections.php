@@ -22,6 +22,7 @@ class WXInflections
   
   public function dasherize($underscored_word) {
     $dashed = str_replace('_', '-', strtolower($underscored_word));
+    $dashed = str_replace(' ', '-', strtolower($dashed));
     return $dashed;
   }
   
