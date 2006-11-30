@@ -55,7 +55,8 @@ class WXRoute extends ApplicationBase
 	}
 	
 	public function read_actions() {
-		$this->actions_array = $this->route_array; 
+		$this->actions_array = $this->route_array;
+		print_r($this->actions_array); exit;
 		array_shift($this->actions_array);
 	  return $this->actions_array;
 	}
