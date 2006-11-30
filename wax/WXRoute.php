@@ -50,13 +50,15 @@ class WXRoute extends ApplicationBase
 		$class = ucfirst($controller)."Controller";
 		$default = ucfirst($this->config_array['route']['default']."Controller");
 		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
-		if(is_file(CONTROLLER_DIR.$default.".php")) return $default;
+		if(is_file(CONTROLLER_DIR.$default.".php")) {
+		  array_unshift($this->route_array, $this->config_array['route']['default']);
+		  return $default;
+	  }
 		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
 	}
 	
 	public function read_actions() {
 		$this->actions_array = $this->route_array;
-		print_r($this->actions_array); exit;
 		array_shift($this->actions_array);
 	  return $this->actions_array;
 	}
