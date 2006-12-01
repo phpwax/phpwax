@@ -47,6 +47,7 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   protected function handle_file($file) {
+    print_r($file); exit;
     $up_tmp_name = $file['tmp_name'][$this->file_column];
     $new_name = $file['name'][$this->file_column];
 		$destination = WAX_ROOT.$this->file_base;
