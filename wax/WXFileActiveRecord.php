@@ -26,6 +26,7 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   public function save() {
+    print_r($this->{$this->file_column}); exit;
 		if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmp_name'])) {
     	$this->handle_file($this->{$this->file_column});
     	$this->resize_image();
@@ -47,7 +48,6 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   protected function handle_file($file) {
-    print_r($file); exit;
     $up_tmp_name = $file['tmp_name'][$this->file_column];
     $new_name = $file['name'][$this->file_column];
 		$destination = WAX_ROOT.$this->file_base;
