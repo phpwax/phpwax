@@ -70,7 +70,7 @@ class WXFileActiveRecord extends WXActiveRecord
     
   protected function write_thumbs($id) {
     $original = $this->{$this->path_column}.$this->{$this->file_column};
-  	if(!$this->write_image_thumbs || !File::is_image($original)) {
+  	if(!$this->create_thumbs || !File::is_image($original)) {
   	  return false;
 	  }
   	$thumb_dir = PUBLIC_DIR.$this->thumb_base.$id."/";
