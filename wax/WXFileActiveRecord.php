@@ -26,7 +26,7 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   public function save() {
-    print_r($this->{$this->file_column}); exit;
+    if(isset($_FILES[$this->table])) $this->{$this->file_column} = $_FILES[$this->table];
 		if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmp_name'])) {
     	$this->handle_file($this->{$this->file_column});
     	$this->resize_image();
