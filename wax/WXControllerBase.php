@@ -73,6 +73,7 @@ abstract class WXControllerBase extends ApplicationBase
     foreach($this->filters["before"] as $action=>$filter) {
       if(is_array($filter) && $action=="all") {
         foreach($filter[1] as $excluded_action) {
+          print_r($this->filter); exit;
           if($excluded_action != $this->action) $this->$filter[0];
         }
       }
