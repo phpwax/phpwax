@@ -26,7 +26,10 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   public function save() {
-    if(isset($_FILES[$this->table])) $this->{$this->file_column} = $_FILES[$this->table];
+    if(isset($_FILES[$this->table])) {
+      if($this->{$this->file_column}) $this->delete($this->id, true);
+      $this->{$this->file_column} = $_FILES[$this->table];
+    }
 		if(is_array($this->{$this->file_column}) && isset($this->{$this->file_column}['tmp_name'])) {
     	$this->handle_file($this->{$this->file_column});
     	$this->resize_image();
@@ -37,14 +40,14 @@ class WXFileActiveRecord extends WXActiveRecord
   }
 
   
-  public function delete($id) {
+  public function delete($id, $replace_existing = false) {
     $record = $this->find($id);
 		if($record->{$this->file_column}) {
 			$file_to_delete = $record->{$this->path_column}.$record->{$this->file_column};
     	if(is_file($file_to_delete) ) unlink($file_to_delete);
     	$this->clear_thumbs($id);
 		}
-		return parent::delete($id);
+		if(!$replace_existing) return parent::delete($id);
   }
   
   protected function handle_file($file) {
