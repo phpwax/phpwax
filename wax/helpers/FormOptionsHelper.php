@@ -143,10 +143,10 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    $output = select_tag("day", $day);
-    $output .= select_tag("month", $month);
-    $output .= select_tag("year", $year);
-    $output .= $this->hidden_field($obj, $att, $options, $with_label);
+    $output = select_tag("day", $day, array(), false);
+    $output .= select_tag("month", $month, array(), false);
+    $output .= select_tag("year", $year, array(), false);
+    $output .= $this->hidden_field($obj, $att);
     return $output;
   }
   
