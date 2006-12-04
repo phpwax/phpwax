@@ -231,6 +231,10 @@ class WXHelpers {
 	  }
 		return false;
 	}
+	
+	public function pagination_links($obj, $page) {
+	  
+	}
 
 
 }
