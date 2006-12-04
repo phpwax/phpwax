@@ -135,6 +135,7 @@ class FormOptionsHelper extends FormHelper {
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
     $this->initialise($obj, $att);
+    
 	  $shared_id = $this->object_name."_".$this->attribute_name;
     for($i = 1; $i<=31; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
@@ -159,6 +160,7 @@ class FormOptionsHelper extends FormHelper {
     $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->hidden_field($obj, $att);
+    $output .=$this->get_value();
     return $output;
   }
   
