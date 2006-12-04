@@ -134,7 +134,7 @@ class FormOptionsHelper extends FormHelper {
   }
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
-    $rand_id = rand(1,1000);
+	  $shared_id = $this->object_name."_".$this->attribute_name;
     for($i = 1; $i<=31; $i++) {
       $day[$i]=$i;
     }
@@ -147,10 +147,13 @@ class FormOptionsHelper extends FormHelper {
     $day_options = FormOptionsHelper::options_for_select($day);
     $month_options = FormOptionsHelper::options_for_select($month);
     $year_options = FormOptionsHelper::options_for_select($year);
-
-    $output = $this->content_tag("select", $day_options, array("id"=>"day".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
-    $output .= $this->content_tag("select", $month_options, array("id"=>"month".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
-    $output .= $this->content_tag("select", $year_options, array("id"=>"year".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
+    $output = javascript_tag("function set_hidden_date(id) { 
+      $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
+    }");
+    
+    $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day", "onchange"=>"set_hidden_date($rand_id);"));
+    $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month", "onchange"=>"set_hidden_date($rand_id);"));
+    $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year", "onchange"=>"set_hidden_date($rand_id);"));
     $output .= $this->hidden_field($obj, $att);
     return $output;
   }
