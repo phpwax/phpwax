@@ -134,7 +134,7 @@ class FormOptionsHelper extends FormHelper {
   }
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
-    $this->initialise();
+    $this->initialise($obj, $att);
 	  $shared_id = $this->object_name."_".$this->attribute_name;
     for($i = 1; $i<=31; $i++) {
       $day[$i]=$i;
