@@ -137,10 +137,12 @@ class FormOptionsHelper extends FormHelper {
     $this->initialise($obj, $att);
 	  $shared_id = $this->object_name."_".$this->attribute_name;
     for($i = 1; $i<=31; $i++) {
-      $day[str_pad($i, 2, "0", STR_PAD_LEFT)]=$i;
+      $i = str_pad($i, 2, "0", STR_PAD_LEFT)
+      $day[$i]=$i;
     }
     for($i = 1; $i<=12; $i++) {
-      $month[str_pad($i, 2, "0", STR_PAD_LEFT)]=$i;
+      $i = str_pad($i, 2, "0", STR_PAD_LEFT
+      $month[$i]=$i;
     }
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
