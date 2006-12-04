@@ -134,6 +134,7 @@ class FormOptionsHelper extends FormHelper {
   }
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
+    $rand_id = rand(1,1000);
     for($i = 1; $i<=31; $i++) {
       $day[$i]=$i;
     }
@@ -147,9 +148,9 @@ class FormOptionsHelper extends FormHelper {
     $month_options = FormOptionsHelper::options_for_select($month);
     $year_options = FormOptionsHelper::options_for_select($year);
 
-    $output = $this->content_tag("select", $day_options);
-    $output .= $this->content_tag("select", $month_options);
-    $output .= $this->content_tag("select", $year_options);
+    $output = $this->content_tag("select", $day_options, array("id"=>"day".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
+    $output .= $this->content_tag("select", $month_options, array("id"=>"month".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
+    $output .= $this->content_tag("select", $year_options, array("id"=>"year".$rand_id, "onchange"=>"set_hidden_date($rand_id);"));
     $output .= $this->hidden_field($obj, $att);
     return $output;
   }
