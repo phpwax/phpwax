@@ -148,12 +148,20 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    $day_options = FormOptionsHelper::options_for_select($day, substr($this->object->{$this->attribute_name}, 8,2));
-    $month_options = FormOptionsHelper::options_for_select($month, substr($this->object->{$this->attribute_name}, 5,2));
-    $year_options = FormOptionsHelper::options_for_select($year, substr($this->object->{$this->attribute_name}, 0,4));
+    if($this->object->{$this->attribute_name}) {
+      $selected_day = substr($this->object->{$this->attribute_name}, 8,2);
+      $selected_month = substr($this->object->{$this->attribute_name}, 5,2);
+      $selected_year = substr($this->object->{$this->attribute_name}, 0,4);
+    } else {
+      $selected_day = date('d');
+      $selected_month = date('m');
+      $selected_year = date('Y');
+    }
+    $day_options = FormOptionsHelper::options_for_select($day, $selected_day);
+    $month_options = FormOptionsHelper::options_for_select($month, $selected_month);
+    $year_options = FormOptionsHelper::options_for_select($year, $selected_year);
     $output .= javascript_tag("function {$shared_id}_set_date() { 
       $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
-      alert($('$shared_id').value);
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
