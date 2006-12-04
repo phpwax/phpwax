@@ -150,11 +150,11 @@ class FormOptionsHelper extends FormHelper {
     $day_options = FormOptionsHelper::options_for_select($day);
     $month_options = FormOptionsHelper::options_for_select($month);
     $year_options = FormOptionsHelper::options_for_select($year);
-    $output = javascript_tag("function {$shared_id}_set_date() { 
+    $output .= javascript_tag("function {$shared_id}_set_date() { 
       $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
       alert($('$shared_id').value);
     }");
-    
+    if($with_label) $output .= $this->make_label($with_label);
     $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
