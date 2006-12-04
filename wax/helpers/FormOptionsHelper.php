@@ -147,9 +147,9 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    $day_options = FormOptionsHelper::options_for_select($day);
-    $month_options = FormOptionsHelper::options_for_select($month);
-    $year_options = FormOptionsHelper::options_for_select($year);
+    $day_options = FormOptionsHelper::options_for_select($day, substr($this->get_value(), 8,2));
+    $month_options = FormOptionsHelper::options_for_select($month, substr($this->get_value(), 5,2));
+    $year_options = FormOptionsHelper::options_for_select($year, substr($this->get_value(), 0,4));
     $output .= javascript_tag("function {$shared_id}_set_date() { 
       $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
       alert($('$shared_id').value);
