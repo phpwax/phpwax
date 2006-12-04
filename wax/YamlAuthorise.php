@@ -12,8 +12,13 @@ class YamlAuthorise extends Authorise
 	 *	@access public
 	 *	@var string 
 	 */
-	protected $configfile = "{APP_DIR}config/config.yml";
+	protected $configfile;
 
+
+  public function __construct() {
+    $this->configfile = APP_DIR."config/config.yml";
+    parent::__construct();
+  }
 
 	/**
 	 *	Verifies the supplied user/pass against the config file.
