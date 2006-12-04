@@ -132,6 +132,25 @@ class FormOptionsHelper extends FormHelper {
     }
     return $array;
   }
+  
+  public function date_select($obj, $att, $options = array(), $with_label=true) {
+    for($i = 1; $i<=31; $i++) {
+      $day[$i]=$i;
+    }
+    for($i = 1; $i<=12; $i++) {
+      $month[$i]=$i;
+    }
+    for($i = 1900; $i<=2020; $i++) {
+      $year[$i]=$i;
+    }
+    $output = select_tag("day", $day);
+    $output .= select_tag("month", $month);
+    $output .= select_tag("year", $year);
+    $output .= $this->hidden_field($obj, $att, $options, $with_label);
+    return $output;
+  }
+  
+  
 
   
 }
