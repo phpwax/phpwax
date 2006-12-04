@@ -148,9 +148,9 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    $day_options = FormOptionsHelper::options_for_select($day, substr($this->get_value(), 8,2));
-    $month_options = FormOptionsHelper::options_for_select($month, substr($this->get_value(), 5,2));
-    $year_options = FormOptionsHelper::options_for_select($year, substr($this->get_value(), 0,4));
+    $day_options = FormOptionsHelper::options_for_select($day, substr($this->object->{$this->attribute_name}, 8,2));
+    $month_options = FormOptionsHelper::options_for_select($month, substr($this->object->{$this->attribute_name}, 5,2));
+    $year_options = FormOptionsHelper::options_for_select($year, substr($this->object->{$this->attribute_name}, 0,4));
     $output .= javascript_tag("function {$shared_id}_set_date() { 
       $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
       alert($('$shared_id').value);
@@ -160,7 +160,6 @@ class FormOptionsHelper extends FormHelper {
     $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->hidden_field($obj, $att);
-    $output .=$this->get_value();
     return $output;
   }
   
