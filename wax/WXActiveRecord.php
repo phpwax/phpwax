@@ -636,7 +636,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 	
 	public function paginate($per_page, $options=array(), $parameter="page") {
-    $this->paginate_page = $_GET[$parameter];
+    $_GET[$parameter] ? $this->paginate_page = $_GET[$parameter] : $this->paginate_page = 1;
     $this->paginate_limit = $per_page;
     $this->paginate_total = $this->count($options);
     $offset = ($page * $per_page);
