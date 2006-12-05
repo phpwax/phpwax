@@ -639,7 +639,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     $_GET[$parameter] ? $this->paginate_page = $_GET[$parameter] : $this->paginate_page = 1;
     $this->paginate_limit = $per_page;
     $this->paginate_total = $this->count($options);
-    $offset = ($this->paginate_page * $per_page);
+    $offset = (($this->paginate_page-1) * $per_page);
     $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
     return $this->find_all($options);
   }
