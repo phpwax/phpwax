@@ -182,9 +182,9 @@ class UrlHelper extends WXHelpers {
 
 		if(!count($extra_params)) {
 		  if(array_pop(array_values($url))=="index") array_pop($url);
-    	return $url_base.implode("/", $url);
+    	return $url_base.implode("/", $url)."/";
 		} 
-    return $url_base . implode("/", $url)
+    return $url_base . implode("/", $url)."/"
           . (count($extra_params)
              ? "?".http_build_query($extra_params) : null);
     }    
