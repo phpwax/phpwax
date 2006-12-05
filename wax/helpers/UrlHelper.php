@@ -187,14 +187,6 @@ class UrlHelper extends WXHelpers {
     return $url_base . implode("/", $url)."/"
           . (count($extra_params)
              ? "?".http_build_query($extra_params) : null);
-    }
-    
-    public function pagination_links($model) {
-      if(!$total = $model->paginate_total || !$page = $model->paginate_page || !$limit = $model->paginate_limit) return false;
-      if($page > 1) $output = link_to("&lt; previous", array("page"=>$page-1));
-      $output .= "  ";
-      if($page < $total) $output .= link_to("next &gt;", array("page"=>$page+1));
-      return $output;
     }   
 
 }
