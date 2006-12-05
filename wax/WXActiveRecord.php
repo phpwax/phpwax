@@ -632,7 +632,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	  return false;
 	}
 	
-	public function paginate($per_page, $parameter="page", $options=array()) {
+	public function paginate($per_page, $options=array(), $parameter="page") {
     $page = $_GET[$parameter];
     $offset = ($page * $per_page);
     $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
