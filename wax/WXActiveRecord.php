@@ -632,6 +632,15 @@ class WXActiveRecord extends WXValidations implements Iterator
 	  return false;
 	}
 	
+	static public function paginate($per_page, $parameter="page", $options=array()) {
+    $class_name = WXInflections::underscore(__CLASS__);
+    $object = new $class_name;
+    $page = $_GET[$parameter];
+    $offset = ($page * $per_page);
+    $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
+    return $object->find_all($options);
+  }
+	
 	public function __call( $func, $args ) {
 	  $func = WXInflections::underscore($func);
 	  $finder = explode("by", $func);
