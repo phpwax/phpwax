@@ -24,6 +24,9 @@ class WXActiveRecord extends WXValidations implements Iterator
   protected $children = array();
 	protected $columns = array();
 	protected $has_many_throughs = array();
+	public $paginate_page;
+	public $paginate_limit;
+	public $paginate_total;
 
  /**
   *  constructor
@@ -633,7 +636,9 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 	
 	public function paginate($per_page, $options=array(), $parameter="page") {
-    $page = $_GET[$parameter];
+    $this->paginate_page = $_GET[$parameter];
+    $this->paginate_limit = $per_page;
+    $this->paginate_total = $this->count($options);
     $offset = ($page * $per_page);
     $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
     return $this->find_all($options);
