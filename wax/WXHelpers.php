@@ -233,7 +233,6 @@ class WXHelpers {
 	}
 	
 	public function pagination_links($model) {
-	  print_r($model); exit;
     if(!$total = $model->paginate_total || !$page = $model->paginate_page || !$limit = $model->paginate_limit) return false;
     if($page > 1) $output = link_to("&lt; previous", array("page"=>($page-1)));
     $output .= "  ";
