@@ -345,6 +345,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$this->clear_unwanted_values();
     $values = $this->row;
     unset($values['id']);
+    print_r($this); exit;
     
     $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
     if (isset($this->row['id']) && $this->row['id']) {
