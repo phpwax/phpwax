@@ -42,9 +42,9 @@ class WXActiveRecord extends WXValidations implements Iterator
 		if( $class_name != 'WXActiveRecord' ) {
 			$this->table = WXInflections::underscore( $class_name );
 			if(!self::$column_cache) {
-			  self::$column_cache = $this->column_info;
+			  self::$column_cache[$this->table] = $this->column_info;
 			} 
-			$this->columns = self::$column_cache;	
+			$this->columns = self::$column_cache[$this->table];	
 		}
 		
 		switch(true) {
