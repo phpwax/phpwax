@@ -417,6 +417,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
 	function clear_unwanted_values() {
+	  print_r($this->columns); exit;
 		foreach($this->row as $key=>$value) {
 			if(!array_key_exists($key, $this->columns)) unset($this->row[$key]);
 		}
