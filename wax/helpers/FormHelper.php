@@ -189,6 +189,12 @@ class FormHelper extends WXHelpers {
 	  return $this->to_input_field_tag("submit", $options);
 	}
 	
+	public function image_submit_field($obj, $value="Save") {
+	  $this->initialise($obj, "save");
+		$options["value"]= $value;
+	  return $this->to_input_field_tag("image", $options);
+	}
+	
 	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true) {
 		$this->initialise($obj, $att);
 		if(!$options["class"]) $options["class"]="input_field check_box_field";
