@@ -341,7 +341,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
   function update( $id_list = array() ) {
-    print_r($this->columns); exit;
+    print_r(self::$column_cache); exit;
     $this->before_update();
 		$this->clear_unwanted_values();
     $values = $this->row;
