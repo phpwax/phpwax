@@ -16,6 +16,7 @@ require_once "WXValidations.php";
 class WXActiveRecord extends WXValidations implements Iterator
 {
 	protected static $default_pdo = null;
+	protected static $column_cache = null;
 	protected $pdo = null;
   public $table = null;
   public $primary_key="id";
@@ -40,7 +41,10 @@ class WXActiveRecord extends WXValidations implements Iterator
 		
 		if( $class_name != 'WXActiveRecord' ) {
 			$this->table = WXInflections::underscore( $class_name );
-			$this->columns = $this->column_info();	
+			if(!self::$column_cache) {
+			  self::$column_cache = $this->column_info;
+			} 
+			$this->columns = self::$column_cache;	
 		}
 		
 		switch(true) {
