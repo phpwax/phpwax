@@ -193,7 +193,7 @@ class FormHelper extends WXHelpers {
 	  $this->initialise($obj, "save");
 		$options["value"]= $value;
 		$options["src"] = $src;
-		$options["class"]="";
+		$options["class"]="image_submit";
 	  return $this->to_input_field_tag("image", $options);
 	}
 	
