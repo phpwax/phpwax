@@ -186,6 +186,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	
 	public function query( $sql, $type="one" ) {
 		try {
+		  error_log($sql);
 			$sth = $this->pdo->prepare( $sql );
 			$binding_params = $this->_makeBindingParams( $this->constraints );
 			if($binding_params) {
