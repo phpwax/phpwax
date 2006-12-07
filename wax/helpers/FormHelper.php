@@ -227,8 +227,8 @@ class FormHelper extends WXHelpers {
     	unset($options["checked"]);
     }        
 		$options['value'] = $tag_value;
+		$html.= $this->tag("input", $options);
 		if($with_label) $html.= $this->make_label($with_label, array("class"=>"radio_button_label"));  
-		$html.= $this->tag("input", $options);  
     return $html;
 	}
 	
