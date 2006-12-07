@@ -95,6 +95,7 @@ class WXMigrate
   }
   
   protected function get_class_from_file($file) {
+    $file = substr($file,3);
     return WXInflections::camelize(str_replace(".php", "", $file), true);
   }
   
