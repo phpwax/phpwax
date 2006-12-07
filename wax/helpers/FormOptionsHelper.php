@@ -65,10 +65,10 @@ class FormOptionsHelper extends FormHelper {
     
 
     public function options_for_select($choices, $selected = null) {
-      print_r($choices); echo $selected; exit;
         $options = array();
         if(is_array($choices)) {
             foreach($choices as $choice_value => $choice_text) {
+              echo $choice_value.": "$selected."<br />";
                 if(!empty($choice_value)) {
                     $is_selected = ($choice_value === $selected)
                         ? true : false;   
@@ -89,6 +89,7 @@ class FormOptionsHelper extends FormHelper {
                 }                        
             }    
         }
+        exit;
         return implode("\n", $options);
     }
     
