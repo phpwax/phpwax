@@ -143,7 +143,6 @@ class WXMigrate
   
   public function migrate($directory, $target_version=false) {
     $this->create_migration_array($directory);
-    print_r($this->migrations_array); exit;
     if($target_version===false) {
       $target_version = $this->get_highest_version();
     }
