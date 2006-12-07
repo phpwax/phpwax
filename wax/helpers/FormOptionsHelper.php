@@ -88,8 +88,9 @@ class FormOptionsHelper extends FormHelper {
                 }                        
             }    
         }
-        return implode("\n", $options);
         exit;
+        
+        return implode("\n", $options);
     }
     
    
