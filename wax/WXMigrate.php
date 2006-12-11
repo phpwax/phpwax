@@ -94,8 +94,8 @@ class WXMigrate
     return ltrim(substr($file, 0 , strpos($file, "_")), "0");
   }
   
-  protected function get_class_from_file($file) {
-    $file = substr($file,3);
+  protected function get_class_from_file($file, $strip = true) {
+    if($strip) $file = substr($file,3);
     return WXInflections::camelize(str_replace(".php", "", $file), true);
   }
   
@@ -134,7 +134,7 @@ class WXMigrate
     foreach($migrations as $migration) {
       if(!strpos($migration, ".php")) return "Only directories of PHP migration files are allowed"; 
       include_once($directory.$migration);
-      $class = $this->get_class_from_file($migration);
+      $class = $this->get_class_from_file($migration, false);
       $instance = new $class;
       $instance->{$direction}();
     }
