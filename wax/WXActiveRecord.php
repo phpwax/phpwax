@@ -46,7 +46,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 			  error_log("Initialising column cache for ".$this->table);
 			}
 			$this->columns = self::$column_cache[$this->table];
-			error_log("Read column cache for ".$this->table." values are ".print_r($this->columns, 1));	
+			error_log("Read column cache for ".$this->table);	
 		}
 		
 		switch(true) {
