@@ -256,6 +256,7 @@ class WXMigrate
   }
   
   protected function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
+    if($type=="integer" && $length>11) $length="11";
     $column = array($name, $type, $length, $null, $default);
     $sql = "ALTER TABLE `$table` ADD ";
     $sql.= $this->build_column_sql($column);
