@@ -29,6 +29,9 @@ class WXRoute extends ApplicationBase
 	}
 	
 	public function pick_controller() {
+	  if( array_key_exists($this->route_array[0], $this->config_array) ) {
+	    $this->route_array[0]=$this->config_array[$this->route_array[0]];
+	  }
 	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['route']['default'];
 	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
     	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
