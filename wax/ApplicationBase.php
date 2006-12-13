@@ -118,6 +118,7 @@ class ApplicationBase
 		$cnt->controller = $this->controller;
 	  $cnt->set_routes($final_route);
 	  $cnt->set_action($this->action);
+	  $cnt->controller_global();
 	  if(!$this->is_public_method($cnt, $cnt->action)) {
 	    if(method_exists($cnt, 'missing_action')) {
 			  $cnt->missing_action(); exit;
@@ -126,7 +127,6 @@ class ApplicationBase
 			  exit;
   		}
 		}
-	  $cnt->controller_global();
 	  $cnt->run_before_filters();
 		$cnt->{$cnt->action}();
 		$cnt->filter_routes();
