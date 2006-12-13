@@ -121,7 +121,7 @@ class ApplicationBase
 	  $cnt->controller_global();
 	  if(!$this->is_public_method($cnt, $cnt->action)) {
 	    if(method_exists($cnt, 'missing_action')) {
-			  $cnt->missing_action(); return true;
+			  $cnt->missing_action(); return $cnt;
 		  } else {
 			  throw new WXException("No Public Action Defined for - ".$this->action." in controller {$controller}.", "Missing Action");
 			  exit;
