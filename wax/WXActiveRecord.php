@@ -43,10 +43,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 			$this->table = WXInflections::underscore( $class_name );
 			if(!self::$column_cache[$this->table]) {
 			  self::$column_cache[$this->table] = $this->column_info;
-			  error_log("Initialising column cache for ".$this->table);
 			}
 			$this->columns = self::$column_cache[$this->table];
-			error_log("Read column cache for ".$this->table);	
 		}
 		
 		switch(true) {
@@ -192,7 +190,6 @@ class WXActiveRecord extends WXValidations implements Iterator
 	
 	public function query( $sql, $type="one" ) {
 		try {
-		  error_log($sql);
 			$sth = $this->pdo->prepare( $sql );
 			$binding_params = $this->_makeBindingParams( $this->constraints );
 			if($binding_params) {
@@ -319,7 +316,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     $this->constraints['id'] = $id;
     $sql = "DELETE FROM `{$this->table}` WHERE " . $this->_makeANDConstraints($this->constraints).';';
     $binding_params = $this->_makeBindingParams( $this->constraints );
-    error_log($sql);    
     $sth = $this->pdo->prepare($sql);
     if( ! $sth->execute( ) ) {
 			$err = $sth->errorInfo();
@@ -340,7 +336,6 @@ class WXActiveRecord extends WXValidations implements Iterator
         $sql .= " WHERE {$params['conditions']}";
     }
     $sql .= ';';
-    error_log($sql);    
     $sth = $this->pdo->query( $sql );
     return intval( $sth->fetchColumn() );
   }
@@ -363,7 +358,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     $binding_params = $this->_makeBindingParams($this->row);
     
     $sth = $this->pdo->prepare($sql);
-    error_log($sql);    
     if (! $sth) {
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
@@ -387,7 +381,6 @@ class WXActiveRecord extends WXValidations implements Iterator
         implode( ', ', array_keys($binding_params) ) . ');';
     
     $sth = $this->pdo->prepare( $sql );
-    error_log($sql);    
     if( ! $sth ) {
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
