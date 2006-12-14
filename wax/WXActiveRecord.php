@@ -311,6 +311,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     *  @return boolean
     */
 	public function delete( $id ) {
+	  $this->row['id']=$id;
 	  $this->before_delete();
   	if( is_numeric( $id ) && ! isset( $this->has_string_id ) ) {
     	$id = intval( $id );
