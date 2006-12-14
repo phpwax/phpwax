@@ -681,6 +681,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   	*  These are left deliberately empty in the base class
   	*  
   	*/	
+
   	public function before_save() {}
   	public function after_save() {}
   	public function before_update() {}

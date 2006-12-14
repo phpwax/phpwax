@@ -124,6 +124,12 @@ class Session {
 			return true;
 		}
 		
+		static function add_error($string) {		
+			$existing=self::get('user_errors');
+			$existing[]=$string;
+			self::set('user_errors', $existing);
+			return true;
+		}
 
 }
 

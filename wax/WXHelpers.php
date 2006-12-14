@@ -221,6 +221,23 @@ class WXHelpers {
 		return false;
 	}
 	
+	public function error_messages_for_sessions() {
+    $errors = Session::get('user_errors');
+		if(empty($errors)) {
+      return false;
+    }
+	
+		foreach($errors as $error) {
+			$html.= $this->content_tag("li", $error, array("class"=>"user_error"));
+		}
+		if(count($errors)>0) {
+			Session::unset_var('user_errors');
+			return $this->content_tag("ul", $html, array("class"=>"user_errors"));
+		}
+		return false;
+	}
+	
+	
 	public function info_messages() {
 	  if($messages = Session::get('user_messages')) {
 		  foreach($messages as $message) {
