@@ -35,6 +35,7 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
   }
   
   public function parent() {
+		if($this->{$this->rel_column} ==0) return false;
     return $this->find($this->{$this->rel_column});
   }
   
