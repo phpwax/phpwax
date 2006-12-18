@@ -26,7 +26,7 @@ class WXFileActiveRecord extends WXActiveRecord
   }
   
   public function save() {
-    if(isset($_FILES[$this->table])) {
+    if(isset($_FILES[$this->table]) && $_FILES[$this->table]['size'][$this->file_column] >0) {
       if($this->{$this->file_column}) $this->delete($this->id, true);
       $this->{$this->file_column} = $_FILES[$this->table];
     }
