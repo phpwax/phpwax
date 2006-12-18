@@ -250,10 +250,12 @@ class WXHelpers {
 	}
 	
 	public function pagination_links($model) {
-    if($model->paginate_page > 1) $output = link_to("&lt; previous", array("page"=>$model->paginate_page -1));
-    $output .= "  ";
-    if($model->paginate_page < $model->paginate_total) $output .= link_to("next &gt;", array("page"=>($model->paginate_page+1)));
-    return $output;
+	  if($model->paginate_total > $model->paginate_limit) {
+      if($model->paginate_page > 1) $output = link_to("&lt; previous", array("page"=>$model->paginate_page -1));
+      $output .= "  ";
+      if($model->paginate_page < $model->paginate_total) $output .= link_to("next &gt;", array("page"=>($model->paginate_page+1)));
+      return $output;
+    }
   }
 
 
