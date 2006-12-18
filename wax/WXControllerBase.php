@@ -192,7 +192,7 @@ abstract class WXControllerBase extends ApplicationBase
 	
 	public function param($param) {
 	  if($param=="id") return $this->route_array[0];
-	  if($val = $this->route_array[$param]) return $val;
+	  if(isset($this->route_array[$param])) return $this->route_array[$param];
 	  return false;
 	}
 	
