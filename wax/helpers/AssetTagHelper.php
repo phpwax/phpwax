@@ -193,7 +193,7 @@ class AssetTagHelper extends WXHelpers {
      *  @return string Public path to the image asset
      *  @uses compute_public_path()
      */
-    protected function image_path($source) {
+    public function image_path($source) {
         return $this->compute_public_path($source, 'images', 'png');
     }
     
