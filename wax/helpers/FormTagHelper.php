@@ -145,10 +145,10 @@ class FormTagHelper extends WXHelpers {
      *  @todo Document this method
      *  @uses tag()
      */
-    public function image_submit_tag($source, $options = array()) {
+    public function image_submit_tag($source, $options = array(), $base = "/images/") {
         return $this->tag("input",
 			  array_merge(array("type" => "image",
-					    "src" => AssetTagHelper::image_path($source)),
+					    "src" => $base.$source)),
 				      $this->convert_options($options)));
     }
 
