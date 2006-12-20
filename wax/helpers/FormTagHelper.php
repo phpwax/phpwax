@@ -60,6 +60,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function text_field_tag($name, $value = null, $options = array(), $with_label=true) {
+      if(is_numeric($with_label)) $with_label = $name; 
       if(!$options["class"]) $options["class"]="input_field";
   	  if($with_label) $html.= $this->make_label($with_label);
       return $html.$this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
