@@ -162,7 +162,7 @@ class FormOptionsHelper extends FormHelper {
     $month_options = FormOptionsHelper::options_for_select($month, $selected_month);
     $year_options = FormOptionsHelper::options_for_select($year, $selected_year);
     $output .= javascript_tag("function {$shared_id}_set_date() { 
-      $('$shared_id').value = $('{$shared_id}_year').value + '-' + $('{$shared_id}_month').value + '-' + $('{$shared_id}_day').value;
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
