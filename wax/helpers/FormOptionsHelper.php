@@ -165,9 +165,9 @@ class FormOptionsHelper extends FormHelper {
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
-    $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
-    $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
-    $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
+    $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day","name"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
+    $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month","name"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
+    $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year","name"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->hidden_field($obj, $att);
     return $output;
   }
