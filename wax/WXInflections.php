@@ -27,7 +27,7 @@ class WXInflections
   }
   
   public function humanize($underscored_word) {
-    //$dashed = $this->undasherize($underscored_word);
+    $dashed = $this->undasherize($underscored_word);
     $dashed = str_replace('_', ' ', strtolower($underscored_word));
     return ucfirst($dashed);
   }
@@ -58,7 +58,7 @@ class WXInflections
 	}
 	
 	public function undasherize($dashed_word) {
-      $undashed = str_replace('-', ' ', strtolower($dashed_word));
+      $undashed = str_replace('-', '_', $dashed_word);
       return $undashed;
   }
 
