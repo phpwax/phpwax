@@ -238,7 +238,7 @@ class WXHelpers {
 	}
 	
 	public function error_messages() {
-	  return $this->error_messages_for_session();
+	  return $this->error_messages_for_sessions();
 	}
 	
 	public function info_messages() {
