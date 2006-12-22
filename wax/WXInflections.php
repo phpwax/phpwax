@@ -28,7 +28,7 @@ class WXInflections
   
   public function humanize($underscored_word) {
     $dashed = self::undasherize($underscored_word);
-    $dashed = str_replace('_', ' ', strtolower($underscored_word));
+    $dashed = str_replace('_', ' ', strtolower($dashed));
     return ucfirst($dashed);
   }
   
