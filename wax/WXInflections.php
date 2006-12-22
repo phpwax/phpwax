@@ -58,7 +58,7 @@ class WXInflections
 	}
 	
 	public function undasherize($dashed_word) {
-      $undashed = str_replace('-', '_', $dashed_word);
+      $undashed = str_replace('-', '_', strtolower($dashed_word));
       return $undashed;
   }
 
