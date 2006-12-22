@@ -237,6 +237,9 @@ class WXHelpers {
 		return false;
 	}
 	
+	public function error_messages() {
+	  return $this->error_messages_for_session();
+	}
 	
 	public function info_messages() {
 	  if($messages = Session::get('user_messages')) {
