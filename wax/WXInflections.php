@@ -27,6 +27,7 @@ class WXInflections
   }
   
   public function humanize($underscored_word) {
+    $dashed = $this->undasherize($underscored_word);
     $dashed = str_replace('_', ' ', strtolower($underscored_word));
     return ucfirst($dashed);
   }
@@ -48,13 +49,23 @@ class WXInflections
     return $camel;
   }
 
-	public function truncate($substring, $max = 50, $rep = '...') {
+	public function truncate($substring, $max=50, $rep = '...') {
 		if(strlen($substring) < 1) $string = $rep;
 	    else $string = $substring;
 		$leave = $max - strlen ($rep);
 		if(strlen($string) > $max) return substr_replace($string, $rep, $leave);
 		  else return $string;
 	}
+	
+	public function undasherize($dashed_word) {
+      $undashed = str_replace('-', ' ', strtolower($dashed_word));
+      return $undashed;
+  }
+
+  public function humanize_undasherize($word){
+      $parsed = $this->undasherize($this->humanize($word));
+      return $parsed;
+  }
 	
 }
 
