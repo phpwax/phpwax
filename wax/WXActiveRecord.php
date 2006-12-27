@@ -367,9 +367,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
     $this->after_update();
-    $info = print_r($this, 1);
-    error_log($info);
-    return $this->row['id'];
+    return true;
   }
 
   function insert() {
