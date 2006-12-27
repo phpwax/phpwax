@@ -344,6 +344,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     $this->before_update();
 		$this->clear_unwanted_values();
     $values = $this->row;
+    $atts = print_r($values, 1); error_log($atts);
     unset($values['id']);
     
     $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
@@ -547,7 +548,6 @@ class WXActiveRecord extends WXValidations implements Iterator
 		foreach($array as $k=>$v) {
 		  $this->$k=$v;
 		}
-		error_log("Saving:".$this->save());
 	  return $this->save();
 	}
 	
