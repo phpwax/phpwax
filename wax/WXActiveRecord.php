@@ -545,9 +545,9 @@ class WXActiveRecord extends WXValidations implements Iterator
 	public function update_attributes($array) {
 	  $this->clear_errors();
 		foreach($array as $k=>$v) {
-		  error_log("updating $k with $v");
 		  $this->$k=$v;
 		}
+		error_log("Saving:".$this->save());
 	  return $this->save();
 	}
 	
