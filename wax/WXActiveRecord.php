@@ -341,10 +341,10 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
   function update( $id_list = array() ) {
+    error_log("GOT HERE");
     $this->before_update();
 		$this->clear_unwanted_values();
     $values = $this->row;
-    $atts = print_r($values, 1); error_log($atts);
     unset($values['id']);
     
     $sql = "UPDATE `{$this->table}` SET ".$this->_makeUPDATEValues($values);
