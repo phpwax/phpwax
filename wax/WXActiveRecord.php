@@ -630,7 +630,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	public function handle_post($attributes=null) {
 	  if($this->is_posted()) {
 	    if(!$attributes) $attributes = $_POST[WXInflections::underscore(get_class($this))];
-	    $atts = print_r($attributes, 1); error_log($atts);
+	    error_log($this->update_attributes($attributes));
 	    return $this->update_attributes($attributes);
 	  }
 	  return false;
