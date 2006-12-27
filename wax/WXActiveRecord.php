@@ -299,6 +299,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       $i = $this->insert();
     }
 		$this->after_save();
+		error_log($i);
 		return $i;
   }
 
