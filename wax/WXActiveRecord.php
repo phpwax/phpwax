@@ -357,7 +357,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     }
     $binding_params = $this->_makeBindingParams($this->row);
     
-    error_log($sql);
     $sth = $this->pdo->prepare($sql);
     if (! $sth) {
       $err = $sth->errorInfo();
@@ -629,6 +628,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 	
 	public function handle_post($attributes=null) {
+	  error_log($this->is_posted());
 	  if($this->is_posted()) {
 	    if(!$attributes) $attributes = $_POST[WXInflections::underscore(get_class($this))];
 	    return $this->update_attributes($attributes);
