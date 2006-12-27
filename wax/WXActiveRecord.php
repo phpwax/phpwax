@@ -299,7 +299,6 @@ class WXActiveRecord extends WXValidations implements Iterator
       $i = $this->insert();
     }
 		$this->after_save();
-		error_log($i);
 		return $i;
   }
 
@@ -367,6 +366,7 @@ class WXActiveRecord extends WXValidations implements Iterator
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
+    error_log($this->row['id']);
     $this->after_update();
     return true;
   }
