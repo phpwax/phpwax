@@ -357,6 +357,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     }
     $binding_params = $this->_makeBindingParams($this->row);
     
+    error_log($sql);
     $sth = $this->pdo->prepare($sql);
     if (! $sth) {
       $err = $sth->errorInfo();
@@ -366,7 +367,6 @@ class WXActiveRecord extends WXValidations implements Iterator
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-    error_log($this->row['id']);
     $this->after_update();
     return true;
   }
