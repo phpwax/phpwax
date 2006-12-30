@@ -103,7 +103,9 @@ class FormOptionsHelper extends FormHelper {
      */
   public function select($obj, $att, $choices, $options=array(), $with_label=true) {         
 		$this->initialise($obj, $att);
-  	$content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
+		if(is_array($choices)) {
+  	  $content = $this->options_for_select($choices, $this->object->{$this->attribute_name});
+	  } else $content = $choices;
     unset($options['value']);
     if(!$options["class"]) $options["class"]="input_field select_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
