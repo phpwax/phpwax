@@ -13,7 +13,7 @@ class DBAuthorise extends Authorise
 	public $database_table='User';
 	public $username_column='username';
 	public $password_column='password';
-	protected $user_object=null;
+	public $user_object=null;
 
 	
 	/**
