@@ -174,6 +174,36 @@ class FormOptionsHelper extends FormHelper {
     return $output;
   }
   
+  public function time_select($obj, $att, $options = array(), $with_label=true) {
+    $this->initialise($obj, $att);
+	  $shared_id = $this->object_name."_".$this->attribute_name;
+	  for($i = 1; $i<=24; $i++) {
+      $i = str_pad($i, 2, "0", STR_PAD_LEFT);
+      $hour[$i]=$i;
+    }
+    for($i = 1; $i<=59; $i++) {
+      $i = str_pad($i, 2, "0", STR_PAD_LEFT);
+      $minute[$i]=$i;
+    }
+    if(strlen($this->object->{$this->attribute_name})>3) {
+      $selected_hour = substr($this->object->{$this->attribute_name}, 0,2);
+      $selected_minute = substr($this->object->{$this->attribute_name}, 3,2);
+    } else {
+      $selected_hour = date('G');
+      $selected_minute = date('i');
+    }
+    $hour_options = FormOptionsHelper::options_for_select($hour, $selected_hour);
+    $minute_options = FormOptionsHelper::options_for_select($minute, $selected_minute);
+    $output .= javascript_tag("function {$shared_id}_set_time() { 
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + '-' + document.getElementById('{$shared_id}_minute').value + '-' + ':00';
+    }");
+    if($with_label) $output .= $this->make_label($with_label);
+    $output .= $this->content_tag("select", $hour_options, array("id"=>$shared_id."_hour","name"=>$shared_id."_hour", "onchange"=>"{$shared_id}_set_time();"));
+    $output .= $this->content_tag("select", $minute_options, array("id"=>$shared_id."_minute","name"=>$shared_id."_minute", "onchange"=>"{$shared_id}_set_time();"));
+    $output .= $this->hidden_field($obj, $att);
+    return $output;
+  }
+  
   
 
   
