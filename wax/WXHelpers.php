@@ -53,6 +53,8 @@ class WXHelpers {
      *  
      */
     protected function get_value() {
+      if(!is_array($_REQUEST)) $_REQUEST = array();
+      if(!is_array($_SESSION)) $_SESSION = array();
       $name       = $this->object_name;
       $attribute  = $this->attribute_name;      
       $data       = array_merge($_REQUEST, $_SESSION);
