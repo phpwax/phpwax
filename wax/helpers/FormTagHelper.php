@@ -64,7 +64,7 @@ class FormTagHelper extends WXHelpers {
         if(strlen($with_label)<2) $with_label = $name;
       }
       if(!$options["class"]) $options["class"]="input_field";
-  	  if($with_label) $html.= $this->make_label($with_label);
+  	  if($with_label) $html.= $this->make_label($name, $with_label);
       return $html.$this->tag("input", array_merge(array("type" => "text", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options)));
     }
 
