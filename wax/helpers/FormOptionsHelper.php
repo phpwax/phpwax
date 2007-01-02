@@ -177,7 +177,7 @@ class FormOptionsHelper extends FormHelper {
   public function time_select($obj, $att, $options = array(), $with_label=true) {
     $this->initialise($obj, $att);
 	  $shared_id = $this->object_name."_".$this->attribute_name;
-	  for($i = 1; $i<=24; $i++) {
+	  for($i = 1; $i<=23; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
       $hour[$i]=$i;
     }
