@@ -195,7 +195,7 @@ class FormOptionsHelper extends FormHelper {
     $hour_options = FormOptionsHelper::options_for_select($hour, $selected_hour);
     $minute_options = FormOptionsHelper::options_for_select($minute, $selected_minute);
     $output .= javascript_tag("function {$shared_id}_set_time() { 
-      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + '-' + document.getElementById('{$shared_id}_minute').value + '-' + ':00';
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value + ':00';
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output .= $this->content_tag("select", $hour_options, array("id"=>$shared_id."_hour","name"=>$shared_id."_hour", "onchange"=>"{$shared_id}_set_time();"));
