@@ -171,6 +171,7 @@ class FormOptionsHelper extends FormHelper {
     $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month","name"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year","name"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->hidden_field($obj, $att);
+    $output .= javascript_tag("{$shared_id}_set_date()");
     return $output;
   }
   
@@ -201,6 +202,7 @@ class FormOptionsHelper extends FormHelper {
     $output .= $this->content_tag("select", $hour_options, array("id"=>$shared_id."_hour","name"=>$shared_id."_hour", "onchange"=>"{$shared_id}_set_time();"));
     $output .= $this->content_tag("select", $minute_options, array("id"=>$shared_id."_minute","name"=>$shared_id."_minute", "onchange"=>"{$shared_id}_set_time();"));
     $output .= $this->hidden_field($obj, $att);
+    $output .= javascript_tag("{$shared_id}_set_time()");
     return $output;
   }
   
