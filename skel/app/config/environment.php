@@ -18,5 +18,16 @@ require_once(FRAMEWORK_DIR."/AutoLoader.php");
 
 /* Add your application level commands below here */
 
-//AutoLoader::add_plugin_directory("cms");
+//AutoLoader::include_plugin("cmscore");
+
+
+/* Locations for error Redirects 
+// Page not found error
+// WXRoutingException::$redirect_on_error = "";
+
+// Application Error and an email address and subject to send details to.
+//WXException::$redirect_on_error = "";
+//WXException::$email_on_error="";
+//WXException::$email_subject_on_error="";
+
 ?>
