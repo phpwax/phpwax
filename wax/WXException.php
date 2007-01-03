@@ -4,6 +4,10 @@
  */
 class WXException extends Exception
 {
+  
+  static $redirect_on_error=false;
+  static $email_on_error=false;
+  static $email_subject_on_error="Application error on production server";
 	public $div = "------------------------------------------------------------------------------------------------------\n";
 
 	public function __construct($message, $heading, $code = "500") {
@@ -70,11 +74,19 @@ class WXException extends Exception
 		exit;
 	}
 	public function prod_giveup() {
+	  if($email = self::$email_on_error) {
+  		error_log($this->cli_error_message);
+  		mail($email, self::$email_subject_on_error, $this->cli_error_message);
+	  }
+	  if($location = self::$redirect_on_error) {
+  	  error_log($this->getMessage());
+  	  header("Status: 404 Not Found");
+  	  header("Location: /{$location}");
+  	  exit;
+  	}
 		header("Status: 500 Application Error");
 		echo $this->simple_error_message;
-		$message=strip_tags($this->error_message);
-		error_log($message);
-		mail("ross@webxpress.com", "Application Error on production server", $message);
+		error_log($this->cli_error_message);
 		exit;
 	}
 	public function cli_giveup() {

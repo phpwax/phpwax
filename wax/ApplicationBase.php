@@ -123,7 +123,7 @@ class ApplicationBase
 	    if(method_exists($cnt, 'missing_action')) {
 			  $cnt->missing_action(); return $cnt;
 		  } else {
-			  throw new WXException("No Public Action Defined for - ".$this->action." in controller {$controller}.", "Missing Action");
+			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$controller}.", "Missing Action");
 			  exit;
   		}
 		}
@@ -171,28 +171,20 @@ class ApplicationBase
   		
   	//if there's no page_content then create it 	
   	if(!$page_output) {
-  		$tpl=new WXTemplate;
+  	  if(!$use_view=$cnt->use_view) $use_view=$this->action; 
 			if($cnt->use_plugin) {
-				$tpl->view_base = PLUGIN_DIR.$cnt->use_plugin."/view/";
-				$tpl->shared_dir = PLUGIN_DIR.$cnt->use_plugin."/view/shared/";
-			}
+				$tpl=new WXTemplate(false, $cnt->use_plugin, get_parent_class($cnt)."/".$use_view.".html");
+			} else $tpl=new WXTemplate;
   		$tpl->urlid=$cnt->action;
       foreach(get_object_vars($cnt) as $var=>$val) {
         $tpl->{$var}=$val;
       }
   
-  		if(!$cnt->use_view) { 
-  			$use_view=$this->action; 
-  		} else {
-  			$use_view=$cnt->use_view;
-  		}
+  		
   		if(strpos($use_view, '/')===0) { 
   			$view_path=substr("{$use_view}.html", 1); 
   		} else { 
   			$view_path=$this->controller."/".$use_view.".html"; 
-  		}
-  		if($cnt->use_plugin) {
-  		  $tpl->plugin_view_path=get_parent_class($cnt)."/".$use_view.".html";
   		}
   		$tpl->view_path=$view_path;
 

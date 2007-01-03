@@ -145,22 +145,11 @@ abstract class WXControllerBase extends ApplicationBase
 		foreach($values as $k=>$v) {
 	  	$view->$k=$v;
 	  }
-		if($view_html=$view->parse($view_path.".html") ) {  
-   		return $view_html;
-		} else {
-			throw new WXException("Couldn't find file ".$view_name.".html", "Missing Template");
-		}
+		return $view->parse($view_path.".html");
 	}
 	
-	public function render_partial($path, $values=array()) {
-	  $tpl=new WXTemplate;
-		if($this->use_plugin) {
-			$tpl->view_base = PLUGIN_DIR.$this->use_plugin."/view/";
-			$tpl->shared_dir = PLUGIN_DIR.$this->use_plugin."/view/shared/";
-		}
-    foreach($this as $var=>$val) {
-      $tpl->{$var}=$val;
-    }
+	public function render_partial($path) {
+	  
     if(strpos($path, "/")) {
       $partial = "_".substr(strrchr($path, "/"),1);
       $path = substr($path, 0,strrpos($path, "/"))."/";
@@ -168,13 +157,20 @@ abstract class WXControllerBase extends ApplicationBase
     } else {
       $partial = "_".$path;
       $path = "";
-      $controller = slashify(str_replace("Controller", "", $this->controller));
-  		$view_path = slashify($controller)."/".$partial.".html";
+      $controller = WXInflections::slashify(str_replace("Controller", "", $this->controller));
+  		$view_path = WXInflections::slashify($controller)."/".$partial.".html";
     }
 
 		if($this->use_plugin) {
-		  $tpl->plugin_view_path=get_parent_class($this)."/".$partial.".html";
+		  $tpl=new WXTemplate(false, $this->use_plugin, get_parent_class($this)."/".$partial.".html");
+		} else {
+		  $tpl = new WXTemplate;
 		}
+		
+		
+    foreach($this as $var=>$val) {
+      $tpl->{$var}=$val;
+    }
 		
 		$tpl->view_path=$view_path;
 		return $tpl->execute();

@@ -16,9 +16,15 @@ class WXTemplate
 	public $view_base = null;
 	public $shared_dir = null;
 	
-	public function __construct($preserve_buffer = null) {
+	public function __construct($preserve_buffer = false, $plugin = false, $plugin_path =false) {
 		if($preserve_buffer) {
 			$this->preserve_buffer = true;
+		}
+		
+		if($plugin && $plugin_path) {
+		  $this->plugin_view_path = PLUGIN_DIR.$plugin."/view/".$plugin_path;
+		  $this->shared_dir = PLUGIN_DIR.$plugin."/view/shared/";
+		  $this->view_base = PLUGIN_DIR.$plugin."/view/";
 		}
 	}
 	
@@ -28,12 +34,11 @@ class WXTemplate
 		ob_start();
 		switch(true) {
 		  case is_readable(VIEW_DIR.$view_file): $view_file = VIEW_DIR.$view_file; break;
-		  case $this->view_base && is_readable($this->view_base.$view_file): $view_file = $this->view_base.$view_file; break;
-		  case $this->plugin_view_path && is_readable($this->view_base.$this->plugin_view_path): 
-		    $view_file = $this->view_base.$this->plugin_view_path; break;
-		  case $this->shared_dir && is_readable($this->shared_dir.$raw_view): $view_file = $this->shared_dir.$raw_view; break;
-		  default: $view_file = VIEW_DIR.$view_file;
+		  case is_readable($this->view_base.$view_file): $view_file = $this->view_base.$view_file; break;
+		  case is_readable($this->plugin_view_path): $view_file = $this->plugin_view_path; break;
+		  case is_readable($this->shared_dir.$raw_view): $view_file = $this->shared_dir.$raw_view; break;
 		}
+		error_log($view_file);
 		extract((array)$this);
 		if(!is_readable($view_file)) {
 			throw new WXException("Unable to find ".$view_file, "Missing Template File");
