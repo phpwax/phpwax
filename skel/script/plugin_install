@@ -2,8 +2,8 @@
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 $plugin_array = array(
-  "cms"=>"svn://svn.webxpress.com/home/SVN/plugins/cms/",
-  "cmscore"=>"svn://svn.webxpress.com/home/SVN/plugins/cms/branches/core/"
+  "cms"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/",
+  "cmscore"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/"
 );
 if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a plugin name that you wish to install. 
