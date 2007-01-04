@@ -5,7 +5,7 @@
   * @package wx.php.core
   */
 
-abstract class File {
+static class File {
 	
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
