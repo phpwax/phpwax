@@ -19,7 +19,7 @@ class TestWXConfiguration extends WXTestCase
   	}
 
     public function test_get($value) { 
-  	  $config = WXConfiguration::get('db');
+  	  $config = WXConfiguration::get('all');
   	  $this->dump($config);
   	  $this->assertTrue(is_array($config));
   	}
