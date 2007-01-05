@@ -3,7 +3,7 @@
 class TestWXConfiguration extends WXTestCase 
 {
     public function setUp() {
-      $this->config = new WXConfiguration;
+
     }
     
     public function tearDown() {
@@ -20,6 +20,7 @@ class TestWXConfiguration extends WXTestCase
 
     public function test_get($value) { 
   	  $config = WXConfiguration::get('db');
+  	  $this->dump($config);
   	  $this->assertTrue(is_array($config));
   	}
 
