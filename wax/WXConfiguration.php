@@ -62,9 +62,9 @@ class WXConfiguration
     */
 	
 	public function return_config($config=null) {
-		if($config=="all") return $this->config_array;
+		if($config=="all") return self::$config_array;
 		$config=explode("/", $config);
-		$confarray=$this->config_array;
+		$confarray=self::$config_array;
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];
 		}
@@ -101,8 +101,8 @@ class WXConfiguration
 	
 	static public function set_environment($env) {
 	  $config = new WXConfiguration;
-	  if(is_array($this->{$env})) {
-	    return $this->inject_configuration($this->{$env});
+	  if(is_array(self::get($env))) {
+	    return self::set($env);
 	  }
 	  return false;
 	}
