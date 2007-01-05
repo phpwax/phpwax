@@ -12,6 +12,7 @@ class WXMigrate
   protected $migration_dir;
   protected $migrations_array = array();
   protected $columns_array = array();
+  protected $quiet_mode = false;
   
   public function __construct() {
     $this->pdo = WXActiveRecord::getDefaultPDO();
@@ -153,11 +154,11 @@ class WXMigrate
       return false;
     }
     if($target_version > $this->get_highest_version() || !array_key_exists($target_version, $this->migrations_array)) {
-      echo "...version given does not exist."."\n";
+      $this->output( "...version given does not exist."."\n");
       return false;
     }
     
-    echo "...current version: ".$this->get_version()."\n"."...now moving to version: ".$target_version."\n";
+    $this->output( "...current version: ".$this->get_version()."\n"."...now moving to version: ".$target_version."\n");
     if($target_version < $this->get_version()) {
       $direction = "down";
       krsort($this->migrations_array);
@@ -193,14 +194,14 @@ class WXMigrate
   }
   
   private function migrate_down(WXMigrate $class, $version) {
-    echo "...reverting with version ".$version."\n";
+    $this->output( "...reverting with version ".$version."\n");
     $class->down();
     $this->set_version($version);
     return true;
   }
   
   private function migrate_up(WXMigrate $class, $version) {
-    echo "...updating with version ".$version."\n";
+    $this->output( "...updating with version ".$version."\n");
     $class->up();
     $this->set_version($version);
     return true;
@@ -242,13 +243,13 @@ class WXMigrate
     $sql = rtrim($sql, ",");
     $sql.= ")";
     $this->pdo->query($sql);
-    echo "...created table $table_name"."\n";
+    $this->output( "...created table $table_name"."\n");
   }
   
   protected function drop_table($table_name) {
     $sql = "DROP TABLE `$table_name`";
     $this->pdo->query($sql);
-    echo "...removed table $table_name"."\n";
+    $this->output( "...removed table $table_name"."\n" );
   }
   
   protected function create_column($name, $type="string", $length = "128", $null=true, $default=null) {
@@ -261,13 +262,13 @@ class WXMigrate
     $sql = "ALTER TABLE `$table` ADD ";
     $sql.= $this->build_column_sql($column);
     $this->pdo->query($sql);
-    echo "...added column $name to $table"."\n";
+    $this->output( "...added column $name to $table"."\n" );
   }
   
   protected function remove_column($table, $name) {
     $sql = "ALTER TABLE `$table` DROP `$name`";
     $this->pdo->query($sql);
-    echo "...removed column $name from $table"."\n";
+    $this->output( "...removed column $name from $table"."\n" );
   }
   
   protected function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
@@ -275,18 +276,24 @@ class WXMigrate
     $sql = "ALTER TABLE `$table` CHANGE `$name` ";
     $sql.= $this->build_column_sql($column);
     $this->pdo->query($sql);
-    echo "...changed column $name in $table"."\n";
+    $this->output( "...changed column $name in $table"."\n" );
   }
   
   protected function rename_table($table, $new_name) {
     $sql = "ALTER TABLE `$table` RENAME `$new_name`";
     $this->pdo->query($sql);
-    echo "...renamed table $table to $new_name"."\n";
+    $this->output( "...renamed table $table to $new_name"."\n");
   }
   
   protected function run_sql($sql) {
     $this->pdo->query($sql);
-    echo "...executed raw sql command"."\n";
+    $this->output( "...executed raw sql command"."\n");
+  }
+  
+  protected function output($string) {
+    if(!$this->quiet_mode) {
+      echo $string;
+    }
   }
   
   public function up() {}
