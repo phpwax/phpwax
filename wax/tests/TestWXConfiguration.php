@@ -15,12 +15,12 @@ class TestWXConfiguration extends WXTestCase
   	}
 
   	public function test_set() {
-  	  
+  	  WXConfiguration::set(array("test"=>"5"));
+  	  $this->assertEqual(WXConfiguration::get('test'), 5);
   	}
 
     public function test_get($value) { 
   	  $config = WXConfiguration::get('all');
-  	  $this->dump($config);
   	  $this->assertTrue(is_array($config));
   	}
 
