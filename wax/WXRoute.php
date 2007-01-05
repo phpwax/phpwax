@@ -3,14 +3,13 @@
  * 
  *
  * @author Ross Riley
- * @version 0.6
- * @package wx.php.core
+ * @package php-wax
  **/
 
 /**
  * Route construction class
  *
- * @package wx.php.core
+ * @package php-wax
  * @author Ross Riley
  * 
  * This class fetches the URL parameters from $_GET
@@ -22,9 +21,28 @@ class WXRoute extends ApplicationBase
 	protected $config_array=array();
 	protected $actions_array=array();
 	
-	public function __construct($route_configuration=array()) {
+	public function __construct() {
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
-		$this->config_array=$route_configuration;		
+		$this->config_array=WXConfiguration::get('route');
+		$this->map_routes();		
+	}
+	
+	
+	/**
+    *  In the configuration file you can setup a section called 'route'
+    *  this allows you to magically rewrite the request to anything you like. 
+    *  
+    *  The left hand side specifies a match, the right hand side is the new output.
+    *  for example, - admin/login: page/login - will rewrite the url from the left to the right.
+    *  Hell, if you fancy it you can even include the '*' wildcard. -admin/* : page/*
+    *  
+    *  An additional default route can be provided to catch any missing controllers.
+    *
+    *  @return void
+    */
+    
+	public function map_routes() {
+	  
 	}
 	
 	public function pick_controller() {
@@ -59,10 +77,15 @@ class WXRoute extends ApplicationBase
 		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
 	}
 	
+	/**
+    *  Strips the controller from the route and returns an array of actions
+    *  This is designed to be called from the delegate controller.
+    *
+    *  @return boolean      If file exists true
+    */
+	
 	public function read_actions() {
-		$this->actions_array = $this->route_array;
-		array_shift($this->actions_array);
-	  return $this->actions_array;
+		return array_shift($this->route_array);
 	}
 	
 	public function get_url_controller() {

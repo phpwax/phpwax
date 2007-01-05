@@ -6,13 +6,7 @@ class TestWXConfiguration extends WXTestCase
       WXConfiguration::set_environment('test');
     }
     
-    public function tearDown() {
-      
-    }
-
-  	public function test_replace_yaml() {
-  	  
-  	}
+    public function tearDown() {}
 
   	public function test_set() {
   	  WXConfiguration::set(array("newtest"=>"5"));

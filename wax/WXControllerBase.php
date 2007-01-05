@@ -10,15 +10,16 @@
 
 abstract class WXControllerBase
 {
-  protected $models=array();
+
   protected $route_array=null;
-	public $controller;
+  public $controller;
   public $action;
   public $use_layout='application';
   public $use_view=null;
   private $class_name='';
   public $referrer;
 	public $use_plugin=false;
+	public $plugin_share = 'shared';
 	
 	/**
 	 *	An array of filters that can run actions before or after other actions.
@@ -27,13 +28,7 @@ abstract class WXControllerBase
 	 *	@var 		array
 	 */
 	public $filters = array(); 
-	
-	/**
-	 *	An array of actions that implement caching, or 'all' to cache entire model.
-	 *	@access protected
-	 *	@var 		array
-	 */
-	public $caches=array();
+
 
    
   /** Set to 0 by default this decides whether any further
@@ -110,80 +105,9 @@ abstract class WXControllerBase
 		}
     $this->filters["after"][$action]=$action_to_run;
   }
-  
 
-	/**
- 	 *	Allows overriding of the default routes.
-	 *	@access protected
-	 *	@param array $route_array
- 	 */
-  public function set_routes($route_array) {
-   	$this->route_array=$route_array;
-  }
 
-	/**
- 	 *	Allows overriding of the default action.
-	 *	@access protected
-	 *	@param string $action
- 	 */
-  public function set_action($action) {
-   	$this->action=$action;
-  }
-
-	/**
- 	 *	Renders the given view using WXTemplate and returns the html as a string.
-	 *	@access protected
-	 *	@param string $controller_name if not given defaults to current.
-	 *	@param string $view_name
-	 *	@param array $values Values to be passed to the template.
-	 *	@return string
- 	 */
-	public function view_to_string($view_path, $values=array()) {
-  	$view_html='';
-		$view= new WXTemplate("preserve");
-		foreach($values as $k=>$v) {
-	  	$view->$k=$v;
-	  }
-		return $view->parse($view_path.".html");
-	}
 	
-	public function render_partial($path) {
-	  
-    if(strpos($path, "/")) {
-      $partial = "_".substr(strrchr($path, "/"),1);
-      $path = substr($path, 0,strrpos($path, "/"))."/";
-      $view_path = $path.$partial.".html";
-    } else {
-      $partial = "_".$path;
-      $path = "";
-      $controller = WXInflections::slashify(str_replace("Controller", "", $this->controller));
-  		$view_path = WXInflections::slashify($controller)."/".$partial.".html";
-    }
-
-		if($this->use_plugin) {
-		  $tpl=new WXTemplate(false, $this->use_plugin, get_parent_class($this)."/".$partial.".html");
-		} else {
-		  $tpl = new WXTemplate;
-		}
-		
-		
-    foreach($this as $var=>$val) {
-      $tpl->{$var}=$val;
-    }
-		
-		$tpl->view_path=$view_path;
-		return $tpl->execute();
-	}
-	
-	public function require_route($level) {
-	  $this->accept_routes = $level;
-	  if($level==1 && $val = $this->param("id") ) return $val;
-	  else {
-	    $this->route_array["id"]=$this->route_array[0];
-	    unset($this->route_array[0]);
-	    return $this->route_array;
-    }
-	}
 	
 	public function param($param) {
 	  if($param=="id") return $this->route_array[0];
@@ -191,9 +115,102 @@ abstract class WXControllerBase
 	  return false;
 	}
 	
-	public function set_referrer() {
+	protected function set_referrer() {
 	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
 		else Session::set('referrer', "/".$_GET['route']);
+	}
+	
+	protected function process_controller() {
+	  $route = new WXRoute;
+	  $this->route_array = $route->read_actions;
+	  $this->controller = $route->get_url_controller();
+	  if(!$action = $this->route_array[0]) {
+	    $action = "index";
+	  }
+	  $this->controller_global();
+	  if(!$this->is_public_method($this, $action)) {
+	    if(method_exists($this, 'missing_action')) {
+			  $this->missing_action();
+		  } else {
+			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$this->class_name}.", "Missing Action");
+			  exit;
+  		}
+		}
+	  $this->run_before_filters();
+		$this->{$this->action}();
+		$this->run_after_filters();
+		$this->content_for_layout = $this->render_view;
+		echo $this->render_layout;
+	}
+	
+	
+	/**
+   *  Surely it's self-documenting?.
+	 *	@return bool
+ 	 */
+	protected function is_public_method($object, $method) {
+    if(!method_exists($object, $method)) return false;
+    $this_method = new ReflectionMethod($object, $method);
+		if($this_method->isPublic()) return true;
+	  return false;
+  }
+  
+  
+  /**
+   *  Returns a view as a string.
+	 *	@return string
+ 	 */
+  protected function render_view() {
+    $view = new WXTemplate($this);
+    $template->add_path(VIEW_DIR.$this->controller.$this->action);
+    $template->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this).$this->action);
+    $template->add_path(PLUGIN_DIR.$this->use_plugin."/view/"$this->plugin_share."/".$this->action);
+    return $view->parse;
+  }
+  
+  /**
+   *  Returns a layout as a string.
+	 *	@return string
+ 	 */
+  protected function render_layout() {
+    $layout = new WXTemplate($this);
+    $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
+    $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
+    return $layout->parse;
+  }
+  
+  
+  /**
+   *  Returns a partial as a string.
+   *  If it exists this method will also run a custom method to initialise
+	 *	@return string
+ 	 */
+  public function render_partial($path) {
+	  if(strpos($path, "/")) {
+	    $partial = substr($path, strrpos($path, "/")+1);
+	    $path = substr($path, 0, strrpos($path, "/")+1);
+	    $path = $path.$partial;
+	  } else {
+	    $partial = $path;
+	    $path = "_".$path;
+	  }
+	  if($this->is_public_method($this, $partial)) $this->{$partial."_partial()"};
+	  $partial = new WXTemplate($this);
+    $partial->add_path(VIEW_DIR.$path)
+    $partial->add_path(VIEW_DIR.$this->controller.$path);
+    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this).$path);
+    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/"$this->plugin_share."/".$path);
+    return $partial->parse;
+	}
+	
+	/**
+   *  Returns a single path as a string.
+	 *	@return string
+ 	 */
+	public function view_to_string($view_path, $values=array()) {
+		$view= new WXTemplate($values);
+		$view->add_path(VIEW_DIR.$view_path);
+		return $view->parse();
 	}
 
 	/**
@@ -203,38 +220,6 @@ abstract class WXControllerBase
  	 */
    public function controller_global() {}
 
-	/**
- 	 *	In the abstract class this remains empty. It is overridden by the controller,
-	 *	any commands will be run by all actions prior to running the action.
-	 *	@access protected
- 	 */
-   public function before_action($action) {}
-	/**
- 	 *	In the abstract class this remains empty. It is overridden by the controller,
-	 *	any commands will be run by all actions after execution.
-	 *	@access protected
- 	 */
-	public function after_action($action) {}
-
-	/**
- 	 *	In the abstract class this remains empty. It is overridden by the controller,
-	 *	any commands will be run by all actions after execution.
-	 *	@access protected
- 	 */
-	public function filter_routes() {}
-	
-	/**
-	 * method overloading function
-	 *
-	 * @return void
-	 **/	
-	function __call($method, $args) {
-		if(method_exists($this, 'missing_action')) {
-			$this->missing_action(); exit;
-			throw new WXException("No Action Defined for - ".$this->action, "Missing Action");
-		}
-		exit;
-	}
    
 }
 

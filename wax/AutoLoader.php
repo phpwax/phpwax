@@ -141,7 +141,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
-		$app=new ApplicationBase;
+		$app=new WXApplication;
 	}
 
 }

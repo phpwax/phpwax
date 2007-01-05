@@ -11,23 +11,24 @@
   *   In making this decision it will consult the application configuration for guidance.
   *   It's also this lovely class's job to provide a limited amount of wiring to the rest of
   *   the application and setup some kind of Database Connection if required.
+  *
+  *   
+  *
   */
   
-class WXApplication
-{
+class WXApplication {
 
-  public $config;
 
   /**
-    *  Step 1. Expose the configuration to the application
-    *  Step 2. Setup the environment. 
-    *  @return array
+    *  Step 1. Setup an environment. 
+    *  Step 2. Find out if we're having a database and set it up.
+    *  Step 3. Pass on the work to a delegate controller.
+    *
     */
 
 	function __construct() {
-	  $this->config = new WXConfiguration;
 	  $this->setup_environment();
-	  $this->initialise_database($this->config->db);
+	  $this->initialise_database();
 	  $this->delegate_request();
   }
 
@@ -39,24 +40,44 @@ class WXApplication
    */
 	private function setup_environment() {
 		if(defined('ENV')) {
-		  $this->config->switch_environment(ENV);
+		  WXConfiguration::set_environment(ENV);
 		} else {
-		  $this->config->switch_environment('development');
+		  WXConfiguration::set_environment('development');
 		}
 		Session::start();
   }
   
-  private function initialise_database($db) {
-    if(!$db['port']) $db['port']="3306";
-    if(isset($db['socket']) && strlen($db['socket'])>2) {
-			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
-		} else {
-			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
-		}
-		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
-    	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+  /**
+	 *	Instantiates a database connection. It requires PDO which is available in PHP 5.1
+	 *  It then passes this information to the ActiveRecord object.
+	 *
+	 *  A few defaults are allowed for just in case the users are too lazy to specify.
+	 *  Dbtype defaults to mysql
+	 *  Host defaults to localhost
+	 *  Port defaults to 3306
+	 *  
+	 *
+	 *  @access private
+   *  @return void
+   */
+  
+  private function initialise_database() {
+    if($db = WXConfiguration::get('db')) {
+      if(!$db['dbtype']) $db['dbtype']="mysql";
+      if(!$db['host']) $db['host']="localhost";
+      if(!$db['port']) $db['port']="3306";
+      
+      if(isset($db['socket']) && strlen($db['socket'])>2) {
+  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
+  		} else {
+  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+  		}
+  		
+  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+      }
     }
   }
 	
@@ -67,7 +88,7 @@ class WXApplication
    *  @return void
    */
 	private function delegate_request() {
-		$route=new WXRoute($this->config->route);		
+		$route=new WXRoute( );		
 		$delegate = $route->pick_controller();
 		$this->actions = $route->read_actions();
 		$delegate = $this->run_controller($delegate);
