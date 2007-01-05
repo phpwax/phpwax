@@ -164,7 +164,7 @@ abstract class WXControllerBase
     $view = new WXTemplate($this);
     $template->add_path(VIEW_DIR.$this->controller.$this->action);
     $template->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this).$this->action);
-    $template->add_path(PLUGIN_DIR.$this->use_plugin."/view/"$this->plugin_share."/".$this->action);
+    $template->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->action);
     return $view->parse;
   }
   
@@ -196,10 +196,10 @@ abstract class WXControllerBase
 	  }
 	  if($this->is_public_method($this, $partial)) $this->{$partial."_partial()"};
 	  $partial = new WXTemplate($this);
-    $partial->add_path(VIEW_DIR.$path)
+    $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller.$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this).$path);
-    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/"$this->plugin_share."/".$path);
+    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     return $partial->parse;
 	}
 	
