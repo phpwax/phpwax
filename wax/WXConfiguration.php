@@ -101,7 +101,8 @@ class WXConfiguration
 	
 	static public function set_environment($env) {
 	  $config = new WXConfiguration;
-	  if(is_array(self::get($env))) {
+	  $env = self::get($env);
+	  if(is_array($env)) {
 	    return self::set($env);
 	  }
 	  return false;
