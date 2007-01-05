@@ -15,8 +15,8 @@ class TestWXConfiguration extends WXTestCase
   	}
 
   	public function test_set() {
-  	  WXConfiguration::set(array("test"=>"5"));
-  	  $this->assertEqual(WXConfiguration::get('test'), 5);
+  	  WXConfiguration::set(array("newtest"=>"5"));
+  	  $this->assertEqual(WXConfiguration::get('newtest'), 5);
   	}
 
     public function test_get($value) { 
