@@ -1,6 +1,6 @@
 <?php
 
-class TestWXActiveRecord extends WXTestCase 
+class TestWXConfiguration extends WXTestCase 
 {
     public function setUp() {
       
