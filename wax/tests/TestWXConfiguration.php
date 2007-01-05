@@ -3,7 +3,7 @@
 class TestWXConfiguration extends WXTestCase 
 {
     public function setUp() {
-      print_r(get_declared_classes()); exit;
+      $this->config = new WXConfiguration;
     }
     
     public function tearDown() {

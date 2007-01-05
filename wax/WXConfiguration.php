@@ -23,14 +23,17 @@
 class WXConfiguration
 {
 	
-	private $config_array;
-	private $app_yaml_file=false;
+	static private $config_array;
+	static private $app_yaml_file=false;
 	static private $instance=false;
 	
-	function __construct() {
-	  self::set_instance();
-	  $this->app_yaml_file = CONFIG_DIR."config.yml";
-	  $this->config_array = $this->load_yaml($this->app_yaml_file);			
+	function __construct($initial_config=false) {
+	  if(!self::$instance) {
+	    self::set_instance();
+	    if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
+	    self::$app_yaml_file = $initial_config;
+	   self::$config_array = self::load_yaml(self::$app_yaml_file);
+	  }		
 	}
 	
 	static public function set_instance() {
@@ -39,44 +42,16 @@ class WXConfiguration
 		}
 	}
 	
-	public function replace_configuration($new_config) {
-	  if(is_array($new_config)) {
-	    $this->config_array = $new_config;
-	    return true;
-	  } elseif($new_config = $this->load_yaml($new_config)) {
-      $this->config_array = $new_config;
-  	  return true;
-	  }
-	  return false;
-	}
-	
-	
 	/**
     *  Loads any .yml file
     *  @return array
     */
-	private function load_yaml($config_file) {	
+	static private function load_yaml($config_file) {	
 		if(is_readable($config_file)){
 		  return Spyc::YAMLLoad($config_file);
 	  } else {
 		  return false;
     }	
-	}
-	
-	/**
-    *  Allows you to change the configuration on the fly. Use either a file or PHP array.
-    *  @return bool
-    */
-	
-	public function inject_configuration($new_config) {
-	  if(is_array($new_config)) {
-	    $this->config_array = array_merge($this->config_array, $new_config);
-	    return true;
-	  } elseif($new_config = $this->load_yaml($new_config)) {
-      $this->config_array = array_merge($this->config_array, $new_config);
-  	  return true;
-	  }
-	  return false;
 	}
 	
 	
@@ -86,7 +61,7 @@ class WXConfiguration
     *  @return array
     */
 	
-	private function return_config($config=null) {
+	public function return_config($config=null) {
 		if($config=="all") return $this->config_array;
 		$config=explode("/", $config);
 		$confarray=$this->config_array;
@@ -99,7 +74,33 @@ class WXConfiguration
 		return false;
 	}
 	
-	public function switch_environment($env) {
+	static public function replace_yaml($file) {
+	  $config = new WXConfiguration;
+	  self::$config_array = self::load_yaml($file);
+	}
+	
+	/**
+    *  Allows you to change the configuration on the fly. Use either a file or PHP array.
+    *  @return bool
+    */
+	
+	static public function set($new_config = array()) {
+	  $config = new WXConfiguration;
+	  if(is_array($new_config)) {
+	    self::$config_array = array_merge(self::$config_array, $new_config);
+	    return true;
+	  } 
+	  return false;
+	}
+	
+	/**
+    *  An environment is a sub-array of the configuration, this simply copies the environment array
+    *  to the root of the configuration overwriting anything that gets in its way.
+    *  @return bool
+    */
+	
+	static public function set_environment($env) {
+	  $config = new WXConfiguration;
 	  if(is_array($this->{$env})) {
 	    return $this->inject_configuration($this->{$env});
 	  }
@@ -110,10 +111,11 @@ class WXConfiguration
     *  @return array
     */
 	
-	function __get($value) { 
-	  return $this->return_config($value);
+	static public function get($value) { 
+	  $config = new WXConfiguration;
+	  return $config->return_config($value);
 	}
-	
+		
 	
 }
 

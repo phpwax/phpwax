@@ -8,9 +8,9 @@
   *   This is essentially a FrontController whose job in life
   *   is to parse the request and delegate the job to another controller that cares.
   *
-  *   In making this decision it will consult the route configuration for guidance.
+  *   In making this decision it will consult the application configuration for guidance.
   *   It's also this lovely class's job to provide a limited amount of wiring to the rest of
-  *   the application.
+  *   the application and setup some kind of Database Connection if required.
   */
   
 class WXApplication
