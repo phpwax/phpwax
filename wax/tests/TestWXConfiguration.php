@@ -25,7 +25,8 @@ class TestWXConfiguration extends WXTestCase
   	}
 
   	public function test_set_environment($env) {
-  	  
+  	  WXConfiguration::set_environment('test');
+  	  $this->assertEqual(WXConfiguration::get('test/db'), WXConfiguration::get('db'));
   	}
 
     
