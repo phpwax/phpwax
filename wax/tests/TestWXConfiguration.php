@@ -3,7 +3,7 @@
 class TestWXConfiguration extends WXTestCase 
 {
     public function setUp() {
-
+      WXConfiguration::set_environment('test');
     }
     
     public function tearDown() {
