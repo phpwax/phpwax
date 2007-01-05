@@ -25,7 +25,7 @@ class TestDBAuthorise extends WXTestCase
   }
   
   public function tearDown() {
-    $migrate = new TestAuthMigration)'quiet';
+    $migrate = new TestAuthMigration('quiet');
     $migrate->down();
   }
   
