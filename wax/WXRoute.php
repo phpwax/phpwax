@@ -15,7 +15,7 @@
  * This class fetches the URL parameters from $_GET
  * It also requires access to the config object to check configurations.
  **/
-class WXRoute extends ApplicationBase
+class WXRoute
 {
 	protected $route_array=array();
 	protected $config_array=array();
@@ -85,7 +85,7 @@ class WXRoute extends ApplicationBase
     */
 	
 	public function read_actions() {
-		return array_shift($this->route_array);
+		return $this->route_array;
 	}
 	
 	public function get_url_controller() {

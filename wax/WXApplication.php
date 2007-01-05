@@ -90,7 +90,6 @@ class WXApplication {
 	private function delegate_request() {
 		$route=new WXRoute( );		
 		$delegate = $route->pick_controller();
-		$this->actions = $route->read_actions();
 		$delegate_controller = new $delegate;
   }
 

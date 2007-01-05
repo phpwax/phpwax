@@ -27,7 +27,7 @@ class WXTemplate
 	  }
 		extract((array)$this);
 		if(!is_readable($view_file)) {
-			throw new WXException("Unable to find ".$view_file, "Missing Template File");
+			throw new WXException("Unable to find ".$this->template_paths[0].".html", "Missing Template File");
 		}
 		if(!include($view_file) ) {
 			throw new WXUserException("PHP parse error in $view_file");
