@@ -18,7 +18,7 @@ class TestARMigration extends WXMigrate {
 class TestWXActiveRecord extends WXTestCase 
 {
     public function setUp() {
-      $migrate = new TestARMigration;
+      $migrate = new TestARMigration('quiet');
       $migrate->up();
       $this->model = new TestModel();
       $this->model1 = new TestModel();
@@ -30,7 +30,7 @@ class TestWXActiveRecord extends WXTestCase
     }
     
     public function tearDown() {
-      $migrate = new TestARMigration;
+      $migrate = new TestARMigration('quiet');
       $migrate->down();
     }
     

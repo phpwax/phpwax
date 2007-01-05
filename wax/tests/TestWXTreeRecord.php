@@ -16,7 +16,7 @@ class TestTagMigration extends WXMigrate {
 class TestWXTreeRecord extends WXTestCase {
   
   public function setUp() {
-    $migrate = new TestTagMigration;
+    $migrate = new TestTagMigration('quiet');
     $migrate->up();
     $this->model = new TestTag();
     $this->model1 = new TestTag();
@@ -26,7 +26,7 @@ class TestWXTreeRecord extends WXTestCase {
   }
   
   public function tearDown() {
-    $migrate = new TestTagMigration;
+    $migrate = new TestTagMigration('quiet');
     $migrate->down();
   }
   

@@ -17,7 +17,7 @@ class TestAuthMigration extends WXMigrate {
 class TestDBAuthorise extends WXTestCase 
 {
   public function setUp() {
-    $migrate = new TestAuthMigration;
+    $migrate = new TestAuthMigration('quiet');
     $migrate->up();
     $this->model = new TestUser();
     $this->model1 = new TestUser();
@@ -25,7 +25,7 @@ class TestDBAuthorise extends WXTestCase
   }
   
   public function tearDown() {
-    $migrate = new TestAuthMigration;
+    $migrate = new TestAuthMigration)'quiet';
     $migrate->down();
   }
   

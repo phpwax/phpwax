@@ -12,9 +12,10 @@ class WXMigrate
   protected $migration_dir;
   protected $migrations_array = array();
   protected $columns_array = array();
-  protected $quiet_mode = false;
+  public $quiet_mode = false;
   
-  public function __construct() {
+  public function __construct($quiet = false) {
+    if($quiet) $this->quiet_mode = true;
     $this->pdo = WXActiveRecord::getDefaultPDO();
     if(!$this->check_schema()) {
       $this->create_schema();
