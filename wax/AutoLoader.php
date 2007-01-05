@@ -11,6 +11,7 @@
 define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
+define('CONFIG_DIR' , WAX_ROOT.'app/config/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
 define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
 define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
@@ -54,6 +55,7 @@ class AutoLoader
    */
   static public $registry = array();
   static public $registry_chain = array("user", "application", "plugin", "framework");
+  static public $production_server = false;
   
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility][$class]=$path;
@@ -102,6 +104,12 @@ class AutoLoader
 	    define('ENV', 'test');
 	  }
 	}
+	
+	static public function detect_production_mode() {
+	  if(self::$production_server) {
+	    if($_SERVER['SERVER_ADDR'] == self::$production_server) define('ENV', 'test');
+	  }
+	}
 
 	static public function register_helpers() {
 	  foreach(get_declared_classes() as $class) {
@@ -117,6 +125,7 @@ class AutoLoader
 	
 	static public function initialise() {
 	  self::detect_test_mode();
+	  self::detect_production_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
@@ -126,7 +135,6 @@ class AutoLoader
 		self::register_helpers();
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );
-		WXConfigBase::set_instance();
 	}
 	/**
 	 *	Includes the necessary files and instantiates the application.

@@ -22,17 +22,16 @@ class WXRoute extends ApplicationBase
 	protected $config_array=array();
 	protected $actions_array=array();
 	
-	public function __construct() {
+	public function __construct($route_configuration=array()) {
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
-		$conf=new WXConfigBase;
-		$this->config_array=$conf->return_config("all");		
+		$this->config_array=$route_configuration;		
 	}
 	
 	public function pick_controller() {
-	  if( array_key_exists($this->route_array[0], $this->config_array['route']) ) {
-	    $this->route_array[0]=$this->config_array['route'][$this->route_array[0]];
+	  if( array_key_exists($this->route_array[0], $this->config_array) ) {
+	    $this->route_array[0]=$this->config_array[$this->route_array[0]];
 	  }
-	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['route']['default'];
+	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
 	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
     	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
     	array_shift($this->route_array);
@@ -51,10 +50,10 @@ class WXRoute extends ApplicationBase
 			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
 		}
 		$class = ucfirst($controller)."Controller";
-		$default = ucfirst($this->config_array['route']['default']."Controller");
+		$default = ucfirst($this->config_array['default']."Controller");
 		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
 		if(is_file(CONTROLLER_DIR.$default.".php")) {
-		  array_unshift($this->route_array, $this->config_array['route']['default']);
+		  array_unshift($this->route_array, $this->config_array['default']);
 		  return $default;
 	  }
 		throw new WXException("Missing Controller - ".$class, "Controller Not Found");

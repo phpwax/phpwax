@@ -7,46 +7,73 @@
 	* 	@package php-wax
   *   This is essentially a FrontController whose job in life
   *   is to parse the request and delegate the job to another controller that cares.
+  *
+  *   In making this decision it will consult the route configuration for guidance.
+  *   It's also this lovely class's job to provide a limited amount of wiring to the rest of
+  *   the application.
   */
-class ApplicationBase
+  
+class WXApplication
 {
 
+  public $config;
+
+  /**
+    *  Step 1. Expose the configuration to the application
+    *  Step 2. Setup the environment. 
+    *  @return array
+    */
+
 	function __construct() {
-		$this->load_config();	
-		Session::start();
-    $filter=new InputFilter(array(), array(), 1,1);
-    $_POST=$filter->process($_POST);
-    $_GET=$filter->process($_GET);   		
-    $this->controller_object=$this->load_controller();
-    $this->create_page($this->controller_object);
-    $this->controller_object->set_referrer();
+	  $this->config = new WXConfiguration;
+	  $this->setup_environment();
+	  $this->initialise_database($this->config->db);
+	  $this->delegate_request();
   }
 
- 
-	/**
+
+  /**
 	 *	Instantiates a config object and constructs the route.
 	 *  @access private
    *  @return void
    */
-	private function load_config() {
-		$route=new WXRoute;		
-		$this->controller=$route->pick_controller();
-		$this->actions=$route->read_actions();
+	private function setup_environment() {
+		if(defined('ENV')) {
+		  $this->config->switch_environment(ENV);
+		} else {
+		  $this->config->switch_environment('development');
+		}
+		Session::start();
+  }
+  
+  private function initialise_database($db) {
+    if(!$db['port']) $db['port']="3306";
+    if(isset($db['socket']) && strlen($db['socket'])>2) {
+			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
+		} else {
+			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+		}
+		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+    	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+    }
   }
 	
-	/**
-	 *	Looks up a configuration value from the loaded
-	 *	config object. Returns array of values.
-	 *  @access protected
-   *  @return array
+  
+  /**
+	 *	Instantiates a config object and constructs the route.
+	 *  @access private
+   *  @return void
    */
-	public function fetch_config($config) {
-		$obj = new WXConfigBase;
-		return $obj->return_config($config);	
-		return false;
-	}
-	
-		
+	private function delegate_request() {
+		$route=new WXRoute($this->config->route);		
+		$delegate = $route->pick_controller();
+		$this->actions = $route->read_actions();
+		$delegate = $this->run_controller($delegate);
+		$this->create_page($delegate);
+  }
+  
 	/**
 	 *	Maps the controller to the controller file.
 	 *	Decides on the action to run: Either the named action
@@ -56,15 +83,13 @@ class ApplicationBase
 	 *  @access private
    *  @return obj
    */	
-	private function load_controller() {
-		$controller = $this->controller;
+	private function run_controller($delegate) {
 	  $this->action=$this->actions[0];
 	  array_shift($this->actions);
 	  $final_route=array_merge($_GET, $this->actions);
 	  unset($final_route['route']);
 	  if(strlen($this->action)<1) { $this->action="index"; }
-	  $cnt=new $controller();
-		$cnt->controller = $this->controller;
+	  $cnt=new $delegate();
 	  $cnt->set_routes($final_route);
 	  $cnt->set_action($this->action);
 	  $cnt->controller_global();
@@ -156,14 +181,7 @@ class ApplicationBase
 	}
 
 
-	/**
-	 *	Echos a formatted array to screen.
-	 *  @access protected
-   *  @return void
-   */	
-	public function inspect($array) {
-		echo "<pre>"; print_r($array); echo "</pre>"; 
-	}	
+
 
 }
 

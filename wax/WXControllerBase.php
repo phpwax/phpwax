@@ -1,25 +1,24 @@
 <?php
 /**
-	* @package wx.php.core
+	* @package php-wax
 	*/
 
 /**
- * @package wx.php.core
+ * @package php-wax
  * Provides basic functionality which controllers inherit.
  */
-require_once "ApplicationBase.php";
 
-abstract class WXControllerBase extends ApplicationBase
+abstract class WXControllerBase
 {
   protected $models=array();
   protected $route_array=null;
-	protected $controller;
-  protected $action;
+	public $controller;
+  public $action;
   public $use_layout='application';
   public $use_view=null;
   private $class_name='';
   public $referrer;
-	protected $use_plugin=false;
+	public $use_plugin=false;
 	
 	/**
 	 *	An array of filters that can run actions before or after other actions.
@@ -34,7 +33,7 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	@access protected
 	 *	@var 		array
 	 */
-	protected $caches=array();
+	public $caches=array();
 
    
   /** Set to 0 by default this decides whether any further
@@ -202,27 +201,27 @@ abstract class WXControllerBase extends ApplicationBase
 	 *	any commands will be run by all actions prior to running the action.
 	 *	@access protected
  	 */
-   protected function controller_global() {}
+   public function controller_global() {}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions prior to running the action.
 	 *	@access protected
  	 */
-   protected function before_action($action) {}
+   public function before_action($action) {}
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function after_action($action) {}
+	public function after_action($action) {}
 
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions after execution.
 	 *	@access protected
  	 */
-	protected function filter_routes() {}
+	public function filter_routes() {}
 	
 	/**
 	 * method overloading function
