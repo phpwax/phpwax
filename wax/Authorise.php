@@ -1,12 +1,12 @@
 <?php
 /**
- * 	@package wx.php.core
+ * 	@package php-wax
  */
 
 /**
 	*	An abstract base class to handle basic authentication.
 	* Can be extended to check access via a db or flat file.
- 	* @package wx.php.core
+ 	* @package php-wax
   */
 abstract class Authorise
 {

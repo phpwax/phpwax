@@ -26,6 +26,10 @@ class WXException extends Exception
 			}
   }
 	public function format_trace($e) {
+		$post = var_export($_POST, 1);
+		$get = var_export($_GET, 1);
+		$cookie = var_export($_COOKIE, 1);
+		$server = var_export($_SERVER, 1);
 	  $trace.='
 	  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <html lang="en"><head>
@@ -41,15 +45,13 @@ class WXException extends Exception
         h2 span { font-size:80%; color:#666; font-weight:normal; }
         h3 { margin:1em 0 .5em 0; }
         h4 { margin:0 0 .5em 0; font-weight: normal; }
-        table { border:1px solid #ccc; border-collapse: collapse; width:100%; background:white; }
-        tbody td, tbody th { vertical-align:top; padding:2px 3px; }
-        thead th { padding:1px 6px 1px 3px; background:#fefefe; text-align:left; font-weight:normal; font-size:11px; border:1px solid #ddd; }
-        tbody th { width:12em; text-align:right; color:#666; padding-right:.5em; }
         ul { margin-left: 2em; margin-top: 1em; }
-        #summary { background: #e0ebff; }
-        #summary h2 { font-weight: normal; color: #666; }
+        #summary { background: #000000; color:white; }
+        #summary h2, #environment h2 { font-weight: normal; color: #e1e1e1; }
         #instructions { background:#f6f6f6; }
-        #summary table { border:none; background:transparent; }
+				#environment { background:#f6f6f6; }
+				#environment h2 {color:#111111;}
+				#info {display:none;}
       </style>';
   	$trace.="<title>{$this->error_heading}</title>";
     $trace.='</head><body><div id="summary">';
@@ -59,6 +61,16 @@ class WXException extends Exception
     $trace.="<pre><p>{$e->getTraceAsString()}</p>\n";
     $trace.="<code>{$e->getFile()}\nLine: {$e->getLine()}</code></pre>\n";
     $trace.="</div>\n";
+    $trace.='<div id="environment">';
+    $trace.="<h2>HTTP Request, cookie and server information</h2>\n";
+    $trace.="<p><a href='#' onclick='document.getElementById(\"info\").style.display=\"block\"'>View</a></p>\n";
+    $trace.="<pre id='info'><p>Post $post</p>\n";
+    $trace.="<p>Get $get</p>\n";
+    $trace.="<p>Cookie $cookie</p>\n";
+    $trace.="<p>Server $server</p>\n";
+    $trace.="</pre></div>\n";
+
+
 		return $trace;
 	}
 	public function simple_error() {

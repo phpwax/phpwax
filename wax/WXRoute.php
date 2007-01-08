@@ -20,11 +20,12 @@ class WXRoute
 	protected $route_array=array();
 	protected $config_array=array();
 	protected $actions_array=array();
-	
+	protected $controller;
 	public function __construct() {
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
 		$this->config_array=WXConfiguration::get('route');
-		$this->map_routes();		
+		$this->map_routes();
+		$this->controller = $this->pick_controller();	
 	}
 	
 	
@@ -35,21 +36,15 @@ class WXRoute
     *  The left hand side specifies a match, the right hand side is the new output.
     *  for example, - admin/login: page/login - will rewrite the url from the left to the right.
     *  Hell, if you fancy it you can even include the '*' wildcard. -admin/* : page/*
-    *  
-    *  An additional default route can be provided to catch any missing controllers.
     *
     *  @return void
     */
     
 	public function map_routes() {
-	  
+	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
 	}
 	
 	public function pick_controller() {
-	  if( array_key_exists($this->route_array[0], $this->config_array) ) {
-	    $this->route_array[0]=$this->config_array[$this->route_array[0]];
-	  }
-	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
 	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
     	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
     	array_shift($this->route_array);
@@ -84,8 +79,10 @@ class WXRoute
     *  @return boolean      If file exists true
     */
 	
-	public function read_actions() {
-		return $this->route_array;
+	public function read_actions() {	
+		$actions = $this->route_array;
+		array_shift($actions);
+		return $actions;
 	}
 	
 	public function get_url_controller() {

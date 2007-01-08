@@ -45,24 +45,10 @@ abstract class WXControllerBase
   	header("Location:$route");
    	exit;
   }
-  
-  public function run_before_filters() {
-    if(!is_array($this->filters["before"])) return false;
-    foreach($this->filters["before"] as $action=>$filter) {
-      if(is_array($filter) && $action=="all") {
-        foreach($filter[1] as $excluded_action) {
-          if($excluded_action != $this->action) $this->{$filter[0]}();
-        }
-      }
-      elseif($action == $this->action || $action == "all") {
-          $this->$filter();
-      }
-    }
-  }
-  
-  public function run_after_filters() {
-    if(!is_array($this->filters["after"])) return false;
-    foreach($this->filters["after"] as $action=>$filter) {
+
+	protected function run_filters($when) {
+		if(!is_array($this->filters[$when])) return false;
+    foreach($this->filters[$when] as $action=>$filter) {
       if(is_array($filter) && $action=="all" && is_array($filter[1])) {
         foreach($filter[1] as $excluded_action) {
           if($excluded_action != $this->action) $this->$filter[0];
@@ -72,8 +58,8 @@ abstract class WXControllerBase
           $this->$filter();
       }
     }
-  }
-  
+	}
+
   public function before_filter($action, $action_to_run, $except=null) {
     if($except) {
 			$this->filters["before"][$action]=array($action_to_run, $except);
@@ -90,11 +76,9 @@ abstract class WXControllerBase
     $this->filters["after"][$action]=$action_to_run;
   }
 
-
 	
-	
-	public function param($param) {
-	  if($param=="id") return $this->route_array[0];
+	protected function param($param) {
+	  if($param=="id") return $this->route_array[1];
 	  if(isset($this->route_array[$param])) return $this->route_array[$param];
 	  return false;
 	}
@@ -103,31 +87,6 @@ abstract class WXControllerBase
 	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
 		else Session::set('referrer', "/".$_GET['route']);
 	}
-	
-	protected function execute_request() {
-	  $route = new WXRoute;
-	  $this->route_array = $route->read_actions();
-	  $this->controller = $route->get_url_controller();
-	  print_r($this); exit;
-	  if(!$this->action = $this->route_array[0]) {
-	    $this->action = "index";
-	  }
-	  $this->controller_global();
-	  if(!$this->is_public_method($this, $this->action)) {
-	    if(method_exists($this, 'missing_action')) {
-			  $this->missing_action();
-		  } else {
-			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$this->class_name}.", "Missing Action");
-			  exit;
-  		}
-		}	  
-	  $this->run_before_filters();
-		$this->{$this->action}();
-		$this->run_after_filters();
-		$this->content_for_layout = $this->render_view();
-		echo $this->render_layout();
-	}
-	
 	
 	/**
    *  Surely it's self-documenting?.
@@ -146,10 +105,12 @@ abstract class WXControllerBase
 	 *	@return string
  	 */
   protected function render_view() {
+		if($this->use_view == "none") return false;
+		if(!$this->use_view) $this->use_view = $this->action;
     $view = new WXTemplate($this);
-    $view->add_path(VIEW_DIR.$this->controller."/".$this->action);
-    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->action);
-    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->action);
+    $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
+    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
+    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
     return $view->parse();
   }
   
@@ -158,6 +119,7 @@ abstract class WXControllerBase
 	 *	@return string
  	 */
   protected function render_layout() {
+		if(!$this->use_layout) return false;
     $layout = new WXTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
@@ -182,8 +144,8 @@ abstract class WXControllerBase
 	  if($this->is_public_method($this, $partial)) $this->{$partial."_partial()"};
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
-    $partial->add_path(VIEW_DIR.$this->controller.$path);
-    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this).$path);
+    $partial->add_path(VIEW_DIR.$this->controller."/".$path);
+    $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     return $partial->parse();
 	}
@@ -204,6 +166,40 @@ abstract class WXControllerBase
 	 *	@access protected
  	 */
    protected function controller_global() {}
+
+
+	/**
+ 	 *	This method is what it's all about, it simply steps through the filters and
+	 *	runs the action.
+	 *
+	 *	It then picks up the view content along the way and hey presto, you have a page.
+	 *  If you've messed up and not provided an action, it throws an exception.
+	 *
+	 *	@access protected
+ 	 */
+	protected function execute_request() {
+		$route = new WXRoute;
+	  $this->route_array = $route->read_actions();
+	  $this->controller = $route->get_url_controller();
+	  if(!$this->action = $this->route_array[0]) {
+	    $this->action = "index";
+	  }
+	  $this->controller_global();
+	  $this->run_filters("before");
+	  if(!$this->is_public_method($this, $this->action)) {
+	    if(method_exists($this, 'missing_action')) {
+			  $this->missing_action();
+		  } else {
+			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$this->class_name}.", "Missing Action");
+			  exit;
+  		}
+		}	  
+		$this->{$this->action}();
+		$this->run_filters("after");
+		$this->content_for_layout = $this->render_view();
+		if($content = $this->render_layout()) echo $content;
+		else echo $this->content_for_layout;
+	}
 
    public function __destruct() {
      $this->execute_request();

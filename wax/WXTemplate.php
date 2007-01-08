@@ -23,7 +23,10 @@ class WXTemplate
 	public function parse() {
 	  ob_start();
 	  foreach($this->template_paths as $path) {
-	    if(is_readable($path.".html")) $view_file = $path.".html";
+	    if(is_readable($path.".html")) {
+				$view_file = $path.".html";
+				break;
+			}
 	  }
 		extract((array)$this);
 		if(!is_readable($view_file)) {
