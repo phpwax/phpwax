@@ -528,7 +528,7 @@ class JavascriptHelper extends WXHelpers {
    *                 auto complete javascript tags
    */
   public function auto_complete_field($name, $url, $value="", $tag_options = array(), $completion_options = array()) {
-    $javascript = text_field_tag($name, $value, $tag_options);
+    $javascript = text_field_tag($name, $value, $tag_options, array(), false);
     $javascript .= $this->content_tag('div', '' , array('id' => "{$name}_auto_complete", 'class' => 'auto_complete'));
     $javascript .= $this->build_auto_complete_field($name, $url, $completion_options);
     return $javascript;
