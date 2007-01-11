@@ -41,6 +41,7 @@ class WXRoute
     */
     
 	public function map_routes() {
+	  print_r($this->route_array); exit;
 	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
 	}
 	
