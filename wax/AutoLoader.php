@@ -21,7 +21,6 @@ define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
 define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
 
-echo "HELLO"; exit;
 function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
@@ -142,6 +141,8 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application() {
+	  die("HELLO");
+	  
 		$app=new WXApplication;
 	}
 
