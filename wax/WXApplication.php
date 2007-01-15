@@ -26,9 +26,7 @@ class WXApplication {
     *
     */
 
-	function __construct() {
-	  die("HELLO");
-    
+	function __construct() {    
 	  $this->setup_environment();
 	  $this->initialise_database();
 	  $this->delegate_request();

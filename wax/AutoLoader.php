@@ -129,7 +129,7 @@ class AutoLoader
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
-		WXConfigBase::set_instance();
+		WXConfiguration::set_instance();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
@@ -140,9 +140,7 @@ class AutoLoader
 	 *	Includes the necessary files and instantiates the application.
 	 *	@access public
 	 */	
-	static public function run_application() {
-	  die("HELLO");
-	  
+	static public function run_application() {	  
 		$app=new WXApplication;
 	}
 
