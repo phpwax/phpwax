@@ -9,12 +9,6 @@ class WXGenerator {
 	public $stdout = array();
   
   public function __construct($generator_type, $args=array()) {
-		$configFile=APP_DIR.'config/config.yml';
-		$config_array = Spyc::YAMLLoad($configFile);
-		$config_array = WXConfigBase::merge_environments($config_array);
-		WXConfigBase::set_instance();
-		$conf=new WXConfigBase;
-		$conf->init_db($config_array['db']);
 		if(count($args)< 1) {
 			$this->add_stdout("You must supply a $generator_type name that you wish to create.", "error");
 			return false;
