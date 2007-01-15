@@ -28,7 +28,7 @@ class WXConfiguration
 	static private $instance=false;
 	
 	
-	static public function set_instance($initial_config) {
+	static public function set_instance($initial_config=false) {
 	  if(self::$instance) return false;
 	  self::$instance=new WXConfiguration();
 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
