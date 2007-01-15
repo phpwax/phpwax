@@ -45,7 +45,7 @@ class WXRoute
 	}
 	
 	public function pick_controller() {
-	  if(is_dir(CONTROLLER_DIR.$this->route_array[0]) && count($this->route_array)>0) {
+	  if(is_dir(CONTROLLER_DIR.$this->route_array[0]) && isset($this->route_array)) {
     	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
     	array_shift($this->route_array);
     }
