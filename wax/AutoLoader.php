@@ -124,7 +124,6 @@ class AutoLoader
 	}
 	
 	static public function initialise() {
-		echo "HELLO"; exit;
 	  self::detect_test_mode();
 	  self::detect_production_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
@@ -147,6 +146,7 @@ class AutoLoader
 	}
 
 }
+echo "HELLO"; exit;
 
 Autoloader::initialise();
 
