@@ -27,19 +27,13 @@ class WXConfiguration
 	static private $app_yaml_file=false;
 	static private $instance=false;
 	
-	function __construct($initial_config=false) {
-	  if(!self::$instance) {
-	    self::set_instance();
-	    if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
-	    self::$app_yaml_file = $initial_config;
-	   self::$config_array = self::load_yaml(self::$app_yaml_file);
-	  }		
-	}
 	
-	static public function set_instance() {
-		if(!self::$instance) {
-			self::$instance=new WXConfigBase();
-		}
+	static public function set_instance($initial_config) {
+	  if(self::$instance) return false;
+	  self::$instance=new WXConfiguration();
+		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
+	  self::$instance::$app_yaml_file = $initial_config;
+	  self::$instance::$config_array = self::load_yaml(self::$app_yaml_file);
 	}
 	
 	/**
