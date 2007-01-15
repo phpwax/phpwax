@@ -28,11 +28,10 @@ class WXConfiguration
 	static private $instance=false;
 	
 	static public function set_instance() {
-		self::$instance=new WXConfiguration();
+		self::$instance=new WXConfigBase();
 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
 		self::$instance::$app_yaml_file = $initial_config;
 		self::$instance::$config_array = self::load_yaml(self::$app_yaml_file);
-		print_r(self::$instance); exit;
 	}
 	
 	/**
