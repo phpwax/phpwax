@@ -22,7 +22,6 @@ class WXRoute
 	protected $actions_array=array();
 	protected $controller;
 	public function __construct() {
-	  print_r($this); exit;
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
 		$this->config_array=WXConfiguration::get('route');
 		$this->map_routes();
