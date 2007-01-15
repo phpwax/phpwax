@@ -122,9 +122,7 @@ class AutoLoader
 	  }
 	}
 	
-	static public function initialise() {
-	  die("HELLO");
-	  
+	static public function initialise() {	  
 	  self::detect_test_mode();
 	  self::detect_production_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
@@ -147,6 +145,7 @@ class AutoLoader
 	}
 
 }
+die("HELLO");
 
 Autoloader::initialise();
 
