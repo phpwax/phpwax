@@ -8,6 +8,9 @@
 /**
  *	Defines application level constants
  */
+ 
+ die("HELLO");
+
 define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
 define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
@@ -145,8 +148,6 @@ class AutoLoader
 	}
 
 }
-die("HELLO");
-
 Autoloader::initialise();
 
 ?>
