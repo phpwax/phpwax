@@ -88,7 +88,7 @@ class WXApplication {
    *  @return void
    */
 	private function delegate_request() {
-		$route=new WXRoute( );		
+		$route=new WXRoute( );
 		$delegate = $route->pick_controller();
 		$delegate_controller = new $delegate;
   }

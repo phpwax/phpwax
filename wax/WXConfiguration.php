@@ -27,12 +27,6 @@ class WXConfiguration
 	static private $app_yaml_file=false;
 	static private $instance=false;
 	
-	function __construct($initial_config=false) {
-	  if(!self::$instance) {
-	    self::set_instance($initial_config);
-	  }		
-	}
-	
 	static public function set_instance() {
 		if(!self::$instance) {
 			self::$instance=new WXConfiguration();
