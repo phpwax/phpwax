@@ -130,6 +130,7 @@ class AutoLoader
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
+		echo "HELLO"; exit;
 		WXConfigBase::set_instance();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
