@@ -27,6 +27,8 @@ class WXApplication {
     */
 
 	function __construct() {
+	  die("HELLO");
+    
 	  $this->setup_environment();
 	  $this->initialise_database();
 	  $this->delegate_request();
@@ -61,9 +63,7 @@ class WXApplication {
    *  @return void
    */
   
-  private function initialise_database() {
-    die("HELLO");
-    
+  private function initialise_database() {    
     if($db = WXConfiguration::get('db')) {
       if(!$db['dbtype']) $db['dbtype']="mysql";
       if(!$db['host']) $db['host']="localhost";
