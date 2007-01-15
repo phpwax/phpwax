@@ -62,6 +62,8 @@ class WXApplication {
    */
   
   private function initialise_database() {
+    die("HELLO");
+    
     if($db = WXConfiguration::get('db')) {
       if(!$db['dbtype']) $db['dbtype']="mysql";
       if(!$db['host']) $db['host']="localhost";
