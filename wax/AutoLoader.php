@@ -8,8 +8,6 @@
 /**
  *	Defines application level constants
  */
- 
- die("HELLO");
 
 define('APP_DIR', WAX_ROOT . "app/");
 define('MODEL_DIR' , WAX_ROOT.'app/model/');
@@ -143,7 +141,8 @@ class AutoLoader
 	 *	Includes the necessary files and instantiates the application.
 	 *	@access public
 	 */	
-	static public function run_application() {	  
+	static public function run_application() {	
+	  die("hello");  
 		$app=new WXApplication;
 	}
 
