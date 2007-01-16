@@ -22,6 +22,7 @@ class WXTemplate
 	
 	public function parse() {
 	  ob_start();
+	  ob_get_clean();
 	  echo "<pre>".ob_get_clean()."</pre>"; exit;
 	  
 	  foreach($this->template_paths as $path) {
