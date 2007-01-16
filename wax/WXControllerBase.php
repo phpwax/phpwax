@@ -179,7 +179,6 @@ abstract class WXControllerBase
  	 */
 	public function execute_request() {
 		$route = new WXRoute;
-		echo "<pre>".ob_get_clean()."</pre>"; exit;
 	  $this->route_array = $route->read_actions();
 	  $this->controller = $route->get_url_controller();
 	  if(!$this->action = $this->route_array[0]) {
@@ -197,6 +196,8 @@ abstract class WXControllerBase
 		}	  
 		$this->{$this->action}();
 		$this->run_filters("after");
+		echo "<pre>".ob_get_clean()."</pre>"; exit;
+		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
 		else echo $this->content_for_layout;
