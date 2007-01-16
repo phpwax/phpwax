@@ -123,6 +123,7 @@ abstract class WXControllerBase
     $layout = new WXTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
+    ob_end_clean();
     return $layout->parse();
   }
   
