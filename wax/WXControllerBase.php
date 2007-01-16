@@ -46,7 +46,7 @@ abstract class WXControllerBase
    	exit;
   }
 
-	protected function run_filters($when) {
+	public function run_filters($when) {
 		if(!is_array($this->filters[$when])) return false;
     foreach($this->filters[$when] as $action=>$filter) {
       if(is_array($filter) && $action=="all" && is_array($filter[1])) {
