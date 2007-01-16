@@ -186,6 +186,7 @@ abstract class WXControllerBase
 	  if(!$this->action = $this->route_array[0]) {
 	    $this->action = "index";
 	  }
+	  array_shift($this->route_array);
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
