@@ -2,7 +2,7 @@
 <?php
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 require_once dirname(__FILE__).'/../app/config/environment.php';
-$app = new WXApplication(false);
+Autoloader::run_test_application();
 define("CLI_ENV", true);
 
 if(  (!include 'simpletest/unit_tester.php') 

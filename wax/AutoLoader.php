@@ -144,6 +144,11 @@ class AutoLoader
 	static public function run_application() {	
 		$app=new WXApplication;
 	}
+	
+	static public function run_test_application() {	
+	  define('ENV', 'test');
+		$app=new WXApplication(false);
+	}
 
 }
 Autoloader::initialise();
