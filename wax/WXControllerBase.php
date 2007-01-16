@@ -78,7 +78,7 @@ abstract class WXControllerBase
 
 	
 	protected function param($param) {
-	  if($param=="id") return $this->route_array[1];
+	  if($param=="id") return $this->route_array[0];
 	  if(isset($this->route_array[$param])) return $this->route_array[$param];
 	  return false;
 	}
