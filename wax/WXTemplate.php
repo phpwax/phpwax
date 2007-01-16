@@ -35,9 +35,7 @@ class WXTemplate
 		if(!include($view_file) ) {
 			throw new WXUserException("PHP parse error in $view_file");
 		}
-		$output = ob_get_contents();
-		ob_end_clean();
-		return $output;
+		return ob_get_clean();
 	}
 
 
