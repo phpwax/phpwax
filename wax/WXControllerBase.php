@@ -201,9 +201,6 @@ abstract class WXControllerBase
 		else echo $this->content_for_layout;
 	}
 
-   public function __destruct() {
-     $this->execute_request();
-   }
    
 }
 
