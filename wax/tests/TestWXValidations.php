@@ -1,6 +1,6 @@
 <?php
 
-//Mock::generatePartial("WXValidations", "MockWXValidations");
+Mock::generatePartial("WXValidations", "MockWXValidations");
 
 class TestWXValidations extends WXTestCase 
 {
