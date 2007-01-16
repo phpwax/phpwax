@@ -179,6 +179,7 @@ abstract class WXControllerBase
  	 */
 	public function execute_request() {
 		$route = new WXRoute;
+		echo "<pre>".ob_get_clean()."</pre>"; exit;
 	  $this->route_array = $route->read_actions();
 	  $this->controller = $route->get_url_controller();
 	  if(!$this->action = $this->route_array[0]) {
