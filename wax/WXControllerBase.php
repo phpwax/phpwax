@@ -177,7 +177,7 @@ abstract class WXControllerBase
 	 *
 	 *	@access protected
  	 */
-	protected function execute_request() {
+	public function execute_request() {
 		$route = new WXRoute;
 	  $this->route_array = $route->read_actions();
 	  $this->controller = $route->get_url_controller();
