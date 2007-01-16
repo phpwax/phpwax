@@ -111,7 +111,6 @@ abstract class WXControllerBase
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
-    echo "<pre>".$view->parse."</pre>"; exit;
     return $view->parse();
   }
   
