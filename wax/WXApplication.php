@@ -44,14 +44,13 @@ class WXApplication {
 		} else {
 		  WXConfiguration::set_environment('development');
 		}
-		Session::start();
   }
   
   /**
 	 *	Instantiates a database connection. It requires PDO which is available in PHP 5.1
 	 *  It then passes this information to the ActiveRecord object.
 	 *
-	 *  A few defaults are allowed for just in case the users are too lazy to specify.
+	 *  A few defaults are allowed in case you are too lazy to specify.
 	 *  Dbtype defaults to mysql
 	 *  Host defaults to localhost
 	 *  Port defaults to 3306
@@ -88,6 +87,7 @@ class WXApplication {
    *  @return void
    */
 	private function delegate_request() {
+	  Session::start();
 		$route=new WXRoute( );
 		$delegate = $route->pick_controller();
 		$delegate_controller = new $delegate;
