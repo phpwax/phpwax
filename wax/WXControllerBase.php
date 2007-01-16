@@ -138,7 +138,7 @@ abstract class WXControllerBase
 	  if(strpos($path, "/")) {
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
-	    $path = $path.$partial;
+	    $path = $path."_".$partial;
 	  } else {
 	    $partial = $path;
 	    $path = "_".$path;
