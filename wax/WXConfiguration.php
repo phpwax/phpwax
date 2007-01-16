@@ -23,16 +23,16 @@
 class WXConfiguration
 {
 	
-	static private $config_array;
-	static private $app_yaml_file=false;
+	public $config_array;
+	public $app_yaml_file=false;
 	static private $instance=false;
 	
 	static public function set_instance($initial_config=false) {
 	  if(self::$instance) return false;
 	  self::$instance=new WXConfiguration();
 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
-	  self::$app_yaml_file = $initial_config;
-	  self::$config_array = self::load_yaml(self::$app_yaml_file);
+	  self::$instance->app_yaml_file = $initial_config;
+	  self::$instance->config_array = self::$instance->load_yaml(self::$instance->app_yaml_file);
 	}
 	
 	/**
@@ -55,9 +55,9 @@ class WXConfiguration
     */
 	
 	public function return_config($config=null) {
-		if($config=="all") return self::$config_array;
+		if($config=="all") return self::$instance->config_array;
 		$config=explode("/", $config);
-		$confarray=self::$config_array;
+		$confarray=self::$instance->config_array;
 		foreach($config as $conf) {
 			$confarray=$confarray[$conf];
 		}
@@ -68,8 +68,7 @@ class WXConfiguration
 	}
 	
 	static public function replace_yaml($file) {
-	  $config = new WXConfiguration;
-	  self::$config_array = self::load_yaml($file);
+	  self::$instance->config_array = self::$instance->load_yaml($file);
 	}
 	
 	/**
@@ -78,9 +77,8 @@ class WXConfiguration
     */
 	
 	static public function set($new_config = array()) {
-	  $config = new WXConfiguration;
 	  if(is_array($new_config)) {
-	    self::$config_array = array_merge(self::$config_array, $new_config);
+	    self::$instance->config_array = array_merge(self::$instance->config_array, $new_config);
 	    return true;
 	  } 
 	  return false;
@@ -93,7 +91,6 @@ class WXConfiguration
     */
 	
 	static public function set_environment($env) {
-	  $config = new WXConfiguration;
 	  $env = self::get($env);
 	  if(is_array($env)) {
 	    return self::set($env);
@@ -106,8 +103,7 @@ class WXConfiguration
     */
 	
 	static public function get($value) { 
-	  $config = new WXConfiguration;
-	  return $config->return_config($value);
+	  return self::$instance->return_config($value);
 	}
 		
 	

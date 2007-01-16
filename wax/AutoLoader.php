@@ -100,7 +100,7 @@ class AutoLoader
 	}
 	
 	static public function detect_test_mode() {
-	  if($_SERVER['HTTP_USER_AGENT'] == "simpletest" ) {
+	  if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) {
 	    define('ENV', 'test');
 	  }
 	}

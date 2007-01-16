@@ -26,10 +26,10 @@ class WXApplication {
     *
     */
 
-	function __construct() {    
+	function __construct($delegate=true) {    
 	  $this->setup_environment();	
 	  $this->initialise_database();
-	  $this->delegate_request();
+	  if($delegate) $this->delegate_request();
   }
 
 
