@@ -3,17 +3,11 @@
 
 require_once dirname(__FILE__).'/../app/config/environment.php';
 
-AutoLoader::include_dir(FRAMEWORK_DIR);
-$configFile=APP_DIR.'config/config.yml';
-$config_array = Spyc::YAMLLoad($configFile);
+$config_array = WXConfiguration::get('all');
 if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
 	$config_array['environment']=$argv[1];
 	unset($argv[1]);
 }
-$config_array = WXConfigBase::merge_environments($config_array);
-WXConfigBase::set_instance();
-$conf=new WXConfigBase;
-$conf->init_db($config_array['db']);
 
 if($argv[1] =="directory" && isset($argv[2])) {
   $migrate = new WXMigrate();

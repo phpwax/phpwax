@@ -27,7 +27,7 @@ class WXApplication {
     */
 
 	function __construct() {    
-	  $this->setup_environment();
+	  $this->setup_environment();	
 	  $this->initialise_database();
 	  $this->delegate_request();
   }
@@ -38,7 +38,7 @@ class WXApplication {
 	 *  @access private
    *  @return void
    */
-	private function setup_environment() {
+	private function setup_environment() {	
 		if(defined('ENV')) {
 		  WXConfiguration::set_environment(ENV);
 		} else {

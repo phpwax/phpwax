@@ -19,6 +19,8 @@ class WXAuthenticate
 	 *	@var int
 	 */
   protected $user_id=null;
+	protected $db_table;
+	 
   
   /**
 	 *	A simple flag, indicates whether passwords are encrypted

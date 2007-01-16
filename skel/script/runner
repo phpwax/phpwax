@@ -5,13 +5,6 @@ if(!isset($argv[1]) || !isset($argv[2])) {
 }
 require_once dirname(__FILE__).'/../app/config/environment.php';
 
-AutoLoader::include_dir(FRAMEWORK_DIR);
-$configFile=APP_DIR.'config/config.yml';
-$config_array = Spyc::YAMLLoad($configFile);
-$config_array = WXConfigBase::merge_environments($config_array);
-WXConfigBase::set_instance();
-$conf=new WXConfigBase;
-$conf->init_db($config_array['db']);
 $model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
 if(!class_exists($model_name) || !$model = new $model_name) {
   exit("[ERROR] Cannot find class name $model_name"."\n");

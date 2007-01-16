@@ -2,11 +2,8 @@
 <?php
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 require_once dirname(__FILE__).'/../app/config/environment.php';
-require_once 'wax/AutoLoader.php';
 define("CLI_ENV", true);
-AutoLoader::include_dir(FRAMEWORK_DIR);
-set_exception_handler('throw_wxexception');
-set_error_handler('throw_wxerror', 0);
+
 if(  (!include 'simpletest/unit_tester.php') 
   || (!include 'simpletest/reporter.php') 
   || (!include 'simpletest/web_tester.php')
@@ -16,17 +13,9 @@ if(  (!include 'simpletest/unit_tester.php')
 }
 
 
-$configFile=APP_DIR.'config/config.yml';
-$config_array = Spyc::YAMLLoad($configFile);
+$config_array = WXConfiguration::get('all');
 $config_array['environment']="test";
-$config_array = WXConfigBase::merge_environments($config_array);
-WXConfigBase::set_instance();
-$conf=new WXConfigBase;
-$conf->init_db($config_array['db']);
-AutoLoader::include_dir(MODEL_DIR);
-AutoLoader::include_dir(CONTROLLER_DIR);
-AutoLoader::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
-AutoLoader::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
+
 if($argv[1] == "wax") {
   $testdir = FRAMEWORK_DIR."/tests";
 } elseif($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {

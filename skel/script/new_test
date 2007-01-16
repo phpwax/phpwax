@@ -1,6 +1,5 @@
 #!/usr/bin/php
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
-AutoLoader::include_dir(FRAMEWORK_DIR);
 $gen = new WXGenerator("test", array_slice($argv, 1));
 ?>

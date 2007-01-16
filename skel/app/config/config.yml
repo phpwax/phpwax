@@ -8,12 +8,11 @@ environment: development
 route:
  default:page
 
-# Development configuration. This is the default, setings in other environments only overide these
+# Development configuration.
 development:
  db:
   dbtype: mysql
   host: localhost
-  port: 3306
   database: _development
   username: root
   password: 
@@ -21,16 +20,24 @@ development:
  cache_actions:no
  cache_config: no
     
-# The following will override values in development.
-# If the values are the same there is no need to declare them.
+# Configuration for the test environment.
 
 test:
   db:
+    dbtype: mysql
+    host: localhost
     database: _test
+    username: root
+    password:
 
 production: 
   db: 
+    dbtype: mysql
+    host: localhost
     database: _production
+    username: root
+    password:
+      
   cache_actions: yes
   cache_config: yes
 

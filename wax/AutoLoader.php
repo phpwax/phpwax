@@ -135,7 +135,7 @@ class AutoLoader
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
 		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxerror', 247 );
+		set_error_handler('throw_wxerror', 247 );		
 	}
 	/**
 	 *	Includes the necessary files and instantiates the application.
