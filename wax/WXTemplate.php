@@ -21,8 +21,8 @@ class WXTemplate
 	}
 	
 	public function parse() {
+	  echo "<pre>".ob_get_clean()."</pre>"; exit;
 	  ob_start();
-	  ob_clean();
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".html")) {
 				$view_file = $path.".html";
