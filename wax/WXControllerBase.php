@@ -111,6 +111,8 @@ abstract class WXControllerBase
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
+    echo "<pre>".ob_get_clean()."</pre>"; exit;
+		
     return $view->parse();
   }
   
@@ -195,9 +197,7 @@ abstract class WXControllerBase
   		}
 		}	  
 		$this->{$this->action}();
-		$this->run_filters("after");
-		echo "<pre>".ob_get_clean()."</pre>"; exit;
-		
+		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
 		else echo $this->content_for_layout;
