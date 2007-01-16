@@ -145,7 +145,10 @@ class WXActiveRecord extends WXValidations implements Iterator
   	if( ! is_array( $this->row ) ) {
     	$this->row = array();
     }
-    $this->row[$name] = mysql_real_escape_string($value);
+    if(!is_array($value)) {
+      $this->row[$name] = mysql_real_escape_string($value);
+    } else $this->row[$name] = $value;
+    
   }
 
  /**
