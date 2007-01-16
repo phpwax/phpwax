@@ -22,7 +22,6 @@ class WXTemplate
 	
 	public function parse() {
 	  ob_start();
-	  ob_get_clean();	  
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".html")) {
 				$view_file = $path.".html";
@@ -36,7 +35,9 @@ class WXTemplate
 		if(!include($view_file) ) {
 			throw new WXUserException("PHP parse error in $view_file");
 		}
-		return ob_get_clean();
+		$output = ob_get_contents();
+		ob_end_clean();
+		return $output;
 	}
 
 
