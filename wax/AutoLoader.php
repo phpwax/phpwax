@@ -130,7 +130,7 @@ class AutoLoader
 	
 	static public function initialise() {	  
 	  self::detect_test_mode();
-	  self::detect_production_mode();
+	  self::detect_environments();
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
