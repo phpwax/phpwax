@@ -107,8 +107,9 @@ class AutoLoader
 	
 	static public function detect_environments() {
 	  foreach(WXConfiguration::get("environments") as $env=>$range) {
+	    $range = "/".str_replace(".", "\.", $range)."/";
 	    echo $env.":".$range.":";
-	    if(preg_match("/".$range."/", $_SERVER['ADDR'])) {
+	    if(preg_match($range, $_SERVER['ADDR'])) {
 	      //define('ENV', $env);
 	      echo "MATCHED"."\n";
 	    }
