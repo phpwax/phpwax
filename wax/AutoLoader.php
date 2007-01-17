@@ -105,10 +105,15 @@ class AutoLoader
 	  }
 	}
 	
-	static public function detect_production_mode() {
-	  if(self::$production_server) {
-	    if($_SERVER['SERVER_ADDR'] == self::$production_server) define('ENV', 'production');
+	static public function detect_environments() {
+	  foreach(WXConfiguration::get("environments") as $env=>$range) {
+	    echo $env.":".$range.":";
+	    if(preg_match($range, $_SERVER['ADDR'])) {
+	      //define('ENV', $env);
+	      echo "MATCHED"."\n";
+	    }
 	  }
+	  exit;
 	}
 
 	static public function register_helpers() {
