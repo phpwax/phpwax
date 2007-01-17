@@ -141,13 +141,9 @@ class AutoLoader
 	 *	Includes the necessary files and instantiates the application.
 	 *	@access public
 	 */	
-	static public function run_application() {	
-		$app=new WXApplication;
-	}
-	
-	static public function run_test_application() {	
-	  define('ENV', 'test');
-		$app=new WXApplication(false);
+	static public function run_application($environment="development", $full_app=true) {
+	  define("ENV", $environment);	
+		$app=new WXApplication($full_app);
 	}
 
 }

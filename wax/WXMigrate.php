@@ -231,24 +231,28 @@ class WXMigrate
   }
   
   protected function create_table($table_name) {
-    $sql = "CREATE TABLE `$table_name`(";
-    $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
-    if(count($this->columns_array) > 0) {
-      $sql.= ", ";
-      foreach($this->columns_array as $column) {
-        $sql.= $this->build_column_sql($column);
-        $sql.= ",";
+    try {
+      $sql = "CREATE TABLE `$table_name`(";
+      $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
+      if(count($this->columns_array) > 0) {
+        $sql.= ", ";
+        foreach($this->columns_array as $column) {
+          $sql.= $this->build_column_sql($column);
+          $sql.= ",";
+        }
       }
+      $this->columns_array = array();
+      $sql = rtrim($sql, ",");
+      $sql.= ")";
+      $this->pdo->query($sql);
+      $this->output( "...created table $table_name"."\n");
+    } catch(Exception $e) {
+      $e = false; return $e;
     }
-    $this->columns_array = array();
-    $sql = rtrim($sql, ",");
-    $sql.= ")";
-    $this->pdo->query($sql);
-    $this->output( "...created table $table_name"."\n");
   }
   
   protected function drop_table($table_name) {
-    $sql = "DROP TABLE `$table_name`";
+    $sql = "DROP TABLE IF EXISTS `$table_name`";
     $this->pdo->query($sql);
     $this->output( "...removed table $table_name"."\n" );
   }
@@ -258,43 +262,68 @@ class WXMigrate
   }
   
   protected function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
-    if($type=="integer" && $length>11) $length="11";
-    $column = array($name, $type, $length, $null, $default);
-    $sql = "ALTER TABLE `$table` ADD ";
-    $sql.= $this->build_column_sql($column);
-    $this->pdo->query($sql);
-    $this->output( "...added column $name to $table"."\n" );
+    try {
+      if($type=="integer" && $length>11) $length="11";
+      $column = array($name, $type, $length, $null, $default);
+      $sql = "ALTER TABLE `$table` ADD ";
+      $sql.= $this->build_column_sql($column);
+      $this->pdo->query($sql);
+      $this->output( "...added column $name to $table"."\n" );
+    } catch(Exception $e) {
+      $this->catcher($e);
+    }
   }
   
   protected function remove_column($table, $name) {
-    $sql = "ALTER TABLE `$table` DROP `$name`";
-    $this->pdo->query($sql);
-    $this->output( "...removed column $name from $table"."\n" );
+    try {
+      $sql = "ALTER TABLE `$table` DROP `$name`";
+      $this->pdo->query($sql);
+      $this->output( "...removed column $name from $table"."\n" );
+    } catch(Exception $e) {
+      $this->catcher($e);
+    }
   }
   
   protected function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
-    $column = array($name, $type, $length, $null, $default);
-    $sql = "ALTER TABLE `$table` CHANGE `$name` ";
-    $sql.= $this->build_column_sql($column);
-    $this->pdo->query($sql);
-    $this->output( "...changed column $name in $table"."\n" );
+    try {
+      $column = array($name, $type, $length, $null, $default);
+      $sql = "ALTER TABLE `$table` CHANGE `$name` ";
+      $sql.= $this->build_column_sql($column);
+      $this->pdo->query($sql);
+      $this->output( "...changed column $name in $table"."\n" );
+    } catch(Exception $e) {
+      $this->catcher($e);
+    }
   }
   
   protected function rename_table($table, $new_name) {
-    $sql = "ALTER TABLE `$table` RENAME `$new_name`";
-    $this->pdo->query($sql);
-    $this->output( "...renamed table $table to $new_name"."\n");
+    try {
+      $sql = "ALTER TABLE `$table` RENAME `$new_name`";
+      $this->pdo->query($sql);
+      $this->output( "...renamed table $table to $new_name"."\n");
+    } catch(Exception $e) {
+      $this->catcher($e);
+    }
   }
   
   protected function run_sql($sql) {
-    $this->pdo->query($sql);
-    $this->output( "...executed raw sql command"."\n");
+    try {
+      $this->pdo->query($sql);
+      $this->output( "...executed raw sql command"."\n");
+    } catch(Exception $e) {
+      $this->catcher($e);
+    }
   }
   
   protected function output($string) {
     if(!$this->quiet_mode) {
       echo $string;
     }
+  }
+  
+  protected function catcher($e) {
+    echo "Notice: error with query: {$e->getMessage()}"."\n";
+    return true;
   }
   
   public function up() {}

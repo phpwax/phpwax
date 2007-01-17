@@ -3,10 +3,11 @@
 
 require_once dirname(__FILE__).'/../app/config/environment.php';
 
-$config_array = WXConfiguration::get('all');
 if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
-	$config_array['environment']=$argv[1];
+	Autoloader::run_application($argv[1], false)
 	unset($argv[1]);
+} else {
+	Autoloader::run_application("development", false)
 }
 
 if($argv[1] =="directory" && isset($argv[2])) {

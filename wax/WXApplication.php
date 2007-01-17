@@ -38,7 +38,7 @@ class WXApplication {
 	 *  @access private
    *  @return void
    */
-	private function setup_environment() {	
+	private function setup_environment() {
 		if(defined('ENV')) {
 		  WXConfiguration::set_environment(ENV);
 		} else {

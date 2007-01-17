@@ -2,7 +2,7 @@
 <?php
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 require_once dirname(__FILE__).'/../app/config/environment.php';
-Autoloader::run_test_application();
+Autoloader::run_application("test", false);
 define("CLI_ENV", true);
 
 if(  (!include 'simpletest/unit_tester.php') 
@@ -12,10 +12,6 @@ if(  (!include 'simpletest/unit_tester.php')
   ) {
   throw new WXDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
 }
-
-
-$config_array = WXConfiguration::get('all');
-$config_array['environment']="test";
 
 if($argv[1] == "wax") {
   $testdir = FRAMEWORK_DIR."/tests";
