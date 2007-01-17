@@ -130,12 +130,12 @@ class AutoLoader
 	
 	static public function initialise() {	  
 	  self::detect_test_mode();
-	  self::detect_environments();
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		WXConfiguration::set_instance();
+		self::detect_environments();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
