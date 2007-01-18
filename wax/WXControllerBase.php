@@ -144,6 +144,7 @@ abstract class WXControllerBase
 	    $path = "_".$path;
 	  }
 	  if($this->is_public_method($this, $partial)) $this->{$partial."_partial()"};
+	  print_r($this); exit;
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
