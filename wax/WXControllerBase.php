@@ -51,7 +51,7 @@ abstract class WXControllerBase
     foreach($this->filters[$when] as $action=>$filter) {
       if(is_array($filter) && $action=="all" && is_array($filter[1])) {
         foreach($filter[1] as $excluded_action) {
-          if($excluded_action != $this->action) $this->$filter[0];
+          if($excluded_action != $this->action) $this->$filter[0]();
         }
       }
       elseif($action == $this->action || $action == "all") {
