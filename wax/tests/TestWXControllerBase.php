@@ -21,16 +21,19 @@ class TestWXControllerBase extends WXTestCase
     }
     
     public function test_run_filters() {
-      Mock::generatePartial('TestController', "MockTestController", array("test", "index"));
+      Mock::generatePartial('TestController', "MockTestController", array("test", "index", "test2"));
       $controller = new MockTestController();
       $controller->before_filter("index", "test");
       $controller->before_filter("all", "test");
       $controller->after_filter("index", "test");
       $controller->after_filter("all", "test");
+      $controller->before_filter("all", "test2", array("index"));
       $controller->action="index";
       $controller->run_filters('before');
       $controller->run_filters('after');
       $controller->expectCallCount("test", 4);
+      $controller->expectCallCount("test2", 0);
+      
     }
 }
 
