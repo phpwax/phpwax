@@ -27,11 +27,13 @@ class TestWXControllerBase extends WXTestCase
       $controller->before_filter("all", "test");
       $controller->after_filter("index", "test");
       $controller->after_filter("all", "test");
-      $controller->before_filter("all", "test2", array("index"));
       $controller->action="index";
       $controller->run_filters('before');
       $controller->run_filters('after');
       $controller->expectCallCount("test", 4);
+      $controller->before_filter("all", "test2", array("index"));
+      $controller->action="index";
+      $controller->run_filters('before');
       $controller->expectCallCount("test2", 0);
       
     }
