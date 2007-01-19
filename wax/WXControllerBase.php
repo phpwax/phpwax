@@ -25,6 +25,7 @@ abstract class WXControllerBase
 
 	public function __construct() {
 	  $this->class_name=get_class($this);
+	  $this->set_referrer();
     $this->referrer=Session::get('referrer');
     $this->filters["before"]=array();
     $this->filters["after"]=array();
@@ -202,7 +203,6 @@ abstract class WXControllerBase
 		$this->{$this->action}();
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
-		$this->set_referrer();
 		if($content = $this->render_layout()) echo $content;
 		else echo $this->content_for_layout;
 	}
