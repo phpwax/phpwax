@@ -84,8 +84,7 @@ abstract class WXControllerBase
 	}
 	
 	protected function set_referrer() {
-	  if($_GET['route']  == '/index') Session::set('referrer', $_GET['route']);
-		else Session::set('referrer', "/".$_GET['route']);
+	  Session::set($_SERVER['HTTP_REFERER']);
 	}
 	
 	/**
