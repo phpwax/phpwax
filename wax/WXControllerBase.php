@@ -39,7 +39,7 @@ abstract class WXControllerBase
 	public function redirect_to($route) {
 	  error_log("FIRST ROUTE VALUE IS $route");
 		if(substr($route, 0,1) != "/" && !strpos($route, "http")) {
-		  error_log(substr($route, 0,1));
+		  error_log($route, "http");
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
