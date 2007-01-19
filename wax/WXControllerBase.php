@@ -43,7 +43,7 @@ abstract class WXControllerBase
 		if(!strpos($route, "http")) {
 		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
 	  }
-	  error_log("REDIECTING TO $route");
+	  error_log("REDIRECTING TO $route");
   	header("Location:$route");
    	exit;
   }
