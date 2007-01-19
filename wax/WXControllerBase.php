@@ -86,8 +86,7 @@ abstract class WXControllerBase
 	}
 	
 	protected function set_referrer() {
-	  error_log($_SERVER['HTTP_REFERER']);
-	  Session::set('referrer', $_SERVER['HTTP_REFERER']);
+	  Session::set('referrer', $_GET['route']);
 	}
 	
 	/**
