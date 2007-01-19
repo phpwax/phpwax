@@ -41,7 +41,9 @@ abstract class WXControllerBase
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
 		$this->set_referrer();
-		$route = "http://".$_SERVER['HTTP_HOST'].$route;
+		if(!strpos($route, "http")) {
+		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
+	  }
   	header("Location:$route");
    	exit;
   }
