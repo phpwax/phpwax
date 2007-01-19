@@ -43,7 +43,7 @@ abstract class WXControllerBase
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
-		if(!strpos($route, "http")) {
+		if(!strpos($route, "http")===0) {
 		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
 	  }
 	  error_log("REDIRECTING TO $route");
