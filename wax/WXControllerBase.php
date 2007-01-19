@@ -40,7 +40,6 @@ abstract class WXControllerBase
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
-		$this->set_referrer();
 		if(!strpos($route, "http")) {
 		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
 	  }
@@ -87,7 +86,8 @@ abstract class WXControllerBase
 	}
 	
 	protected function set_referrer() {
-	  Session::set('referrer', $_GET['route']);
+	  error_log("REFERRER IS ".$_SERVER['HTTP_REFERER']);
+	  Session::set('referrer', $_SERVER['HTTP_REFERER']);
 	}
 	
 	/**
@@ -202,6 +202,7 @@ abstract class WXControllerBase
 		$this->{$this->action}();
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
+		$this->set_referrer();
 		if($content = $this->render_layout()) echo $content;
 		else echo $this->content_for_layout;
 	}
