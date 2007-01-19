@@ -36,7 +36,7 @@ abstract class WXControllerBase
 	 *	@param string $route
  	 */   
 	public function redirect_to($route) {
-		if(substr($route, 0,1) != "/" && substr($route,0,4) != "http") {
+		if(substr($route, 0,1) != "/" && !strpos($route, "http")) {
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
