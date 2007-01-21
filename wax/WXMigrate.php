@@ -129,7 +129,7 @@ class WXMigrate
     return "0";
   }
 
-  public function version_less_migrate($directory, $direction="up") {
+  public function version_less_migrate($directory, $direction="up", $quiet=false) {
     if(!is_readable($directory)) return "Invalid directory";
     $migrations=File::scandir_recursive($directory);
     if(count($migrations)<1) return "No migrations in supplied directory";
@@ -137,7 +137,7 @@ class WXMigrate
       if(!strpos($migration, ".php")) return "Only directories of PHP migration files are allowed"; 
       include_once($directory.$migration);
       $class = $this->get_class_from_file($migration, false);
-      $instance = new $class;
+      $instance = new $class($quiet);
       $instance->{$direction}();
     }
     return "Database setup completed";
@@ -230,12 +230,12 @@ class WXMigrate
     return $sql;
   }
   
-  protected function create_table($table_name) {
+  public function create_table($table_name, $id=true) {
     try {
-      $sql = "CREATE TABLE `$table_name`(";
-      $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
+      $sql = "CREATE TABLE IF NOT EXISTS `$table_name`(";
+      if($id) $sql.= "`id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY";
       if(count($this->columns_array) > 0) {
-        $sql.= ", ";
+        if($id) $sql.= ", ";
         foreach($this->columns_array as $column) {
           $sql.= $this->build_column_sql($column);
           $sql.= ",";
@@ -246,22 +246,23 @@ class WXMigrate
       $sql.= ")";
       $this->pdo->query($sql);
       $this->output( "...created table $table_name"."\n");
+			return true;
     } catch(Exception $e) {
       $e = false; return $e;
     }
   }
   
-  protected function drop_table($table_name) {
+  public function drop_table($table_name) {
     $sql = "DROP TABLE IF EXISTS `$table_name`";
     $this->pdo->query($sql);
     $this->output( "...removed table $table_name"."\n" );
   }
   
-  protected function create_column($name, $type="string", $length = "128", $null=true, $default=null) {
+  public function create_column($name, $type="string", $length = "128", $null=true, $default=null) {
     $this->columns_array[] = array($name, $type, $length, $null, $default);
   }
   
-  protected function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
+  public function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
     try {
       if($type=="integer" && $length>11) $length="11";
       $column = array($name, $type, $length, $null, $default);
@@ -269,12 +270,13 @@ class WXMigrate
       $sql.= $this->build_column_sql($column);
       $this->pdo->query($sql);
       $this->output( "...added column $name to $table"."\n" );
+			return true;
     } catch(Exception $e) {
       $this->catcher($e);
     }
   }
   
-  protected function remove_column($table, $name) {
+  public function remove_column($table, $name) {
     try {
       $sql = "ALTER TABLE `$table` DROP `$name`";
       $this->pdo->query($sql);
@@ -284,7 +286,7 @@ class WXMigrate
     }
   }
   
-  protected function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
+  public function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
     try {
       $column = array($name, $type, $length, $null, $default);
       $sql = "ALTER TABLE `$table` CHANGE `$name` ";
@@ -296,7 +298,7 @@ class WXMigrate
     }
   }
   
-  protected function rename_table($table, $new_name) {
+  public function rename_table($table, $new_name) {
     try {
       $sql = "ALTER TABLE `$table` RENAME `$new_name`";
       $this->pdo->query($sql);
@@ -306,7 +308,7 @@ class WXMigrate
     }
   }
   
-  protected function run_sql($sql) {
+  public function run_sql($sql) {
     try {
       $this->pdo->query($sql);
       $this->output( "...executed raw sql command"."\n");
@@ -322,8 +324,8 @@ class WXMigrate
   }
   
   protected function catcher($e) {
-    echo "Notice: error with query: {$e->getMessage()}"."\n";
-    return true;
+    $this->output( "Notice: error with query: {$e->getMessage()}"."\n" );
+    return false;
   }
   
   public function up() {}

@@ -1,6 +1,11 @@
 <?php
 
-class TestModel extends WXActiveRecord {}
+class TestModel extends WXActiveRecord {
+	public function __construct() {
+	  parent::__construct();
+	  $this->has_many("test_model2", "images");
+	}
+}
 class TestModel2 extends WXActiveRecord {}
 class TestARMigration extends WXMigrate {
   public function up() {
@@ -8,10 +13,13 @@ class TestARMigration extends WXMigrate {
     $this->create_column("password");
     $this->create_column("email");
     $this->create_table("test_model");
+    $this->create_table("test_model2");
   }
   
   public function down() {
     $this->drop_table("test_model");
+    $this->drop_table("test_model2");
+    $this->drop_table("test_model_test_model2");
   }
 }
 
@@ -137,6 +145,29 @@ class TestWXActiveRecord extends WXTestCase
       $this->assertNotNull($this->model->delete($id) );
       $this->assertNull($this->model->find($id));
     }
+
+		public function test_has_many() {
+			$this->assertTrue(array_key_exists("images", $this->model1->has_many_throughs));
+			$this->assertEqual($this->model1->has_many_throughs['images'][0], "test_model2");
+			$this->assertEqual($this->model1->has_many_throughs['images'][1], "test_model_test_model2");
+			$this->model1->images = "4";
+			$this->model1->images = "12";
+			$this->assertEqual(count($this->model1->images), 2);
+		}
+		
+		public function test_has_many_methods() {
+			$this->model1->images = "4";
+			$this->model1->images = "12";
+			$this->model1->delete_images("12");
+			$this->assertEqual(count($this->model1->images), 1);
+			$this->model1->clear_images();
+			$this->assertEqual(count($this->model1->images), 0);
+			$this->model1->images = "4";
+			$this->model1->images = "4";
+			$this->model1->images = "4";
+			$this->model1->images = "4";
+			$this->assertEqual(count($this->model1->images), 1);
+		}
     
 }
 

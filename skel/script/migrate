@@ -14,7 +14,7 @@ if($argv[1] =="directory" && isset($argv[2])) {
   $migrate = new WXMigrate(true);
   $direction = "up";
   if(isset($argv[3])) $direction="down";
-  $result = $migrate->version_less_migrate($argv[2], $direction); 
+  $result = $migrate->version_less_migrate($argv[2], $direction, true); 
   exit($result."\n");
 } 
 

@@ -15,7 +15,7 @@ abstract class WXControllerBase
   public $controller;
   public $action;
   public $use_layout='application';
-  public $use_view=null;
+  public $use_view="_default";
   protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
@@ -37,16 +37,13 @@ abstract class WXControllerBase
 	 *	@param string $route
  	 */   
 	public function redirect_to($route) {
-	  error_log("FIRST ROUTE VALUE IS $route");
 		if(substr($route, 0,1) != "/" && !strpos($route, "http")===0) {
-		  error_log(strpos($route, "http"));
 		  $controller=new WXRoute;
 		  $route = "/".$controller->get_url_controller()."/$route";
 		}
 		if(!strpos($route, "http")===0) {
 		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
 	  }
-	  error_log("REDIRECTING TO $route");
   	header("Location:$route");
    	exit;
   }
@@ -89,7 +86,6 @@ abstract class WXControllerBase
 	}
 	
 	protected function set_referrer() {
-	  error_log("REFERRER IS ".$_SERVER['HTTP_REFERER']);
 	  Session::set('referrer', $_SERVER['HTTP_REFERER']);
 	}
 	
@@ -110,8 +106,9 @@ abstract class WXControllerBase
 	 *	@return string
  	 */
   protected function render_view() {
+		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
-		if(!$this->use_view) $this->use_view = $this->action;
+		if($this->use_view=="_default") $this->use_view = $this->action;
     $view = new WXTemplate($this);
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
@@ -148,7 +145,7 @@ abstract class WXControllerBase
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-	  if($this->is_public_method($this, $partial)) $this->{$partial."_partial()"};
+	  if($this->is_public_method($this, $partial."_partial()")) $this->{$partial."_partial()"};
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
@@ -206,7 +203,8 @@ abstract class WXControllerBase
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
-		else echo $this->content_for_layout;
+		elseif($this->content_for_layout) echo $this->content_for_layout;
+		else echo "";
 	}
 
    

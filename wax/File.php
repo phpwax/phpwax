@@ -29,7 +29,7 @@ class File {
 	
 	static function is_image($file) {
 		if(!is_file($file)) { return false; }
-		if(getImageSize($file)) {
+		if(getimagesize($file)) {
 			return true;
 		}
 		return false;
@@ -55,7 +55,8 @@ class File {
 	}
 	
 	static function display_image($image) {
-		$info=getImageSize($image);
+		if(!self::is_image($image)) return false;
+		$info=getimagesize($image);
 		$length=filesize($image);
 		$imagecontent=substr(file_get_contents($image),0 ,-1);
 		if($imagecontent) { 

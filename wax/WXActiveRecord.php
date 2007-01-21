@@ -24,7 +24,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   protected $constraints = array();
   protected $children = array();
 	protected $columns = array();
-	protected $has_many_throughs = array();
+	public $has_many_throughs = array();
 	public $paginate_page;
 	public $paginate_limit;
 	public $paginate_total;
@@ -58,6 +58,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 				break;
 			
 		}
+		$this->after_setup();
 	}
 
  /**
@@ -84,6 +85,19 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 
 
+	/**
+	 * Join tables are automatically created, this little method handles it.
+	 *
+	 * @return void
+	 * @param $join 
+	 **/
+	protected function initialise_has_many($join, $rel) {
+		$migration = new WXMigrate(true);
+		$migration->create_column($this->table."_id", "integer");
+		$migration->create_column($rel."_id", "integer");
+		$migration->create_column("order", "integer", 8, false, "0");
+	 	$migration->create_table($join, false);
+	}
  /**
    * has_many returns an array of associated objects. There is a recursion block in __get 
 	 * which performing the operation statically overcomes.
@@ -109,12 +123,21 @@ class WXActiveRecord extends WXValidations implements Iterator
     	return $this->row[$name];
     }
 	  
-  /**
-   *    Then we see if the attribute has a dedicated method
-   */ 
-   if(method_exists($this, $name)) {
-     return $this->{$name}();
-   } 
+   /**
+    *    Then we see if the attribute has a dedicated method
+    */ 
+    if(method_exists($this, $name)) {
+     	return $this->{$name}();
+   	}
+
+	 /**
+    *  Then we see if it has been setup as a has_many relationship.
+	  *  First we create the join table (if it doesn't exist)
+	  *  then we do a find of the associated table based on the join table.
+    */ 
+    if(array_key_exists($name, $this->has_many_throughs)) {
+			return $this->has_many_methods("get", $name);
+   	}
 
 	 /**
     *  Next we try and link to a child object of the same name
@@ -142,11 +165,17 @@ class WXActiveRecord extends WXValidations implements Iterator
   *  @param  mixed   value   property value
   */
 	public function __set( $name, $value ) {
+	
+		// Nice shortcut to add an object to an association.
+  	if(array_key_exists($name, $this->has_many_throughs)) {
+			return $this->has_many_methods("add", $name, $value);
+		}
+		
   	if( ! is_array( $this->row ) ) {
     	$this->row = array();
     }
     if(!is_array($value)) {
-      $this->row[$name] = mysql_real_escape_string($value);
+      $this->row[$name] = $value;
     } else $this->row[$name] = $value;
     
   }
@@ -245,8 +274,23 @@ class WXActiveRecord extends WXValidations implements Iterator
     return $collection;
   }
   
-  public function has_many($join, $through, $on) {
-    $this->has_many_throughs[]=array($join, $through, $on);
+  /**
+   * Adds a has_many join to the object. 
+   *
+   * @return void
+   * @param $table
+   * @param $method
+   * @param $join
+   **/
+
+  public function has_many($table, $method, $join_table=false) {
+		if(!$join_table) {
+			$join_elements=array($this->table, $table);
+			sort($join_elements);
+			$join_table = implode("_", $join_elements);
+		}
+    $this->has_many_throughs[$method]=array($table, $join_table);
+		$this->initialise_has_many($join_table, $table);
   }
 
  /**
@@ -646,15 +690,14 @@ class WXActiveRecord extends WXValidations implements Iterator
     $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
     return $this->find_all($options);
   }
-	
-	public function __call( $func, $args ) {
-	  $func = WXInflections::underscore($func);
+
+	public function dynamic_finders($func, $args) {
+		$func = WXInflections::underscore($func);
 	  $finder = explode("by", $func);
 		$what=explode("and", $finder[1]);
 		foreach($what as $key=>$val) {
 		  $what[$key]=rtrim(ltrim($val, "_"), "_");
 		}
-		
     if( $args ) {
 			if(count($what)==2) { 
 				$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
@@ -670,6 +713,47 @@ class WXActiveRecord extends WXValidations implements Iterator
         return $this->find_first($params);
       }
     }
+	}
+	
+	public function has_many_methods($operation, $column, $value=null, $order="0") {
+		if(is_array($value)) {
+			if(isset($value[1])) $order = $value[1];
+			$value = $value[0];
+		}
+		$current = $this->row[$this->primary_key];
+		$rel = $this->has_many_throughs[$column][0];
+		$join = $this->has_many_throughs[$column][1];
+		switch($operation) {
+			case "find":
+				$rel_class = WXInflections::camelize($rel, true);
+			 	$table = new $rel_class;
+				$result = $table->find_by_sql("SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id 
+					WHERE $join.{$this->table}_id = $current AND $join.{$rel}_id = $value");
+				return $result[0];
+			case "delete":
+				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
+			 	break;
+			case "add":
+				return $this->pdo->query("INSERT INTO $join ({$this->table}_id, {$rel}_id, `order`) VALUES($current, $value, $order)");
+				break;
+			case "clear":
+				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current");
+				break;
+			case "get":
+				$rel_class = WXInflections::camelize($rel, true);
+			 	$table = new $rel_class;
+				return $table->find_by_sql("SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id 
+				WHERE $join.{$this->table}_id = $current ORDER BY `order` ASC");
+			case "order":
+				return $this->pdo->query("UPDATE $join SET `order`=$order WHERE {$this->table}_id = $current AND $value {$rel}_id = $value");
+		}
+	}
+	
+	public function __call( $func, $args ) {
+	  $function = explode("_", $func);
+		if(array_key_exists($function[1], $this->has_many_throughs) && count($function)==2) {
+			return $this->has_many_methods($function[0], $function[1], $args);
+		} else return $this->dynamic_finders($func, $args);
   }
   
   /**
@@ -677,6 +761,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   	*  
   	*/	
 
+		public function after_setup() {}
   	public function before_save() {}
   	public function after_save() {}
   	public function before_update() {}

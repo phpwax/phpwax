@@ -23,6 +23,10 @@ class WXRoute
 	protected $controller;
 	public function __construct() {
 		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
+		$route = $_GET['route'];
+		unset($_GET['route']);
+		$this->route_array = array_merge($this->route_array, $_GET);
+		$_GET['route']=$route;
 		$this->config_array=WXConfiguration::get('route');
 		$this->map_routes();
 		$this->controller = $this->pick_controller();	
