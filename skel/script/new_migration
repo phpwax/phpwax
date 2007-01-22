@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
+Autoloader::run_application("development", false);
 $gen = new WXGenerator("migration", array_slice($argv, 1));
 ?>
