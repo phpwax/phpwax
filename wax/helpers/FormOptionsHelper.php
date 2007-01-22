@@ -151,7 +151,7 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    if(strlen($this->object->{$this->attribute_name})>3) {
+    if(strlen($this->object->{$this->attribute_name})>3 && $this->object->{$this->attribute_name}!="0000-00-00") {
       $selected_day = substr($this->object->{$this->attribute_name}, 8,2);
       $selected_month = substr($this->object->{$this->attribute_name}, 5,2);
       $selected_year = substr($this->object->{$this->attribute_name}, 0,4);
