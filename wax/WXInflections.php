@@ -34,6 +34,8 @@ class WXInflections
   
   public function underscore($camel_word) {
     $underscore = strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $camel_word));
+    $underscore = str_replace(' ', '_', $underscore);
+    
     return $underscore;
   }
   
