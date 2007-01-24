@@ -4,11 +4,11 @@
  */
 
 /**
-	*	An abstract base class to handle basic authentication.
-	* Can be extended to check access via a db or flat file.
+	*	An class to handle database authentication.
+	* Can be extended to check access via a flat file or any other method.
  	* @package php-wax
   */
-class WXAuthenticate
+class WXDBAuthenticate
 {
 
 
@@ -19,7 +19,7 @@ class WXAuthenticate
 	 *	@var int
 	 */
   protected $user_id=null;
-	protected $db_table;
+	public static $db_table;
 	 
   
   /**
@@ -31,7 +31,10 @@ class WXAuthenticate
   
   protected $session_key = "loggedin_user";
   
-	function __construct($username=null, $password=null, $encrypted=false) {
+	function __construct($username=null, $password=null, $encrypted=false, $db_table=false) {
+	  if(!self::$db_table && $db_table) {
+	    self::$db_table = $db_table;
+	  }
 	  if($username && $password) {
 	    $this->verify($username, $password);
 	  } elseif($sess_val = Session::get($this->session_key)) {
@@ -67,6 +70,10 @@ class WXAuthenticate
 	    $this->user_id = $user_id;
 	  }
   }
+  
+  public function encrypt($password) {
+    return md5($password);
+  }
 
 	/**
 	 *	Logs out a user by unsetting loggedin_user variable in the session.
@@ -87,7 +94,7 @@ class WXAuthenticate
 	 *	@param int $length
 	 */	
 	protected function makeRandomPassword($length) { 
-	 	$salt = "ABCDEFGHJKLMNPRSTUVWXYZ0123456789abchefghjkmnpqrstuvwxyz"; 
+	 	$salt = "zqrstuvwxypnmkjhgfehc56789ab43210ZYXWVHJKLMNPRSTUGFEDCBA"; 
 		srand((double)microtime()*1000000); 
   	for($i = 0;$i < $length;$i++) { 
   	  $num = rand() % 59; 
@@ -101,7 +108,7 @@ class WXAuthenticate
   /**
 	 *	This method is provided by the subclass
 	 */
-  abstract protected function verify($username, $password);
+  protected function verify($username, $password);
   
   function __destruct() {
     if($this->user_id) {
