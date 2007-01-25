@@ -707,7 +707,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 			elseif(is_array($args[2])) {
 				if(isset($args[2]["conditions"])) $conds.=" AND ".$args[2]["conditions"]; 
 				$params = array_merge($args[2], array("conditions"=>$conds));
-			}
+			} else $params = $conds;
+			
 			if($finder[0]=="find_all_") {
         return $this->find_all($params);
       } else {
