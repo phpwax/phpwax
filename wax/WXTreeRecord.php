@@ -21,7 +21,14 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
     return $this->$method($this->rel_column);
   }
   
-  public function getChildren() {return $this->get_children();}
+  public function getChildren($order = null) {return $this->get_children($order);}
+
+	public function get_children($order = null) {
+		if($order) $params = array("order"=>$order);
+		else $params=array();
+		$method = "find_all_by_$this->rel_column";
+    return $this->$method($this->id, $params);
+	}
   
   
   public function siblings() {
@@ -67,6 +74,11 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
  	  }
  	  return $level;
  	}
+
+	public function find_roots($params = array()) {
+		$params = array_merge($params, array("conditions"=>"{$this->rel_column} = 0"));
+		return $this->find_all($params);
+	}
   
 }
 
