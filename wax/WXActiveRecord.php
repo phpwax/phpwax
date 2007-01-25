@@ -694,7 +694,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		foreach($what as $key=>$val) {
 		  $what[$key]=rtrim(ltrim($val, "_"), "_");
 		}
-    if( $args ) {
+    if( count($args)>0 ) {
 			if(count($what)==2) { 
 				$conds=$what[0]."='".$args[0]."' AND ".$what[1]."='".$args[1]."'";
 			}else{
@@ -707,12 +707,11 @@ class WXActiveRecord extends WXValidations implements Iterator
 			elseif(is_array($args[2])) {
 				if(isset($args[2]["conditions"])) $conds.=" AND ".$args[2]["conditions"]; 
 				$params = array_merge($args[2], array("conditions"=>$conds));
-			} else $params = $conds;
-			
+			}
 			if($finder[0]=="find_all_") {
         return $this->find_all($params);
       } else {
-        return $this->find_first($params);
+        return $this->find_first($args);
       }
     }
 	}
