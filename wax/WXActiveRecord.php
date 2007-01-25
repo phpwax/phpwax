@@ -132,8 +132,8 @@ class WXActiveRecord extends WXValidations implements Iterator
 
 	 /**
     *  Then we see if it has been setup as a has_many relationship.
-	  *  First we create the join table (if it doesn't exist)
-	  *  then we do a find of the associated table based on the join table.
+	  *  This is passed on to the has_many_methods method which will
+	  *  perform an operation on the associated table based on the join table.
     */ 
     if(array_key_exists($name, $this->has_many_throughs)) {
 			return $this->has_many_methods("get", $name);
@@ -146,10 +146,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     $class_name = WXInflections::camelize($name, true);
     if($id) {
     	$foreign_key = $this->table . '_id';
-			if(array_key_exists( $name, $this->children ) && $this->children[$name]->getConstraint( $foreign_key ) == $id ) {
-      	// return cached instance
-        return $this->children[$name];
-      }
       if(class_exists($class_name)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
       } 
