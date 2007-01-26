@@ -5,6 +5,7 @@ $plugin_array = array(
   "cms"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
   "cmscore"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
   "cms-email"=>"svn://php-wax.com/home/phpwax/svn/plugins/subscription_manager/trunk"
+  "cms-ecom"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms-ecom/trunk"
 );
 if(!isset($argv[1]) ) {
   exit("[ERROR] You must supply a plugin name that you wish to install. 
