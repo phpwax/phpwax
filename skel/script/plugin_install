@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/../app/config/environment.php';
 $plugin_array = array(
   "cms"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
   "cmscore"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
-  "cms-email"=>"svn://php-wax.com/home/phpwax/svn/plugins/subscription_manager/trunk"
+  "cms-email"=>"svn://php-wax.com/home/phpwax/svn/plugins/subscription_manager/trunk",
   "cms-ecom"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms-ecom/trunk"
 );
 if(!isset($argv[1]) ) {
