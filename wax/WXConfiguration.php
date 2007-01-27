@@ -14,7 +14,7 @@
  *  then it can easily be replaced with other methods.
  *  
  *  This is a Singleton object which once initialised cannot be duplicated, 
- *  the inject_configuration() method allows infinite possibilites to alter the runtime
+ *  the set() method allows infinite possibilites to alter the runtime
  *  environment, either by loading another config file or overwriting via php.
  *
  *  @author Ross Riley

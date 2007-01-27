@@ -55,7 +55,6 @@ class AutoLoader
    */
   static public $registry = array();
   static public $registry_chain = array("user", "application", "plugin", "framework");
-  static public $production_server = false;
   
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility][$class]=$path;
@@ -72,6 +71,12 @@ class AutoLoader
 	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
+		$setup = PLUGIN_DIR.$plugin."/setup.php";
+		if(is_readable($setup)) include_once($setup);
+	}
+	
+	static public function plugin_installed($plugin) {
+		return is_readable(PLUGIN_DIR.$plugin);
 	}
 	
 	static public function recursive_register($directory, $type) {
@@ -84,10 +89,6 @@ class AutoLoader
 			  self::register($type, $classname, $file->getPathName());
 			}	
 		}
-	}
-	
-	static public function add_plugin_directory($plugin) {
-	  self::include_plugin($plugin);
 	}
 	
 	static public function include_dir($directory, $force = false) {

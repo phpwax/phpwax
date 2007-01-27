@@ -50,7 +50,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		switch(true) {
 			case is_numeric($param):			
 			case is_string($param):
-				$this->_find( $param );
+				$result = $this->_find( $param );
 				break;
 			case strtolower( get_class( $param ) ) == 'pdo':
 				$this->pdo = $param;
@@ -735,6 +735,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
 			 	break;
 			case "add":
+				$this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
 				return $this->pdo->query("INSERT INTO $join ({$this->table}_id, {$rel}_id, `order`) VALUES($current, $value, $order)");
 				break;
 			case "clear":

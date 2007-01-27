@@ -79,6 +79,7 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
 		$params = array_merge($params, array("conditions"=>"{$this->rel_column} = 0"));
 		return $this->find_all($params);
 	}
+	
   
 }
 

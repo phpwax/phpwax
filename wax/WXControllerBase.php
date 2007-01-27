@@ -19,6 +19,7 @@ abstract class WXControllerBase
   protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
+	public $shared_plugin=false;
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 
@@ -113,6 +114,8 @@ abstract class WXControllerBase
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
+    $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$this->use_view);
+    $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$this->use_view);
     ob_end_clean();		
     return $view->parse();
   }
@@ -126,6 +129,7 @@ abstract class WXControllerBase
     $layout = new WXTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
+    $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
     ob_end_clean();
     return $layout->parse();
   }
@@ -151,6 +155,8 @@ abstract class WXControllerBase
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
+    $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
+    $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
     return $partial->parse();
 	}
 	

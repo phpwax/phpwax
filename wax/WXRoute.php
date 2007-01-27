@@ -28,6 +28,9 @@ class WXRoute
 		$this->route_array = array_merge($this->route_array, $_GET);
 		$_GET['route']=$route;
 		$this->config_array=WXConfiguration::get('route');
+		foreach($this->route_array as $key=>$value) {
+		  $this->route_array[$key]=WXInflections::underscore($value);
+		}
 		$this->map_routes();
 		$this->controller = $this->pick_controller();	
 	}
@@ -39,7 +42,7 @@ class WXRoute
     *  
     *  The left hand side specifies a match, the right hand side is the new output.
     *  for example, - admin/login: page/login - will rewrite the url from the left to the right.
-    *  Hell, if you fancy it you can even include the '*' wildcard. -admin/* : page/*
+    *  Hell, if you fancy it you can even include the '*' wildcard. -admin/* : page/
     *
     *  @return void
     */
@@ -50,6 +53,7 @@ class WXRoute
 			$this->route_array[0]=$this->config_array[$this->route_array[0]];
 		}
 	}
+	
 	
 	public function pick_controller() {
 	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
@@ -94,6 +98,11 @@ class WXRoute
 	
 	public function get_url_controller() {
 		$url = str_replace("Controller", "", $this->pick_controller());
+		return slashify($url);
+	}
+	
+	public function controller_to_url($controller) {
+		$url = str_replace("Controller", "", $controller);
 		return slashify($url);
 	}
 	

@@ -68,6 +68,7 @@ class FormOptionsHelper extends FormHelper {
         $options = array();
         if(is_array($choices)) {
             foreach($choices as $choice_value => $choice_text) {
+							$choice_text = str_replace("&nbsp;", "^", $choice_text);
                 if(!is_null($choice_value)) {
                     $is_selected = ($choice_value == $selected)
                         ? true : false;
@@ -79,16 +80,15 @@ class FormOptionsHelper extends FormHelper {
                     $options[] = "<option value=\""
 		      . htmlspecialchars($choice_value)
 		      . "\" selected=\"selected\">"
-		      . htmlspecialchars($choice_text)."</option>";
+		      . str_replace("^","&nbsp;", htmlspecialchars($choice_text))."</option>";
                 } else {
                     $options[] = "<option value=\""
 		      . htmlspecialchars($choice_value)
 		      . "\">"
-		      . htmlspecialchars($choice_text)."</option>";
+		      . str_replace("^", "&nbsp;",htmlspecialchars($choice_text))."</option>";
                 }                        
             }    
         }
-        
         return implode("\n", $options);        
     }
     

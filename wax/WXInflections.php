@@ -3,8 +3,7 @@
  * Provides standard string inflections
  *
  * @author Ross Riley
- * @version $Id$
- * @package waxphp
+ * @package PHP-WAX
  **/
 class WXInflections 
 {
@@ -34,8 +33,8 @@ class WXInflections
   
   public function underscore($camel_word) {
     $underscore = strtolower(preg_replace('/([a-z])([A-Z])/', "$1_$2", $camel_word));
+    $underscore = str_replace("-", "_", $underscore);
     $underscore = str_replace(' ', '_', $underscore);
-    
     return $underscore;
   }
   
