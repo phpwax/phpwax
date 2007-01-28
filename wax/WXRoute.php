@@ -97,8 +97,7 @@ class WXRoute
 	}
 	
 	public function get_url_controller() {
-		$url = str_replace("Controller", "", $this->pick_controller());
-		return slashify($url);
+	  return $this->controller_to_url($this->pick_controller());
 	}
 	
 	public function controller_to_url($controller) {

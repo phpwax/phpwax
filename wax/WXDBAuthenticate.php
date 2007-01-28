@@ -18,30 +18,19 @@ class WXDBAuthenticate
 	 *	@access protected
 	 *	@var int
 	 */
-  protected $user_id=null;
-	public static $db_table;
-	 
-  
-  /**
-	 *	A simple flag, indicates whether passwords are encrypted
-	 *	@access protected
-	 *	@var boolean
-	 */
-  protected $encrypt_password=false;
-  
+ 	public $user_field = "username";
+ 	public $password_field = "password";  
+ 	protected $user_id=null;
+  protected $user_object=null;
+	protected $db_table = "user";
+  protected $encrypt=false;
   protected $session_key = "loggedin_user";
   
-	function __construct($username=null, $password=null, $encrypted=false, $db_table=false) {
-	  if(!self::$db_table && $db_table) {
-	    self::$db_table = $db_table;
-	  }
-	  if($username && $password) {
-	    $this->verify($username, $password);
-	  } elseif($sess_val = Session::get($this->session_key)) {
-	    $this->user_id = $sess_val;
-	    $this->verify(null, null, $this->user_id);
-	  }
+	function __construct($options=array()) {
+	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
 	}
+	
 	/**
 	 *	Sees if a loggedin_user is set in the session.
 	 *	@access public
@@ -57,21 +46,13 @@ class WXDBAuthenticate
   public function is_logged_in() {
     return $this->check_logged_in();
   }
-
-	/**
-	 *	Sets a loggedin_user variable in the session.
-	 *	@access public
-	 *	@return bool
-	 */  
-  public function set_logged_in($user_id) {
-	  if($this->user_id) {
-	    return false;
-	  } else {
-	    $this->user_id = $user_id;
-	  }
-  }
   
-  public function encrypt($password) {
+  public function get_user() {
+    return $this->user_object;
+  }
+
+  
+  protected function encrypt($password) {
     return md5($password);
   }
 
@@ -104,11 +85,20 @@ class WXDBAuthenticate
 	  return $pass; 
 	}
 
-  
-  /**
-	 *	This method is provided by the subclass
-	 */
-  protected function verify($username, $password);
+
+  public function verify($username, $password) {
+    $object = WXInflections::camelize($this->db_table, true);
+    $user = new $object;
+    $method = "find_by_".$this->user_field."_and_".$this->password_field;
+    if($this->encrypt) $password = $this->encrypt($password);
+    $result = $user->$method($username, $password);
+    if($result) {
+      $this->user_object = $result;
+      $this->user_id = $result->id;
+      return true;
+    }
+    return false;
+  }
   
   function __destruct() {
     if($this->user_id) {

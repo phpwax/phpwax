@@ -1,20 +1,14 @@
 <?php
 /**
-	* @package wx.php.core
+	* @package PHP-WAX
 	*/
 	
 /**
- * @package wx.php.core
+ * @package PHP-WAX
  *	Email class gives a comprehensive API for sending emails.
  */
 class WXEmail
 {
-
-    /**
-     * Email priority (1 = High, 3 = Normal, 5 = low).
-     * @var int
-     */
-    public $priority          = 3;
 
     /**
      * Sets the CharSet of the message.
@@ -51,7 +45,7 @@ class WXEmail
      * Sets the From name of the message.
      * @var string
      */
-    public $fromName           = "Website Email";
+    public $from_name           = "Website Email";
 
     /**
      * Sets the Sender email (Return-Path) of the message.
@@ -98,7 +92,7 @@ class WXEmail
     protected $to              = array();
     protected $cc              = array();
     protected $bcc             = array();
-    protected $ReplyTo         = array();
+    protected $replyto         = array();
     protected $attachment      = array();
     protected $CustomHeader    = array();
     protected $message_type    = "";
@@ -176,9 +170,9 @@ class WXEmail
      * @return void
      */
     function add_replyto_address($address, $name = "") {
-        $cur = count($this->ReplyTo);
-        $this->ReplyTo[$cur][0] = trim($address);
-        $this->ReplyTo[$cur][1] = $name;
+        $cur = count($this->replyto);
+        $this->replyto[$cur][0] = trim($address);
+        $this->replyto[$cur][1] = $name;
     }
 
 
@@ -225,6 +219,7 @@ class WXEmail
      * @return bool
      */
     function MailSend($header, $body) {
+
 			if($rt = @mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
@@ -395,50 +390,34 @@ class WXEmail
             $result .= $this->HeaderLine("Return-Path", trim($this->sender));
         
         // To be created automatically by mail()
-        if(count($this->to) > 0)
+        if(is_array($this->to) && count($this->to) > 0)
                 $result .= $this->AddrAppend("To", $this->to);
-        else if (count($this->cc) == 0)
-                $result .= $this->HeaderLine("To", "undisclosed-recipients:;");
+        else $result .= $this->HeaderLine("To", $this->to);
         if(count($this->cc) > 0)
                 $result .= $this->AddrAppend("Cc", $this->cc);
  
 
         $from = array();
         $from[0][0] = trim($this->from);
-        $from[0][1] = $this->fromName;
+        $from[0][1] = $this->from_name;
         $result .= $this->AddrAppend("From", $from); 
 
         // sendmail and mail() extract Bcc from the header before sending
         if(count($this->bcc) > 0)
             $result .= $this->AddrAppend("Bcc", $this->bcc);
 
-        if(count($this->ReplyTo) > 0)
-            $result .= $this->AddrAppend("Reply-to", $this->ReplyTo);
+        if(count($this->replyto) > 0)
+            $result .= $this->AddrAppend("Reply-to", $this->replyto);
 
 
         $result .= sprintf("Message-ID: <%s@%s>%s", $uniq_id, $this->ServerHostname(), $this->LE);
-        $result .= $this->HeaderLine("X-Priority", $this->priority);
-        $result .= $this->HeaderLine("X-Mailer", "PHPMailer [version " . $this->Version . "]");
-        
-        if($this->ConfirmReadingTo != "")
-        {
-            $result .= $this->HeaderLine("Disposition-Notification-To", 
-                       "<" . trim($this->ConfirmReadingTo) . ">");
-        }
-
-        // Add custom headers
-        for($index = 0; $index < count($this->CustomHeader); $index++)
-        {
-            $result .= $this->HeaderLine(trim($this->CustomHeader[$index][0]), 
-                       $this->EncodeHeader(trim($this->CustomHeader[$index][1])));
-        }
         $result .= $this->HeaderLine("MIME-Version", "1.0");
 
         switch($this->message_type)
         {
             case "plain":
                 $result .= $this->HeaderLine("Content-Transfer-Encoding", $this->Encoding);
-                $result .= sprintf("Content-Type: %s; charset=\"%s\"",
+                $result .= sprintf("Content-Type: %s; CharSet=\"%s\"",
                                     $this->ContentType, $this->CharSet);
                 break;
             case "attachments":
@@ -1019,13 +998,6 @@ class WXEmail
         return $str;
     }
 
-    /**
-     * Adds a custom header. 
-     * @return void
-     */
-    function AddCustomHeader($custom_header) {
-        $this->CustomHeader[] = explode(":", $custom_header, 2);
-    }
     
 }
 
