@@ -15,8 +15,7 @@
  * This class fetches the URL parameters from $_GET
  * It also requires access to the config object to check configurations.
  **/
-class WXRoute
-{
+class WXRoute {
 	protected $route_array=array();
 	protected $config_array=array();
 	protected $actions_array=array();
