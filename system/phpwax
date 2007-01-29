@@ -1,0 +1,25 @@
+#!/bin/sh
+PHP=`which php`
+exec $PHP -C -q -d output_buffering=1 "$0" "$@"
+<?php
+//
+//
+// Web-site 		http://php-wax.com/
+// Project	http://dev.php-wax.com/
+//
+
+ob_end_clean(); // make output from autofind php code disapear
+
+/** 
+ * PHP-WAX Project generation script
+ */
+
+
+include("phpwax/wax/AutoLoader.php");
+$generate = new WXGenerator();
+$source_directory = dirname(constant("FRAMEWORK_DIR"))."/skel/";
+$destination = getcwd();
+$generate->recursive_directory_copy($source_directory, $destination, true);
+exit;
+
+?>

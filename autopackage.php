@@ -21,7 +21,7 @@ require_once 'PEAR/PackageFileManager/Svn.php';
 /**
  * Base version
  */
-$baseVersion = '0.7.1';
+$base_version = '0.7.1';
 
 /**
  * current version
@@ -29,10 +29,6 @@ $baseVersion = '0.7.1';
 $version	= $baseVersion;
 $dir		= dirname( __FILE__ );
 
-/**
- * Current API version
- */
-$apiVersion = '0.7.1';
 
 /**
  * current state
@@ -40,22 +36,17 @@ $apiVersion = '0.7.1';
 $state = 'alpha';
 
 /**
- * current API stability
- */
-$apiStability = 'stable';
-
-/**
  * release notes
  */
 $notes = <<<EOT
-TESTING
+See dev.php-wax.com for details
 EOT;
 
 /**
  * package description
  */
 $description = <<<EOT
-A Test Package
+Pear install of the PHP-WAX framework
 EOT;
 
 $package = new PEAR_PackageFileManager2();
@@ -68,9 +59,7 @@ $result = $package->setOptions(array(
     'baseinstalldir'    => 'phpwax',
     'packagedirectory'  => './',
     'dir_roles'         => array(
-								 'docs' => 'doc',
-                                 'examples' => 'doc',
-                                 'tests' => 'test',
+								'system' => 'script'
                                  )
     ));
 if (PEAR::isError($result)) {
@@ -83,10 +72,8 @@ $package->setSummary('Full Stack PHP Framework');
 $package->setDescription($description);
 
 $package->setChannel('pear.php-wax.com');
-$package->setAPIVersion($apiVersion);
 $package->setReleaseVersion($version);
 $package->setReleaseStability($state);
-$package->setAPIStability($apiStability);
 $package->setNotes($notes);
 $package->setPackageType('php');
 $package->setLicense('MIT', 'http://www.opensource.org/licenses/mit-license.php');

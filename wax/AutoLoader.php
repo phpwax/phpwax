@@ -21,6 +21,7 @@ define('PUBLIC_DIR', WAX_ROOT.'public/');
 define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
 define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
+if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
 
 function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);

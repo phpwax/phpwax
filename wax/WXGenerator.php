@@ -164,6 +164,35 @@ class WXGenerator {
 		}
 		$this->add_stdout("Created migration file at app/db/migrate/".$file.".php");
   }
+  
+  public function recursive_directory_copy($source_directory, $dest_directory, $verbose = false) {
+      $num = 0;
+      if(!is_dir($dest_directory)) mkdir($dest_directory);
+      if($curdir = opendir($source_directory)) {
+       while($file = readdir($curdir)) {
+         if($file != '.' && $file != '..') {
+           $srcfile = $source_directory . '\\' . $file;
+           $dstfile = $dest_directory . '\\' . $file;
+           if(is_file($srcfile)) {
+             if(is_file($dstfile)) $ow = filemtime($srcfile) - filemtime($dstfile); else $ow = 1;
+             if($ow > 0) {
+               if($verbose) echo "Copying '$srcfile' to '$dstfile'...";
+               if(copy($srcfile, $dstfile)) {
+                 touch($dstfile, filemtime($srcfile)); $num++;
+                 if($verbose) echo "OK\n";
+               }
+               else echo "Error: File '$srcfile' could not be copied!\n";
+             }                 
+           }
+           else if(is_dir($srcfile)) {
+             $num += $this->recursive_directory_copy($srcfile, $dstfile, $verbose);
+           }
+         }
+       }
+       closedir($curdir);
+      }
+      return $num;
+  }
 
 	function __destruct() {
 		foreach($this->stdout as $output_line) {
