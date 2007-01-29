@@ -70,7 +70,8 @@ class TestWXActiveRecord extends WXTestCase
     }
     
     public function test_find_array() {
-      
+      $result = $this->model->find(array(1,2,3));
+      $this->assertEqual(count($result), 3);
     }
     
     public function test_simple_dynamic_finders() {
