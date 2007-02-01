@@ -29,6 +29,7 @@ class WXDBAuthenticate
 	function __construct($options=array()) {
 	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+	  $this->setup_user();
 	}
 	
 	/**
@@ -85,6 +86,17 @@ class WXDBAuthenticate
 	  return $pass; 
 	}
 
+  public function setup_user() {
+    if($id = Session::get($this->session_key)) {
+      $object = WXInflections::camelize($this->db_table, true);
+      $user = new $object;
+      $result = $user->find($id);
+      if($result) {
+        $this->user_object = $result;
+        $this->user_id = $result->id;
+      }
+    }
+  }
 
   public function verify($username, $password) {
     $object = WXInflections::camelize($this->db_table, true);
