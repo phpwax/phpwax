@@ -1005,12 +1005,12 @@ class WXEmail
       if(is_readable($html && is_readable($txt))) {
         $this->is_html = true;
         $this->body=WXControllerBase::view_to_string($html, $this);
-        $this->alt_body = WXControllerBase::view_to_string($txt, $this);
+        $this->alt_body = WXControllerBase::view_to_string($txt, $this, "txt");
       } elseif(is_readable($html)) {
         $this->is_html = true;
         $this->body=WXControllerBase::view_to_string($html, $this);
       } elseif(!is_readable($html) && is_readable($txt)) {
-        $this->body = WXControllerBase::view_to_string($txt, $this);
+        $this->body = WXControllerBase::view_to_string($txt, $this, "txt");
       }
     }
     
