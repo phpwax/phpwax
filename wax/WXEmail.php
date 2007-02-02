@@ -1018,7 +1018,7 @@ class WXEmail
       if(substr($name, 0,4)=="send") {
         $action = substr($name, 6);
         $this->get_templates($action);
-        $this->$action();
+        $this->$action($args);
         $this->send();
       }
     }
