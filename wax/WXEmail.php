@@ -1014,16 +1014,7 @@ class WXEmail
       }
     }
     
-    public function __call($name, $args) {
-      if(substr($name, 0,4)=="send") {
-        $action = substr($name, 6);
-        $this->get_templates($action);
-        echo $action; print_r($args); exit;
-        call_user_func($action, $args);
-        $this->send();
-      }
-    }
-
+   
     
 }
 
