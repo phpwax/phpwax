@@ -744,8 +744,10 @@ class WXActiveRecord extends WXValidations implements Iterator
 			case "get":
 				$rel_class = WXInflections::camelize($rel, true);
 			 	$table = new $rel_class;
-				return $table->find_by_sql("SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id 
-				WHERE $join.{$this->table}_id = $current ORDER BY `order` ASC");
+			 	if($current) {
+				  return $table->find_by_sql("SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id 
+				    WHERE $join.{$this->table}_id = $current ORDER BY `order` ASC");
+				} else return false;
 			case "order":
 				return $this->pdo->query("UPDATE $join SET `order`=$order WHERE {$this->table}_id = $current AND $value {$rel}_id = $value");
 		}
