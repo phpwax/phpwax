@@ -591,7 +591,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   			$assoc[]=array($k, $v);
      	} else $this->$k=$v;
 		}
-		if(count($assoc >0)) {
+		if(is_array($assoc) && count($assoc >0)) {
 		  $this->save();
 		  foreach($assoc as $val) {
 		    $this->$val[0]=$val[1];
