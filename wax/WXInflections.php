@@ -64,7 +64,7 @@ class WXInflections
   }
 
   public function humanize_undasherize($word){
-      $parsed = $this->undasherize(self::humanize($word));
+      $parsed = self::undasherize(self::humanize($word));
       return $parsed;
   }
   public function to_url($words) {
