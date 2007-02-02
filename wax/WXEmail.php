@@ -1019,7 +1019,7 @@ class WXEmail
       if(substr($name, 0,4)=="send") {
         $action = substr($name, 5);
         $this->get_templates($action);
-        call_user_func(array($this, $action), $args);
+        call_user_func_array(array($this, $action), $args);
         $this->send();
       }
     }
