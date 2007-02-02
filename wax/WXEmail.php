@@ -219,7 +219,6 @@ class WXEmail
      * @return bool
      */
     function MailSend($header, $body) {
-      die($header);
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
