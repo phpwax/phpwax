@@ -220,7 +220,7 @@ class WXEmail
      */
     function MailSend($header, $body) {
 
-			if($rt = @mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
+			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
 				throw new WXEmailException("Couldn't Send Email");
