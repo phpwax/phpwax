@@ -219,6 +219,7 @@ class WXEmail
      * @return bool
      */
     function MailSend($header, $body) {
+      die($header);
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
@@ -240,7 +241,7 @@ class WXEmail
     function AddrAppend($type, $addr) {
         $addr_str = $type . ": ";
         $addr_str .= $this->AddrFormat($addr[0]);
-        if(count($addr) > 1)
+        if(count($addr) > 0)
         {
             for($i = 1; $i < count($addr); $i++)
                 $addr_str .= ", " . $this->AddrFormat($addr[$i]);
@@ -389,7 +390,9 @@ class WXEmail
             $result .= $this->HeaderLine("Return-Path", trim($this->sender));
         
         // To be created automatically by mail()
-        $result .= $this->AddrAppend("To", $this->to);
+        if(is_array($this->to) && count($this->to) > 0)
+                $result .= $this->AddrAppend("To", $this->to);
+        else $result .= $this->HeaderLine("To", $this->to);
         if(count($this->cc) > 0)
                 $result .= $this->AddrAppend("Cc", $this->cc);
  
