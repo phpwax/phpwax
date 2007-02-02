@@ -998,9 +998,27 @@ class WXEmail
         return $str;
     }
     
-    public function get_templates() {
+    public function get_templates($action) {
       $view = WXInflections::underscore(get_class($this));
-      
+      $html = VIEW_DIR.$view."/".$action.".html";
+      $txt =  VIEW_DIR.$view."/".$action.".txt";  
+      if(is_readable($html && is_readable($txt))) {
+        $this->is_html = true;
+        $this->body=WXControllerBase::view_to_string($html, $this);
+        $this->alt_body = WXControllerBase::view_to_string($txt, $this);
+      } elseif(is_readable($html)) {
+        $this->is_html = true;
+        $this->body=WXControllerBase::view_to_string($html, $this);
+      } elseif(!is_readable($html) && is_readable($txt)) {
+        $this->body = WXControllerBase::view_to_string($txt, $this);
+      }
+    }
+    
+    public function __call($name, $args) {
+      if(substr($name, 0,4)=="send") {
+        $this->get_templates(substr($name, 6));
+        $this->send();
+      }
     }
 
     
