@@ -164,10 +164,10 @@ abstract class WXControllerBase
    *  Returns a single path as a string.
 	 *	@return string
  	 */
-	public function view_to_string($view_path, $values=array()) {
+	public function view_to_string($view_path, $values=array(), $suffix="html") {
 		$view= new WXTemplate($values);
 		$view->add_path(VIEW_DIR.$view_path);
-		return $view->parse();
+		return $view->parse($suffix);
 	}
 
 	/**

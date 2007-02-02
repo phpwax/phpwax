@@ -20,17 +20,17 @@ class WXTemplate
 	  $this->template_paths[]=$path;
 	}
 	
-	public function parse() {
+	public function parse($suffix="html") {
 	  ob_start();
 	  foreach($this->template_paths as $path) {
-	    if(is_readable($path.".html")) {
-				$view_file = $path.".html";
+	    if(is_readable($path.".".$suffix)) {
+				$view_file = $path.".".$suffix;
 				break;
 			}
 	  }
 		extract((array)$this);
 		if(!is_readable($view_file)) {
-			throw new WXException("Unable to find ".$this->template_paths[0].".html", "Missing Template File");
+			throw new WXException("Unable to find ".$this->template_paths[0].".".$suffix, "Missing Template File");
 		}
 		if(!include($view_file) ) {
 			throw new WXUserException("PHP parse error in $view_file");
