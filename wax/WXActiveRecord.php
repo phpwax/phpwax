@@ -170,9 +170,8 @@ class WXActiveRecord extends WXValidations implements Iterator
   	if( ! is_array( $this->row ) ) {
     	$this->row = array();
     }
-    if(!is_array($value)) {
-      $this->row[$name] = $value;
-    } else $this->row[$name] = $value;
+    if(!is_array($value)) $this->row[$name] = $value;
+    else $this->row[$name] = $value;
     
   }
 

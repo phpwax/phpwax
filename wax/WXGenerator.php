@@ -108,7 +108,7 @@ class WXGenerator {
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";
     if(count($path)> 1) {
      	$path = $path[0]."/";
-     	$this->run_shell("mkdir -p ".APP_DIR."controller/$path");
+     	mkdir(APP_DIR."controller/$path", 0755, true);
     } else $path = "";    
     $this->final_output.= $this->start_php_file($class, "ApplicationController");
     $res = $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
@@ -121,8 +121,7 @@ class WXGenerator {
   }
   
   public function make_view($name) {
-    $command = "mkdir -p ".VIEW_DIR.$name;
-    $this->run_shell($command);
+    mkdir(VIEW_DIR.$name, 0755, true);   	
 		if(!is_dir(VIEW_DIR.$name)) {
 			$this->add_perm_error("app/view/".$name); 
 			return false;
@@ -139,6 +138,7 @@ class WXGenerator {
 			return false;
 		}
 		$this->add_stdout("Created email file at app/model/".$class.".php");
+		$this->make_view(WXInflections::underscore($class));
   }
   
   public function new_migration($name, $table=null) {
@@ -163,35 +163,6 @@ class WXGenerator {
 			return false;
 		}
 		$this->add_stdout("Created migration file at app/db/migrate/".$file.".php");
-  }
-  
-  public function recursive_directory_copy($source_directory, $dest_directory, $verbose = false) {
-      $num = 0;
-      if(!is_dir($dest_directory)) mkdir($dest_directory);
-      if($curdir = opendir($source_directory)) {
-       while($file = readdir($curdir)) {
-         if($file != '.' && $file != '..') {
-           $srcfile = $source_directory . '\\' . $file;
-           $dstfile = $dest_directory . '\\' . $file;
-           if(is_file($srcfile)) {
-             if(is_file($dstfile)) $ow = filemtime($srcfile) - filemtime($dstfile); else $ow = 1;
-             if($ow > 0) {
-               if($verbose) echo "Copying '$srcfile' to '$dstfile'...";
-               if(copy($srcfile, $dstfile)) {
-                 touch($dstfile, filemtime($srcfile)); $num++;
-                 if($verbose) echo "OK\n";
-               }
-               else echo "Error: File '$srcfile' could not be copied!\n";
-             }                 
-           }
-           else if(is_dir($srcfile)) {
-             $num += $this->recursive_directory_copy($srcfile, $dstfile, $verbose);
-           }
-         }
-       }
-       closedir($curdir);
-      }
-      return $num;
   }
 
 	function __destruct() {

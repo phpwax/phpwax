@@ -997,6 +997,11 @@ class WXEmail
         $str = str_replace("\n", $this->LE, $str);
         return $str;
     }
+    
+    public function get_templates() {
+      $view = WXInflections::underscore(get_class($this));
+      
+    }
 
     
 }

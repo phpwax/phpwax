@@ -139,10 +139,11 @@ class File {
 		return $imagearray;
 	}
 	
-	static public function scandir($directory) {
+	static public function scandir($directory, $include_pattern=false) {
 	  $list = array();
 	  foreach(scandir($directory) as $item) {
-	    if ($item != "." && $item != ".." && substr($item, 0,1)!='.') {
+	    if(preg_match("/".$include_pattern."/", $item)) $list[]=$item;
+	    elseif($item != "." && $item != ".." && substr($item, 0,1)!='.') {
 	      $list[]=$item;
 	    }
 	  }
@@ -175,6 +176,18 @@ class File {
       return file_get_contents($filename);	 	
     }
   }
+  
+  static function recursive_directory_copy($source, $destination, $verbose=true) {
+      if(!is_dir($destination)) mkdir($destination);
+      foreach(File::scandir($source, ".htaccess") as $file) {
+        if(is_file($source. DIRECTORY_SEPARATOR .$file)) {
+          copy($source. DIRECTORY_SEPARATOR .$file , $destination. DIRECTORY_SEPARATOR.$file);
+          if($verbose) echo "..created ".$destination. DIRECTORY_SEPARATOR.$file."\n";
+        } else {
+          File::recursive_directory_copy($source. DIRECTORY_SEPARATOR .$file, $destination.DIRECTORY_SEPARATOR.$file);
+        }
+      }
+    }
 	
 
 	

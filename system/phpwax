@@ -16,10 +16,9 @@ ob_end_clean(); // make output from autofind php code disapear
 
 
 include("phpwax/wax/AutoLoader.php");
-$generate = new WXGenerator();
-$source_directory = dirname(constant("FRAMEWORK_DIR"))."/skel/";
-$destination = getcwd();
-$generate->recursive_directory_copy($source_directory, $destination, true);
-exit;
+$source_directory = dirname(constant("FRAMEWORK_DIR"))."/skel";
+$destination = getcwd()."/".$argv[1];
+File::recursive_directory_copy($source_directory, $destination);
+die("PHP-WAX application setup complete"."\n");
 
 ?>
