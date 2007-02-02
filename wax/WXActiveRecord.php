@@ -735,10 +735,9 @@ class WXActiveRecord extends WXValidations implements Iterator
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
 			 	break;
 			case "add":
-			  try {
-				  $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current AND {$rel}_id = $value");
-				  return $this->pdo->query("INSERT INTO $join ({$this->table}_id, {$rel}_id, `order`) VALUES($current, $value, $order)");
-				} catch(Exception $e) {}
+			  die("INSERT INTO $join ({$this->table}_id, {$rel}_id, `order`) VALUES($current, $value, $order)");
+				$this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current AND {$rel}_id = $value");
+				return $this->pdo->query("INSERT INTO $join ({$this->table}_id, {$rel}_id, `order`) VALUES($current, $value, $order)");
 				break;
 			case "clear":
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current");
