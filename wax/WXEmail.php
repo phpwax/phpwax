@@ -1001,7 +1001,8 @@ class WXEmail
     public function get_templates($action) {
       $view = WXInflections::underscore(get_class($this));
       $html = VIEW_DIR.$view."/".$action.".html";
-      $txt =  VIEW_DIR.$view."/".$action.".txt";  
+      $txt =  VIEW_DIR.$view."/".$action.".txt";
+      echo $html.": ".$txt; exit;  
       if(is_readable($html && is_readable($txt))) {
         $this->is_html = true;
         $this->body=WXControllerBase::view_to_string($html, $this);
