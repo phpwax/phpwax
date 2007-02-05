@@ -78,6 +78,7 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
 	public function find_roots($params = array()) {
 	  if(array_key_exists("conditions", $params)) $params["conditions"]=$params["conditions"]." AND "."{$this->rel_column} = 0";
 		else $params = array_merge($params, array("conditions"=>"{$this->rel_column} = 0"));
+		print_r($params); exit;
 		return $this->find_all($params);
 	}
 	
