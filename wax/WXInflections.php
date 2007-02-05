@@ -69,6 +69,7 @@ class WXInflections
   }
   public function to_url($words) {
     $words = preg_replace('/([^a-z0-9A-Z\s])/', "", $words);
+    while(strpos($words, "  ")) $words = str_replace("  ", " ", $words);
     return self::dasherize($words);
   }
 	
