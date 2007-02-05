@@ -198,14 +198,16 @@ abstract class WXControllerBase
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
-	    if(method_exists($this, 'missing_action')) {
+	    if(method_exists($this, WXInflections::underscore($this->action))) {
+	      $underscore_action = WXInflections::underscore($this->action);
+	      $this->{$underscore_action}();
+	    } elseif(method_exists($this, 'missing_action')) {
 			  $this->missing_action();
 		  } else {
 			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$this->class_name}.", "Missing Action");
 			  exit;
   		}
-		}	  
-		$this->{$this->action}();
+		} else $this->{$this->action}();
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
