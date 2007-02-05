@@ -204,7 +204,8 @@ abstract class WXControllerBase
 	    } elseif(method_exists($this, 'missing_action')) {
 			  $this->missing_action();
 		  } else {
-			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {get_class($this)}.", "Missing Action");
+		    $class=get_class($this);
+			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$class}.", "Missing Action");
 			  exit;
   		}
 		} else $this->{$this->action}();
