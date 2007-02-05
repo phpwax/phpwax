@@ -75,8 +75,8 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
  	  return $level;
  	}
 
-	public function find_roots($params = array()) {
-		$params = array_merge($params, array("conditions"=>"{$this->rel_column} = 0"));
+	public function find_roots($start_level = "0", $params = array()) {
+		$params = array_merge($params, array("conditions"=>"{$this->rel_column} = $start_level"));
 		return $this->find_all($params);
 	}
 	
