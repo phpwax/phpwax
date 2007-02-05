@@ -190,12 +190,12 @@ abstract class WXControllerBase
 	public function execute_request() {
 		$route = new WXRoute;
 	  $this->route_array = $route->read_actions();
-	  $this->controller = $route->get_url_controller();
-	  die("HERE");
-    
+	  $this->controller = $route->get_url_controller();    
 	  if(!$this->action = $this->route_array[0]) {
 	    $this->action = "index";
 	  }
+	  die("HERE");
+	  
 	  array_shift($this->route_array);
 	  $this->controller_global();
 	  $this->run_filters("before");
