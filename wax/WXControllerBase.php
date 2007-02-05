@@ -193,9 +193,7 @@ abstract class WXControllerBase
 	  $this->controller = $route->get_url_controller();    
 	  if(!$this->action = $this->route_array[0]) {
 	    $this->action = "index";
-	  }
-	  die("HERE");
-	  
+	  }	  
 	  array_shift($this->route_array);
 	  $this->controller_global();
 	  $this->run_filters("before");
