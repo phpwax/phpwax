@@ -27,6 +27,9 @@ class WXRoute {
 		$this->route_array = array_merge($this->route_array, $_GET);
 		$_GET['route']=$route;
 		$this->config_array=WXConfiguration::get('route');
+		foreach($this->route_array as $key=>$value) {
+		  $this->route_array[$key]=WXInflections::underscore($value);
+		}
 		$this->map_routes();
 		$this->controller = $this->pick_controller();	
 	}
