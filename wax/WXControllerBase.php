@@ -191,6 +191,8 @@ abstract class WXControllerBase
 		$route = new WXRoute;
 	  $this->route_array = $route->read_actions();
 	  $this->controller = $route->get_url_controller();
+	  die("HERE");
+    
 	  if(!$this->action = $this->route_array[0]) {
 	    $this->action = "index";
 	  }
@@ -198,7 +200,6 @@ abstract class WXControllerBase
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
-	    die("HERE");
 	    if($this->is_public_method($this, WXInflections::underscore($this->action))) {
 	      $underscore_action = WXInflections::underscore($this->action);
 	      $this->{$underscore_action}();
