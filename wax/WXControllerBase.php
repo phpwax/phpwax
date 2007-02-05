@@ -201,11 +201,9 @@ abstract class WXControllerBase
 	    if($this->is_public_method($this, WXInflections::underscore($this->action))) {
 	      $underscore_action = WXInflections::underscore($this->action);
 	      $this->{$underscore_action}();
-	    } elseif(method_exists($this, 'missing_action')) {
+	    } elseif(method_exists($this, 'method_missing')) {
 			  $this->missing_action();
-		  } else {
-		    print_r(get_class_methods($this)); exit;
-  	    
+		  } else {  	    
 		    $class=get_class($this);
 			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$class}.", "Missing Action");
 			  exit;
