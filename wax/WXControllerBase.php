@@ -209,7 +209,7 @@ abstract class WXControllerBase
 			  exit;
   		}
 		} 
-		$this->{$this->action}();
+		if($this->is_public_method($this, $this->action)) $this->{$this->action}();
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
