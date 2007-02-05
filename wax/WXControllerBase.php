@@ -202,7 +202,7 @@ abstract class WXControllerBase
 	      $underscore_action = WXInflections::underscore($this->action);
 	      $this->{$underscore_action}();
 	    } elseif(method_exists($this, 'method_missing')) {
-			  $this->missing_action();
+			  $this->method_missing();
 		  } else {  	    
 		    $class=get_class($this);
 			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$class}.", "Missing Action");
