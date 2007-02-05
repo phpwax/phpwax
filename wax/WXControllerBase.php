@@ -198,10 +198,11 @@ abstract class WXControllerBase
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
+	    print_r(get_class_methods($this)); exit;
 	    if($this->is_public_method($this, WXInflections::underscore($this->action))) {
 	      $underscore_action = WXInflections::underscore($this->action);
 	      $this->{$underscore_action}();
-	    } elseif($this->is_public_method($this, 'missing_action')) {
+	    } elseif(method_exists($this, 'missing_action')) {
 			  $this->missing_action();
 		  } else {
 		    $class=get_class($this);
