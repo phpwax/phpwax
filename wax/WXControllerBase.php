@@ -209,8 +209,9 @@ abstract class WXControllerBase
 			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$class}.", "Missing Action");
 			  exit;
   		}
-		} 
-		if($this->is_public_method($this, $this->action)) $this->{$this->action}();
+		} else {
+		  $this->{$this->action}();
+		}
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
 		if($content = $this->render_layout()) echo $content;
