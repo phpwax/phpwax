@@ -1,6 +1,34 @@
 ##### config.yml file use to configure applications ###
-# 1: environment: development / test / production 
-environment: development
+# 1: environments: Setup ip sniffing to detect environments 
+environments:
+  development:  172.*
+  production:   86.54.101.70
+
+# Environment configuration.
+development:
+ db:
+  dbtype: mysql
+  host: localhost
+  database: app_development
+  username: root
+  password: secret
+
+test:
+  db:
+    dbtype: mysql
+    host: localhost
+    database: app_test
+    username: root
+    password: secret
+
+production: 
+  db: 
+    dbtype: mysql
+    host: localhost
+    database: app_production
+    username: root
+    password: secret
+
 
 # 2: route: passes config values to WXRoute
 # options:
@@ -8,48 +36,13 @@ environment: development
 route:
  default:page
 
-# Development configuration.
-development:
- db:
-  dbtype: mysql
-  host: localhost
-  database: _development
-  username: root
-  password: 
-
- cache_actions:no
- cache_config: no
-    
-# Configuration for the test environment.
-
-test:
-  db:
-    dbtype: mysql
-    host: localhost
-    database: _test
-    username: root
-    password:
-
-production: 
-  db: 
-    dbtype: mysql
-    host: localhost
-    database: _production
-    username: root
-    password:
-      
-  cache_actions: yes
-  cache_config: yes
-
-# Users are made available for the YAMLAuthorise technique. Use for simple authentication.
-users:
-  user: password
-  
-# Deployment settings are for the destination
+# 3: Automatic deploymet config for script/deploy
+# Requires destination server, login and path and subversion user, password and path.
 deploy:
   server:       example.com
   server_path:  /
-  user:         _user_
-  svn_path:   
+  user:         appuser
   svn_user:
   svn_pass:
+  svn_path:   
+    
