@@ -685,13 +685,18 @@ class WXActiveRecord extends WXValidations implements Iterator
 	}
 	
 	public function paginate($per_page, $options=array(), $parameter="page") {
-    $_GET[$parameter] ? $this->paginate_page = $_GET[$parameter] : $this->paginate_page = 1;
-    $this->paginate_limit = $per_page;
-    $this->paginate_total = $this->count($options);
-    $offset = (($this->paginate_page-1) * $per_page);
-    $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
-    return $this->find_all($options);
+    $_GET[$parameter] ? $page_number = $_GET[$parameter] : $page_number = 1;
+    return $this->pagination($per_page, $options, $page_number);
   }
+	//new version of paginate - page number passed in (probably via the route_array)
+	public function pagination($per_page, $options=array(), $current_page="1"){
+		$this->paginate_page = $current_page;
+		$this->paginate_limit = $per_page;
+	  $this->paginate_total = $this->count($options);
+	  $offset = (($this->paginate_page-1) * $per_page);
+	  $options = array_merge($options, array("limit"=>$per_page, "offset"=>$offset));
+	  return $this->find_all($options);
+	}
 
 	public function dynamic_finders($func, $args) {
 		$func = WXInflections::underscore($func);
