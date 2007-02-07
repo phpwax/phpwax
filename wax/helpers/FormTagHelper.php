@@ -30,7 +30,7 @@ class FormTagHelper extends WXHelpers {
     
     protected function make_label($id, $label_name="", $options=array()) {
   	  $option = array_merge($options, array("for" =>$id));
-  		if(!is_string($label_name) || strlen($label_name < 2)) {
+  		if(!is_string($label_name) || strlen($label_name) < 2) {
   	    $label_name = $id;
   	  }
   		return $this->content_tag("label", humanize($label_name), $option);
