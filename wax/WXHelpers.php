@@ -254,7 +254,13 @@ class WXHelpers {
 		return false;
 	}
 	
-	public function pagination_links($model){
+	public function pagination_links($model, $action="", $controller=""){
+		$path = array();
+		if($controller)
+			$path['controller'] = $controller;
+		if($action)
+			$path['action'] = $action;
+			
 		//if model has a total and less the 10 pages just show a list of all pages
 		if($model->paginate_total && ($model->paginate_total < 10) ){
 			//find max pages
@@ -266,7 +272,8 @@ class WXHelpers {
 				} else {
 					$output .= "<li>";
 				}
-				$output .= link_to($page_number, array("id"=>$page_number) ) . "</li>";
+				$path['id'] = $page_number;
+				$output .= link_to($page_number, $path ) . "</li>";
 			}
 			$output .= "</ul>";
 			return $output;
