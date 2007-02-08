@@ -146,7 +146,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     $class_name = WXInflections::camelize($name, true);
     if($id) {
     	$foreign_key = $this->table . '_id';
-      if(class_exists($class_name)) {
+      if(class_exists($class_name, false)) {
 				return WXActiveRecord::get_relation($class_name, $this->pdo, $foreign_key, $id);
       } 
     } 
