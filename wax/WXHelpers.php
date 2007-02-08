@@ -254,14 +254,30 @@ class WXHelpers {
 		return false;
 	}
 	
-	public function pagination_links($model) {
-	  if($model->paginate_total > $model->paginate_limit) {
-      if($model->paginate_page > 1) $output = link_to("&lt; previous", array("page"=>$model->paginate_page -1));
-      $output .= "  ";
-      if(($model->paginate_page * $model->paginate_limit) < $model->paginate_total) $output .= link_to("next &gt;", array("page"=>($model->paginate_page+1)));
-      return $output;
-    }
-  }
+	public function pagination_links($model){
+		//if model has a total and less the 10 pages just show a list of all pages
+		if($model->paginate_total && ($model->paginate_total < 10) ){
+			//find max pages
+			$max_pages = floor($model->paginate_total / $model->paginate_limit);
+			$output ="<ul id='page-navigation'>";
+			for($page_number=1; $page_number <= $max_pages; $page_number++){
+				if($page_number == $model->paginate_page){
+					$output .= "<li class='active-page'>";
+				} else {
+					$output .= "<li>";
+				}
+				$output .= link_to($page_number, array("id"=>$page_number) ) . "</li>";
+			}
+			$output .= "</ul>";
+			return $output;
+		} elseif($model->paginate_total >= 10 ) {
+			return $this->advanced_paginate_links($model);
+		} else {
+			return false;
+		}		
+	}
+
+	public function advanced_paginate_links($model){}
 
 
 }
