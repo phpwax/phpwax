@@ -90,7 +90,6 @@ class WXApplication {
 	  Session::start();
 		$route=new WXRoute( );
 		$delegate = $route->pick_controller();
-		error_log("Creating ".$delegate);
 		$delegate_controller = new $delegate;
 		$delegate_controller->execute_request();
   }
