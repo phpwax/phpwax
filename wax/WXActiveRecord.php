@@ -689,6 +689,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 	//new version of paginate - page number passed in (probably via the route_array)
 	public function pagination($per_page, $options=array(), $current_page="1"){
+		if(empty($current_page)) $current_page=1;
 		$this->paginate_page = $current_page;
 		$this->paginate_limit = $per_page;
 	  $this->paginate_total = $this->count($options);

@@ -219,7 +219,11 @@ abstract class WXControllerBase
 		else echo "";
 	}
 
-   
+  public function is_viewable($path){
+		$file_path = VIEW_DIR . $path;
+		if(is_readable($file_path)) return true;
+		else return false;
+	} 
 }
 
 ?>
