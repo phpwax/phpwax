@@ -105,7 +105,7 @@ class FormTagHelper extends WXHelpers {
         unset($options["size"]);
       }
       if(!$options["class"]) $options["class"]="input_field textarea_field";
-      if($with_label) $html = $this->make_label($name);
+      if($with_label) $html = $this->make_label($name, $with_label);
       return $html.$this->content_tag("textarea", $content, array_merge(array("name" => $name, "id" => $name), $this->convert_options($options)));
     }
 
