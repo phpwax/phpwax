@@ -265,7 +265,7 @@ class WXHelpers {
 			//find max pages
 			$max_pages = round($model->paginate_total / $model->paginate_limit);
 			if($max_pages < 1) return false;
-			$output ="<ul id='pagination'><li class='page'>Pages</li>";
+			$output ="<ul id='pagination'>";
 			for($page_number=1; $page_number <= $max_pages; $page_number++){
 				if($page_number == $model->paginate_page){
 					$output .= "<li class='active-page'>";
