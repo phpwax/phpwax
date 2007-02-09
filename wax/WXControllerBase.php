@@ -220,7 +220,7 @@ abstract class WXControllerBase
 	}
 
   public function is_viewable($path){
-		$file_path = VIEW_DIR . $path;
+		$file_path = VIEW_DIR . $path . ".html";
 		if(is_readable($file_path)) return true;
 		else return false;
 	} 
