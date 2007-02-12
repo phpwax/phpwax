@@ -4,9 +4,9 @@
  * each site folder. If you've downloaded a packaged version with a 'wax' folder in your site root,
  * then you don't need to worry about any of these options.
  *
- * To have a single install go into a folder, eg. cd /home/waxphp/
- * Then run: 'svn export svn://php-wax.com/home/phpwax/svn/main/ ./ --force'
- * Now you can switch between versions with ease, by editing the three settings below
+ * You can run a server-wide install from a PEAR installation. How-tos can be found on the PHP-WAX site.
+ * There are two packages currently available, phpwax and phpwax-devel.
+ * The config below, sets up which version you want to use. 
  */
  
 define('WAX_PATH', '/home/waxphp/'); // This is set to your install path as created above.
