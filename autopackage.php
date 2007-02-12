@@ -21,7 +21,7 @@ require_once 'PEAR/PackageFileManager/Svn.php';
 /**
  * Base version
  */
-$baseVersion = '0.7.5devel';
+$baseVersion = '0.7.5';
 
 /**
  * current version
@@ -32,7 +32,7 @@ $dir		= dirname( __FILE__ );
 /**
  * Current API version
  */
-$apiVersion = '0.7.5devel';
+$apiVersion = '0.7.5';
 
 /**
  * current state
