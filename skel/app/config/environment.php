@@ -24,10 +24,10 @@ define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
 if(is_dir(WAX_ROOT."wax")) {
 	define('FRAMEWORK_DIR', WAX_ROOT."wax");
 } elseif(defined("WAX_EDGE")) {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."trunk");
+	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwaxdevel/wax");
 	define('FRAMEWORK_DIR', WAX_PATH."/phpwaxdevel/wax");
 } else {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."tags/".WAX_VERSION);
+	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/wax");
 	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/wax");
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);

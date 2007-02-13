@@ -2,6 +2,7 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
+ob_end_clean(); // make output from autofind php code disapear
 if(!isset($argv[1]) || !isset($argv[2])) {
   exit("[ERROR] You must supply at least two values, a model and a method"."\n");
 }

@@ -2,6 +2,7 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
+ob_end_clean(); // make output from autofind php code disapear
 error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 require_once dirname(__FILE__).'/../app/config/environment.php';
 Autoloader::run_application("test", false);

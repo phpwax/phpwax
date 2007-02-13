@@ -1,5 +1,5 @@
 <?php
-class TestUser extends WXActiveRecord {}
+class TestAuthUser extends WXActiveRecord {}
 
 class TestAuthMigration extends WXMigrate {
   public function up() {
@@ -19,7 +19,7 @@ class TestWXDBAuthenticate extends WXTestCase
   public function setUp() {
     $migrate = new TestAuthMigration('quiet');
     $migrate->up();
-    $this->model = new TestUser();
+    $this->model = new TestAuthUser();
     $this->model->update_attributes($this->get_fixture("user"));
   }
   
