@@ -149,7 +149,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
-	  define('ENV', $environment);	
+	  if(!defined('ENV')) define('ENV', $environment);	
 		$app=new WXApplication($full_app);
 	}
 

@@ -4,6 +4,6 @@ exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
 ob_end_clean(); // make output from autofind php code disapear
 require_once dirname(__FILE__).'/../app/config/environment.php';
-Autoloader::run_application("development", false);
+Autoloader::run_application("development" false);
 $gen = new WXGenerator("migration", array_slice($argv, 1));
 ?>
