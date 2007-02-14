@@ -112,9 +112,9 @@ class AutoLoader
 	  if(!is_array(WXConfiguration::get("environments"))) return false;
 	  foreach(WXConfiguration::get("environments") as $env=>$range) {
 	    $range = "/".str_replace(".", "\.", $range)."/";
-	    if(preg_match($range, $_SERVER['SERVER_ADDR']) && !defined($env) ) {
+	    if(preg_match($range, gethostbyname($_SERVER['HOSTNAME'])) && !defined($env) ) {
 	      define('ENV', $env);
-	    }
+	    } 
 	  }
 	}
 
