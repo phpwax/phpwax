@@ -60,8 +60,9 @@ class WXApplication {
    *  @return void
    */
   
-  private function initialise_database() {    
+  private function initialise_database() {
     if($db = WXConfiguration::get('db')) {
+      if($db['dbtype']=="none") return false;
       if(!$db['dbtype']) $db['dbtype']="mysql";
       if(!$db['host']) $db['host']="localhost";
       if(!$db['port']) $db['port']="3306";
