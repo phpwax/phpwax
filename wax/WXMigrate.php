@@ -222,9 +222,9 @@ class WXMigrate
     if($column[3]) {
       $sql.= "NULL ";
     } else {
-      $sql.= "NOT NULL";
+      $sql.= "NOT NULL ";
     }
-    if(!$column[4]===null) {
+    if(isset($column[4])) {
       $sql.= "DEFAULT '".$column[4]."' ";
     }
     return $sql;
