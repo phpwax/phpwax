@@ -224,7 +224,7 @@ class WXMigrate
     } else {
       $sql.= "NOT NULL";
     }
-    if($column[4]) {
+    if(isset($column[4])) {
       $sql.= "DEFAULT '".$column[4]."' ";
     }
     return $sql;
