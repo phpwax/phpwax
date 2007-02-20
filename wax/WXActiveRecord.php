@@ -519,10 +519,13 @@ class WXActiveRecord extends WXValidations implements Iterator
           $where = true;
         }
       }
-  
+      if($params['group']) {
+      	$sql .= " GROUP BY {$params['group']}";
+      }
   		if($params['order']) {
       	$sql .= " ORDER BY {$params['order']}";
       }
+      
   			
   		if( $params['direction'] ) {
       	$sql .= " {$params['direction']}";
