@@ -22,7 +22,7 @@ class WXTemplate
 	
 	public function parse($suffix="html") {
 	  ob_start();
-	  header("Content-Type: text/$suffix");
+	  header("Content-Type: text/$suffix; charset=utf-8");
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".".$suffix)) {
 				$view_file = $path.".".$suffix;

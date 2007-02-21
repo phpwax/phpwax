@@ -16,6 +16,7 @@ abstract class WXControllerBase
   public $action;
   public $use_layout='application';
   public $use_view="_default";
+  public $use_format=false;
   protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
@@ -117,7 +118,8 @@ abstract class WXControllerBase
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$this->use_view);
-    ob_end_clean();		
+    ob_end_clean();
+    if($this->use_format) return $view->parse($this->use_format);
     return $view->parse();
   }
   
@@ -168,6 +170,7 @@ abstract class WXControllerBase
 	public function view_to_string($view_path, $values=array(), $suffix="html") {
 		$view= new WXTemplate($values);
 		$view->add_path(VIEW_DIR.$view_path);
+		if($this->use_format) return $view->parse($this->use_format);
 		return $view->parse($suffix);
 	}
 
