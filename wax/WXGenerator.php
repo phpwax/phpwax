@@ -63,7 +63,7 @@ class WXGenerator {
     $code ="\$args = func_get_args();
   	        \$helper = new $helper_class();
   	        return call_user_func_array(array(\$helper, '$helper_name'), \$args);";
-  	eval(self::add_function($helper_name, $code, ""));
+  	if(!function_exists($helper_name)) eval(self::add_function($helper_name, $code, ""));
   }
    
   public function add_line($text) {
