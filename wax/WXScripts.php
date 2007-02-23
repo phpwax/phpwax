@@ -12,7 +12,18 @@ class WXScripts {
   }
   
   public function controller($argv) {
+    $this->app_setup();
     $gen = new WXGenerator("controller", array_slice($argv, 1));
+  }
+  
+  public function email($argv) {
+    $this->app_setup();
+    $gen = new WXGenerator("email", array_slice($argv, 1));
+  }
+  
+  public function test() {
+    $this->app_setup();
+    $gen = new WXGenerator("test", array_slice($argv, 1));
   }
   
 }
