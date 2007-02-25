@@ -295,6 +295,8 @@ Autoloader::include_from_registry('FormOptionsHelper');
 Autoloader::include_from_registry('UrlHelper');
 Autoloader::include_from_registry('JavascriptHelper');
 Autoloader::include_from_registry('FormBuilderHelper');
+Autoloader::include_from_registry('PrototypeHelper');
+Autoloader::include_from_registry('ScriptaculousHelper');
 
 
 ?>
