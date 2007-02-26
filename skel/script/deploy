@@ -2,19 +2,6 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
-ob_end_clean(); // make output from autofind php code disapear
 require_once dirname(__FILE__).'/../app/config/environment.php';
-$deployment_settings = WXConfiguration::get('deploy');
-
-$commandstart = "cd ".WAX_ROOT;
-system($commandstart);
-
-$command = "ssh ".$deployment_settings['user']."@".$deployment_settings['server'];
-$command .= " svn export ".$deployment_settings['svn_path']." .".$deployment_settings['server_path']." --force";
-if($deployment_settings['svn_user'] && $deployment_settings['svn_pass']) {
-  $command .= " --username ".$deployment_settings['svn_user']." --password ".$deployment_settings['svn_pass'];
-}
-system($command);
-echo "Application successfully deployed to ".$deployment_settings['server']."
-";
+WXScripts("deploy", $argv);
 ?>

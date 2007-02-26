@@ -2,37 +2,6 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
-ob_end_clean(); // make output from autofind php code disapear
-error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
 require_once dirname(__FILE__).'/../app/config/environment.php';
-Autoloader::run_application("test", false);
-define("CLI_ENV", true);
-
-if(  (!include 'simpletest/unit_tester.php') 
-  || (!include 'simpletest/reporter.php') 
-  || (!include 'simpletest/web_tester.php')
-  || (!include 'simpletest/mock_objects.php')
-  ) {
-  throw new WXDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
-}
-
-if($argv[1] == "wax") {
-  $testdir = FRAMEWORK_DIR."/tests";
-} elseif($argv[1] && is_dir(PLUGIN_DIR.$argv[1]."/tests")) {
-  $testdir = PLUGIN_DIR.$argv[1]."/tests";
-} else {
-  $testdir = APP_DIR."tests";
-}
-AutoLoader::include_dir($testdir);
-$test = new GroupTest('All tests');
-foreach(scandir($testdir) as $file) {  	 
-  if(substr($file, -3)=="php" && substr($file,0,1)!=".") { 
-    $class = substr($file, 0,-4);	
-    $test->addTestClass($class); 	 
-  } 	 
-}
-if(TextReporter::inCli()) {
-  exit( $test->run(new TextReporter()) ? 0 : 1);
-}
-$test->run(new HtmlReporter());
+WXScripts("run_tests", $argv);
 ?>

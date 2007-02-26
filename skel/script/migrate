@@ -2,47 +2,6 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
-ob_end_clean(); // make output from autofind php code disapear
 require_once dirname(__FILE__).'/../app/config/environment.php';
-
-if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
-	Autoloader::run_application($argv[1], false);
-	unset($argv[1]);
-} else {
-	Autoloader::run_application("development", false);
-}
-
-if($argv[1] =="directory" && isset($argv[2])) {
-  $migrate = new WXMigrate(true);
-  $direction = "up";
-  if(isset($argv[3])) $direction="down";
-  $result = $migrate->version_less_migrate($argv[2], $direction, true); 
-  exit($result."\n");
-} 
-
-
-$dbdir = dirname(__FILE__).'/../app/db/migrate/';
-if(!is_dir($dbdir)) {
-  $command = "mkdir -p $dbdir";
-  system($command);
-}
-$version = false;
-if(isset($argv[1])) {
-  $version = $argv[1];
-}
-
-$migrate = new WXMigrate;
-if($version == 'version') {
-  exit("Now at version ".$migrate->get_version()."\n");
-}
-if($version == 'clean') {
-  $result = $migrate->migrate_revert($dbdir);
-  exit("Database reset to version ".$result."\n");
-}
-$result = $migrate->migrate($dbdir, $version);
-if($result===false) {
-  exit("No Files to migrate". "\n");
-}
-exit("-------------------"."\n"."Successfully migrated to version ".$result."\n"."-------------------"."\n");
-
+WXScripts("migrate", $argv);
 ?>

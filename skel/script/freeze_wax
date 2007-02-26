@@ -2,18 +2,6 @@
 PHP=`which php`
 exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
-ob_end_clean(); // make output from autofind php code disapear
 require_once dirname(__FILE__).'/../app/config/environment.php';
-
-if(is_dir(WAX_ROOT."wax")) {
-	echo "[ERROR]Wax is already in your app directory. Delete it to freeze a new version.
-";
-} elseif(defined("WAX_EDGE")) {
-	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/trunk/wax/ ".dirname(__FILE__)."/../wax";
-	system($command);
-} else {
-	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/tags/".WAX_VERSION."/wax/ ".dirname(__FILE__)."/../wax";
-	system($command);
-}
-
+WXScripts("freeze", $argv);
 ?>
