@@ -15,7 +15,7 @@ define('WAX_PATH', PEAR_INSTALL_DIR); // This is set to your install path as cre
 /* Uncomment this line to always run on the development code. You will need to have installed the phpwaxdevel package
  * full instructions are available at dev.php-wax.com. Don't do this for production sites. 
  */
-// define('WAX_EDGE', 'true');
+//define('WAX_EDGE', 'true');
 
 
 
