@@ -36,8 +36,6 @@ class AssetTagHelper extends WXHelpers {
      *  @param string  Default directory name, if none in $source
      *  @param string  Default file extension, if none in $source
      *  @return string Public path to the asset
-     *  @uses controller_object
-     *  @uses ActionController::asset_host
      */
     private function compute_public_path($source, $dir, $ext) {
  

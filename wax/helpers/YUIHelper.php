@@ -45,7 +45,6 @@ class YUIHelper extends JavascriptHelper{
   
   protected function yui_jsinclude($sources) {
     foreach($sources as $source) {
-        $source = $this->javascript_path($source);
         $contents[] = $this->content_tag("script", "",
              array_merge(array("type" => "text/javascript",
                                "src" => $source), $options));
