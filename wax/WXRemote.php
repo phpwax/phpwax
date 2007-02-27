@@ -21,7 +21,8 @@ class WXRemote {
     $this->user = $user;
   }
   
-  public function svn_export($svn, $path=".", $user, $pass) {
+  public function svn_export($svn, $path, $user, $pass) {
+    if(strlen($path) >2) $path = "./";
     $this->commands[] = "svn export $svn $path --force --username $user --password $pass";
   }
   
