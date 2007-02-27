@@ -31,8 +31,8 @@ class WXRemote {
   
   public function run_commands() {
     foreach($this->commands as $command) {
-      $system = "ssh ".$this->user."@".$this->host." $command";
-      system(escapeshellarg($system));
+      $command = escapeshellarg($command);
+      system("ssh ".$this->user."@".$this->host." $command");
     }
   }
   
