@@ -177,7 +177,7 @@ class WXScripts {
       $version = $argv[1];
     }
 
-    $migrate = new WXMigrate;
+    $migrate = new WXMigrate;y
     if($version == 'version') {
       $this->add_output("Now at version ".$migrate->get_version());
       return false;
@@ -200,10 +200,14 @@ class WXScripts {
   public function deploy($argv) {
     $deployment_settings = WXConfiguration::get('deploy');
     $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
-    foreach($deployment_settings['before_deploy'] as $before) $remote->add_command($before);
+    if(is_array($deployment_settings['before_deploy'])) {
+      foreach($deployment_settings['before_deploy'] as $before) $remote->add_command($before);
+    }
     $remote->svn_export($deployment_settings['svn_path'], $deployment_settings['server_path'], 
       $deployment_settings['svn_user'], $deployment_settings['svn_pass']);
-    foreach($deployment_settings['after_deploy'] as $after) $remote->add_command($after);
+    if(is_array($deployment_settings['after_deploy'])) {
+      foreach($deployment_settings['after_deploy'] as $after) $remote->add_command($after);
+    }
     $remote->run_commands();
     $this->output("Application successfully deployed to ".$deployment_settings['server']);
   }
