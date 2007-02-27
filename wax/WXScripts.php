@@ -177,7 +177,7 @@ class WXScripts {
       $version = $argv[1];
     }
 
-    $migrate = new WXMigrate;y
+    $migrate = new WXMigrate;
     if($version == 'version') {
       $this->add_output("Now at version ".$migrate->get_version());
       return false;
