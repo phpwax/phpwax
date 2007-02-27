@@ -23,7 +23,10 @@ class WXRemote {
   
   public function svn_export($svn, $path, $user, $pass) {
     if(strlen($path) <2) $path = "./";
-    $this->commands[] = "svn export $svn $path --force --username $user --password $pass";
+    $command = "svn export $svn $path --force";
+    if(strlen($user>1)) $command .= " --username $user";
+    if(strlen($pass>1)) $command .= " --password $pass";
+    $this->commands[] =  $command;
   }
   
   public function run_commands() {
