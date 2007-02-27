@@ -45,4 +45,8 @@ deploy:
   svn_user:
   svn_pass:
   svn_path:   
-    
+  before_deploy:
+    # add any unix commands to be run on the remote server before deploy - 1 per line
+  after_deploy:
+    # add any unix commands to be run on the remote server after deploy - 1 per line
+

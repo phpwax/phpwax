@@ -199,9 +199,12 @@ class WXScripts {
   
   public function deploy() {
     $deployment_settings = WXConfiguration::get('deploy');
-    $remote = new WXRemote($deployment_settings['user']."@".$deployment_settings['server'], "22");
+    $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
+    foreach($deployment_settings['before_deploy'] as $before) $remote->add_command($before);
     $remote->svn_export($deployment_settings['svn_path'], $deployment_settings['server_path'], 
       $deployment_settings['svn_user'], $deployment_settings['svn_pass']);
+    foreach($deployment_settings['after_deploy'] as $after) $remote->add_command($after);
+    $remote->run_commands();
     $this->output("Application successfully deployed to ".$deployment_settings['server']);
   }
   
