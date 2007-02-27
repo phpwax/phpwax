@@ -31,12 +31,12 @@ class WXScripts {
     $gen = new WXGenerator("email", array_slice($argv, 1));
   }
   
-  public function test() {
+  public function test($argv) {
     $this->app_setup();
     $gen = new WXGenerator("test", array_slice($argv, 1));
   }
   
-  public function docs() {
+  public function docs($argv) {
     $output_dir = WAX_ROOT."doc";
     $source_dir1 = WAX_ROOT."app";
     $source_dir2 = FRAMEWORK_DIR;
@@ -45,17 +45,17 @@ class WXScripts {
     $this->add_output("Documentation has been created in /doc. Open the index.html file to view.");
   }
   
-  public function model() {
+  public function model($argv) {
     $this->app_setup();
     $gen = new WXGenerator("model", array_slice($argv, 1));
   }
   
-  public function migration() {
+  public function migration($argv) {
     $this->app_setup();
     $gen = new WXGenerator("migration", array_slice($argv, 1));
   }
   
-  public function plugin() {
+  public function plugin($argv) {
     if(!isset($argv[1]) ) {
       $this->add_output("[ERROR] You must supply a plugin name that you wish to install.");
       $this->add_output("Type 'script/plugin_install list' to see available plugins.");
@@ -104,7 +104,7 @@ class WXScripts {
     }
   }
   
-  public function run_tests() {
+  public function run_tests($argv) {
     error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
     define("ENV", "test");
     $this->app_setup();
@@ -138,7 +138,7 @@ class WXScripts {
     $test->run(new HtmlReporter());
   }
   
-  public function freeze() {
+  public function freeze($argv) {
     if(is_dir(WAX_ROOT."wax")) {
     	$this->add_output("[ERROR] Wax is already in your app directory. Delete it to freeze a new version.");
     	return false;
@@ -151,7 +151,7 @@ class WXScripts {
     }
   }
   
-  public function migraate() {
+  public function migrate($argv) {
     if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
       define("ENV", $argv[1]);
     	$this->app_setup();
@@ -197,7 +197,7 @@ class WXScripts {
     $this->add_output("-------------------");
   }
   
-  public function deploy() {
+  public function deploy($argv) {
     $deployment_settings = WXConfiguration::get('deploy');
     $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
     foreach($deployment_settings['before_deploy'] as $before) $remote->add_command($before);
