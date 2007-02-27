@@ -209,7 +209,7 @@ class WXScripts {
       foreach($deployment_settings['after_deploy'] as $after) $remote->add_command($after);
     }
     $remote->run_commands();
-    $this->output("Application successfully deployed to ".$deployment_settings['server']);
+    $this->add_output("Application successfully deployed to ".$deployment_settings['server']);
   }
   
   
