@@ -34,9 +34,9 @@ class YUIHelper extends JavascriptHelper{
     $default_options = array("width"=>"500px", "visible"=>"false", "draggable"=>"true", "constraintoviewport"=>"true", "modal"=>"true",
       "underlay"=>"shadow", "fixedcenter"=>"true");
     $options = array_merge($default_options, $options);
-    $javascript = 'YAHOO.namespace("cms.container");';
-    $javascript .= 'YAHOO.cms.container.panel1 = new YAHOO.widget.Panel("'.$element.'",'.$this->options_for_javascript($options).');';
-    $javascript .= 'YAHOO.cms.container.panel1.render();';
+    $javascript = 'YAHOO.namespace("cms.container"); ';
+    $javascript .= 'YAHOO.cms.container.panel1 = new YAHOO.widget.Panel("'.$element.'",'.$this->options_for_javascript($options).') ;';
+    $javascript .= 'YAHOO.cms.container.panel1.render(); ';
     return $this->javascript_tag($javascript);
   }
   
