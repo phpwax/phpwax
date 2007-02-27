@@ -30,6 +30,15 @@ class YUIHelper extends JavascriptHelper{
     return $this->yui_csslink($css).$this->yui_jsinclude($js);
   }
   
+  public function yui_container($element, $options=array()) {
+    $default_options = array("width"=>"500px", "visible"=>"false", "draggable"=>"true", "constraintoviewport"=>"true", "modal"=>"true",
+      "underlay"=>"shadow", "fixedcenter"=>"true");
+    $options = array_merge($default_options, $options);
+    $javascript = 'YAHOO.namespace("cms.container");';
+    $javascript .= 'YAHOO.cms.container.panel1 = new YAHOO.widget.Panel("'.$element.'",'.$this->options_for_javascript($options).');';
+    $javascript .= 'YAHOO.cms.container.panel1.render();';
+    return $this->javascript_tag($javascript);
+  }
   
   
   protected function yui_csslink($sources, $options=array()) {
