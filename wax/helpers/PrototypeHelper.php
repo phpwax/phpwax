@@ -13,7 +13,7 @@ class PrototypeHelper extends JavascriptHelper {
     $this->javascript_path = '/javascripts';
   }
   
-  private function options_for_ajax($options) {
+  protected function options_for_ajax($options) {
     $js_options = $this->build_callbacks($options);    
     $js_options['asynchronous'] = ($options['type'] != 'synchronous') ? "true" : "false";
     if($options['method']) {
@@ -34,11 +34,11 @@ class PrototypeHelper extends JavascriptHelper {
     return $this->options_for_javascript($js_options);
   }
   
-  private function method_option_to_s($method) {
+  protected function method_option_to_s($method) {
     return ((is_string($method) && !strstr($method, "'")) ? "'{$method}'" : $method);
   }
   
-  private function build_observer($klass, $name, $options = array()) {
+  protected function build_observer($klass, $name, $options = array()) {
     if($options['update']) {
         if(!$options['with']) {
             $options['with'] = 'value';
@@ -54,7 +54,7 @@ class PrototypeHelper extends JavascriptHelper {
     return $this->javascript_tag($javascript);
   }
   
-  private function build_callbacks($options) {
+  protected function build_callbacks($options) {
     $callbacks = array();
     foreach($options as $callback => $code) {
         if(in_array($callback, $this->javascript_callbacks)) {
@@ -65,7 +65,7 @@ class PrototypeHelper extends JavascriptHelper {
     return $callbacks;
   }
   
-  private function remove_ajax_options($options) {
+  protected function remove_ajax_options($options) {
     if(is_array($options)) {
         foreach($options as $option_key => $option_value) {
             if(!in_array($option_key, $this->ajax_options)) {
