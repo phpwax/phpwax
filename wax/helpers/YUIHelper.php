@@ -35,7 +35,7 @@ class YUIHelper extends JavascriptHelper{
       "underlay"=>"'shadow'", "fixedcenter"=>"true");
     $options = array_merge($default_options, $options);
     $javascript = 'YAHOO.namespace("cms.container");';
-    $javascript .= 'function init_'.$element.'() {'
+    $javascript .= 'function init_'.$element.'() {';
     $javascript .= 'YAHOO.cms.container.'.$element.' = new YAHOO.widget.Panel("'.$element.'",'.$this->options_for_javascript($options).');'; 
     $javascript .= 'YAHOO.cms.container.'.$element.'.render(); }';
     $javascript .= 'YAHOO.util.Event.AddListener(window, "load", init_'.$element.');';
