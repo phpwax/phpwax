@@ -261,9 +261,9 @@ class WXHelpers {
 		if($action)
 			$path['action'] = $action;			
 		//if model has a total and less the 10 pages just show a list of all pages
-		if($model->paginate_total && ($model->paginate_total < 10) ){
+		if($model->paginate_total && (($model->paginate_total/$model->paginate_limit) < 10) ){
 			//find max pages
-			$max_pages = round($model->paginate_total / $model->paginate_limit);
+			$max_pages = floor($model->paginate_total / $model->paginate_limit)+1;
 			if($max_pages < 1) return false;
 			$output ="<ul id='pagination'>";
 			for($page_number=1; $page_number <= $max_pages; $page_number++){
