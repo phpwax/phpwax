@@ -38,7 +38,7 @@ class YUIHelper extends JavascriptHelper{
     $javascript .= 'function init_'.$element.'() {';
     $javascript .= 'YAHOO.cms.container.'.$element.' = new YAHOO.widget.Panel("'.$element.'",'.$this->options_for_javascript($options).');'; 
     $javascript .= 'YAHOO.cms.container.'.$element.'.render(); }';
-    $javascript .= 'YAHOO.util.Event.AddListener(window, "load", init_'.$element.');';
+    $javascript .= 'YAHOO.util.Event.addListener(window, "load", init_'.$element.');';
     return $this->javascript_tag($javascript);
   }
   
