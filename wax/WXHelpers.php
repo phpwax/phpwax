@@ -256,32 +256,24 @@ class WXHelpers {
 	
 	public function pagination_links($model, $parameter="page", $action="", $controller=""){
 		$path = array();
-		if($controller)
-			$path['controller'] = $controller;
-		if($action)
-			$path['action'] = $action;			
+		if($controller) $path['controller'] = $controller;
+		if($action) $path['action'] = $action;			
 		//if model has a total and less the 10 pages just show a list of all pages
-		if($model->paginate_total && (($model->paginate_total/$model->paginate_limit) < 10) ){
+		if($model->paginate_total && (($model->paginate_total/$model->paginate_limit) < 10) ) {
 			//find max pages
 			$max_pages = floor($model->paginate_total / $model->paginate_limit)+1;
-			if($max_pages < 1) return false;
-			$output ="<ul id='pagination'>";
-			for($page_number=1; $page_number <= $max_pages; $page_number++){
-				if($page_number == $model->paginate_page){
-					$output .= "<li class='active-page'>";
-				} else {
-					$output .= "<li>";
-				}
-				$path[$parameter] = $page_number;					
-				$output .= link_to($page_number, $path ) . "</li>";
+			if($max_pages <= 1) return false;
+			for($page_number=1; $page_number <= $max_pages; $page_number++) {
+				$page_link = link_to($page_number, array($path=>$parameter) );
+				
+				if($page_number == $model->paginate_page) $options = array("class"=>"active-page");
+				  else $options = array();
+				$output = $this->content_tag("li", $page_link, $options);
 			}
-			$output .= "</ul>";
+			$output = $this->content_tag("ul", $output, array("id"=>"pagination"));
 			return $output;
-		} elseif($model->paginate_total >= 10 ) {
-			return $this->advanced_paginate_links($model);
-		} else {
-			return false;
-		}		
+		} 
+		return false;	
 	}
 	public function advanced_paginate_links($model){}
 
