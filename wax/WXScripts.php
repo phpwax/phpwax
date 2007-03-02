@@ -152,10 +152,8 @@ class WXScripts {
   }
   
   public function migrate($argv) {
-    $this->app_setup();
     if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
       define("ENV", $argv[1]);
-    	$this->app_setup();
     	unset($argv[1]);
     } 
 
@@ -167,7 +165,8 @@ class WXScripts {
       exit($result."\n");
     } 
 
-
+    $this->app_setup();
+  	
     $dbdir = dirname(__FILE__).'/../app/db/migrate/';
     if(!is_dir($dbdir)) {
       $command = "mkdir -p $dbdir";
