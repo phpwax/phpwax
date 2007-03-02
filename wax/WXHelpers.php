@@ -262,7 +262,7 @@ class WXHelpers {
 		if($model->paginate_total && (($model->paginate_total/$model->paginate_limit) < 10) ) {
 			//find max pages
 			$max_pages = floor($model->paginate_total / $model->paginate_limit)+1;
-			if($max_pages <= 1) return false;
+			if($max_pages <= 1 || $model->paginate_total == $model->paginate_limit) return false;
 			for($page_number=1; $page_number <= $max_pages; $page_number++) {
 					$path[$parameter] = $page_number; 
 					$page_link = link_to($page_number, $path );
