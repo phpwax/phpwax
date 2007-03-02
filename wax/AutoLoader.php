@@ -109,9 +109,11 @@ class AutoLoader
 	
 	static public function detect_environments() {
 	  if(!is_array(WXConfiguration::get("environments"))) return false;
+	  if($_SERVER['HOSTNAME']) $addr = gethostbyname($_SERVER['HOSTNAME']);
+	  elseif($_SERVER['SERVER_ADDR']) $addr = $_SERVER['SERVER_ADDR'];
 	  foreach(WXConfiguration::get("environments") as $env=>$range) {
 	    $range = "/".str_replace(".", "\.", $range)."/";
-	    if(preg_match($range, gethostbyname($_SERVER['HOSTNAME'])) && !defined($env) ) {
+	    if(preg_match($range, $addr) && !defined($env) ) {
 	      define('ENV', $env);
 	    } 
 	  }
