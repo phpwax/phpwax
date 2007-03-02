@@ -114,7 +114,8 @@ class WXValidations
 		}
 		$class = get_class($this);
 		$obj = new $class;
-		$res = $obj->find_all(array("conditions"=>"{$field}='{$this->{$field}}'"));
+		$field_added_slashes = addslashes($this->{$field});
+		$res = $obj->find_all(array("conditions"=>"{$field}='{$field_added_slashes}'"));
 		foreach($res as $row) {
 		  if($row->id != $this->id) {
 			  $this->add_error($field, $message);
