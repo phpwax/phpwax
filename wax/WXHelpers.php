@@ -269,7 +269,7 @@ class WXHelpers {
 				
 				if($page_number == $model->paginate_page) $options = array("class"=>"active-page");
 				  else $options = array();
-				$output = $this->content_tag("li", $page_link, $options);
+				$output .= $this->content_tag("li", $page_link, $options);
 			}
 			$output = $this->content_tag("ul", $output, array("id"=>"pagination"));
 			return $output;
