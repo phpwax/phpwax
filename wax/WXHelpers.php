@@ -264,7 +264,8 @@ class WXHelpers {
 			$max_pages = floor($model->paginate_total / $model->paginate_limit)+1;
 			if($max_pages <= 1) return false;
 			for($page_number=1; $page_number <= $max_pages; $page_number++) {
-					$page_link = link_to($page_number, array($parameter => $page_number) );
+					$path[$parameter] = $page_number; 
+					$page_link = link_to($page_number, $path );
 				
 				if($page_number == $model->paginate_page) $options = array("class"=>"active-page");
 				  else $options = array();
