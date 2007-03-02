@@ -155,9 +155,7 @@ class WXScripts {
     if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
       define("ENV", $argv[1]);
     	unset($argv[1]);
-    } 
-
-    if($argv[1] =="directory" && isset($argv[2])) {
+    } elseif(isset($argv[1]) && $argv[1] =="directory" && isset($argv[2])) {
       $migrate = new WXMigrate(true);
       $direction = "up";
       if(isset($argv[3])) $direction="down";
@@ -167,7 +165,7 @@ class WXScripts {
 
     $this->app_setup();
   	
-    $dbdir = dirname(__FILE__).'/../app/db/migrate/';
+    $dbdir = WAX_ROOT.'app/db/migrate/';
     if(!is_dir($dbdir)) {
       $command = "mkdir -p $dbdir";
       system($command);
