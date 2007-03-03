@@ -223,7 +223,7 @@ class WXScripts {
     array_shift($argv);
     array_shift($argv);
     array_shift($argv);
-    print_r($commands); exit;
+
     if(call_user_func_array($commands, $argv) ) {
       $this->add_output("...successfully ran command, and method returned true.");
     } else {
