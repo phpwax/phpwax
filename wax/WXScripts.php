@@ -15,6 +15,7 @@ class WXScripts {
   
   public function __construct($type, $argv) {
     ob_end_clean();
+    error_reporting(0);
     $this->$type($argv);
   }
   
