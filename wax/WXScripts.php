@@ -210,6 +210,26 @@ class WXScripts {
     $this->add_output("Application successfully deployed to ".$deployment_settings['server']);
   }
   
+  public function runner() {
+    if(!isset($argv[1]) || !isset($argv[2])) {
+      exit("[ERROR] You must supply at least two values, a model and a method"."\n");
+    }    
+    $model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
+    if(!class_exists($model_name) || !$model = new $model_name) {
+      exit("[ERROR] Cannot find class name $model_name"."\n");
+    }
+    $commands = array($argv[1], $argv[2]);
+    array_shift($argv);
+    array_shift($argv);
+    array_shift($argv);
+    
+    if(call_user_func_array($commands, $argv) ) {
+      $this->add_output("...successfully ran command, and method returned true.");
+    } else {
+      $this->add_output("...successfully ran command but method returned false.");
+    }
+  }
+  
   
   protected function add_output($output) {
     $this->output[]=$output;
