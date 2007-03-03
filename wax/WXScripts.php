@@ -210,7 +210,7 @@ class WXScripts {
     $this->add_output("Application successfully deployed to ".$deployment_settings['server']);
   }
   
-  public function runner() {
+  public function runner($argv) {
     if(!isset($argv[1]) || !isset($argv[2])) {
       exit("[ERROR] You must supply at least two values, a model and a method"."\n");
     }    
