@@ -212,6 +212,10 @@ class WXScripts {
   }
   
   public function runner($argv) {
+    if(isset($argv[3]) && $argv[3]=="development") {
+      define("ENV", "development");
+      unset($argv[3]);
+    }
     $this->app_setup();
     if(!isset($argv[1]) || !isset($argv[2])) {
       exit("[ERROR] You must supply at least two values, a model and a method"."\n");
