@@ -212,8 +212,8 @@ class WXScripts {
   }
   
   public function runner($argv) {
-    if(isset($argv[3]) && $argv[3]=="development") {
-      define("ENV", "development");
+    if(isset($argv[3]) && $argv[3]=="production") {
+      define("ENV", "production");
       unset($argv[3]);
     }
     $this->app_setup();
