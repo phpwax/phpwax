@@ -14,6 +14,7 @@ class WXValidations
 	protected $extra_validations = array();
 	protected $validations = array();
 	protected static $errors = array();
+	protected $skip_validations = array();
 	
 	
 	
@@ -64,6 +65,10 @@ class WXValidations
 			return true;
 		}
 		return false;
+	}
+	
+	public function skip_validation($field) {
+	  $this->skip_validations[]=$field;
 	}
 	
 	public function add_error($field, $message) {		
