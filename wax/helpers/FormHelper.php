@@ -126,9 +126,9 @@ class FormHelper extends WXHelpers {
   }
   
   protected function add_error_to_input($class) {
-    foreach($this->errors as $field=>$val) {
-      error_log("Error match ".$field." against ".$this->attribute_name);
-      if($field == $this->attribute_name) return $class." error_field";
+    foreach($this->errors as $field) {
+      error_log("Error match ".key($field)." against ".$this->attribute_name);
+      if(key($field) == $this->attribute_name) return $class." error_field";
     }
     return $class;
   }
