@@ -127,7 +127,7 @@ class FormHelper extends WXHelpers {
   
   protected function add_error_to_input($class) {
     foreach($this->errors as $field=>$val) {
-      if($field == $this->attribute_name) return $class." ".$error_field;
+      if($field == $this->attribute_name) return $class." error_field";
     }
     return $class;
   }
