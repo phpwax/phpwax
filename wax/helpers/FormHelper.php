@@ -113,7 +113,7 @@ class FormHelper extends WXHelpers {
      */
   protected function to_input_field_tag($field_type, $options = array()) {
     if(!$options["class"]) $options["class"]="input_field";
-    else $options['class'].=" input_field";
+    else $options['class']= $options['class']." input_field";
     $options['class'] = $this->add_error_to_input($options['class']);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
@@ -129,7 +129,7 @@ class FormHelper extends WXHelpers {
     if(array_key_exists($this->attribute_name, $this->errors)) {
       if(strlen($class) <1) return "error_field";
       else return $class." ".$error_field;
-    }
+    } else return $class;
   }
 
 	protected function make_label($label_name="", $options=array()) {
