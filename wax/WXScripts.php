@@ -105,6 +105,10 @@ class WXScripts {
     }
   }
   
+  public function plugins($argv) {
+    
+  }
+  
   public function run_tests($argv) {
     error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
     define("ENV", "test");

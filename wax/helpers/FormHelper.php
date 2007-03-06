@@ -93,23 +93,8 @@ class FormHelper extends WXHelpers {
   }
 
     /**
-     *  Generate an HTML or XML input tag with optional attributes
+     *  Generate an input tag with optional attributes
      *
-     *  @param string  Type of input field (<samp>'text'</samp>,
-     *                 <samp>'password'</samp>, <samp>'hidden'</samp>
-     *                 <i>etc.</i>)
-     *  @param string[] Attributes to apply to the input tag:<br>
-     *    <samp>array('attr1' => 'value1'[, 'attr2' => 'value2']...)</samp>
-     *  @return string
-     *   <samp><input type="</samp><i>type</i>
-     *   <samp>" maxlength="</samp><i>maxlength</i><samp>" .../>\n</samp>
-     *  @uses add_default_name_and_id_and_value()
-     *  @uses attribute_name
-     *  @uses error_wrapping
-     *  @uses default_field_options
-     *  @uses object()
-     *  @uses tag()
-     *  @uses value()
      */
   protected function to_input_field_tag($field_type, $options = array()) {
     if(!$options["class"]) $options["class"]="input_field";
