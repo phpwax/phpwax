@@ -51,14 +51,14 @@ class WXValidations
   	}
 	}
 	
-	public function get_errors($force=false) {
+	public function get_errors($force = true) {
 		$ret = self::$errors;
 		if(!self::$errors_fetched) {
 	    self::$errors_fetched=true;
 	    return $ret;
 	  }
 		elseif($force) return $ret;
-		return array();
+		else return array();
 	}
 	
 	public function clear_errors() {
