@@ -127,7 +127,7 @@ class FormHelper extends WXHelpers {
   
   protected function add_error_to_input($class) {
     if(array_key_exists($this->attribute_name, $this->errors)) {
-      if(strlen $class <1) return "error_field";
+      if(strlen($class) <1) return "error_field";
       else return $class." ".$error_field;
     }
   }
