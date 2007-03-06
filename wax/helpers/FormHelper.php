@@ -47,7 +47,7 @@ class FormHelper extends WXHelpers {
 			$this->object = $object;
       $this->attribute_name = $attribute_name;
 			$this->object_name = $this->object->table;
-			$this->errors = $this->object->get_errors(true);
+			// $this->errors = $this->object->get_errors(true);
     }  
     
     
