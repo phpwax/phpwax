@@ -50,9 +50,9 @@ class WXValidations
   	}
 	}
 	
-	public function get_errors() {
+	public function get_errors($persist=false) {
 		$ret = self::$errors;
-		self::$errors=array();
+		if(!$persist) self::$errors=array();
 		return $ret;
 	}
 	

@@ -37,7 +37,7 @@ class FormHelper extends WXHelpers {
     private $default_date_options = array();
 
     
-    private $errors = array();
+    protected $errors = array();
 
 
     protected function initialise($object="", $attribute_name="") {
@@ -46,8 +46,8 @@ class FormHelper extends WXHelpers {
 			}  
 			$this->object = $object;
       $this->attribute_name = $attribute_name;
-			
 			$this->object_name = $this->object->table;
+			$this->errors = $this->object->get_errors(true);
     }  
     
     
@@ -80,13 +80,7 @@ class FormHelper extends WXHelpers {
     }
 
     /**
-     *  @todo Document this method
-     *  @param string[]
-     *  @uses auto_index
-     *  @uses tag_id
-     *  @uses tag_name
-     *  @uses tag_id_with_index()
-     *  @uses tag_name_with_index()
+     *  @param array options[]
      */
   protected function add_default_name_and_id_and_value($options) {
     if(isset($options['value']) || $options['type']=="file") return $options;   	
@@ -119,6 +113,8 @@ class FormHelper extends WXHelpers {
      */
   protected function to_input_field_tag($field_type, $options = array()) {
     if(!$options["class"]) $options["class"]="input_field";
+    else $options['class'].=" input_field";
+    $options['class'] = $this->add_error_to_input($options['class']);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
     $options["type"] = $field_type;
@@ -128,6 +124,13 @@ class FormHelper extends WXHelpers {
 		}
 		return $this->tag("input", $options);            
   }
+  
+  protected function add_error_to_input($class) {
+    if(array_key_exists($this->attribute_name, $this->errors)) {
+      if(strlen $class <1) return "error_field";
+      else return $class." ".$error_field;
+    }
+  }
 
 	protected function make_label($label_name="", $options=array()) {
 	  $options = array_merge($options, array("for" =>$this->object_name."_".$this->attribute_name));
@@ -136,6 +139,7 @@ class FormHelper extends WXHelpers {
 	  }
 		return $this->content_tag("label", humanize($label_name), $options);
 	}
+	
 	
 	public function text_field($obj, $att, $options = array(), $with_label=true) {
 		$this->initialise($obj, $att);
