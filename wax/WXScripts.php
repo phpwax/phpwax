@@ -157,6 +157,7 @@ class WXScripts {
       define("ENV", $argv[1]);
     	unset($argv[1]);
     } elseif(isset($argv[1]) && $argv[1] =="directory" && isset($argv[2])) {
+      $this->app_setup();
       $migrate = new WXMigrate(true);
       $direction = "up";
       if(isset($argv[3])) $direction="down";
