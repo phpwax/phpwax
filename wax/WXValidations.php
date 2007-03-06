@@ -15,6 +15,7 @@ class WXValidations
 	protected $validations = array();
 	protected static $errors = array();
 	protected $skip_validations = array();
+	protected static $errors_fetched = false;
 	
 	
 	
@@ -50,10 +51,12 @@ class WXValidations
   	}
 	}
 	
-	public function get_errors($persist=false) {
+	public function get_errors($force=false) {
 		$ret = self::$errors;
-		if(!$persist) self::$errors=array();
-		return $ret;
+		self::$errors_fetched=true;
+		if(!self::$errors_fetched) return $ret;
+		elseif($force) return $ret;
+		return array();
 	}
 	
 	public function clear_errors() {
