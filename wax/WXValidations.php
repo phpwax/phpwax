@@ -53,8 +53,10 @@ class WXValidations
 	
 	public function get_errors($force=false) {
 		$ret = self::$errors;
-		self::$errors_fetched=true;
-		if(!self::$errors_fetched) return $ret;
+		if(!self::$errors_fetched) {
+	    self::$errors_fetched=true;
+	    return $ret;
+	  }
 		elseif($force) return $ret;
 		return array();
 	}
