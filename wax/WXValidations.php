@@ -61,6 +61,10 @@ class WXValidations
 		else return array();
 	}
 	
+	public function stealth_get_errors() {
+	  return self::$errors;
+	}
+	
 	public function clear_errors() {
 	  $this->get_errors();
 	}
