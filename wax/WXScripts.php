@@ -127,6 +127,10 @@ class WXScripts {
     }
   }
   
+  protected function plugin_post_setup() {
+    
+  }
+  
   protected function plugin_migrate($dir) {
     if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
     $migrate_dir = PLUGIN_DIR.$dir."/migrate";
