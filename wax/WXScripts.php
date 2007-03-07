@@ -106,7 +106,32 @@ class WXScripts {
   }
   
   public function plugins($argv) {
-    
+    if(!$argv[1]) $this->fatal_error("[ERROR] You must give a plugin command to run.");
+    if(!$argv[2]) $this->fatal_error("[ERROR] You must give a plugin package name or url.");
+    switch($argv[1]) {
+      case "install":
+        $this->plugin_install($argv[2]);
+        break;
+      case "migrate":
+        $this->plugin_migrate($argv[2]);
+    }
+  }
+  
+  protected function plugin_install($source) {
+    $output_dir = PLUGIN_DIR.$source;
+    $source = "svn://php-wax.com/svn/plugins/".$source."/trunk/";
+    if($this->get_response("This will overwrite files inside the plugin/{$source} directory. Do you want to continue?", "y")) {
+      $command = "svn export -q {$source} {$output_dir} --force";
+      system($command);
+      $this->add_output("Plugin installed in /plugins/{$source}");
+    }
+  }
+  
+  protected function plugin_migrate($dir) {
+    if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
+    $migrate_dir = PLUGIN_DIR.$dir."/migrate";
+    $migrate = new WXMigrate;
+    $migrate->version_less_migrate($migrate_dir);
   }
   
   public function run_tests($argv) {
@@ -241,9 +266,23 @@ class WXScripts {
     }
   }
   
+  protected function get_response($question, $positive="y", $options=false) {
+    if(!$options) $options = "[y/n] ";
+    echo $question . $options;
+    $response = strtolower(trim(fgets(STDIN)));
+    if($response == $positive) return true;
+    return false;
+  }
   
   protected function add_output($output) {
     $this->output[]=$output;
+  }
+  
+  protected function fatal_error($output) {
+    foreach($this->output as $out) {
+      echo $out."\n";
+    }
+    exit;
   }
   
   public function __destruct() {
