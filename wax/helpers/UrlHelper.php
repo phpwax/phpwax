@@ -157,7 +157,7 @@ class UrlHelper extends WXHelpers {
     }
 		
 		if(array_key_exists("controller", $options)) {
-		  if($options['controller'] == WXConfiguration::get("route/default")) break;
+		  if($options['controller'] == WXConfiguration::get("route/default")) continue;
     	$url[] = $options["controller"];
 			unset($options["controller"]);
     } else {
