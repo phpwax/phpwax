@@ -117,13 +117,13 @@ class WXScripts {
     }
   }
   
-  protected function plugin_install($source) {
-    $output_dir = PLUGIN_DIR.$source;
-    $source = "svn://php-wax.com/svn/plugins/".$source."/trunk/";
-    if($this->get_response("This will overwrite files inside the plugin/{$source} directory. Do you want to continue?", "y")) {
+  protected function plugin_install($name) {
+    $output_dir = PLUGIN_DIR.$name;
+    $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
+    if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
       $command = "svn export -q {$source} {$output_dir} --force";
       system($command);
-      $this->add_output("Plugin installed in /plugins/{$source}");
+      $this->add_output("Plugin installed in /plugins/{$name}");
     }
   }
   
