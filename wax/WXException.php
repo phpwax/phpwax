@@ -98,7 +98,8 @@ class WXException extends Exception
   	}
 		header("Status: 500 Application Error");
 		echo $this->simple_error_message;
-		error_log($this->cli_error_message);
+		$all_lines = explode("\n", $this->cli_error_message);
+    foreach($all_lines as $line) error_log($line);
 		exit;
 	}
 	public function cli_giveup() {
