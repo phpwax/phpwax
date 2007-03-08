@@ -77,6 +77,7 @@ class WXScripts {
         $this->plugin_install($argv[2]);
         echo "completed install";
         $this->plugin_migrate($argv[2]);
+        echo "completed migration";
         $this->plugin_post_setup($argv[2]);
         break;
     }
