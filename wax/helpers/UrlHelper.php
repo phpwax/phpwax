@@ -157,6 +157,7 @@ class UrlHelper extends WXHelpers {
     }
 		
 		if(array_key_exists("controller", $options)) {
+		  die(WXConfiguration::get("route/default"));
 		  if($options['controller'] != WXConfiguration::get("route/default")) {
     	  $url[] = $options["controller"];
 		  }
@@ -175,7 +176,7 @@ class UrlHelper extends WXHelpers {
     	$url[] = $options["id"];
 			unset($options["id"]);
     }
-    error_log(print_r($url,1));
+
     if(count($options)) {
     	foreach($options as $key => $value) {
       	$extra_params[$key] = $value; 
