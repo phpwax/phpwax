@@ -6,11 +6,11 @@ class TestAuthMigration extends WXMigrate {
     $this->create_column("username");
     $this->create_column("password");
     $this->create_column("email");
-    $this->create_table("test_user");
+    $this->create_table("test_auth_user");
   }
   
   public function down() {
-    $this->drop_table("test_user");
+    $this->drop_table("test_auth_user");
   }
 }
 
