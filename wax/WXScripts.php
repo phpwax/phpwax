@@ -57,52 +57,10 @@ class WXScripts {
   }
   
   public function plugin($argv) {
-    if(!isset($argv[1]) ) {
-      $this->add_output("[ERROR] You must supply a plugin name that you wish to install.");
-      $this->add_output("Type 'script/plugin_install list' to see available plugins.");
-      return false;
-    }
-    
-    if($argv[1]=="list") {
-      $this->add_output("The following plugins are available");
-      foreach($this->plugin_array as $plugin=>$location) {
-        $this->add_output($plugin);
-      }
-      return false;
-    }
-    
-    if(!array_key_exists($argv[1], $this->plugin_array)) {
-      $this->add_output("[ERROR] Plugin not found.");
-      $this->add_output("Type 'script/plugin_install list' to see available plugins.");
-      return false;
-    }
-    $source = $this->plugin_array[$argv[1]];
-    $output_dir = WAX_ROOT."plugins/".$argv[1]."/";
-    echo "This will overwrite files inside the plugin/{$argv[1]} directory. Do you want to continue?: [y/n] ";
-    $answer = trim(fgets(STDIN));
-    if($answer != "y" && $answer != "yes") {
-     $this->add_output("");
-     return false; 
-    }
-    
-    $command = "svn export -q {$source} {$output_dir} --force";
-    system($command);
-
-    echo("Plugin installed in /plugins/{$argv[1]}."."\n");
-    if(is_readable(WAX_ROOT."plugins/".$argv[1]."/installer")) {
-      echo "Would you like to run the additional installer script?"."\n".
-      "(this may overwrite files inside your app and public folders): [y/n] "; 
-      $answer = trim(fgets(STDIN));
-      if($answer != "y" && $answer != "yes") {
-        $this->add_output("Installer script was skipped. (Just re-run the install if this was a mistake.)"."\n"); 
-        return false;
-      }
-      if(include(PLUGIN_DIR.$argv[1]."/installer"))
-        $this->add_output("");
-        $this->add_output("Plugin installer successfully ran.");
-    } else {
-      $this->add_output("");
-    }
+    $command=array("cold_install");
+    $argv = array_splice($argv,1,0,$command);
+    print_r($argv); exit;
+    $this->plugins($argv);
   }
   
   public function plugins($argv) {
