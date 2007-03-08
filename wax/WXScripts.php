@@ -56,10 +56,8 @@ class WXScripts {
     $gen = new WXGenerator("migration", array_slice($argv, 1));
   }
   
-  public function plugin($argv) {
-    print_r($argv); exit;
-    
-    $argv2 = array_splice($argv,1,0,"cold_install");
+  public function plugin($argv) {    
+    $argv2 = array_splice($argv,2,0,"cold_install");
     print_r($argv2); exit;
     $this->plugins($argv);
   }
