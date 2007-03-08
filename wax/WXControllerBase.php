@@ -40,6 +40,10 @@ abstract class WXControllerBase
  	 */   
   public function redirect_to($options) {
     switch($options) {
+      case is_array($options):
+        $url = $_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
+        header("Location:$url"); 
+        break;
       case preg_match("/^\w+:\/\/.*/", $options): 
         header("Location:$options"); 
         break;
@@ -50,10 +54,6 @@ abstract class WXControllerBase
         $url = $_SERVER['HTTP_HOST'].$options;
         header("Location:$url"); 
         break;
-      case is_array($options):
-        $url = $_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
-        header("Location:$url"); 
-        break;    
     }
   }
   
