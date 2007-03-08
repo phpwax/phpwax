@@ -74,6 +74,7 @@ class WXScripts {
         $this->plugin_post_setup($argv[2]);
         break;
       case "cold_install":
+        die("we're here");
         $this->plugin_install($argv[2]);
         echo "completed install";
         $this->plugin_migrate($argv[2]);
