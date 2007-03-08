@@ -57,7 +57,6 @@ abstract class WXControllerBase
         break;
     }
   }
-  
 
 	public function run_filters($when) {
 		if(!is_array($this->filters[$when])) return false;
