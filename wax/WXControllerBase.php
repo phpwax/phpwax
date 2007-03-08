@@ -38,17 +38,25 @@ abstract class WXControllerBase
 	 *	@access protected
 	 *	@param string $route
  	 */   
-	public function redirect_to($route) {
-		if(substr($route, 0,1) != "/" && (!substr_count($route, "http")>0) ) {
-		  $controller=new WXRoute;
-		  $route = "/".$controller->get_url_controller()."/$route";
-		}
-		if(!strpos($route, "http")===0) {
-		  $route = "http://".$_SERVER['HTTP_HOST'].$route;
-	  }
-  	header("Location:$route");
-   	exit;
+  public function redirect_to($options) {
+    switch($options) {
+      case preg_match("^\w+://.*", $options): 
+        header("Location:$options"); 
+        break;
+      case "back": 
+        header("Location:{$_SERVER['HTTP_REFERER']}"); 
+        break;
+      case is_string($options):
+        $url = $_SERVER['HTTP_HOST'].$options;
+        header("Location:$url"); 
+        break;
+      case is_array($options):
+        $url = $_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
+        header("Location:$url"); 
+        break;    
+    }
   }
+  
 
 	public function run_filters($when) {
 		if(!is_array($this->filters[$when])) return false;
