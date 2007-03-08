@@ -175,16 +175,19 @@ class UrlHelper extends WXHelpers {
     	$url[] = $options["id"];
 			unset($options["id"]);
     }
-    print_r($url); exit;
     if(count($options)) {
     	foreach($options as $key => $value) {
       	$extra_params[$key] = $value; 
      	}    
     }
+    print_r($url);
+    print_r($extra_params); exit;
+    
 		if(!count($extra_params)) {
 		  if(array_pop(array_values($url))=="index") array_pop($url);
     	return $url_base.implode("/", $url)."/";
 		} 
+		
     return $url_base . implode("/", $url)."/"
           . (count($extra_params)
              ? "?".http_build_query($extra_params) : null);
