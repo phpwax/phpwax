@@ -48,10 +48,10 @@ abstract class WXControllerBase
         header("Location:$options"); 
         break;
       case "back":
-        die("debug");
         header("Location:{$_SERVER['HTTP_REFERER']}"); 
         break;
       case is_string($options):
+        die("string");
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
         header("Location:$url"); 
         break;
