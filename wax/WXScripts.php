@@ -114,6 +114,14 @@ class WXScripts {
         break;
       case "migrate":
         $this->plugin_migrate($argv[2]);
+      case "setup":
+        $this->plugin_post_setup($argv[2]);
+        break;
+      case "cold_install":
+        $this->plugin_install($argv[2]);
+        $this->plugin_migrate($argv[2]);
+        $this->plugin_post_setup($argv[2]);
+        break;
     }
   }
   
@@ -129,7 +137,7 @@ class WXScripts {
   
   protected function plugin_post_setup($name) {
     if(is_readable(PLUGIN_DIR.$name."/installer") && 
-      $this->get_response("This plugin has an additional inastaller, would you like to run it?", "y")) {
+      $this->get_response("This plugin has an additional installer, would you like to run it?", "y")) {
       include(PLUGIN_DIR.$name."/installer");
       $this->add_output("Plugin installer ran.");
     }      
