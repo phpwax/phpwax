@@ -48,6 +48,7 @@ abstract class WXControllerBase
         header("Location:$options"); 
         break;
       case "back":
+        die("debug");
         header("Location:{$_SERVER['HTTP_REFERER']}"); 
         break;
       case is_string($options):
