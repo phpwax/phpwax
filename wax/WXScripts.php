@@ -104,6 +104,7 @@ class WXScripts {
     $migrate_dir = PLUGIN_DIR.$dir."/migrate";
     $migrate = new WXMigrate;
     $migrate->version_less_migrate($migrate_dir);
+    $this->add_output("Plugin database setup completed");
   }
   
   public function run_tests($argv) {
