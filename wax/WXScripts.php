@@ -58,7 +58,7 @@ class WXScripts {
   
   public function plugin($argv) {
     $command=array("cold_install");
-    $argv = array_splice($argv,1,0,$command);
+    $argv = array_splice($argv,1,1,$command);
     print_r($argv); exit;
     $this->plugins($argv);
   }
