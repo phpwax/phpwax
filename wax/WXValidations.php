@@ -66,7 +66,7 @@ class WXValidations
 	}
 	
 	public function clear_errors() {
-	  $this->get_errors();
+	  self::$errors=array();
 	}
 	
 	public function validate() {
