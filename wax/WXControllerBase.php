@@ -39,7 +39,7 @@ abstract class WXControllerBase
 	 *	@param string $route
  	 */   
   public function redirect_to($options, $protocol="http://") {
-    switch($options) {
+    switch(true) {
       case is_array($options):
         $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
         header("Location:$url"); 
@@ -47,11 +47,10 @@ abstract class WXControllerBase
       case preg_match("/^\w+:\/\/.*/", $options): 
         header("Location:$options"); 
         break;
-      case "back":
+      case $options=="back":
         header("Location:{$_SERVER['HTTP_REFERER']}"); 
         break;
       case is_string($options):
-        die("string");
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
         header("Location:$url"); 
         break;
