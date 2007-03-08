@@ -38,20 +38,20 @@ abstract class WXControllerBase
 	 *	@access protected
 	 *	@param string $route
  	 */   
-  public function redirect_to($options) {
+  public function redirect_to($options, $protocol="http://") {
     switch($options) {
       case is_array($options):
-        $url = $_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
+        $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
         header("Location:$url"); 
         break;
       case preg_match("/^\w+:\/\/.*/", $options): 
         header("Location:$options"); 
         break;
-      case "back": 
+      case "back":
         header("Location:{$_SERVER['HTTP_REFERER']}"); 
         break;
       case is_string($options):
-        $url = $_SERVER['HTTP_HOST'].$options;
+        $url = $protocol.$_SERVER['HTTP_HOST'].$options;
         header("Location:$url"); 
         break;
     }
