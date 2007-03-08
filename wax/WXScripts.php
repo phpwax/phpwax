@@ -298,6 +298,7 @@ class WXScripts {
     foreach($this->output as $out) {
       echo $out."\n";
     }
+    echo $output;
     exit;
   }
   
