@@ -180,8 +180,6 @@ class UrlHelper extends WXHelpers {
       	$extra_params[$key] = $value; 
      	}    
     }
-    print_r($url);
-    print_r($extra_params); exit;
     
 		if(!count($extra_params)) {
 		  if(array_pop(array_values($url))=="index") array_pop($url);
