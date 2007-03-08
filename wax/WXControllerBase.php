@@ -40,7 +40,7 @@ abstract class WXControllerBase
  	 */   
   public function redirect_to($options) {
     switch($options) {
-      case preg_match("^\w+://.*", $options): 
+      case preg_match("/^\w+://.*/", $options): 
         header("Location:$options"); 
         break;
       case "back": 
