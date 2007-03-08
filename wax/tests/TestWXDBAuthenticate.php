@@ -37,7 +37,7 @@ class TestWXDBAuthenticate extends WXTestCase
   }
   
   public function test_verify() {
-    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_user"));
+    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_auth_user"));
     $auth->verify("test1", "password");
     $this->assertTrue($auth->is_logged_in());
     $auth->logout();
@@ -45,7 +45,7 @@ class TestWXDBAuthenticate extends WXTestCase
   }
   
   public function test_bad_login_fails() {
-    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_user"));
+    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_auth_user"));
     $this->assertFalse($auth->is_logged_in());
     $auth->verify("test1", "badpassword");
     $this->assertFalse($auth->is_logged_in());
@@ -53,7 +53,7 @@ class TestWXDBAuthenticate extends WXTestCase
   
   public function test_encrypted_login() {
     $this->model->update_attributes($this->get_fixture("encrypteduser"));
-    $auth = new WXDBAuthenticate(array("encrypt"=>true, "db_table"=>"test_user"));
+    $auth = new WXDBAuthenticate(array("encrypt"=>true, "db_table"=>"test_auth_user"));
     $auth->verify("encrypted", "password");
     $this->assertTrue($auth->is_logged_in());
   }
