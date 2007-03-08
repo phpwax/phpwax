@@ -127,8 +127,12 @@ class WXScripts {
     }
   }
   
-  protected function plugin_post_setup() {
-    
+  protected function plugin_post_setup($name) {
+    if(is_readable(PLUGIN_DIR.$name."/installer") && 
+      $this->get_response("This plugin has an additional inastaller, would you like to run it?", "y")) {
+      include(PLUGIN_DIR.$name."/installer");
+      $this->add_output("Plugin installer ran.");
+    }      
   }
   
   protected function plugin_migrate($dir) {
