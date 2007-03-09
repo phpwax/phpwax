@@ -52,7 +52,7 @@ abstract class WXControllerBase
         header("Location:{$_SERVER['HTTP_REFERER']}"); 
         break;
       case is_string($options):
-        if(substr($options,0,1)!="/") $options = "/".$options;
+        if(substr($options,0,1)!="/") $options = UrlHelper::url_for($options);
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
         header("Location:$url"); 
         break;
