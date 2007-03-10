@@ -42,19 +42,19 @@ abstract class WXControllerBase
     switch(true) {
       case is_array($options):
         $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
-        header("Location:$url"); 
+        header("Location:$url"); exit;
         break;
       case preg_match("/^\w+:\/\/.*/", $options): 
-        header("Location:$options"); 
+        header("Location:$options"); exit;
         break;
       case $options=="back":
         if(!$_SERVER['HTTP_REFERER']) return false;
-        header("Location:{$_SERVER['HTTP_REFERER']}"); 
+        header("Location:{$_SERVER['HTTP_REFERER']}"); exit;
         break;
       case is_string($options):
         if(substr($options,0,1)!="/") $options = UrlHelper::url_for($options);
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
-        header("Location:$url"); 
+        header("Location:$url"); exit;
         break;
     }
   }
