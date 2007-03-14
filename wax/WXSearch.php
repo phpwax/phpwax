@@ -33,6 +33,7 @@ class WXSearch {
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
 	    $db = WXActiveRecord::getPDO();
+	    print_r($db); exit;
 	    $db->query($setup);
 	    $results[$search['key']]=$table->find_by_sql($query);
 	  }
