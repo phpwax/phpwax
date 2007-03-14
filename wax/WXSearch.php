@@ -32,7 +32,8 @@ class WXSearch {
 	    $setups[]= "ALTER TABLE ".$search['table']." ADD FULLTEXT (".$search['field'].");";
 	    $query = "SELECT *, MATCH(".$search('field').") AGAINST('".$this->search_phrase."')
 	      FROM ".$search['table']."WHERE MATCH(".$search('field').") AGAINST('".$this->search_phrase."')";
-	    $table = new $search['table'];
+	    $model = $search['table']
+	    $table = new $model;
 	    $results[$search['key']]=$table->find_by_sql($query);
 	  }
 	  return $results;
