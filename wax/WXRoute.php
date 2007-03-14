@@ -44,6 +44,7 @@ class WXRoute {
     */
     
 	public function map_routes() {
+	  $this->detect_maintenance();
 	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
 		if(isset($this->config_array[$this->route_array[0]])) {
 			$this->route_array[0]=$this->config_array[$this->route_array[0]];
@@ -59,11 +60,22 @@ class WXRoute {
 	  if($res = $this->check_controller($this->route_array[0])) return $res;
 	}
 	
+	protected function detect_maintenance() {
+	  $maintenance = WXConfiguration::get("maintenance");
+	  if($maintenance['ip'] && $maintenance['redirect']) {
+	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
+	    if($this->route_array[0] != $maintenance['redirect']) $this->route_array[0]=$maintenance['redirect'];
+	    else return false;
+	    return true;
+	  }
+	  return false;
+	}
+	
 	/**
     *  Checks whether a file exists for the named controller
     *  @return boolean      If file exists true
     */
-	private function check_controller($controller) {
+	protected function check_controller($controller) {
 		if(strpos($controller, "/")) {
 			$path = substr($controller, 0, strpos($controller, "/")+1);
 			$class = slashcamelize($controller, true)."Controller";
