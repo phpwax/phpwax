@@ -30,7 +30,7 @@ class WXSearch {
 	  $fields=array();
 	  foreach(self::$search_array as $search) {
 	    $setups[]= "ALTER TABLE ".$search['table']." ADD FULLTEXT (".$search['field'].");";
-	    $query = "SELECT *, MATCH(".$search('field').") AGAINST('".$this->search_phrase."')
+	    $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')
 	      FROM ".$search['table']."WHERE MATCH(".$search('field').") AGAINST('".$this->search_phrase."')";
 	    $model = $search['table'];
 	    $table = new $model;
