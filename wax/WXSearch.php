@@ -31,7 +31,7 @@ class WXSearch {
 	  foreach(self::$search_array as $search) {
 	    $setups[]= "ALTER TABLE ".$search['table']." ADD FULLTEXT (".$search['field'].");";
 	    $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')
-	      FROM ".$search['table']."WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
+	      FROM ".$search['table']." WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
 	    $results[$search['key']]=$table->find_by_sql($query);
