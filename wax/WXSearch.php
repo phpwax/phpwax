@@ -32,7 +32,6 @@ class WXSearch {
 	     FROM ".$search['table']." WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
-	    echo $query;
 	    try {
 	      WXActiveRecord::getDefaultPDO()->query($setup);
       } catch(Exception $e) {
