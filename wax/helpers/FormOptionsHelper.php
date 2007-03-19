@@ -138,8 +138,74 @@ class FormOptionsHelper extends FormHelper {
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
     $this->initialise($obj, $att);
-    
 	  $shared_id = $this->object_name."_".$this->attribute_name;
+    if(strlen($this->object->{$this->attribute_name})>3 && $this->object->{$this->attribute_name}!="0000-00-00") {
+      $selected_day = substr($this->object->{$this->attribute_name}, 8,2);
+      $selected_month = substr($this->object->{$this->attribute_name}, 5,2);
+      $selected_year = substr($this->object->{$this->attribute_name}, 0,4);
+      $date_markup = $this->make_date_select($shared_id, $selected_day, $selected_month, $selected_year);
+    } else {
+      $date_markup = $this->make_date_select($shared_id);
+    }
+    $output .= javascript_tag("function {$shared_id}_set_date() { 
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
+    }");
+    if($with_label) $output .= $this->make_label($with_label);
+    $output.=$date_markup;
+    $output .= $this->hidden_field($obj, $att);
+    $output .= javascript_tag("{$shared_id}_set_date()");
+    return $output;
+  }
+  
+  public function time_select($obj, $att, $options = array(), $with_label=true) {
+    $this->initialise($obj, $att);
+	  $shared_id = $this->object_name."_".$this->attribute_name;
+
+    if(strlen($this->object->{$this->attribute_name})>3) {
+      $selected_hour = substr($this->object->{$this->attribute_name}, 0,2);
+      $selected_minute = substr($this->object->{$this->attribute_name}, 3,2);
+      $time_markup = $this->make_time_select($shared_id, $selected_hour, $selected_minute);
+    } else {
+      $time_markup = $this->make_time_select($shared_id);
+    }
+    $output .= javascript_tag("function {$shared_id}_set_date() { 
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value + ':00';
+    }");
+    if($with_label) $output .= $this->make_label($with_label);
+    $output .= $time_markup;
+    $output .= $this->hidden_field($obj, $att);
+    $output .= javascript_tag("{$shared_id}_set_date()");
+    return $output;
+  }
+  
+  public function datetime_select($obj, $att, $options = array(), $with_label=true) {
+    $this->initialise($obj, $att);
+	  $shared_id = $this->object_name."_".$this->attribute_name;
+    if(strlen($this->object->{$this->attribute_name})>3 && $this->object->{$this->attribute_name}!="0000-00-00") {
+      $selected_day = substr($this->object->{$this->attribute_name}, 8,2);
+      $selected_month = substr($this->object->{$this->attribute_name}, 5,2);
+      $selected_year = substr($this->object->{$this->attribute_name}, 0,4);
+      $selected_hour = substr($this->object->{$this->attribute_name}, 11,2);
+      $selected_minute = substr($this->object->{$this->attribute_name}, 14,2);
+      $datetime_markup = $this->make_date_select($shared_id, $selected_day, $selected_month, $selected_year);
+      $datetime_markup .= $this->make_time_select($shared_id, $selected_hour, $selected_minute);
+    } else {
+      $datetime_markup = $this->make_date_select($shared_id)."&nbsp;&nbsp;&nbsp;";
+      $datetime_markup .= $this->make_time_select($shared_id);
+    }
+    $output .= javascript_tag("function {$shared_id}_set_date() { 
+      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + 
+      '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value
+      + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value;
+    }");
+    if($with_label) $output .= $this->make_label($with_label);
+    $output.=$datetime_markup;
+    $output .= $this->hidden_field($obj, $att);
+    $output .= javascript_tag("{$shared_id}_set_date()");
+    return $output;
+  }
+  
+  protected function make_date_select($shared_id, $selected_day=false, $selected_month=false, $selected_year=false) {
     for($i = 1; $i<=31; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
       $day[$i]=$i;
@@ -151,62 +217,35 @@ class FormOptionsHelper extends FormHelper {
     for($i = 1900; $i<=2020; $i++) {
       $year[$i]=$i;
     }
-    if(strlen($this->object->{$this->attribute_name})>3 && $this->object->{$this->attribute_name}!="0000-00-00") {
-      $selected_day = substr($this->object->{$this->attribute_name}, 8,2);
-      $selected_month = substr($this->object->{$this->attribute_name}, 5,2);
-      $selected_year = substr($this->object->{$this->attribute_name}, 0,4);
-    } else {
-      $selected_day = date('d');
-      $selected_month = date('m');
-      $selected_year = date('Y');
-    }
+    if(!$selected_day) $selected_day = date('d');
+    if(!$selected_month) $selected_month = date('m');
+    if(!$selected_year) $selected_year = date('Y');
     $day_options = FormOptionsHelper::options_for_select($day, $selected_day);
     $month_options = FormOptionsHelper::options_for_select($month, $selected_month);
     $year_options = FormOptionsHelper::options_for_select($year, $selected_year);
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
-      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
-    }");
-    if($with_label) $output .= $this->make_label($with_label);
     $output .= $this->content_tag("select", $day_options, array("id"=>$shared_id."_day","name"=>$shared_id."_day", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $month_options, array("id"=>$shared_id."_month","name"=>$shared_id."_month", "onchange"=>"{$shared_id}_set_date();"));
     $output .= $this->content_tag("select", $year_options, array("id"=>$shared_id."_year","name"=>$shared_id."_year", "onchange"=>"{$shared_id}_set_date();"));
-    $output .= $this->hidden_field($obj, $att);
-    $output .= javascript_tag("{$shared_id}_set_date()");
     return $output;
   }
   
-  public function time_select($obj, $att, $options = array(), $with_label=true) {
-    $this->initialise($obj, $att);
-	  $shared_id = $this->object_name."_".$this->attribute_name;
-	  for($i = 1; $i<=23; $i++) {
+  protected function make_time_select($shared_id, $selected_hour=false, $selected_minute=false) {
+    for($i = 0; $i<=23; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
       $hour[$i]=$i;
     }
-    for($i = 1; $i<=59; $i++) {
+    for($i = 0; $i<=59; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
       $minute[$i]=$i;
     }
-    if(strlen($this->object->{$this->attribute_name})>3) {
-      $selected_hour = substr($this->object->{$this->attribute_name}, 0,2);
-      $selected_minute = substr($this->object->{$this->attribute_name}, 3,2);
-    } else {
-      $selected_hour = date('G');
-      $selected_minute = date('i');
-    }
+    if(!$selected_hour) $selected_hour = date('G');
+    if(!$selected_minute) $selected_minute = date('i');
     $hour_options = FormOptionsHelper::options_for_select($hour, $selected_hour);
     $minute_options = FormOptionsHelper::options_for_select($minute, $selected_minute);
-    $output .= javascript_tag("function {$shared_id}_set_time() { 
-      document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value + ':00';
-    }");
-    if($with_label) $output .= $this->make_label($with_label);
-    $output .= $this->content_tag("select", $hour_options, array("id"=>$shared_id."_hour","name"=>$shared_id."_hour", "onchange"=>"{$shared_id}_set_time();"));
-    $output .= $this->content_tag("select", $minute_options, array("id"=>$shared_id."_minute","name"=>$shared_id."_minute", "onchange"=>"{$shared_id}_set_time();"));
-    $output .= $this->hidden_field($obj, $att);
-    $output .= javascript_tag("{$shared_id}_set_time()");
+    $output .= $this->content_tag("select", $hour_options, array("id"=>$shared_id."_hour","name"=>$shared_id."_hour", "onchange"=>"{$shared_id}_set_date();"));
+    $output .= $this->content_tag("select", $minute_options, array("id"=>$shared_id."_minute","name"=>$shared_id."_minute", "onchange"=>"{$shared_id}_set_date();"));
     return $output;
   }
-  
-  
 
   
 }

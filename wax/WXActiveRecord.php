@@ -109,6 +109,11 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$child->setConstraint( $foreign_key, $id );
 		return $child;
 	}
+	
+	static function get_owner($class, $pdo, $id) {
+	  $owner = new $class($pdo);
+	  return $owner->find($id);
+	}
 
     /**
      *  get property
@@ -142,8 +147,15 @@ class WXActiveRecord extends WXValidations implements Iterator
 	 /**
     *  Next we try and link to a child object of the same name
 	  */
-    $id = $this->row[$this->primary_key];
+	  $link = $name."_id";
+	  $id = $this->row[$this->primary_key];
     $class_name = WXInflections::camelize($name, true);
+	  if($own = $this->row[$link]) {
+	    if(class_exists($class_name, false)) {
+				return WXActiveRecord::get_owner($class_name, $this->pdo, $own);
+      }
+	  }
+    
     if($id) {
     	$foreign_key = $this->table . '_id';
       if(class_exists($class_name, false)) {
@@ -672,7 +684,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   }
 	
 	public function is_posted() {
-		if(is_array($_POST[WXInflections::underscore(get_class($this))])) {
+		if(is_array($_POST[$this->table])) {
 			return true;
 		} else {
 			return false;
@@ -681,7 +693,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	
 	public function handle_post($attributes=null) {
 	  if($this->is_posted()) {
-	    if(!$attributes) $attributes = $_POST[WXInflections::underscore(get_class($this))];
+	    if(!$attributes) $attributes = $_POST[$this->table];
 	    return $this->update_attributes($attributes);
 	  }
 	  return false;
