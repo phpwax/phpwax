@@ -108,7 +108,7 @@ class WXGenerator {
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";
     if(count($path)> 1) {
      	$path = $path[0]."/";
-     	@mkdir(APP_DIR."controller/$path", 0755, true);
+     	if(!is_dir(APP_DIR."controller/$path") mkdir(APP_DIR."controller/$path", 0755, true);
     } else $path = "";    
     $this->final_output.= $this->start_php_file($class, "ApplicationController");
     $res = $this->write_to_file(APP_DIR."controller/".$path.$class.".php");
