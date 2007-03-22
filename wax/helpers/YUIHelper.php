@@ -31,8 +31,7 @@ class YUIHelper extends JavascriptHelper{
   }
   
   public function yui_container($element, $options=array()) {
-    $default_options = array("width"=>"'650px'", "visible"=>"false", "draggable"=>"true", "constraintoviewport"=>"true", "modal"=>"true",
-      "underlay"=>"'shadow'", "fixedcenter"=>"true");
+    $default_options = array("width"=>"'550px'", "visible"=>"false", "modal"=>"true");
     $options = array_merge($default_options, $options);
     $javascript = 'YAHOO.namespace("cms.container");';
     $javascript .= 'function init_'.$element.'() {'."\n";
