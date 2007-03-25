@@ -158,6 +158,7 @@ class FormHelper extends WXHelpers {
  		if (!array_key_exists("cols", $options)) $options["cols"]=50;
  		if (!array_key_exists("rows", $options)) $options["cols"]=10;
  		if(!$options["class"]) $options["class"]="input_field";
+ 		$options['class'] = $this->add_error_to_input($options['class']);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  if($with_label) $html.= $this->make_label($with_label);
