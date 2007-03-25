@@ -161,8 +161,9 @@ class File {
 	  return false;
 	}
 	
-	static function write_to_file($filename, $filecontents) {
+	static function write_to_file($filename, $filecontents, $mode = 0777) {
 		if(! $res = file_put_contents($filename, $filecontents) ) {
+		  chmod($filename, $mode);
 			return false;
 		} else {
 			return true;
