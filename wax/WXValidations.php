@@ -81,7 +81,7 @@ class WXValidations
 	}
 	
 	public function add_error($field, $message) {		
-		self::$errors[]=array("field"=>WXInflections::humanize($field), "message"=>$message);
+		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	
 	public function valid_format($field, $format, $message="is an invalid format", $optional=true, $max_length=0) {
