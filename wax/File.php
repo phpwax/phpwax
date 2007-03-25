@@ -77,7 +77,7 @@ class File {
 		if($file_content) { 
 			header("Content-Type: application/force-download"."\n");
 			header("Content-Length: ".$length.'\n');
-			header("Content-disposition: inline; filename=".basename($file)."\n");
+			header("Content-disposition: inline; filename=".$filename."\n");
 			header("Connection: close"."\n");
 			ob_end_clean();
 			print trim($file_content); exit;
