@@ -37,7 +37,7 @@ class WXSearch {
       } catch(Exception $e) {
         
       }
-	    $results[$search['key']]=$table->find_by_sql($query);
+	    $results[$search['key']] = array_merge($results[$search['key']], $table->find_by_sql($query));
 	  }
 	  return $results;
 	}
