@@ -37,7 +37,8 @@ class WXSearch {
       } catch(Exception $e) {
         
       }
-	    $results[$search['key']] = array_merge($results[$search['key']], $table->find_by_sql($query));
+      if(is_array($results[$search['key']])) $results[$search['key']] = array_merge($results[$search['key']], $table->find_by_sql($query));
+	    else $results[$search['key']]=$table->find_by_sql($query);
 	  }
 	  return $results;
 	}
