@@ -42,11 +42,15 @@ class File {
 	  @ @return bool
 	  */
 	static function resize_image($source, $destination, $width, $overwrite=false) {
-		if(!self::is_image($source)) { return false;}
+		if(!self::is_image($source)) return false;
+		$dimensions = getimagesize($source);
+		$x = $dimensions[0]; $y=$dimensions[1];
+		$ratio = $x / $width;
+		$height = floor($y / $ratio);
 		if($overwrite) {
-			$command="mogrify $source -thumbnail {$width}x{$width}";
+			$command="mogrify $source -thumbnail {$width}x{$height}";
 		} else {
-			$command="convert $source -thumbnail {$width}x{$width}  $destination";
+			$command="convert $source -thumbnail {$width}x{$height}  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
