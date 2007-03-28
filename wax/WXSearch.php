@@ -27,16 +27,26 @@ class WXSearch {
 	public function get_results() {
 	  $setups=array();
 	  foreach(self::$search_array as $search) {
-	    $setup= "ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".$search['field'].");";
+	    if(is_array($search['field'])) {
+	      foreach($search['field'] as $field) {
+	        try {
+    	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$field." (".$field.");");
+          } catch(Exception $e) { }
+	      }
+	    } else {
+	      try {
+  	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".$search['field'].");");
+        } catch(Exception $e) { }
+	    }
 	    $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') AS score
-	     FROM ".$search['table']." WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') GROUP BY id";
+	     FROM ".$search['table'];
+	    if(is_array($search['field'])) {
+	      $query.= " WHERE MATCH(".implode(",", $search['field']).") AGAINST('".$this->search_phrase."')";
+	    } else {
+	      $query .= " WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
+	    }	
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
-	    try {
-	      WXActiveRecord::getDefaultPDO()->query($setup);
-      } catch(Exception $e) {
-        
-      }
       if(is_array($results[$search['key']])) $results[$search['key']] = array_merge($results[$search['key']], $table->find_by_sql($query));
 	    else $results[$search['key']]=$table->find_by_sql($query);
 	  }
