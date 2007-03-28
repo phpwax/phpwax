@@ -30,11 +30,11 @@ class WXSearch {
 	    if(is_array($search['field'])) {
 	      try {
   	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".implode(",", $search['field']).");");
-        } catch(Exception $e) { $a=1;}
-	    else {
+        } catch(Exception $e) { }
+	    } else {
 	      try {
   	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".$search['field'].");");
-        } catch(Exception $e) { $a=1;}
+        } catch(Exception $e) { }
 	    }
 	    
 	    if(is_array($search['field'])) {
