@@ -31,16 +31,12 @@ class WXSearch {
 	      foreach($search['field'] as $field) {
 	        try {
     	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$field." (".$field.");");
-          } catch(Exception $e) { 
-            
-          }
+          } catch(Exception $e) { $a=1;}
 	      }
 	    } else {
 	      try {
   	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".$search['field'].");");
-        } catch(Exception $e) { 
-          
-        }
+        } catch(Exception $e) { $a=1;}
 	    }
 	    
 	    if(is_array($search['field'])) {
