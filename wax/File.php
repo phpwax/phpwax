@@ -71,9 +71,6 @@ class File {
 		$imagecontent=substr(file_get_contents($image),0 ,-1);
 		if($imagecontent) { 
 			header("Content-Type: " . image_type_to_mime_type($info[2])."\n");
-			header("Content-Length: ".$length.'\n');
-			header("Content-disposition: inline; filename=".basename($image)."\n");
-			header("Connection: close"."\n");
 			ob_end_clean();
 			print trim($imagecontent); exit;
 		}
