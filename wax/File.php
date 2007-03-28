@@ -44,9 +44,9 @@ class File {
 	static function resize_image($source, $destination, $width, $overwrite=false) {
 		if(!self::is_image($source)) { return false;}
 		if($overwrite) {
-			$command="mogrify $source -resize {$width}x{$width}";
+			$command="mogrify $source -thumbnail {$width}x{$width}";
 		} else {
-			$command="convert $source -resize {$width}x{$width}  $destination";
+			$command="convert $source -thumbnail {$width}x{$width}  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
