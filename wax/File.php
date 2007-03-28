@@ -45,8 +45,14 @@ class File {
 		if(!self::is_image($source)) return false;
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
-		$ratio = $x / $width;
-		$height = floor($y / $ratio);
+		if($y > $x) {
+		  $height = $width;
+		  $ratio = $y / $width;
+		  $width = floor($x / $ratio);
+		} else {
+		  $ratio = $x / $width;
+		  $height = floor($y / $ratio);
+	  }
 		if($overwrite) {
 			$command="mogrify $source -thumbnail {$width}x{$height}";
 		} else {
