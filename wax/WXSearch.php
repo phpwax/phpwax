@@ -38,11 +38,12 @@ class WXSearch {
   	      WXActiveRecord::getDefaultPDO()->query("ALTER TABLE ".$search['table']." ADD FULLTEXT ".$search['field']." (".$search['field'].");");
         } catch(Exception $e) { }
 	    }
-	    $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') AS score
-	     FROM ".$search['table'];
+	    
 	    if(is_array($search['field'])) {
+	      $query = "SELECT *, MATCH(".implode(",", $search['field'].") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
 	      $query.= " WHERE MATCH(".implode(",", $search['field']).") AGAINST('".$this->search_phrase."')";
 	    } else {
+	      $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
 	      $query .= " WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
 	    }	
 	    $model = WXInflections::camelize($search['table'], true);
