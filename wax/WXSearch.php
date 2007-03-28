@@ -40,8 +40,10 @@ class WXSearch {
 	    }
 	    
 	    if(is_array($search['field'])) {
-	      $query = "SELECT *, MATCH(".implode(",", $search['field'].") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
-	      $query.= " WHERE MATCH(".implode(",", $search['field']).") AGAINST('".$this->search_phrase."')";
+	      $query = "SELECT *, MATCH(";
+	      $query .= implode(",",$search['field']);
+	      $query .= ") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
+	      $query .= " WHERE MATCH(".implode(",", $search['field']).") AGAINST('".$this->search_phrase."')";
 	    } else {
 	      $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
 	      $query .= " WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
