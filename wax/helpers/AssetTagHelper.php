@@ -27,7 +27,7 @@ class AssetTagHelper extends WXHelpers {
   public function javascript_asset($namespace, $filename, $options=array()) {
     $source="";
     if($server = self::$asset_server) $source .= "http://".$server;
-    $source .= "/".$namespace."/";
+    $source .= "/".$namespace."/".$filename;
     if(!strpos($filename, ".js")) $source .=".js";
     return $this->javascript_include_tag($source, $options);
   }
