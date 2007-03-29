@@ -27,12 +27,14 @@ class AssetTagHelper extends WXHelpers {
   public function javascript_asset($namespace, $filename, $options=array()) {
     if($server = self::$asset_server) $source .= "http://".$server;
     $source .= "/".$namespace."/javascripts/".$filename;
+    if(!strpos($filename, ".js")) $source .=".js";
     return $this->javascript_include_tag($source, $options);
   }
   
   public function stylesheet_asset($namespace, $filename, $options=array()) {
     if($server = self::$asset_server) $source .= "http://".$server;
     $source .= "/".$namespace."/stylesheets/".$filename;
+    if(!strpos($filename, ".css")) $source .=".css";
     return $this->stylesheet_link_tag($source, $options);
   }
   
