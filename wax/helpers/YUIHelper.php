@@ -25,7 +25,7 @@ class YUIHelper extends JavascriptHelper{
   }
   
   public function yui_container_files() {
-    $js = array("http://static.webxpress.com/yui/build/container/container-min.js");
+    $js = array("http://static.webxpress.com/yui/javascripts/container-min.js");
     $css = array("http://yui.yahooapis.com/2.2.0/build/container/assets/container.css");
     return $this->yui_jsinclude($js).$this->yui_csslink($css);
   }
