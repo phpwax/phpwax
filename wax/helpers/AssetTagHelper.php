@@ -24,25 +24,24 @@ class AssetTagHelper extends WXHelpers {
     self::$asset_server = WXConfiguration::get("assets");
   }
   
-  public function javascript_asset($namespace, $filename, $options=array()) {
+  protected function server_asset($type, $namespace, $filename) {
     if($server = self::$asset_server) $source .= "http://".$server;
-    $source .= "/".$namespace."/javascripts/".$filename;
-    if(!strpos($filename, ".js")) $source .=".js";
-    return $this->javascript_include_tag($source, $options);
+    $source .= "/$type/$namespace/$filename";
+    return $source;
+  }
+  
+  public function javascript_asset($namespace, $filename, $options=array()) {
+    if(!strpos($filename, ".js")) $filename .=".js";
+    return $this->javascript_include_tag($this->serve_asset("javascripts", $namespace, $filename), $options);
   }
   
   public function stylesheet_asset($namespace, $filename, $options=array()) {
-    if($server = self::$asset_server) $source .= "http://".$server;
-    $source .= "/".$namespace."/stylesheets/".$filename;
-    if(!strpos($filename, ".css")) $source .=".css";
-    return $this->stylesheet_link_tag($source, $options);
+    if(!strpos($filename, ".css")) $filename .=".css";
+    return $this->stylesheet_link_tag($this->serve_asset("stylesheets", $namespace, $filename), $options);
   }
   
   public function image_asset($namespace, $filename, $options=array()) {
-    if($server = self::$asset_server) $source .= "http://".$server;
-    $source .= "/".$namespace."/images/".$filename;
-    if(!strpos($filename, ".")) $source .=".png";
-    return $this->image_tag($source, $options);
+    return $this->image_tag($this->serve_asset("images", $namespace, $filename), $options);
   }
 
   public function javascript_include_tag() {
