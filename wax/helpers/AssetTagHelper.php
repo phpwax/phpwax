@@ -24,7 +24,7 @@ class AssetTagHelper extends WXHelpers {
     self::$asset_server = WXConfiguration::get("assets");
   }
   
-  protected function server_asset($type, $namespace, $filename) {
+  protected function serve_asset($type, $namespace, $filename) {
     if($server = self::$asset_server) $source .= "http://".$server;
     $source .= "/$type/$namespace/$filename";
     return $source;
