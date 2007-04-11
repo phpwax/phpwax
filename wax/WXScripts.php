@@ -102,6 +102,7 @@ class WXScripts {
   protected function plugin_migrate($dir) {
     if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
     if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
+    $this->app_setup();
     $migrate_dir = PLUGIN_DIR.$dir."/migrate";
     $migrate = new WXMigrate;
     $migrate->version_less_migrate($migrate_dir);
