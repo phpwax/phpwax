@@ -70,6 +70,7 @@ class WXScripts {
         break;
       case "migrate":
         $this->plugin_migrate($argv[2]);
+        break;
       case "setup":
         $this->plugin_post_setup($argv[2]);
         break;
