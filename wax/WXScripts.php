@@ -93,6 +93,7 @@ class WXScripts {
   }
   
   protected function plugin_post_setup($name) {
+    $this->app_setup();
     if(is_readable(PLUGIN_DIR.$name."/installer") && 
       $this->get_response("This plugin has an additional installer, would you like to run it?", "y")) {
       include(PLUGIN_DIR.$name."/installer");
