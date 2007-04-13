@@ -219,7 +219,6 @@ class WXActiveRecord extends WXValidations implements Iterator
 	public function find_first($params=array()) {
 	  $params = array_merge($params, array("limit"=>"1"));
 		$list = $this->find_all($params);
-		print_r($list); exit;
 		return $list[0];
 	}
 	
