@@ -998,7 +998,7 @@ class WXEmail
     }
     
     public function kill_injections($text) {
-      return preg_match("/(%0A|%0D|\n+|\r+)(content-type:|to:|cc:|bcc:)/i", $text);
+      return preg_replace("/(%0A|%0D|\n+|\r+)(content-type:|to:|cc:|bcc:)/i","". $text);
     }
     
     public function get_templates($action) {
