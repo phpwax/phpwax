@@ -193,7 +193,7 @@ class WXEmail
 
         if((count($this->to) + count($this->cc) + count($this->bcc)) < 1)
         {
-            $this->SetError($this->Lang("provide_address"));
+            $this->SetError("provide_address");
             return false;
         }
 
@@ -564,7 +564,7 @@ class WXEmail
      * @return string
      */
     function HeaderLine($name, $value) {
-        return $name . ": " . $value . $this->LE;
+        return $this->kill_injections($name) . ": " . $this->kill_injections($value) . $this->LE;
     }
 
     /**
@@ -995,6 +995,10 @@ class WXEmail
         $str = str_replace("\r", "\n", $str);
         $str = str_replace("\n", $this->LE, $str);
         return $str;
+    }
+    
+    public function kill_injections($text) {
+      return preg_match("/(%0A|%0D|\n+|\r+)(content-type:|to:|cc:|bcc:)/i", $text);
     }
     
     public function get_templates($action) {
