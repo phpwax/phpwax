@@ -209,7 +209,7 @@ abstract class WXControllerBase
 	  }
 	  if(strpos($this->action, ".")) {
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
-	    $this->use_format = substr(strstr($this->action, "."), 1);
+	    $this->use_format = strstr($this->action, ".");
 	    die($this->action.":".$this->use_format);
 	    exit;
 	  }
