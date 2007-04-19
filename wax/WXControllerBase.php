@@ -208,6 +208,7 @@ abstract class WXControllerBase
 	    $this->action = "index";
 	  }
 	  if(strpos($this->action, ".")) {
+	    $this->use_format = strstr($this->action, ".");
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
 	    $this->use_format = strstr($this->action, ".");
 	    die($this->action.":".$this->use_format);
