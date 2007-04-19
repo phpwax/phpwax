@@ -221,7 +221,8 @@ class WXScripts {
   public function remote($argv) {
     $deployment_settings = WXConfiguration::get('deploy');
     $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
-    $remote->add_command($argv[1]);
+    unset($argv[0], $argv[1]);
+    $remote->add_command(implode(" ", $argv));
     $remote->run_commands();
   }
   
