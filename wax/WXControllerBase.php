@@ -210,8 +210,6 @@ abstract class WXControllerBase
 	  if(strpos($this->action, ".")) {
 	    $this->use_format = substr(strstr($this->action, "."),1);
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
-	    die($this->action.":".$this->use_format);
-	    exit;
 	  }
 	  array_shift($this->route_array);
 	  $this->controller_global();
