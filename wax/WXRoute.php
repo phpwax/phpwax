@@ -3,13 +3,13 @@
  * 
  *
  * @author Ross Riley
- * @package php-wax
+ * @package PHP-Wax
  **/
 
 /**
  * Route construction class
  *
- * @package php-wax
+ * @package PHP-Wax
  * @author Ross Riley
  * 
  * This class fetches the URL parameters from $_GET

@@ -1,12 +1,12 @@
 <?php
 /**
-	* @package wx.php.core
+	* @package PHP-Wax
   */
 
 /**
  *	Wrapper class for basic session read and writes.
  *	@static
- * @package wx.php.core
+ * @package PHP-Wax
  */
 class Session {
 		

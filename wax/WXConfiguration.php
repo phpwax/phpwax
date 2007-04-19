@@ -1,11 +1,11 @@
 <?php
 /**
- * 	@package php-wax
+ * 	@package PHP-Wax
  */
 
 /**
  *
- * @package php-wax
+ * @package PHP-Wax
  *
  *  Exposes the application configuration to other classes.
  *  

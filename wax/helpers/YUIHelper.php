@@ -3,7 +3,7 @@
  * Yahoo User Interface Helper class
  * Note, this doesn't link to any physical files, rather the library is served
  * directly from Yahoo's API.
- * @package PHP-WAX
+ * @package PHP-Wax
  * @author Ross Riley
  **/
 class YUIHelper extends JavascriptHelper{

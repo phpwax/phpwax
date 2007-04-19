@@ -2,7 +2,7 @@
 /**
   * File Class encapsulating common file functions
   *
-  * @package wx.php.core
+  * @package PHP-Wax
   */
 
 class File {

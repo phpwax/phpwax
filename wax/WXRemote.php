@@ -6,7 +6,7 @@
  *
  * SSH must be available from the command line of the local machine.
  *
- * @package PHP-WAX
+ * @package PHP-Wax
  * @author Ross Riley
  **/
 class WXRemote {

@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *  
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
 class WXValidations
 {
   const EMAIL =                   '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';

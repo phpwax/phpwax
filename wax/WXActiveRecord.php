@@ -2,7 +2,7 @@
 require_once "WXValidations.php";
 
 /*
- * @package wx.php.core
+ * @package PHP-Wax
  *
  * This class is based in part on CBL ActiveRecord. 
  * For more information, see:
@@ -11,7 +11,7 @@ require_once "WXValidations.php";
 
 /**
  *  active record
- *  @package wx.php.core
+ *  @package PHP-Wax
  */
 class WXActiveRecord extends WXValidations implements Iterator
 {

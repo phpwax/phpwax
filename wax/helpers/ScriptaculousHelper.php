@@ -1,6 +1,6 @@
 <?php
 /*
- * @package PHP-WAX
+ * @package PHP-Wax
  *
  *  Wrappers for Scriptaculous Javacript Library  
  */

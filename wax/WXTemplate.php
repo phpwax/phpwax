@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package php-wax
+ * @package PHP-Wax
  * @author Ross Riley
  **/
 class WXTemplate

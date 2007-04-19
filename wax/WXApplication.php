@@ -1,10 +1,10 @@
 <?php
 /**
- * 	@package php-wax
+ * 	@package PHP-Wax
  */
 
 /**
-	* 	@package php-wax
+	* 	@package PHP-Wax
   *   This is essentially a FrontController whose job in life
   *   is to parse the request and delegate the job to another controller that cares.
   *

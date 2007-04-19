@@ -2,7 +2,7 @@
 /**
 	*  This file sets up the application.
 	*  Sets up constants for the main file locations.
-  *  @package wx.php.core
+  *  @package PHP-Wax
 	*/
 
 /**
@@ -38,7 +38,7 @@ function throw_wxerror($code, $error) {
 
 /**
  *	A simple static class to Preload php files and commence the application.
- *	@package wx.php.core
+ *	@package PHP-Wax
  *	@static
  */
 class AutoLoader

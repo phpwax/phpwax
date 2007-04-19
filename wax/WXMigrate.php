@@ -1,6 +1,6 @@
 <?php
 /**
-  *  @package wax.php
+  *  @package PHP-Wax
   *  Migration Class
   *
   */

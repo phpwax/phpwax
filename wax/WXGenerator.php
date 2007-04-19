@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
 class WXGenerator {
   
   public $output="";

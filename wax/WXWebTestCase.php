@@ -1,6 +1,10 @@
 <?php
-class WXWebTestCase extends WebTestCase 
-{
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
+class WXWebTestCase extends WebTestCase {
     
 }
 

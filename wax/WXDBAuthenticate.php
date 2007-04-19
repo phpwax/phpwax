@@ -1,12 +1,12 @@
 <?php
 /**
- * 	@package php-wax
+ * 	@package PHP-Wax
  */
 
 /**
 	*	An class to handle database authentication.
 	* Can be extended to check access via a flat file or any other method.
- 	* @package php-wax
+ 	* @package PHP-Wax
   */
 class WXDBAuthenticate
 {

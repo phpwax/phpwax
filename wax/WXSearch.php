@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @package PHP-WAX
+ * @package PHP-Wax
  * @author Ross Riley
  **/
 class WXSearch {

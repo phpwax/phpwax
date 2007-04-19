@@ -1,6 +1,6 @@
 <?php
 /*
- * @package wxframework.core
+ * @package PHP-Wax
  *
  * This class is based in part on the helpers functionality in the PHP on Trax Framework. 
  * For more information, see:

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
+ 
 class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
   
   public $rel_column="parent_id";

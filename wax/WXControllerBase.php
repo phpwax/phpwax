@@ -1,10 +1,10 @@
 <?php
 /**
-	* @package php-wax
+	* @package PHP-Wax
 	*/
 
 /**
- * @package php-wax
+ * @package PHP-Wax
  * Provides basic functionality which controllers inherit.
  */
 

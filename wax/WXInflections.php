@@ -3,7 +3,7 @@
  * Provides standard string inflections
  *
  * @author Ross Riley
- * @package PHP-WAX
+ * @package PHP-Wax
  **/
 class WXInflections 
 {

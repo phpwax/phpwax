@@ -1,10 +1,10 @@
 <?php
 /**
-	* @package PHP-WAX
+	* @package PHP-Wax
 	*/
 	
 /**
- * @package PHP-WAX
+ * @package PHP-Wax
  *	Email class gives a comprehensive API for sending emails.
  */
 class WXEmail

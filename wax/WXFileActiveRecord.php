@@ -3,7 +3,7 @@
  * extension of WXActiveRecord class
  * gives added facilities for storing files in the filesystem
  *
- * @package waxphp
+ * @package PHP-Wax
  * @author Ross Riley
  **/
 class WXFileActiveRecord extends WXActiveRecord
