@@ -23,9 +23,10 @@ class WXTemplate
 	public function parse($suffix="html") {
 	  ob_start();
 	  switch($suffix) {
-	    case "js": $suffix="javascript";
+	    case "js": $type="javascript";
+	    default: $type=$suffix;
 	  }
-	  header("Content-Type: text/$suffix; charset=utf-8");
+	  header("Content-Type: text/$type; charset=utf-8");
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".".$suffix)) {
 				$view_file = $path.".".$suffix;
