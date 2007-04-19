@@ -1,6 +1,6 @@
 #!/bin/sh
 PHP=`which php`
-exec $PHP -C -q -d output_buffering=0 "$0" "$@"
+exec $PHP -C -q -d output_buffering=1 "$0" "$@"
 <?php
 require_once dirname(__FILE__).'/../app/config/environment.php';
 new WXScripts("remote", $argv);
