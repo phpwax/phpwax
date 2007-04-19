@@ -218,6 +218,13 @@ class WXScripts {
     $this->add_output("Application successfully deployed to ".$deployment_settings['server']);
   }
   
+  public function remote($argv) {
+    $deployment_settings = WXConfiguration::get('deploy');
+    $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
+    $remote->add_command($argv[1]);
+    $remote->run_commands();
+  }
+  
   public function runner($argv) {
     if(isset($argv[3]) && $argv[3]=="production") {
       define("ENV", "production");
