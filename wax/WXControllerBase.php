@@ -207,12 +207,11 @@ abstract class WXControllerBase
 	  if(!$this->action = $this->route_array[0]) {
 	    $this->action = "index";
 	  }
-	  die($this->action);
 	  if(strpos($this->action, ".")) {
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
 	    $this->use_format = substr(strstr($this->action, "."), 1);
-	    error_log($this->action);
-	    error_log($this->use_format); exit;
+	    die($this->action.":".$this->use_format);
+	    exit;
 	  }
 	  array_shift($this->route_array);
 	  $this->controller_global();
