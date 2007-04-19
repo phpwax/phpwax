@@ -1,5 +1,5 @@
 <?php
-class WXWebTestCase extends WXWebTestCase 
+class WXWebTestCase extends WebTestCase 
 {
     
 }
