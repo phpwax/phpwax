@@ -1,5 +1,9 @@
 <?php
-
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
 class WXRoutingException extends WXException
 {
   static $redirect_on_error=false;

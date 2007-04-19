@@ -1,11 +1,9 @@
 <?php
-/*
- * @package PHP-Wax
+/**
  *
- * This class is based in part on the helpers functionality in the PHP on Trax Framework. 
- * For more information, see:
- *  http://phpontrax.com/
- */
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
 
 /**
  *  Simple Helpers to create links to images/js/css

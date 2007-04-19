@@ -1,5 +1,11 @@
 <?php
 /**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
+ 
+/**
  *  exception class for WXActiveRecord
  */
 class WXException extends Exception

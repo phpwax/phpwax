@@ -1,5 +1,10 @@
 <?php 
-
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
+ 
 class FormBuilderHelper extends FormHelper {
   
   public $form_heading_content;

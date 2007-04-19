@@ -1,9 +1,9 @@
 <?php
-/*
- * @package PHP-Wax
+/**
  *
- *  Wrappers for Prototype Javacript Library  
- */
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
  
 class PrototypeHelper extends JavascriptHelper {
 

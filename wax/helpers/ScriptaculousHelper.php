@@ -1,9 +1,9 @@
 <?php
-/*
- * @package PHP-Wax
+/**
  *
- *  Wrappers for Scriptaculous Javacript Library  
- */
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
  
 class ScriptaculousHelper extends PrototypeHelper {
   
