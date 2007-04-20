@@ -11,7 +11,7 @@ require_once "WXValidations.php";
 /**
  *  @package PHP-Wax
  */
-class WXForm extends WXValidations implements Iterator {
+class WXForm extends WXValidations {
   
   protected $row = array();
   protected $persist = false;
