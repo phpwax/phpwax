@@ -18,7 +18,7 @@ class WXForm extends WXValidations {
   protected $form_name = "";
   
   public function __construct() {
-    $this->form_name = "wx_form_".get_class($this);
+    $this->form_name = "wx_form_".WXInflections::underscore(get_class($this));
     if($vals = Session::get($this->form_name)) $this->row = $vals;
   }
   
