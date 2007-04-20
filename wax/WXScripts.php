@@ -1,5 +1,10 @@
 <?php
-
+/**
+ *
+ * @package PHP-Wax
+ * @author Ross Riley
+ **/
+ 
 class WXScripts {
   
   public $output=array();
