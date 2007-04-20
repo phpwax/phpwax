@@ -107,6 +107,17 @@ class WXGenerator {
 		$this->new_migration("create_".WXInflections::underscore($class), WXInflections::underscore($class) );
   }
   
+  public function new_form($args=array()) {
+		$class = WXInflections::camelize($args[0], true);
+    $this->final_output.= $this->start_php_file($class, "WXForm");
+    $res = $this->write_to_file(APP_DIR."model/".$class.".php");
+		if(!$res) {
+			$this->add_perm_error("app/model/".$class.".php"); 
+			return false;
+		}
+		$this->add_stdout("Created model file at app/model/".$class.".php");
+  }
+  
   public function new_controller($args=array()) {
 		$path = explode("/", $args[0]);
     $class = WXInflections::camelize(implode("_", $path), true)."Controller";

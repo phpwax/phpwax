@@ -56,6 +56,11 @@ class WXScripts {
     $gen = new WXGenerator("model", array_slice($argv, 1));
   }
   
+  public function form($argv) {
+    $this->app_setup();
+    $gen = new WXGenerator("form", array_slice($argv, 1));
+  }
+  
   public function migration($argv) {
     $this->app_setup();
     $gen = new WXGenerator("migration", array_slice($argv, 1));
