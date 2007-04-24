@@ -1,6 +1,6 @@
 <?php
 /**
- * Provides standard string inflections
+ * Provides standard string inflections to manipulate text.
  *
  * @author Ross Riley
  * @package PHP-Wax

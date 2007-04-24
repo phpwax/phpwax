@@ -38,6 +38,8 @@ function throw_wxerror($code, $error) {
 
 /**
  *	A simple static class to Preload php files and commence the application.
+ *  It manages a registry of PHP files and includes them according to hierarchy.
+ *  All file inclusion is done 'just in time' meaning that file load overhead is avoided.
  *	@package PHP-Wax
  *	@static
  */

@@ -1,5 +1,7 @@
 <?php
 /**
+ *  The class can be used for code generation.
+ *  Usually delegated to from one of the command line scripts.  
  *
  * @package PHP-Wax
  * @author Ross Riley

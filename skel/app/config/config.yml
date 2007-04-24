@@ -7,7 +7,7 @@ environments:
 # Environment configuration.
 development:
  db:
-  dbtype: mysql
+  dbtype: none  
   host: localhost
   database: app_development
   username: root

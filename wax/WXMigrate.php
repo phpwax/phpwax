@@ -1,7 +1,8 @@
 <?php
 /**
   *  @package PHP-Wax
-  *  Migration Class
+  *  Migration Class maintains database structure according to a 'version control methodology'
+  *  Ideal for ensuring that database structures are maintained across multiple servers.
   *
   */
   

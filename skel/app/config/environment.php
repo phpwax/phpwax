@@ -56,7 +56,7 @@ require_once(FRAMEWORK_DIR."/AutoLoader.php");
 /*********************************************************************************************/
 
 /************** Plugins **********************************************************************
-* Any plugins that have been installed in your plugins directory are activated using the example below.
+* Any plugins that have been installed in your plugins directory are activated using the example below. */
 
 //AutoLoader::include_plugin("cms");
 /*********************************************************************************************/

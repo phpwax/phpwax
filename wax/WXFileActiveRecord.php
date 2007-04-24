@@ -1,7 +1,9 @@
 <?php
 /**
  * extension of WXActiveRecord class
- * gives added facilities for storing files in the filesystem
+ * gives added facilities for storing files in the filesystem.
+ *
+ * A file upload and save is handled completely transparently, just as a normal property would be saved.
  *
  * @package PHP-Wax
  * @author Ross Riley
