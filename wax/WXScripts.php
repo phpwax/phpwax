@@ -77,6 +77,7 @@ class WXScripts {
     $db = WXConfiguration::get('db');
     if($argv[1] == "save" && $this->get_response("About to write database to app/db/data.sql. This will overwrite previous versions!", "y")) {
       $command = "mysqldump ".$db['database']." --skip-comments --add-drop-table --ignore-table=".$db['database'].".migration_info -u".$db['username']." -p".$db['password']." > app/db/data.sql";
+      die($command);
       system($command);
       $this->add_output("Data has been saved - use script/data load to restore.");
     }
