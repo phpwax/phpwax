@@ -71,6 +71,23 @@ class WXScripts {
     $this->plugins($argv);
   }
   
+  public function data($argv) {
+    if(!$argv[1]) $this->fatal_error("[ERROR] You must give a data command to run.");
+    $this->app_setup();
+    $db = WXConfiguration::get('db');
+    if(!$argv[1] == "save" && $this->get_response("About to write database to app/db/data.sql. This will overwrite previous versions!", "y")) {
+      $command = "mysqldump ".$db['database']." --skip-comments --add-drop-table --ignore-table=".$db['database'].".migration_info -u".$db['username']." -p".$db['password']." > app/db/data.sql";
+      system($command);
+      $this->add_output("Data has been saved - use script/data load to restore.");
+    }
+    if(!$argv[1] == "load" && $this->get_response("About to overwrite database with data from app/db/data.sql!", "y")) {
+      $command = "mysql ".$db['database']." -u".$db['username']." -p".$db['password']." < app/db/data.sql";
+      system($command);
+      $this->add_output("Data has been saved - use script/data load to restore.");
+    }
+    
+  }
+  
   public function plugins($argv) {
     if(!$argv[1]) $this->fatal_error("[ERROR] You must give a plugin command to run.");
     if(!$argv[2]) $this->fatal_error("[ERROR] You must give a plugin package name or url.");
