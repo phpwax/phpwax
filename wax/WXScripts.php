@@ -12,7 +12,8 @@ class WXScripts {
     "cms"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
     "cmscore"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
     "cms-email"=>"svn://php-wax.com/home/phpwax/svn/plugins/subscription_manager/trunk",
-    "cms-ecom"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms-ecom/trunk"
+    "cms-ecom"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms-ecom/trunk",
+		"googlemap"=>"svn://php-wax.com/home/phpwax/svn/plugins/googlemap/trunk"
   );
   
   
