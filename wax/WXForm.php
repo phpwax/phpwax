@@ -37,8 +37,8 @@ class WXForm extends WXValidations {
 	}
 	
 	public function update_attributes($vals) {
-	  foreach($vals as $k=>$v) $this->{$k}=$v;
-	  die("here");
+	  foreach($vals as $k=>$v) $this->row[$k]=$v;
+	  print_r($this); exit;
     
 	  return $this->save();
 	}
