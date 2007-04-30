@@ -37,19 +37,17 @@ class WXForm extends WXValidations {
 	}
 	
 	public function update_attributes($vals) {
-	  foreach($vals as $k=>$v) $this->row[$k]=$v;    
+	  foreach($vals as $k=>$v) $this->row[$k]=$v;
+	  unset($_POST[$this->table]);   
 	  return $this->save();
 	}
 	
   public function save() {
-    if($this->is_posted()) {
-      $this->handle_post();
-      $this->validations();
-		  if(!$this->validate()) return false;
-		  if($this->persist) Session::set($this->form_name, $this->row);
-		  return true;
-	  }
-	  return false;
+    $this->handle_post()
+    $this->validations();
+		if(!$this->validate()) return false;
+		if($this->persist) Session::set($this->form_name, $this->row);
+		return true;
   }
   
   public function validations() {}
