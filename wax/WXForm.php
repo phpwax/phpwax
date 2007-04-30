@@ -34,7 +34,9 @@ class WXForm extends WXValidations {
       $this->validations();
 		  if(!$this->validate()) return false;
 		  if($this->persist) Session::set($this->form_name, $this->row);
+		  return true;
 	  }
+	  return false;
   }
   
   public function validations() {}
