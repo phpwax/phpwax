@@ -22,7 +22,7 @@ class WXForm extends WXValidations {
   }
   
   public function is_posted() {
-		if(is_array($_POST[$this->form])) {
+		if(is_array($_POST[$this->table])) {
 			return true;
 		} else {
 			return false;
@@ -30,7 +30,7 @@ class WXForm extends WXValidations {
 	}
 	public function handle_post($attributes=null) {
 	  if($this->is_posted()) {
-	    if(!$attributes) $attributes = $_POST[$this->form];
+	    if(!$attributes) $attributes = $_POST[$this->table];
 	    return $this->update_attributes($attributes);
 	  }
 	  return false;
