@@ -40,7 +40,7 @@ class FormHelper extends WXHelpers {
 
     protected function initialise($object="", $attribute_name="") {
       if(!is_object($object)) {
-				$this->object = new $object;
+				$object = new $object;
 			}  
 			$this->object = $object;
       $this->attribute_name = $attribute_name;

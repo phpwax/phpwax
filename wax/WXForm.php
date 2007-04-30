@@ -12,7 +12,7 @@ class WXForm extends WXValidations {
   protected $row = array();
   protected $persist = false;
   protected $form_name = "";
-  protected $table;
+  public $table;
   
   public function __construct($persist=false) {
     if($persist) $this->persist = true;
