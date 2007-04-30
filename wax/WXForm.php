@@ -12,17 +12,29 @@ class WXForm extends WXValidations {
   protected $row = array();
   protected $persist = false;
   protected $form_name = "";
+  protected $form;
   
   public function __construct($persist=false) {
     if($persist) $this->persist = true;
     $this->form_name = "wx_form_".WXInflections::underscore(get_class($this));
+    $this->form = WXInflections::underscore(get_class($this));
     if($vals = Session::get($this->form_name)) $this->row = $vals;
   }
   
+  public function is_posted() {
+		if(is_array($_POST[$this->form])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
   public function save() {
-    $this->validations();
-		if(!$this->validate()) return false;
-		if($this->persist) Session::set($this->form_name, $this->row);
+    if($this->is_posted()) {
+      $this->validations();
+		  if(!$this->validate()) return false;
+		  if($this->persist) Session::set($this->form_name, $this->row);
+	  }
   }
   
   public function validations() {}
