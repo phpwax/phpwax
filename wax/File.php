@@ -79,9 +79,8 @@ class File {
 	
 	static function stream_file($file) {
 	  $length=filesize($file);
-		$file_content=substr(file_get_contents($file),0 ,-1);
 		$filename = preg_replace("/[^a-zA-Z0-9-_\.]/", "_", basename($file));
-		if($file_content) { 
+		if(is_readable($file) { 
 			header("Content-Type: application/force-download"."\n");
 			header("Content-Length: ".$length.'\n');
 			header("Content-disposition: inline; filename=".$filename."\n");
