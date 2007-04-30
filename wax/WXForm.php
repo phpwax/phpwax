@@ -28,6 +28,18 @@ class WXForm extends WXValidations {
 			return false;
 		}
 	}
+	public function handle_post($attributes=null) {
+	  if($this->is_posted()) {
+	    if(!$attributes) $attributes = $_POST[$this->form];
+	    return $this->update_attributes($attributes);
+	  }
+	  return false;
+	}
+	
+	public function update_attributes($vals) {
+	  foreach($vals as $k=>$v) $this->{$k}=$v;
+	  return $this->save();
+	}
 	
   public function save() {
     if($this->is_posted()) {
