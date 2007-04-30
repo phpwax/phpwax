@@ -12,12 +12,12 @@ class WXForm extends WXValidations {
   protected $row = array();
   protected $persist = false;
   protected $form_name = "";
-  protected $form;
+  protected $table;
   
   public function __construct($persist=false) {
     if($persist) $this->persist = true;
     $this->form_name = "wx_form_".WXInflections::underscore(get_class($this));
-    $this->form = WXInflections::underscore(get_class($this));
+    $this->table = WXInflections::underscore(get_class($this));
     if($vals = Session::get($this->form_name)) $this->row = $vals;
   }
   
