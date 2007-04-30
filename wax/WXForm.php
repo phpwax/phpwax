@@ -38,12 +38,11 @@ class WXForm extends WXValidations {
 	
 	public function update_attributes($vals) {
 	  foreach($vals as $k=>$v) $this->row[$k]=$v;
-	  unset($_POST[$this->table]);   
-	  return $this->save();
+	  return $this->save(true);
 	}
 	
-  public function save() {
-    $this->handle_post();
+  public function save($skip=false) {
+    if(!$skip) $this->handle_post();
     $this->validations();
 		if(!$this->validate()) return false;
 		if($this->persist) Session::set($this->form_name, $this->row);
