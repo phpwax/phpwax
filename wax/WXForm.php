@@ -43,6 +43,7 @@ class WXForm extends WXValidations {
 	
   public function save() {
     if($this->handle_post()) {
+      die("here");
       $this->validations();
 		  if(!$this->validate()) return false;
 		  if($this->persist) Session::set($this->form_name, $this->row);
