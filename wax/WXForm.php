@@ -42,11 +42,14 @@ class WXForm extends WXValidations {
 	}
 	
   public function save($skip=false) {
-    if(!$skip) $this->handle_post();
-    $this->validations();
-		if(!$this->validate()) return false;
-		if($this->persist) Session::set($this->form_name, $this->row);
-		return true;
+    if(!is_posted()) {
+      if(!$skip) $this->handle_post();
+      $this->validations();
+		  if(!$this->validate()) return false;
+		  if($this->persist) Session::set($this->form_name, $this->row);
+		  return true;
+	  }
+	  return false;
   }
   
   public function validations() {}
