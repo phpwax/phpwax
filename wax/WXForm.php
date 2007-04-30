@@ -42,7 +42,7 @@ class WXForm extends WXValidations {
 	}
 	
   public function save($skip=false) {
-    if(!$this->is_posted()) {
+    if($this->is_posted()) {
       if(!$skip) $this->handle_post();
       $this->validations();
 		  if(!$this->validate()) return false;
