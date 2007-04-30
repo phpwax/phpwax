@@ -39,7 +39,7 @@ class File {
 	  * @param $source The Original Image File
 	  * @param $destination The New File to write to
 	  * @param $width The width of the new image
-	  @ @return bool
+	  * @return bool
 	  */
 	static function resize_image($source, $destination, $width, $overwrite=false) {
 		if(!self::is_image($source)) return false;
@@ -87,7 +87,7 @@ class File {
 			header("Content-disposition: inline; filename=".$filename."\n");
 			header("Connection: close"."\n");
 			ob_end_clean();
-			print trim($file_content); exit;
+			readfile($file); exit;
 		}
 		return false;
 	}
