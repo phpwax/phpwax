@@ -49,7 +49,9 @@ class FormTagHelper extends WXHelpers {
      */
     public function select_tag($name, $option_tags = null, $options = array(), $with_label=true) {
       if($with_label) $html = $this->make_label($name, $with_label);
-      $option_tags = FormOptionsHelper::options_for_select($option_tags);
+      if(is_array($option_tags)) {
+    	  $option_tags = $this->options_for_select($option_tags);
+  	  } else $option_tags = $option_tags;
       return $html.$this->content_tag("select", $option_tags, array_merge(array("name" => $name, "id" => $name, "class"=>"input_field select_field"), $this->convert_options($options)));
     }
 
