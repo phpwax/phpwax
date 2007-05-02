@@ -274,7 +274,8 @@ class WXHelpers {
 		} 
 		return false;	
 	}
-	public function advanced_paginate_links($model){}
+	
+	
 
 
 }

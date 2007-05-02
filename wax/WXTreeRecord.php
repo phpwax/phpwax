@@ -23,7 +23,7 @@ class WXTreeRecord extends WXActiveRecord implements RecursiveIterator {
   
   public function children() {
     $method = "find_all_by_$this->rel_column";
-    return $this->$method($this->rel_column);
+    return $this->$method($this->id);
   }
   
   public function getChildren($order = null) {return $this->get_children($order);}
