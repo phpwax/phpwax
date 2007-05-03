@@ -154,7 +154,7 @@ class FormHelper extends WXHelpers {
 	public function text_area($obj, $att, $options = array(), $with_label=true, $force_content=false) {
 		$this->initialise($obj, $att);
  		if (!array_key_exists("cols", $options)) $options["cols"]=50;
- 		if (!array_key_exists("rows", $options)) $options["cols"]=10;
+ 		if (!array_key_exists("rows", $options)) $options["rows"]=10;
  		if(!$options["class"]) $options["class"]="input_field";
  		$options['class'] = $this->add_error_to_input($options['class']);
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
