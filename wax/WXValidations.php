@@ -117,7 +117,7 @@ class WXValidations
 	
 	public function valid_length($field, $min, $max=0, $message_short="must be at least", $message_long="must be less than") {
 		if(strlen($this->{$field}) < $min && $min >0 ) {
-			$this->add_error($fieginld, $message_short." {$min} characters");
+			$this->add_error($field, $message_short." {$min} characters");
 			return false;
 		}
 		if(strlen($this->{$field}) > $max && $max > 0 ) {
