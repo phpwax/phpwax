@@ -187,18 +187,18 @@ class FormHelper extends WXHelpers {
 	
 	public function check_box($obj, $att, $options = array(), $checked_value = "1", $unchecked_value = "0", $with_label=true) {
 		$this->initialise($obj, $att);
+		$options["type"] = "checkbox";
 		if(!$options["class"]) $options["class"]="input_field check_box_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
-	  $options["type"] = "checkbox";
 	  if($this->object->{$this->attribute_name}) {        
 	  	$options["checked"] = "checked";          
 	  } else {
 	    unset($options["checked"]);
 	  }
-	  $options['value'] = $checked_value;        
+	  $options['value'] = $checked_value; 
+	  $html.= $this->tag("input", array("name" => $options["name"], "type" => "hidden", "value" => $unchecked_value));       
 	  $html.= $this->tag("input", $options);
-	  $html.= $this->tag("input", array("name" => $options["name"], "type" => "hidden", "value" => $unchecked_value));
 	  if($with_label) $html.= $this->make_label($with_label, array("class"=>"check_box_label"));
 		return $html;
 	}
