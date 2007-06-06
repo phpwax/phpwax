@@ -191,7 +191,7 @@ class FormHelper extends WXHelpers {
 		if(!$options["class"]) $options["class"]="input_field check_box_field";
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
   	$options['id']    = $this->object_name . "_" . $this->attribute_name;
-	  if($this->object->{$this->attribute_name}) {        
+	  if($this->object->{$this->attribute_name}==$checked_value) {        
 	  	$options["checked"] = "checked";          
 	  } else {
 	    unset($options["checked"]);
