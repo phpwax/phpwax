@@ -117,7 +117,7 @@ class FormTagHelper extends WXHelpers {
     public function check_box_tag($name, $value = "1", $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "checkbox", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
-        if(!$html_options["class"]) $html_options["class"]="input_field check_field";
+        if(!$html_options["class"]) $html_options["class"]="input_field check_box_field";
         if($with_label) $html = $this->make_label($name, $with_label, array("class"=>"check_box_label"));
         return $this->tag("input", $html_options).$html;
     }
@@ -129,7 +129,7 @@ class FormTagHelper extends WXHelpers {
     public function radio_button_tag($name, $value, $checked = false, $options = array(), $with_label=true) {
         $html_options = array_merge(array("type" => "radio", "name" => $name, "id" => $name, "value" => $value), $this->convert_options($options));
         if ($checked) $html_options["checked"] = "checked";
-        if(!$html_options["class"]) $html_options["class"]="input_field check_field";
+        if(!$html_options["class"]) $html_options["class"]="input_field radio_button_field";
         if($with_label) $html = $this->make_label($name, $with_label, array("class"=>"radio_button_label"));
         return $this->tag("input", $html_options).$html;
     }
