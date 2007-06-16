@@ -12,7 +12,7 @@
   width:100%;
 }
 .form_container fieldset {
-
+  border:0;
 }
 
 .form_container fieldset div {
@@ -22,7 +22,6 @@
 
 .form_container fieldset label {
   margin:0 0 4px 0;
-  font-size:85%;
   display:block;
 }
 

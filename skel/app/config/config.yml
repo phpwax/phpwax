@@ -58,4 +58,4 @@ deploy:
 #  redirect: holding
 
 # 5: Asset Serving: Serve any public asset from a separate server : just the domain - no slashes
-assets: static.webxpress.com/0.2
+assets: static.webxpress.com/0.3
