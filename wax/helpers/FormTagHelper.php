@@ -81,11 +81,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function file_field_tag($name, $options = array(), $with_label=true) {
-      if($with_label) {
-        if(strlen($with_label)<2) $with_label = $name;
-      }
-      if(!$options["class"]) $options["class"]="input_field";
-      return $this->text_field_tag($name, null, array_merge($this->convert_options($options), array("type" => "file")));
+      return $this->text_field_tag($name, null, array_merge($this->convert_options($options), array("type" => "file")), $with_label);
     }
 
     /**
@@ -93,11 +89,7 @@ class FormTagHelper extends WXHelpers {
      *
      */
     public function password_field_tag($name = "password", $value = null, $options = array(), $with_label=true) {
-      if($with_label) {
-        if(strlen($with_label)<2) $with_label = $name;
-      }
-      if(!$options["class"]) $options["class"]="input_field";
-        return $this->text_field_tag($name, $value, array_merge($this->convert_options($options), array("type" => "password")));
+      return $this->text_field_tag($name, $value, array_merge($this->convert_options($options), array("type" => "password")), $with_label);
     }
 
     /**
