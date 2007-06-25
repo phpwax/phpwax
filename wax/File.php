@@ -68,13 +68,9 @@ class File {
 		if(!self::is_image($image)) return false;
 		$info=getimagesize($image);
 		$length=filesize($image);
-		$imagecontent=substr(file_get_contents($image),0 ,-1);
-		if($imagecontent) { 
-			header("Content-Type: " . image_type_to_mime_type($info[2])."\n");
-			ob_end_clean();
-			print trim($imagecontent); exit;
-		}
-		return false;
+		header("Content-Type: " . image_type_to_mime_type($info[2])."\n");
+		ob_end_clean();
+		if(!readfile($image)) return false;
 	}
 	
 	static function stream_file($file) {
