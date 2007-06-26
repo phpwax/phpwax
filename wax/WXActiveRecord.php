@@ -444,6 +444,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     
     if( ! $this->row['id'] && ! isset( $this->has_string_id ) ) {
       $this->row['id'] = $this->pdo->lastInsertId();
+			$this->after_insert();
       return intval( $this->row['id'] );
     }
     $this->after_insert();
