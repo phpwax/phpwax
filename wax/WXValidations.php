@@ -84,7 +84,7 @@ class WXValidations
 	  $this->skip_validations[]=$field;
 	}
 	
-	public function add_error($field, $message) {		
+	public function add_error($field, $message) {
 		self::$errors[]=array("field"=>$field, "message"=>$message);
 	}
 	

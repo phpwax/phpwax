@@ -28,6 +28,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 	public $paginate_page;
 	public $paginate_limit;
 	public $paginate_total;
+	public $per_page;
 
  /**
   *  constructor
@@ -218,8 +219,13 @@ class WXActiveRecord extends WXValidations implements Iterator
 
 	public function find_first($params=array()) {
 	  $params = array_merge($params, array("limit"=>"1"));
-		$list = $this->find_all($params);
-		return $list[0];
+		$sql = $this->build_query($params);
+		$newtable=camelize($this->table);
+   	$item = new $newtable( $this->pdo );
+		$item->row = $this->query($sql, "one");
+		if(!$item->row) return false;
+		$item->constraints = $this->constraints;
+		return $item;
 	}
 	
 	function find_by_sql($sql) {
@@ -243,8 +249,8 @@ class WXActiveRecord extends WXValidations implements Iterator
     }
 		
 		if($type=="all") {
-			return $sth->fetchAll( PDO::FETCH_ASSOC );
-		} else {			
+		  return $sth;
+		} else {		
 			return $sth->fetch( PDO::FETCH_ASSOC );
 		}
 	}
@@ -307,12 +313,10 @@ class WXActiveRecord extends WXValidations implements Iterator
   *  @return array           array of ActiveRecord Objects
   */
 	function find_all( $params = null, $join = null ) {
-	
 		if (! is_array($params)) $params = array();
 		if (! is_array($join)) $join = array();
-	  
 		$params['join'] = $join;
-		
+		if($params["page"]) return $this->build_paginated($params);
 		$sql = $this->build_query($params);
 		try {
 		  $row_list = $this->query($sql, "all");
@@ -320,19 +324,35 @@ class WXActiveRecord extends WXValidations implements Iterator
 	    $error = $e->errorInfo[2];
       throw new WXActiveRecordException( $error, "Error Preparing Database Query" );
     }
-		$item_list = array();
-		foreach( $row_list as $row ) {
-			$newtable=$this->camelize($this->table);
-     	$item = new $newtable( $this->pdo );
-			$item->row = $row;
-			$item->constraints = $this->constraints;
-			if (isset($row['id'])) {
-				$item_list[$row['id']] = $item;				
-			} else {
-				$item_list[] = $item;
-			}
-    }		
-    return array_values($item_list);
+    
+    $obj = new WXRecordset($row_list->fetchAll(PDO::FETCH_ASSOC), $this->pdo, WXInflections::camelize($this->table), $this->constraints);
+    return $obj->classic_rowset();
+  }
+  
+  protected function build_paginated($params) {
+    $count_params=$params;
+    $count_params["columns"]="COUNT(*) as count";
+    if($params["per_page"]) $per_page = $params["per_page"];
+    elseif($this->per_page) $per_page = $this->per_page;
+    else $per_page = 10;
+    $params["offset"] = ($params["page"] - 1) * $per_page;;
+    $params["limit"]=$per_page;
+    $sql = $this->build_query($params);
+    error_log($sql);
+		try {
+		  $row_list = $this->query($sql, "all");
+	  } catch(PDOException $e) {
+	    $error = $e->errorInfo[2];
+      throw new WXActiveRecordException( $error, "Error Preparing Database Query" );
+    }    
+    $page = new WXPaginatedRecordset($row_list->fetchAll(PDO::FETCH_ASSOC), $this->pdo, $this->camelize($this->table), $this->constraints);
+    $sql = $this->build_query($count_params);
+    $page->current_page = $count_params["page"];
+    $page->per_page = $count_params["per_page"];
+    $count = $this->query($sql, "one");
+    $page->per_page = $per_page;
+    $page->set_count($count["count"]);
+    return $page;
   }
 
 
@@ -804,5 +824,105 @@ class WXActiveRecord extends WXValidations implements Iterator
   	public function after_delete() {}
 
 }
+
+class WXRecordset implements Iterator, ArrayAccess, Countable {
+
+  protected $statement = false;
+  public $rowset = false;
+  protected $obj = false;
+  protected $key = 0;
+  protected $constraints = array();
+  
+  public function __construct($rowset, $pdo, $object, $constraints=array()) {
+    $this->rowset = $rowset;
+    $this->pdo = $pdo;
+    $this->obj = $object;
+    $this->constraints = $constraints;
+  }
+  
+  public function next() {
+    $this->key++;
+  }
+  
+  public function current() {
+    return $this->offsetGet($this->key);
+  }
+  
+  public function key() {
+    return $this->key;
+  }
+  
+  public function rewind() {
+    $this->key=0;
+  }
+  
+  public function valid() {
+    if($this->rowset[$this->key]) return true;
+    return false;
+  }
+  
+  public function offsetExists($offset) {
+    if(count($this->rowset)>=$offset) return true;
+    return false;
+  }
+  
+  public function offsetGet($offset) {
+    $obj = new $this->obj($this->pdo);
+    $obj->set_attributes($this->rowset[$offset]);
+    foreach($this->constraints as $k=>$v) $obj->setConstraint($k, $v);
+    return $obj;
+  }
+  
+  public function offsetSet($offset, $value) {
+    $this->rowset[$offset]=$value;
+  }
+  
+  public function offsetUnset($offset) {
+    array_splice($this->rowset, $offset,1);
+  }
+  
+  public function count() {return count($this->rowset);}
+  
+  public function classic_rowset() {
+    $rows=array();
+    foreach($this->rowset as $row) {
+      $obj = new $this->obj($this->pdo);
+      $obj->set_attributes($row);
+      foreach($this->constraints as $k=>$v) $obj->setConstraint($k, $v);
+      $rows[]=$obj;
+    }
+    return $rows;
+  }
+  
+}
+
+class WXPaginatedRecordset extends WXRecordset {
+  
+  public $current_page=1;
+  public $total_pages=false;
+  public $per_page=false;
+  public $count=false;
+  public function set_count($count) {
+    $this->count = $count;
+    $this->total_pages = ceil($count / $this->per_page);
+  }
+  
+  public function next_page() { return $this->current_page +1;}
+  public function previous_page() { return $this->current_page -1;}
+  
+  public function is_last($page) {
+    if($page==$this->total_pages) return true;
+    return false;
+  }
+  public function is_first() {
+    if($this->current_page==1) return true;
+    return false;
+  }
+  public function is_current($page) {
+    if($this->current_page==$page) return true;
+    return false;
+  }
+}
+
 
 ?>
