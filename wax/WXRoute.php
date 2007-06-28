@@ -26,6 +26,7 @@ class WXRoute {
 		$route = $_GET['route'];
 		unset($_GET['route']);
 		$this->route_array = array_merge($this->route_array, $_GET);
+		self::$url = $this->route_array;
 		$_GET['route']=$route;
 		$this->config_array=WXConfiguration::get('route');
 		$this->map_routes();
