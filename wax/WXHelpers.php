@@ -310,8 +310,8 @@ class WXHelpers {
     return $this->content_tag("ul", $content, array("class"=>"pagination"));
   }
   
-  public function uri($val) {
-    return WXRoute::get_uri_val($val);
+  public function url($val) {
+    return WXRoute::get_url_val($val);
   }
 
 
