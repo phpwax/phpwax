@@ -51,6 +51,7 @@ class WXRoute {
 		if(isset($this->config_array[$this->route_array[0]])) {
 			$this->route_array[0]=$this->config_array[$this->route_array[0]];
 		}
+		$this->map_urls();
 	}
 	
 	
@@ -123,8 +124,60 @@ class WXRoute {
 	  return self::$url;
 	}
 	
+	public function map_urls() {
+	  foreach($this->config_array as $k=>$v) {
+	    if($k=="default") continue;
+	    $patterns = explode("/", $k);
+	    $replace = explode("/", $v);
+	    if($this->is_match($patterns)) {
+	      foreach($patterns as $i=>$val) {
+  	      if($val!="*" && $val!=$this->route_array[$i]) continue;
+  	      self::$url[$replace[$i]]=$this->route_array[$i];
+  	    }
+  	    $matched = true;
+  	  }
+  	  if($matched) break;
+	  }
+	  return $this->get_url();
+	}
+	
+	protected function is_match($pattern) {
+	  $url = $this->route_array;
+	  if($url[0] != $this->get_url_controller()) array_unshift($url, $this->get_url_controller());
+	  $match = true;
+	  foreach($pattern as $k=>$val) {
+	    if($val != $this->route_array[$k] && $val !="*") $match=false;
+	  }
+	  return $match;
+	}
+	
+	public function is_default($controller) {
+	  if($this->config_array["default"]==$controller) return true;
+	  return false;
+	}
+	
+	public function build_url($params) {
+	  if(!$params["controller"]) $url = $this->unset_numeric($this->map_urls());
+	  else $url=array();
+	  return $final;
+	}
+	
+	public function build_params($array) {
+	  if(!count($extra_params)) {
+		  if(array_pop(array_values($url))=="index") array_pop($url);
+    	return str_replace("//","/",$url_base.implode("/", $url)."/");
+		}
+    return $url_base . str_replace("//", "/", implode("/", $url)."/"). "?".http_build_query($extra_params, "", "&");
+	}
 	
 	
-} // END class 
+	public function unset_numeric($array) {
+	  foreach($array as $k=>$v) if(!is_numeric($k)) $arr[$k]=$v;
+	  return $arr;
+	}
+	
+	
+	
+}
 
 ?>
