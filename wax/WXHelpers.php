@@ -309,6 +309,10 @@ class WXHelpers {
     foreach($links as $link) $content.= $this->content_tag("li", $link, array("class"=>"pagination_link"));
     return $this->content_tag("ul", $content, array("class"=>"pagination"));
   }
+  
+  public function uri($val) {
+    return WXRoute::get_uri_val($val);
+  }
 
 
 }

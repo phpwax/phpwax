@@ -16,7 +16,7 @@
  * It also requires access to the config object to check configurations.
  **/
 class WXRoute {
-  protected $uri = array();
+  protected static $uri = array();
 	protected $route_array=array();
 	protected $config_array=array();
 	protected $actions_array=array();
@@ -114,8 +114,12 @@ class WXRoute {
 		return slashify($url);
 	}
 	
-	public function get_uri_val($val) {
-	  
+	public static function get_uri_val($val) {
+	  return self::$uri[$val];
+	}
+	
+	public function get_uri() {
+	  return self::$uri;
 	}
 	
 	
