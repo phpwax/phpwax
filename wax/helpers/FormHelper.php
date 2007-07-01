@@ -118,9 +118,9 @@ class FormHelper extends WXHelpers {
 	protected function make_label($label_name="", $options=array()) {
 	  $options = array_merge($options, array("for" =>$this->object_name."_".$this->attribute_name));
 		if(!is_string($label_name)) {
-	    $label_name = $this->attribute_name;
+	    $label_name = humanize($this->attribute_name);
 	  }
-		return $this->content_tag("label", humanize($label_name), $options);
+		return $this->content_tag("label", $label_name, $options);
 	}
 	
 	
