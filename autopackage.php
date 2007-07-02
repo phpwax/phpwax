@@ -93,7 +93,7 @@ $package->setLicense('MIT', 'http://www.opensource.org/licenses/mit-license.php'
 
 $package->addMaintainer('lead', 'phpwax', 'PHP-WAX', 'riley.ross@gmail.com', 'yes');
 $package->addRelease();
-//$package->addInstallAs('system/phpwax', 'phpwax');
+$package->addInstallAs('system/phpwax', 'phpwax');
 $package->setPhpDep('5.1.0');
 $package->setPearinstallerDep('1.4.0');
 $package->generateContents();

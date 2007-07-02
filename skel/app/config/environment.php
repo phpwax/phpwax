@@ -9,10 +9,13 @@
  * The config below, sets up which version you want to use. 
  */
 
-/* You normally wouldn't change this line, unless you want to have the PEAR package somewhere unusual */
-define('WAX_PATH', PEAR_INSTALL_DIR); // This is set to your install path as created above.
+/* You can change the version number to run on older versions of the framework  */
+define('WAX_VERSION', '0.7.4'); // This is set to your install path as created above.
 
-/* Uncomment this line to always run on the development code. You will need to have installed the phpwaxdevel package
+/* You normally wouldn't change this line, unless you want to have the PEAR package somewhere unusual */
+define('WAX_PATH', PEAR_INSTALL_DIR); 
+
+/* Uncomment this line to always run on the development code. You will need to have regularly reinstall the PEAR package
  * full instructions are available at dev.php-wax.com. Don't do this for production sites. 
  */
 //define('WAX_EDGE', 'true');
@@ -24,11 +27,14 @@ define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
 if(is_dir(WAX_ROOT."wax")) {
 	define('FRAMEWORK_DIR', WAX_ROOT."wax");
 } elseif(defined("WAX_EDGE")) {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwaxdevel/wax");
-	define('FRAMEWORK_DIR', WAX_PATH."/phpwaxdevel/wax");
+	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/trunk/wax");
+	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/trunk/wax");
+} elseif(defined("WAX_VERSION")) {
+  ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/releases/".WAX_VERSION."/wax");
+  define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/".WAX_VERSION."/wax");
 } else {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/wax");
-	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/wax");
+	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/releases/latest/wax");
+	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/latest/wax");
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
 require_once(FRAMEWORK_DIR."/AutoLoader.php");

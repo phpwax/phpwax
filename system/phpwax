@@ -15,7 +15,7 @@ ob_end_clean(); // make output from autofind php code disapear
  */
 
 
-include("phpwax/wax/AutoLoader.php");
+include("phpwax/releases/latest/wax/AutoLoader.php");
 $source_directory = dirname(constant("FRAMEWORK_DIR"))."/skel";
 $destination = getcwd()."/".$argv[1];
 File::recursive_directory_copy($source_directory, $destination);
