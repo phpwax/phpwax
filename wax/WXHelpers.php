@@ -313,7 +313,7 @@ class WXHelpers {
   
   public function paginate_url($param, $page) {
     $vals = $_GET;
-    $url_base = $vals["route"];
+    $url_base = "/".$vals["route"];
     unset($vals["route"]);
     $vals[$param]= $page;
     return $url_base."?".http_build_query($vals);
