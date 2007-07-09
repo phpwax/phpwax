@@ -145,9 +145,8 @@ class UrlHelper extends WXHelpers {
      *  </ul>
      *  @return string
      */
-  public function url_for($options = array()) {
+  public function url_for($options = array(), $url_base="/") {
 		$routes_object = new WXRoute;
-    $url_base = "/";
     $url = array();
     $extra_params = array();
     if(!is_array($options)) {

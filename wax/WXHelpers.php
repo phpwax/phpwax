@@ -279,9 +279,9 @@ class WXHelpers {
     if($recordset->total_pages <=1) return false;
     $content = "";
     $page = 1; $links = array();
-    if($prev_content && !$recordset->is_current($page)) $links[]=link_to($prev_content, array($param=>$recordset->previous_page()));
+    if($prev_content && !$recordset->is_current($page)) $links[]=link_to($prev_content, $this->paginate_url($param, $recordset->previous_page()));
       else $links[] = $this->content_tag("span", $prev_content, array("class"=>"disabled"));
-    if(!$recordset->is_current($page)) $links[] = link_to($page, array($param=>$page));
+    if(!$recordset->is_current($page)) $links[] = link_to($page, $this->paginate_url($param,$page));
     else $links[] = $this->content_tag("span", $page, array("class"=>"disabled current"));
     if($recordset->total_pages > ($window*2)+1 && $recordset->current_page-$window > 2 ) $links[]="<span>&#8230;.</span>";
     if($recordset->total_pages < ($window*2)+1) {
@@ -297,18 +297,26 @@ class WXHelpers {
       $win_end = $recordset->current_page + $window;
     }
     for($i=$win_start; $i <= $win_end; $i++) {
-      if(!$recordset->is_current($i)) $links[] = link_to($i, array("action"=>$action, $param=>$i));
+      if(!$recordset->is_current($i)) $links[] = link_to($i, $this->paginate_url($param,$i));
       else $links[] = $this->content_tag("span", $i, array("class"=>"disabled current"));
     }
     if($recordset->total_pages- $recordset->current_page-1 > $window) $links[]="<span>&#8230;.</span>";
-    if(!$recordset->is_current($recordset->total_pages)) $links[] = link_to($recordset->total_pages, array("action"=>$action, $param=>$recordset->total_pages));
+    if(!$recordset->is_current($recordset->total_pages)) $links[] = link_to($recordset->total_pages, $this->paginate_url($param,$recordset->total_pages));
     else $links[] = $this->content_tag("span", $recordset->total_pages, array("class"=>"disabled current"));
-    if($next_content && !$recordset->is_last($recordset->current_page)) $links[]=link_to($next_content, array($param=>$recordset->next_page()));
+    if($next_content && !$recordset->is_last($recordset->current_page)) $links[]=link_to($next_content, $this->paginate_url($param,$recordset->next_page()));
       else $links[] = $this->content_tag("span", $next_content, array("class"=>"disabled"));
     
     
     foreach($links as $link) $content.= $this->content_tag("li", $link, array("class"=>"pagination_link"));
     return $this->content_tag("ul", $content, array("class"=>"pagination"));
+  }
+  
+  public function paginate_url($param, $page) {
+    $vals = $_GET;
+    $url_base = $vals["route"];
+    unset($vals["route"]);
+    $vals[$param]= $page;
+    return $url_base."?".http_build_query($vals);
   }
   
   public function url($val) {
