@@ -275,8 +275,9 @@ class WXHelpers {
 		return false;	
 	}
 	
-	public function paginate_links(WXPaginatedRecordset $recordset, $window = "1", $prev_content="&laquo;", $next_content="&raquo;", $param="page") {
-    if($recordset->total_pages <=1) return false;
+	public function paginate_links($recordset, $window = "1", $prev_content="&laquo;", $next_content="&raquo;", $param="page") {
+    if(!$recordset instanceof WXPaginatedRecordset) return false;
+		if($recordset->total_pages <=1) return false;
     $content = "";
     $page = 1; $links = array();
     if($prev_content && !$recordset->is_current($page)) $links[]=link_to($prev_content, $this->paginate_url($param, $recordset->previous_page()));

@@ -148,7 +148,7 @@ class WXValidations
 			return false;
 		}
 	}
-	
+		
 	protected function validations() {}
 	
 }
