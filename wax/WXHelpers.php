@@ -334,11 +334,5 @@ Autoloader::include_from_registry('FormOptionsHelper');
 Autoloader::include_from_registry('UrlHelper');
 Autoloader::include_from_registry('JavascriptHelper');
 Autoloader::include_from_registry('FormBuilderHelper');
-if(!$libs = WXConfiguration::get("ajax_libraries")) {
-  Autoloader::include_from_registry('PrototypeHelper');
-  Autoloader::include_from_registry('ScriptaculousHelper');
-} else {
-  foreach($libs as $lib) Autoloader::include_from_registry(ucfirst($lib).Helper);
-}
 
 ?>

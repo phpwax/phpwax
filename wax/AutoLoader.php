@@ -142,6 +142,15 @@ class AutoLoader
 	  }
 	}
 	
+	static public function register_ajax_helpers() {
+	  if(!$libs = WXConfiguration::get("ajax_libraries")) {
+      Autoloader::include_from_registry('PrototypeHelper');
+      Autoloader::include_from_registry('ScriptaculousHelper');
+    } else {
+      foreach($libs as $lib) Autoloader::include_from_registry(ucfirst($lib).Helper);
+    }
+	}
+	
 	static public function initialise() {	  
 	  self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
@@ -154,6 +163,7 @@ class AutoLoader
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
+		self::register_ajax_helpers();
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );		
 	}
