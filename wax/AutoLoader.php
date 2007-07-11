@@ -86,7 +86,7 @@ class AutoLoader
 	  if(defined('AUTOREGISTER_PLUGINS')) return false;
 	  $plugins = scandir(PLUGIN_DIR);
 	  foreach($plugins as $plugin) {
-	    if(is_dir(PLUGIN_DIR.$plugin)) selff::include_plugin($plugin);
+	    if(is_dir(PLUGIN_DIR.$plugin)) self::include_plugin($plugin);
 	  }
 	}
 	
