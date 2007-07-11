@@ -85,6 +85,7 @@ class AutoLoader
 	static public function autoregister_plugins() {
 	  if(defined('AUTOREGISTER_PLUGINS')) return false;
 	  $plugins = scandir(PLUGIN_DIR);
+	  sort($plugins);
 	  foreach($plugins as $plugin) {
 	    if(is_dir(PLUGIN_DIR.$plugin)) self::include_plugin($plugin);
 	  }
