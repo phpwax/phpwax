@@ -82,6 +82,14 @@ class AutoLoader
 		return is_readable(PLUGIN_DIR.$plugin);
 	}
 	
+	static public function autoregister_plugins() {
+	  if(defined('AUTOREGISTER_PLUGINS')) return false;
+	  $plugins = scandir(PLUGIN_DIR);
+	  foreach($plugins as $plugin) {
+	    if(is_dir(PLUGIN_DIR.$plugin)) selff::include_plugin($plugin);
+	  }
+	}
+	
 	static public function recursive_register($directory, $type) {
 	  if(!is_dir($directory)) { return false; }
 	  $dir = new RecursiveIteratorIterator(
@@ -139,6 +147,7 @@ class AutoLoader
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
+		self::autoregister_plugins();
 		WXConfiguration::set_instance();
 		self::detect_environments();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
