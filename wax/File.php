@@ -41,11 +41,11 @@ class File {
 	  * @param $width The width of the new image
 	  * @return bool
 	  */
-	static function resize_image($source, $destination, $width, $overwrite=false) {
+	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false) {
 		if(!self::is_image($source)) return false;
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
-		if($y > $x) {
+		if($y > $x && !$force_width) {
 		  $height = $width;
 		  $ratio = $y / $width;
 		  $width = floor($x / $ratio);
