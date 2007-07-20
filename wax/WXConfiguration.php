@@ -60,6 +60,7 @@ class WXConfiguration
 		$confarray=self::$instance->config_array;
 		foreach($config as $conf) {
 			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
+			else $confarray=false;
 		}
 		if($confarray) {
 		  return $confarray; 
