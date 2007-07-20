@@ -13,7 +13,7 @@
  * @filesource
  */
 
-class JQueryHelper extends WXHelpers  {
+class JQueryHelper extends JavascriptHelper  {
 	
 		var $CALLBACKS 	=  	array('beforeSend',
 							'complete',
@@ -198,7 +198,7 @@ class JQueryHelper extends WXHelpers  {
 			$javascript = 'setInterval(function() { '.$callback.' },'.($frequency*1000).')';
 		}
 
-		return $javascript;
+		return $this->javascript_tag($javascript);
 		
 	}
 	

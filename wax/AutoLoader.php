@@ -144,8 +144,8 @@ class AutoLoader
 	
 	static public function register_ajax_helpers() {
 	  if(!$libs = WXConfiguration::get("ajax_libraries")) {
-      Autoloader::include_from_registry('PrototypeHelper');
-      Autoloader::include_from_registry('ScriptaculousHelper');
+      self::include_from_registry('PrototypeHelper');
+      self::include_from_registry('ScriptaculousHelper');
     } else {
       foreach($libs as $lib) Autoloader::include_from_registry(ucfirst($lib).Helper);
     }

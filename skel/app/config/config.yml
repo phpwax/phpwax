@@ -35,6 +35,12 @@ production:
 #  a) default:page -the value of default is the controller that unanswered requests are passed to
 route:
  default:page
+ 
+ urls:        
+   "/^([\w-]*)\/([\w-]*)\/([\w-]*)/":   
+     controller:
+     action:
+     id:
 
 # 3: Automatic deploymet config for script/deploy
 # Requires destination server, login and path and subversion user, password and path.
