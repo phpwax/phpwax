@@ -59,7 +59,7 @@ class WXConfiguration
 		$config=explode("/", $config);
 		$confarray=self::$instance->config_array;
 		foreach($config as $conf) {
-			$confarray=$confarray[$conf];
+			if(array_key_exists($confarray, $conf)) $confarray=$confarray[$conf];
 		}
 		if($confarray) {
 		  return $confarray; 
