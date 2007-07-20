@@ -338,7 +338,6 @@ class WXActiveRecord extends WXValidations implements Iterator
     $params["offset"] = ($params["page"] - 1) * $per_page;;
     $params["limit"]=$per_page;
     $sql = $this->build_query($params);
-    error_log($sql);
 		try {
 		  $row_list = $this->query($sql, "all");
 	  } catch(PDOException $e) {
