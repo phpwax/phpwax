@@ -92,8 +92,9 @@ class AutoLoader
 	}
 	
 	static public function detect_assets() {
-	  $_GET['route']= preg_replace("/[^a-zA-Z0-9_-\.]/", "", $_GET["route"]);
-	  while(strpos($_GET["route"], "..")) $_GET["route"]= str_replace("..", ".", $_GET["route"]);
+	  $temp_route = $_GET["route"];
+	  $_temp_route= preg_replace("/[^a-zA-Z0-9_-\.]/", "", $temp_route);
+	  while(strpos($temp_route, "..")) $temp_route= str_replace("..", ".", $temp_route);
 	  $asset_paths = explode("/", $_GET["route"]);
 	  if($asset_paths[0] =="images" || $asset_paths[0] =="javascripts" || $asset_paths[0] =="stylesheets") {
 	    $plugins = scandir(PLUGIN_DIR);
