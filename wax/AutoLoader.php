@@ -102,7 +102,7 @@ class AutoLoader
   	  foreach($plugins as $plugin) {
   	    if(is_dir(PLUGIN_DIR.$plugin)) {
   	      $type = array_shift($asset_paths);
-  	      $path = PLUGIN_DIR.$plugin."/resources/".$type."/".implode("/", $asset_paths);
+  	      $path = PLUGIN_DIR.$plugin."/resources/public/".$type."/".implode("/", $asset_paths);
   	      if($type=="images") File::display_image($path);
   	      if($type=="javascripts") File::display_asset($path, "text/javascript");
   	      if($type=="stylesheets") File::display_asset($path, "text/css");
