@@ -67,10 +67,19 @@ class File {
 	static function display_image($image) {
 		if(!self::is_image($image)) return false;
 		$info=getimagesize($image);
-		$length=filesize($image);
-		header("Content-Type: " . image_type_to_mime_type($info[2])."\n");
+		$mime = image_type_to_mime_type($info[2]);
+		self::display_asset($image, $mime);
+	}
+	
+	static function display_asset($path, $mime) {
+	  if(!is_readable($path)) return false;
+		$length=filesize($path);
+		header("Content-Type: " . $mime."\n");
+		header("Content-Length: ".$length.'\n');
+		header("Content-disposition: inline; filename=".basename($path)."\n");
 		ob_end_clean();
-		if(!readfile($image)) return false;
+		if(!readfile($path)) return false;
+		exit;
 	}
 	
 	static function stream_file($file) {

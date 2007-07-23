@@ -91,6 +91,25 @@ class AutoLoader
 	  }
 	}
 	
+	static public function detect_assets() {
+	  $_GET['route']= preg_replace("/[^a-zA-Z0-9_-\.]/", "", $_GET["route"]);
+	  while(strpos($_GET["route"], "..")) $_GET["route"]= str_replace("..", ".", $_GET["route"]);
+	  $asset_paths = explode("/", $_GET["route"]);
+	  if($asset_paths[0] =="images" || $asset_paths[0] =="javascripts" || $asset_paths[0] =="stylesheets") {
+	    $plugins = scandir(PLUGIN_DIR);
+  	  rsort($plugins);
+  	  foreach($plugins as $plugin) {
+  	    if(is_dir(PLUGIN_DIR.$plugin)) {
+  	      $type = array_shift($asset_paths);
+  	      $path = PLUGIN_DIR.$plugin."/resources/".$type."/".implode("/", $asset_paths);
+  	      if($type=="images") File::display_image($path);
+  	      if($type=="javascripts") File::display_asset($path, "text/javascript");
+  	      if($type=="stylesheets") File::display_asset($path, "text/css");
+  	    }
+  	  }
+	  }
+	}
+	
 	static public function recursive_register($directory, $type) {
 	  if(!is_dir($directory)) { return false; }
 	  $dir = new RecursiveIteratorIterator(
@@ -158,6 +177,7 @@ class AutoLoader
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		self::autoregister_plugins();
+		self::detect_assets();
 		WXConfiguration::set_instance();
 		self::detect_environments();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
