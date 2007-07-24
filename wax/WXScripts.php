@@ -94,7 +94,7 @@ class WXScripts {
     if(!$argv[2]) $this->fatal_error("[ERROR] You must give a plugin package name or url.");
     switch($argv[1]) {
       case "install":
-        $this->plugin_install($argv[2]);
+        $this->plugin_install($argv[2], $argv[3]);
         break;
       case "migrate":
         $this->plugin_migrate($argv[2]);
@@ -110,10 +110,11 @@ class WXScripts {
     }
   }
   
-  protected function plugin_install($name) {
+  protected function plugin_install($name, $source = false) {
     $output_dir = PLUGIN_DIR.$name;
-    $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
+    if(!$source) $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
     if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
+      File::recursively_delete(PLUGIN_DIR.$name);
       $command = "svn export -q {$source} {$output_dir} --force";
       system($command);
       $this->add_output("Plugin installed in /plugins/{$name}");
