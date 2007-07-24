@@ -92,6 +92,7 @@ class AutoLoader
 	}
 	
 	static public function detect_assets() {
+	  if(!isset($_GET["route"])) return false;
 	  $temp_route = $_GET["route"];
 	  $_temp_route= preg_replace("/[^a-zA-Z0-9_-\.]/", "", $temp_route);
 	  while(strpos($temp_route, "..")) $temp_route= str_replace("..", ".", $temp_route);
