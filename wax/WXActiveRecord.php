@@ -389,10 +389,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     $sql = "DELETE FROM `{$this->table}` WHERE " . $this->_makeANDConstraints($this->constraints).';';
     $binding_params = $this->_makeBindingParams( $this->constraints );
     $sth = $this->pdo->prepare($sql);
-    if( ! $sth->execute( ) ) {
-			$err = $sth->errorInfo();
-      throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
-    }
+    
     if( ! $sth->execute( $binding_params ) ) {
       $err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
