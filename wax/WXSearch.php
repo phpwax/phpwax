@@ -14,8 +14,8 @@ class WXSearch {
 	  $this->search_phrase = $search_phrase;
 	}
 	
-	static public function register_search($key, $table, $field) {
-	  self::$search_array[]=array("key"=>$key, "table"=>$table, "field"=>$field);
+	static public function register_search($key, $table, $field, $order = "") {
+	  self::$search_array[]=array("key"=>$key, "table"=>$table, "field"=>$field, "order"=>$order);
 	}
 	
 	static public function unregister_search($key) {
@@ -42,9 +42,15 @@ class WXSearch {
 	      $query .= implode(",",$search['field']);
 	      $query .= ") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
 	      $query .= " WHERE MATCH(".implode(",", $search['field']).") AGAINST('".$this->search_phrase."')";
+	      if($search['order'] != "") {
+	        $query .= "ORDER BY ".$search['order'];
+        }
 	    } else {
 	      $query = "SELECT *, MATCH(".$search['field'].") AGAINST('".$this->search_phrase."') AS score FROM ".$search['table'];
 	      $query .= " WHERE MATCH(".$search['field'].") AGAINST('".$this->search_phrase."')";
+	      if($search['order'] != "") {
+	        $query .= "ORDER BY ".$search['order'];
+        }
 	    }	
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
