@@ -46,7 +46,7 @@ class FormBuilderHelper extends FormHelper {
     $div_options["class"] = $class;
     if($label) $output = $this->content_tag("label", $label, array("class"=>"description"));
     $output .= $content;
-    if($extra_info) $output = $output.$extra_info;
+    if($extra_info) $output = $output.$this->content_tag("span", $extra_info, array("class"=>"form_help_text"));
     return $this->content_tag("div", $output, $div_options);
   }
   
