@@ -772,9 +772,10 @@ class WXActiveRecord extends WXValidations implements Iterator
 			case "find":
 				$rel_class = WXInflections::camelize($rel, true);
 			 	$table = new $rel_class;
-				$result = $table->find_by_sql("SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id 
-					WHERE $join.{$this->table}_id = $current AND $join.{$rel}_id = $value");
-				return $result[0];
+			 	$query = "SELECT * FROM {$rel} RIGHT JOIN {$join} ON $join.{$rel}_id = {$rel}.id WHERE $join.{$rel}_id = $value";
+				if($curent) $query.= " AND $join.{$this->table}_id = $current";
+				$result = $table->find_by_sql($query);
+				return $result;
 			case "delete":
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
 			 	break;
