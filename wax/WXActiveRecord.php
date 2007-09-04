@@ -770,7 +770,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$rel = $this->has_many_throughs[$column][0];
 		$join = $this->has_many_throughs[$column][1];
 		switch($operation) {
-		  case ("find" || "findin"):
+		  case "findin":
 			 	if(is_array($order)) $params = $order;
 			 	$params['distinct']="{$this->table}.*";
 			 	$params['table']="`$join`, `{$rel}`";
