@@ -771,14 +771,12 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$join = $this->has_many_throughs[$column][1];
 		switch($operation) {
 		  case ("find" || "findin"):
-				$rel_class = WXInflections::camelize($rel, true);
-			 	$table = new $rel_class;
 			 	if(is_array($order)) $params = $order;
 			 	$params['distinct']="{$this->table}.*";
 			 	$params['table']="`$join`, `{$rel}`";
 			 	if($params['conditions']) $params['conditions'].=" AND $join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
 			 	else $params['conditions']= "$join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
-				$result = $table->find_all($params);
+				$result = $this->find_all($params);
 				return $result;
 			case "delete":
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
