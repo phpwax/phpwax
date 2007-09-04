@@ -297,6 +297,7 @@ class WXHelpers {
       $win_start = $recordset->current_page - $window;
       $win_end = $recordset->current_page + $window;
     }
+    if($win_start <= 1) $win_start=2;
     if($win_end >= $recordset->total_pages) $win_end=$recordset->total_pages-1;
     for($i=$win_start; $i <= $win_end; $i++) {
       if(!$recordset->is_current($i)) $links[] = link_to($i, $this->paginate_url($param,$i));
