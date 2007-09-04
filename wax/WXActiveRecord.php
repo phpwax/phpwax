@@ -772,7 +772,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		switch($operation) {
 		  case ("find" || "findin"):
 				$rel_class = WXInflections::camelize($rel, true);
-			 	$table = new $rel_class;
+			 	$table = new $this->table;
 			 	if(is_array($order)) $params = $order;
 			 	$params['distinct']="{$this->table}.*";
 			 	$params['table']="`$join`, `{$this->table}`";
