@@ -770,6 +770,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		$rel = $this->has_many_throughs[$column][0];
 		$join = $this->has_many_throughs[$column][1];
 		switch($operation) {
+		  case "find":
 			case "findin":
 				$rel_class = WXInflections::camelize($rel, true);
 			 	$table = new $rel_class;
