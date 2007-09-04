@@ -778,7 +778,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 			 	$params['table']="`$join`, `{$this->table}`";
 			 	if($params['conditions']) $params['conditions'].=" AND $join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
 			 	else $params['conditions']= "$join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
-				$result = $table->find_all($params);
+				$result = $this->table->find_all($params);
 				return $result;
 			case "delete":
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
