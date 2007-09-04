@@ -525,6 +525,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     } else {
       $sql = "SELECT * FROM `{$this->table}`";
     }
+    if($params['table']) $sql.=", `{$params['table']}`";
     
     if(!empty($params['join'])) {
       $join = $params['join'];
@@ -772,9 +773,11 @@ class WXActiveRecord extends WXValidations implements Iterator
 			case "find":
 				$rel_class = WXInflections::camelize($rel, true);
 			 	$table = new $rel_class;
-			 	$query = "SELECT * FROM {$this->table}, $join WHERE $join.{$rel}_id = '$value'";
-			 	$query .=" AND $join.{$this->table}_id = {$this->table}.id";
-				$result = $this->find_by_sql($query);
+			 	if(is_array($order)) $params = $order;
+			 	$params['table']=$join;
+			 	if($params['conditions']) $params['conditions'].=" AND $join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
+			 	else $params['conditions']= "$join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
+				$result = $table->find_all($params);
 				return $result;
 			case "delete":
 				return $this->pdo->query("DELETE FROM $join WHERE {$this->table}_id =$current and {$rel}_id = $value");
