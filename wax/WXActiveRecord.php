@@ -525,7 +525,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     } else {
       $sql = "SELECT * FROM `{$this->table}`";
     }
-    if($params['table']) $sql.=$params['table'];
+    if($params['table']) $sql.=", ".$params['table'];
     
     if(!empty($params['join'])) {
       $join = $params['join'];
