@@ -297,6 +297,7 @@ class WXHelpers {
       $win_start = $recordset->current_page - $window;
       $win_end = $recordset->current_page + $window;
     }
+    if($win_end == $recordset->total_pages) $win_end--;
     for($i=$win_start; $i <= $win_end; $i++) {
       if(!$recordset->is_current($i)) $links[] = link_to($i, $this->paginate_url($param,$i));
       else $links[] = $this->content_tag("span", $i, array("class"=>"disabled current"));
