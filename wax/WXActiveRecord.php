@@ -774,7 +774,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 				$rel_class = WXInflections::camelize($rel, true);
 			 	$table = new $rel_class;
 			 	if(is_array($order)) $params = $order;
-			 	$params['table']=$join;
+			 	$params['table']=$join.", {$this->table}";
 			 	if($params['conditions']) $params['conditions'].=" AND $join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
 			 	else $params['conditions']= "$join.{$rel}_id = '$value' AND $join.{$this->table}_id = {$this->table}.id";
 				$result = $table->find_all($params);
