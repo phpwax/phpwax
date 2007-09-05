@@ -149,7 +149,7 @@ class FormOptionsHelper extends FormHelper {
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
-    $output.=$date_markup;
+    $output.= content_tag("span", $date_markup, array("class"=>"multiple_date_select"));
     $output .= $this->hidden_field($obj, $att);
     $output .= javascript_tag("{$shared_id}_set_date()");
     return $output;
@@ -171,6 +171,7 @@ class FormOptionsHelper extends FormHelper {
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output .= $time_markup;
+    $output.= content_tag("span", $time_markup, array("class"=>"multiple_time_select"));
     $output .= $this->hidden_field($obj, $att);
     $output .= javascript_tag("{$shared_id}_set_date()");
     return $output;
@@ -198,6 +199,7 @@ class FormOptionsHelper extends FormHelper {
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output.=$datetime_markup;
+    $output.= content_tag("span", $datetime_markup, array("class"=>"multiple_datetime_select"));
     $output .= $this->hidden_field($obj, $att);
     $output .= javascript_tag("{$shared_id}_set_date()");
     return $output;
