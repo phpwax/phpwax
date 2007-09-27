@@ -198,7 +198,6 @@ class FormOptionsHelper extends FormHelper {
       + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
-    $output.=$datetime_markup;
     $output.= content_tag("span", $datetime_markup, array("class"=>"multiple_datetime_select"));
     $output .= $this->hidden_field($obj, $att);
     $output .= javascript_tag("{$shared_id}_set_date()");
