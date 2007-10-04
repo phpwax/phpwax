@@ -20,11 +20,11 @@ class WXDBAuthenticate
 	 */
  	public $user_field = "username";
  	public $password_field = "password";  
+  public $session_key = "loggedin_user";
  	protected $user_id=null;
   protected $user_object=null;
 	protected $db_table = "user";
   protected $encrypt=false;
-  protected $session_key = "loggedin_user";
   
 	function __construct($options=array()) {
 	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
