@@ -29,6 +29,7 @@ class WXDBAuthenticate
 	function __construct($options=array()) {
 	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+	  $this->session_key = $this->db_table."_loggedin_user";
 	  $this->setup_user();
 	}
 	
