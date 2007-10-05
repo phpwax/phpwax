@@ -20,7 +20,7 @@ class WXDBAuthenticate
 	 */
  	public $user_field = "username";
  	public $password_field = "password";  
-  public $session_key = "loggedin_user";
+  protected $session_key = "loggedin_user";
  	protected $user_id=null;
   protected $user_object=null;
 	protected $db_table = "user";
@@ -29,7 +29,7 @@ class WXDBAuthenticate
 	function __construct($options=array()) {
 	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
-	  $this->session_key = $this->db_table."_loggedin_user";
+	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
 	  $this->setup_user();
 	}
 	
