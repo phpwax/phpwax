@@ -179,10 +179,10 @@ class WXScripts {
     	$this->add_output("[ERROR] Wax is already in your app directory. Delete it to freeze a new version.");
     	return false;
     } elseif(defined("WAX_EDGE")) {
-    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/trunk/wax/ ".dirname(__FILE__)."/../wax";
+    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/trunk/wax/ ".WAX_ROOT."wax";
     	system($command);
     } else {
-    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/tags/".WAX_VERSION."/wax/ ".dirname(__FILE__)."/../wax";
+    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/tags/".WAX_VERSION."/wax/ ".WAX_ROOT."wax";
     	system($command);
     }
   }
