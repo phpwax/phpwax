@@ -1,5 +1,5 @@
 /* Use Yahoo reset.css to start all styles with a level playing field */
-@import url("http://yui.yahooapis.com/2.3.0/build/reset-fonts-grids/reset-fonts-grids.css");
+@import url("http://yui.yahooapis.com/2.4.1/build/reset-fonts-grids/reset-fonts-grids.css");
 
 
 
@@ -65,3 +65,16 @@ form label { width: 120px; } /* Width of labels */
 form fieldset fieldset label { margin-left: 123px; } /* Width plus 3 (html space) */
 
 /*\*//*/ form legend { display: inline-block; } /* IE Mac legend fix */
+
+/* Nasty clearfix hacks */
+.clearfix {display:inline-block;} 
+/* Hide from IE Mac \*/ 
+.clearfix {display:block;} 
+/* End hide from IE Mac */ 
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
