@@ -117,7 +117,10 @@ class WXScripts {
       if(!$this->get_response("Continue installing development version?", "y")) exit;
       $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
     }
-    elseif(($source=="tag" || $source=="release") && $version) $source = "svn:/php-wax.com/svn/plugins/".$name."/tags/".$version."/";
+    elseif(($source=="tag" || $source=="release") && $version) {
+      $source = "svn:/php-wax.com/svn/plugins/".$name."/tags/".$version."/";
+      die($source);
+    }
     if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
       File::recursively_delete(PLUGIN_DIR.$name);
       $command = "svn export -q {$source} {$output_dir} --force";
