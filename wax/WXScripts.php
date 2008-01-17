@@ -9,11 +9,10 @@ class WXScripts {
   
   public $output=array();
   public $plugin_array = array(
-    "cms"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
-    "cmscore"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms/trunk",
-    "cms-email"=>"svn://php-wax.com/home/phpwax/svn/plugins/subscription_manager/trunk",
-    "cms-ecom"=>"svn://php-wax.com/home/phpwax/svn/plugins/cms-ecom/trunk",
-		"googlemap"=>"svn://php-wax.com/home/phpwax/svn/plugins/googlemap/trunk"
+    "cms"=>"svn://php-wax.com/svn/plugins/cms/",
+    "cms-email"=>"svn://php-wax.com/svn/plugins/subscription_manager/",
+    "cms-ecom"=>"svn://php-wax.com/svn/plugins/cms-ecom/",
+		"googlemap"=>"svn://php-wax.com/svn/plugins/googlemap/"
   );
   
   
@@ -94,7 +93,7 @@ class WXScripts {
     if(!$argv[2]) $this->fatal_error("[ERROR] You must give a plugin package name or url.");
     switch($argv[1]) {
       case "install":
-        $this->plugin_install($argv[2], $argv[3]);
+        $this->plugin_install($argv[2], $argv[3], $argv[4]);
         break;
       case "migrate":
         $this->plugin_migrate($argv[2]);
@@ -110,9 +109,10 @@ class WXScripts {
     }
   }
   
-  protected function plugin_install($name, $source = false) {
+  protected function plugin_install($name, $source = false, $version = false) {
     $output_dir = PLUGIN_DIR.$name;
     if(!$source) $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
+    elseif($source=="tag" && $version) $source = "svn:/php-wax.com/svn/plugins/".$name."/tags/".$version."/";
     if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
       File::recursively_delete(PLUGIN_DIR.$name);
       $command = "svn export -q {$source} {$output_dir} --force";
