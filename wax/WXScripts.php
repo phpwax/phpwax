@@ -111,8 +111,13 @@ class WXScripts {
   
   protected function plugin_install($name, $source = false, $version = false) {
     $output_dir = PLUGIN_DIR.$name;
-    if(!$source) $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
-    elseif($source=="tag" && $version) $source = "svn:/php-wax.com/svn/plugins/".$name."/tags/".$version."/";
+    if(!$source) {
+      $this->add_output("Not specifying a release will install the development version.... These releases may not be stable");
+      $this->add_output("Try using script/plugin install $name release <version>");
+      if(!$this->get_response("Continue installing development version?", "y")) exit;
+      $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
+    }
+    elseif(($source=="tag" || $source=="release") && $version) $source = "svn:/php-wax.com/svn/plugins/".$name."/tags/".$version."/";
     if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
       File::recursively_delete(PLUGIN_DIR.$name);
       $command = "svn export -q {$source} {$output_dir} --force";

@@ -54,7 +54,7 @@ class WXGenerator {
   
   public function end_php_file() {
     $output ="\n"."}"."\n";
-    $output.="?>"."\n";
+    $output.="?>";
     return $output;
   }
   
