@@ -112,8 +112,8 @@ class WXScripts {
   protected function plugin_install($name, $source = false, $version = false) {
     $output_dir = PLUGIN_DIR.$name;
     if(!$source) {
-      echo("Not specifying a release will install the development version.... These releases may not be stable");
-      echo("Try using script/plugin install $name release <version>");
+      echo("Not specifying a release will install the development version.... These releases may not be stable")."\n";
+      echo("Try using script/plugin install $name release <version>")."\n";
       if(!$this->get_response("Continue installing development version?", "y")) exit;
       $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
     }
