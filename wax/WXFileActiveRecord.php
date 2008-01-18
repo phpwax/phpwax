@@ -22,8 +22,10 @@ class WXFileActiveRecord extends WXActiveRecord
   
   public function __construct($param=null) {
     parent::__construct($param);
+		/* changed - now using wax root to allow for relative paths */
     if(!is_dir(WAX_ROOT.$this->file_base)) mkdir(WAX_ROOT.$this->file_base, 0777);
 		if(!is_dir(PUBLIC_DIR.$this->thumb_base )) mkdir(PUBLIC_DIR.$this->thumb_base, 0777);
+		/* changed - now using wax root to allow for relative paths */		
 		if(!is_writable(WAX_ROOT.$this->file_base)) throw new WXPermissionsException("Files directory is not writable");
   }
   
@@ -55,8 +57,9 @@ class WXFileActiveRecord extends WXActiveRecord
   protected function handle_file($file) {
     $up_tmp_name = $file['tmp_name'][$this->file_column];
     $new_name = $file['name'][$this->file_column];
-		$destination = WAX_ROOT.$this->file_base;
-		$this->{$this->path_column} = $destination;
+		$destination = WAX_ROOT.$this->file_base;	
+		/* CHANGED - set it so its just the file_base added to db */
+		$this->{$this->path_column} = $this->file_base;
     $this->{$this->type_column} = $file['type'][$this->file_column];
     $this->{$this->file_column} = File::safe_file_save($destination, $new_name);
 		$destination = $destination.$this->{$this->file_column};
@@ -93,6 +96,7 @@ class WXFileActiveRecord extends WXActiveRecord
 		return false;
 	}
 	
+	/* changed to allow for relavite paths */
 	public function get_root_path() {
     return WAX_ROOT.$this->file_base;
   }
