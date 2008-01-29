@@ -159,7 +159,7 @@ class WXRoute {
 	public function build_url($params) {
 	  if(!$params["controller"]) $url = $this->unset_numeric($this->map_urls());
 	  else $url=array();
-	  return $final;
+	  return $url;
 	}
 	
 	public function build_params($array) {
