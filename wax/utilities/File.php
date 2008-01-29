@@ -75,7 +75,7 @@ class File {
 	  if(!is_readable($path)) return false;
 		$length=filesize($path);
 		header("Content-Type: " . $mime."\n");
-		header("Content-Length: ".$length.'\n');
+		header("Content-Length: ".$length."\n");
 		header("Content-disposition: inline; filename=".basename($path)."\n");
 		ob_end_clean();
 		$handle = fopen($path, "r");
