@@ -92,6 +92,7 @@ class AutoLoader
 	}
 	
 	static public function detect_assets() {
+	  self::register("framework", "File", FRAMEWORK_DIR."utilities/File.php");
 	  if(!isset($_GET["route"])) return false;
 	  $temp_route = $_GET["route"];
 	  $_temp_route= preg_replace("/[^a-zA-Z0-9_\-\.]/", "", $temp_route);
@@ -171,13 +172,13 @@ class AutoLoader
 	}
 	
 	static public function initialise() {	  
+		self::detect_assets();
 	  self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		self::autoregister_plugins();
-		self::detect_assets();
 		WXConfiguration::set_instance();
 		self::detect_environments();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
