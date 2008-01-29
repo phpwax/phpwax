@@ -78,7 +78,11 @@ class File {
 		header("Content-Length: ".$length.'\n');
 		header("Content-disposition: inline; filename=".basename($path)."\n");
 		ob_end_clean();
-		if(!readfile($path)) return false;
+		$handle = fopen($path, "r");
+		  while (!feof($handle)) {
+		    echo fread($handle, 8192);
+		  }
+		fclose($handle);
 		exit;
 	}
 	
