@@ -743,9 +743,9 @@ class WXActiveRecord extends WXValidations implements Iterator
         $args[$i]=$this->pdo->quote($args[$i]);
       }
 			if(count($what)==2) { 
-				$conds=$what[0].'="'.$args[0].'" AND '.$what[1].'="'.$args[1].'"';
+				$conds=$what[0].'='.$args[0].' AND '.$what[1].'='.$args[1];
 			}else{
-				$conds=$what[0].'="'.$args[0].'"';
+				$conds=$what[0].'='.$args[0];
 			}
 			if(is_array($args[1])) {
 				if(isset($args[1]["conditions"])) $conds.=" AND ".$args[1]["conditions"]; 
