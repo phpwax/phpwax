@@ -739,7 +739,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 		  $what[$key]=rtrim(ltrim($val, "_"), "_");
 		}
     if( $args ) {
-      for($i=1; $i<=count($args); $i++) {
+      for($i=0; $i<=count($args); $i++) {
         $args[$i]=$this->pdo->quote($args[$i]);
       }
 			if(count($what)==2) { 
