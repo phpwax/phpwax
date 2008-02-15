@@ -246,7 +246,7 @@ class WXActiveRecord extends WXValidations implements Iterator
 			$err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-		
+		error_log($sql);
 		if($type=="all") {
 		  return $sth;
 		} else {		
@@ -739,13 +739,10 @@ class WXActiveRecord extends WXValidations implements Iterator
 		  $what[$key]=rtrim(ltrim($val, "_"), "_");
 		}
     if( $args ) {
-      for($i=0; $i<count($args); $i++) {
-        $args[$i]=$this->pdo->quote($args[$i]);
-      }
-			if(count($what)==2) { 
-				$conds=$what[0].'='.$args[0].' AND '.$what[1].'='.$args[1];
+      if(count($what)==2) { 
+				$conds=$what[0].'='.$this->pdo->quote($args[0]).' AND '.$what[1].'='.$this->pdo->quote($args[1]);
 			}else{
-				$conds=$what[0].'='.$args[0];
+				$conds=$what[0].'='.$this->pdo->quote($args[0]);
 			}
 			if(is_array($args[1])) {
 				if(isset($args[1]["conditions"])) $conds.=" AND ".$args[1]["conditions"]; 
