@@ -246,7 +246,6 @@ class WXActiveRecord extends WXValidations implements Iterator
 			$err = $sth->errorInfo();
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
     }
-		error_log($sql);
 		if($type=="all") {
 		  return $sth;
 		} else {		
