@@ -91,7 +91,6 @@ abstract class WXControllerBase
 
 	
 	protected function param($param) {
-	  error_log("[PHP-WAX DEPRECATION WARNING] Using this->param() is deprecated USE url('val') instead");
 	  if($param=="id") return $this->route_array[0];
 	  if(isset($this->route_array[$param])) return addslashes($this->route_array[$param]);
 	  if(isset($_GET[$param])) return addslashes($_GET[$param]);

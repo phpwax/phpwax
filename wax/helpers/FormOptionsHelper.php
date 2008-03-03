@@ -195,7 +195,7 @@ class FormOptionsHelper extends FormHelper {
     $output .= javascript_tag("function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + 
       '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value
-      + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value;
+      + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value+':00';
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output.= content_tag("span", $datetime_markup, array("class"=>"multiple_datetime_select"));
