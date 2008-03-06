@@ -5,6 +5,7 @@
  * Stores a chain of filters that can be implemented by any class
  *
  *
+ *
  * @package PhpWax
  **/
  
