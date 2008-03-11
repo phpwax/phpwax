@@ -124,15 +124,24 @@ class FormOptionsHelper extends FormHelper {
 		return $html;
 	}
   
-  public function options_from_collection($collection, $attribute_value, $attribute_text, $blank=null) {
+	/***************************
+	 * added extra '$indent' param 
+	 * - pads out front of string with the value passed
+	 ***************************/
+	public function options_from_collection($collection, $attribute_value, $attribute_text, $blank=null, $indent=false) {
     if(is_array($collection)) {
       if($blank) $array[0]=$blank;
       foreach($collection as $object) {
-        $array[$object->{$attribute_value}] = $object->{$attribute_text};            
+				if($indent && ($object->get_level()>0) ){
+					$tmp = str_pad("", $object->get_level()-1, "*", STR_PAD_LEFT);
+					$tmp = str_replace("*", $indent, $tmp);
+				}
+				else $tmp = "";
+        $array[$object->{$attribute_value}] = $tmp . $object->{$attribute_text};            
       }    
     }
     return $array;
-  }
+  } 
   
   public function date_select($obj, $att, $options = array(), $with_label=true) {
     $this->initialise($obj, $att);
