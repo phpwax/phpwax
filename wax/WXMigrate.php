@@ -260,12 +260,14 @@ class WXMigrate
   }
   
   public function create_column($name, $type="string", $length = "128", $null=true, $default=null) {
+		$name = str_replace(" ", "", $name);
     $this->columns_array[] = array($name, $type, $length, $null, $default);
   }
   
   public function add_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
     try {
       if($type=="integer" && $length>11) $length="11";
+			$name = str_replace(" ", "", $name);
       $column = array($name, $type, $length, $null, $default);
       $sql = "ALTER TABLE `$table` ADD ";
       $sql.= $this->build_column_sql($column);
@@ -279,6 +281,7 @@ class WXMigrate
   
   public function remove_column($table, $name) {
     try {
+			$name = str_replace(" ", "", $name);
       $sql = "ALTER TABLE `$table` DROP `$name`";
       $this->pdo->query($sql);
       $this->output( "...removed column $name from $table"."\n" );
@@ -289,6 +292,7 @@ class WXMigrate
   
   public function change_column($table, $name, $type="string", $length = "128", $null=true, $default=null) {
     try {
+			$name = str_replace(" ", "", $name);	
       $column = array($name, $type, $length, $null, $default);
       $sql = "ALTER TABLE `$table` CHANGE `$name` ";
       $sql.= $this->build_column_sql($column);
