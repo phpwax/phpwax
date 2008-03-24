@@ -4,7 +4,7 @@
  *
  * @package PhpWax
  **/
-class  WaxMysqlAdapter {
+class  WaxMysqlAdapter extends WaxDbAdapter {
   
   
   
