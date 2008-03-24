@@ -65,15 +65,6 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   
   public function count() {return count($this->rowset);}
   
-  public function classic_rowset() {
-    $rows=array();
-    foreach($this->rowset as $row) {
-      $obj = new $this->obj($this->pdo);
-      $obj->set_attributes($row);
-      foreach($this->constraints as $k=>$v) $obj->setConstraint($k, $v);
-      $rows[]=$obj;
-    }
-    return $rows;
-  }
+  
   
 }

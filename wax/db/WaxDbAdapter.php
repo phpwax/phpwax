@@ -11,8 +11,8 @@ abstract class WaxDbAdapter {
   protected $offset;
   protected $limit;
   protected $db;
-  protected $sysDate = 'CURDATE()';
-	protected $sysTimeStamp = 'NOW()';
+  protected $date = false;
+	protected $timestamp = false;
   
   public function __construct($db_settings=array()) {
     if($db_settings['dbtype']=="none") return false;
@@ -32,15 +32,20 @@ abstract class WaxDbAdapter {
   }
 
   public function insert(WaxModel $model) {
-    
+    $stmt = $this->db->prepare("INSERT into `{$model->table}` (".join(",", array_keys($model->row)).") 
+      VALUES (".join(",", $this->bindings($model->row)).")");
+    $result = $stmt->execute($model->row);
   }
   
   public function update(WaxModel $model) {
-    
+    $stmt = $this->db->prepare("UPDATE `{$model->table}` SET ".$this->update_values($model->row)
+      " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
+    return $stmt->execute($model->row);
   }
   
   public function delete(WaxModel $model) {
-    
+    $stmt = $this->db->prepare("DELETE FROM `{$model->table}` WHERE `{$model->primary_key}`={$model->row[$model->primary_key]}");
+    return $stmt->execute();
   }
   
   public function select(WaxModel $model) {
@@ -51,8 +56,27 @@ abstract class WaxDbAdapter {
     
   }
   
+  public function sync_db(WaxModel $model) {
+    
+  }
+  
   public function exec($sql) {
     
+  }
+  
+  protected function bindings($array) {
+		$params = array();
+		foreach( $array as $key=>$value ) {
+			$params[":{$key}"] = $value;
+		}
+    return $params;
+  }
+  
+  protected function update_values($array) {
+    foreach( $array as $key=>$value ) {
+      $expressions[] ="`{$key}`=:{$key}";
+    }
+    return join( ', ', $expressions );
   }
   
   
