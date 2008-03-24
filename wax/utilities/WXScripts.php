@@ -153,8 +153,6 @@ class WXScripts {
     $this->app_setup();
     define("CLI_ENV", true);
     if((!include 'simpletest/unit_tester.php') 
-      || (!include 'simpletest/reporter.php') 
-      || (!include 'simpletest/web_tester.php')
       || (!include 'simpletest/mock_objects.php')
       ) {
       throw new WXDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
