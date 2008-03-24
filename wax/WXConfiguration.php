@@ -44,6 +44,7 @@ class WXConfiguration
 		  if(function_exists("syck_load")) {
 		    print_r(syck_load($config_file));
 		    print_r(Spyc::YAMLLoad($config_file));
+		    exit;
 		    return syck_load($config_file);
 		  }
 		  else return Spyc::YAMLLoad($config_file);
