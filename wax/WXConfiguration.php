@@ -41,7 +41,11 @@ class WXConfiguration
     */
 	static private function load_yaml($config_file) {	
 		if(is_readable($config_file)){
-		  if(function_exists("syck_load")) return syck_load($config_file);
+		  if(function_exists("syck_load")) {
+		    print_r(syck_load($config_file));
+		    print_r(Spyc::YAMLLoad($config_file));
+		    return syck_load($config_file);
+		  }
 		  else return Spyc::YAMLLoad($config_file);
 	  } else {
 		  return false;
