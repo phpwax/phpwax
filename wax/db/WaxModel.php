@@ -11,10 +11,11 @@
 class WaxModel {
   
   static public $adapter;
-  protected $db;
-  public $table = null;
+  protected $db = false;
+  public $table = false;
   public $primary_key="id";
   public $row = array();
+  public $columns = array();
   public $filters = array();
   public $order = false;
   public $limit = false;
@@ -30,7 +31,7 @@ class WaxModel {
  	function __construct($params=null) {
  		$this->db = self::$adapter;
  		$class_name =  get_class($this) ;
- 		if( $class_name != 'WaxModel' ) {
+ 		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = WXInflections::underscore( $class_name );
  		}
  		if($params) {
@@ -43,6 +44,10 @@ class WaxModel {
  	static public function load_adapter($db_settings) {
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
  	  self::$adapter = new $adapter($db_settings);
+ 	}
+ 	
+ 	public function define($column, $type, $options) {
+ 	  $this->columns[$column]=new WaxModelField($type, $options);
  	}
  	
  	
