@@ -146,8 +146,8 @@ class WaxModel {
 		return $this->save();
  	}
  	
- 	public function set_attributes((array)$array) {
-		foreach($array as $k=>$v) {
+ 	public function set_attributes($array) {
+		foreach((array)$array as $k=>$v) {
 		  $this->$k=$v;
 		}
 	  return $this;
