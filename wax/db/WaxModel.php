@@ -14,10 +14,11 @@ class WaxModel {
   protected $db;
   public $table = null;
   public $primary_key="id";
-  protected $row = array();
-  protected $filters = array();
-  protected $limit = false;
-  protected $offset = "0";
+  public $row = array();
+  public $filters = array();
+  public $order = false;
+  public $limit = false;
+  public $offset = "0";
  
 
   /**
@@ -26,25 +27,17 @@ class WaxModel {
    *                          or record id (if integer),
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
- 	function __construct($param=null) {
- 		$this->db = new self::$adapter;
+ 	function __construct($params=null) {
+ 		$this->db = self::$adapter;
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' ) {
  			$this->table = WXInflections::underscore( $class_name );
  		}
-
- 		switch(true) {
- 			case is_numeric($param):			
- 			case is_string($param):
- 				$result = $this->_find( $param );
- 				break;
- 			case strtolower( get_class( $param ) ) == 'pdo':
- 				$this->pdo = $param;
- 			default:
- 				break;
-
+ 		if($params) {
+ 		  $res = $this->filter(array($this->primary_key=>$params))->first();
+ 		  $this->row = $res->row;
  		}
- 		$this->after_setup();
+ 		$this->setup();
  	}
  	
  	static public function load_adapter($db_settings) {
@@ -54,8 +47,11 @@ class WaxModel {
  	
  	
  	public function filter($filters) {
-    foreach((array)$filters as $filter) {
-      $this->filters[]= $this->db->quote($filter);
+ 	  if(is_string($filters)) $this->filters[]=$filters;
+ 	  else {
+      foreach((array)$filters as $key=>$filter) {
+        $this->filters[]= $key."=".$this->db->quote($filter);
+      }
     }
     return $this;
  	}
@@ -127,14 +123,15 @@ class WaxModel {
    * @return WaxRecordset Object
    */
  	public function all() {
- 	  $res = $this->db->select();
+ 	  $res = $this->db->select($this);
  	  return new WaxRecordset($this, $res);
  	}
  	
  	public function first() {
  	  $this->limit = "1";
  	  $row = clone $this;
- 	  $row->set_attributes($this->db->select());
+ 	  $res = $this->db->select($this);
+ 	  $row->set_attributes($res[0]);
  	  return $row;
  	}
 
@@ -173,6 +170,7 @@ class WaxModel {
 
 
  	public function __call( $func, $args ) {
+ 	  return array();
  	  $function = explode("_", $func);
  		if(array_key_exists($function[1], $this->has_many_throughs) && count($function)==2) {
  			return $this->has_many_methods($function[0], $function[1], $args);
@@ -184,7 +182,7 @@ class WaxModel {
    	*  
    	*/	
 
- 		public function after_setup() {}
+ 		public function setup() {}
    	public function before_save() {}
    	public function after_save() {}
    	public function before_update() {}
