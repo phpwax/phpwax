@@ -9,17 +9,14 @@
 
 class WaxRecordset implements Iterator, ArrayAccess, Countable {
 
-  protected $statement = false;
-  public $rowset = false;
+  protected $model = false;
   protected $obj = false;
   protected $key = 0;
   protected $constraints = array();
   
-  public function __construct($rowset, $pdo, $object, $constraints=array()) {
+  public function __construct(WaxModel $model, $rowset) {
     $this->rowset = $rowset;
-    $this->pdo = $pdo;
-    $this->obj = $object;
-    $this->constraints = $constraints;
+    $this->model = $model;
   }
   
   public function next() {
@@ -49,10 +46,8 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function offsetGet($offset) {
-    $obj = new $this->obj($this->pdo);
+    $obj = clone $this->model;
     $obj->set_attributes($this->rowset[$offset]);
-    foreach($this->constraints as $k=>$v) $obj->setConstraint($k, $v);
-    return $obj;
   }
   
   public function offsetSet($offset, $value) {
@@ -65,6 +60,8 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   
   public function count() {return count($this->rowset);}
   
-  
+  public function __call($method, $args) {
+    return $this->model->{$method}($args);
+  }
   
 }

@@ -6,10 +6,11 @@
  **/
 abstract class WaxDbAdapter {
   
-  protected $columns;
-  protected $filters;
-  protected $offset;
-  protected $limit;
+  protected $columns = array();
+  protected $distinct = false;
+  protected $filters = array();
+  protected $offset = "0";
+  protected $limit = false;;
   protected $db;
   protected $date = false;
 	protected $timestamp = false;
@@ -49,7 +50,14 @@ abstract class WaxDbAdapter {
   }
   
   public function select(WaxModel $model) {
-    
+    $sql .= "SELECT ";
+    if(count($this->columns)) $sql.= join(",", $this->columns) ;
+    else $sql.= "*";
+    $sql.= " FROM `{$this->table}`";
+    if(count($filters)) $sql.= "WHERE ".join(" AND ", $this->filters);
+    if($this->limit) $sql.= " LIMIT {$this->offset}, {$this->limit}";
+    $stmt = $this->db->prepare($sql);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
   }
   
   public function count(WaxModel $model) {

@@ -78,6 +78,7 @@ class WXApplication {
   		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
       	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
       }
+      WaxModel::load_adapter($db);
     }
   }
 	

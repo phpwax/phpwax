@@ -47,21 +47,15 @@ class WaxModel {
  		$this->after_setup();
  	}
  	
- 	public function all() {
- 	  
- 	  return $this;
+ 	static public function load_adapter($db_settings) {
+ 	  $adapter = "Wax".ucfirst($db_settings["db_type"])."Adapter";
+ 	  self::$adapter = new $adapter($db_settings);
  	}
  	
- 	public function first() {
- 	  $this->limit = "1";
- 	  return $this;
- 	}
  	
- 	public function filter($filter) {
-    if(is_string($filter)) $filters = preg_split("/\s?(&|AND)\s?/i",$filter);
-    if(is_array($filter)) $filters = $filter;
-    foreach($filters as $filter) {
-      $this->filters[]=$filter;
+ 	public function filter($filters) {
+    foreach((array)$filters as $filter) {
+      $this->filters[]= $this->db->quote($filter);
     }
     return $this;
  	}
@@ -74,7 +68,7 @@ class WaxModel {
       *  @return mixed           property value
       */
  	public function __get( $name ) {
-    if( array_key_exists( $name, $this->row ) return $this->row[$name];
+    if( array_key_exists( $name, $this->row )) return $this->row[$name];
     if(method_exists($this, $name)) return $this->{$name}();
   }
 
@@ -107,7 +101,7 @@ class WaxModel {
      *  @return boolean
      */
  	public function delete() {
- 	  this->before_delete();
+ 	  $this->before_delete();
  	  $res = $this->db->delete($this);
     $this->after_delete();
     return $res;
@@ -128,11 +122,36 @@ class WaxModel {
     return $res;
   }
 
+  /**
+   * Select and return data
+   * @return WaxRecordset Object
+   */
+ 	public function all() {
+ 	  $res = $this->db->select();
+ 	  return new WaxRecordset($this, $res);
+ 	}
+ 	
+ 	public function first() {
+ 	  $this->limit = "1";
+ 	  $row = clone $this;
+ 	  $row->set_attributes($this->db->select());
+ 	  return $row;
+ 	}
 
 
  	public function update_attributes($array) {
-    
+    foreach($array as $k=>$v) {
+      $this->$k=$v;
+		}
+		return $this->save();
  	}
+ 	
+ 	public function set_attributes((array)$array) {
+		foreach($array as $k=>$v) {
+		  $this->$k=$v;
+		}
+	  return $this;
+	}
 
 
  	public function is_posted() {
