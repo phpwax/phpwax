@@ -54,8 +54,7 @@ abstract class WaxDbAdapter {
     $sql.= " FROM `{$model->table}`";
     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);
     if($model->order) {
-      if(substr($model->order, 1)=="-") $direction
-      $sql.= "ORDER BY {}"
+      $sql.= "ORDER BY {$model->order}";
     }
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
