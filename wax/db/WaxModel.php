@@ -46,7 +46,7 @@ class WaxModel {
  	  self::$adapter = new $adapter($db_settings);
  	}
  	
- 	public function define($column, $type, $options) {
+ 	public function define($column, $type, $options=array()) {
  	  $this->columns[$column]=new WaxModelField($type, $options);
  	}
  	
