@@ -24,7 +24,7 @@ class WXSearch {
 	  } 
 	}
 	
-	public function get_results() {
+	public function get_results($limit=false;) {
 	  $setups=array();
 	  foreach(self::$search_array as $search) {
 	    if(is_array($search['field'])) {
@@ -51,6 +51,7 @@ class WXSearch {
 	      if($search['order'] != "") {
 	        $query .= "ORDER BY ".$search['order'];
         }
+        if($limit) $query .=" LIMIT {$limit}";
 	    }	
 	    $model = WXInflections::camelize($search['table'], true);
 	    $table = new $model;
