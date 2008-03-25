@@ -24,7 +24,7 @@ class WXSearch {
 	  } 
 	}
 	
-	public function get_results($limit=false;) {
+	public function get_results($limit=false) {
 	  $setups=array();
 	  foreach(self::$search_array as $search) {
 	    if(is_array($search['field'])) {
