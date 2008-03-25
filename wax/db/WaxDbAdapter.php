@@ -53,14 +53,13 @@ abstract class WaxDbAdapter {
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);
-    if($model->order) $sql
+    if($model->order) {
+      if(substr($model->order, 1)=="-") $direction
+      $sql.= "ORDER BY {}"
+    }
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
-  
-  public function count(WaxModel $model) {
-    
   }
   
   public function sync_db(WaxModel $model) {
@@ -71,7 +70,13 @@ abstract class WaxDbAdapter {
     
   }
   
-  public function add_column()
+  public function add_column() {
+    
+  }
+  
+  public function alter_column() {
+    
+  }
   
   public function exec($pdo_statement, $bindings = array()) {
     try {
