@@ -63,8 +63,7 @@ abstract class WaxDbAdapter {
   
   public function syncdb(WaxModel $model) {
     // First check the table for this model exists
-    $stmt = $this->db->prepare("SHOW TABLES");
-    $tables = $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
+    $tables = $this->view_table($model);
     $exists = false;
     foreach($tables as $table) {
       if($table[0]== $model->table) $exists=true;
@@ -72,10 +71,29 @@ abstract class WaxDbAdapter {
     if(!$exists) $this->create_table($model);
     
     // Then fetch the existing columns from the database
-    $stmt = $this->db->prepare("SHOW COLUMNS FROM `{$model->table}`");
-    $stmt = $this->exec($stmt);
-    $db_cols = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $db_cols = $this->view_columns($model);
     print_r($db_cols); exit;
+    
+    // Map definitions to database - create or alter if required
+    foreach($model->columns as $model_col=>$model_col_setup) {
+      $model_field = $model->get_col($model_col);
+      $exists = false;
+      $differs = false;
+      foreach($db_cols as $db_col) {
+        
+      }
+    }
+  }
+  
+  public function view_table(WaxModel $model) {
+    $stmt = $this->db->prepare("SHOW TABLES");
+    return $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
+  }
+  
+  public function view_columns(WaxModel $model) {
+    $stmt = $this->db->prepare("SHOW FULL COLUMNS FROM `{$model->table}`");
+    $stmt = $this->exec($stmt);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
   public function create_table(WaxModel $model) {
