@@ -95,9 +95,9 @@ abstract class WaxDbAdapter {
       echo "Checking {$model_col} <br />";
       $model_field = $model->get_col($model_col);
       $differs = false;
-      $exists = false;
+      $col_exists = false;
       while(list($key, $col) = each($db_cols)) {
-        if($col["COLUMN_NAME"]==$model_col) $exists = true;
+        if($col["COLUMN_NAME"]==$model_col) $col_exists = true;
       }
       if(!$exists) $this->add_column($model_field, $model);
     }
