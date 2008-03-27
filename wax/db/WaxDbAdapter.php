@@ -64,7 +64,7 @@ abstract class WaxDbAdapter {
   public function syncdb(WaxModel $model) {
     // First check the table for this model exists
     $stmt = $this->db->prepare("SHOW TABLES");
-    $tables = $this->exec($stmt)->fetchAll(PDO::FETCH_ASSOC);
+    $tables = $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
     print_r($tables); exit;
     // Then fetch the existing columns from the database
     $stmt = $this->db->prepare("SHOW COLUMNS FROM `{$model->table}`");
