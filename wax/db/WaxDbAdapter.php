@@ -123,7 +123,7 @@ abstract class WaxDbAdapter {
   
   public function add_column(WaxModelField $field, WaxModel $model) {
     $sql = "ALTER TABLE `$model->table` ADD ";
-    $sql.= $field->column;
+    $sql.= $field->field;
     if($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
