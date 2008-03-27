@@ -62,7 +62,7 @@ abstract class WaxDbAdapter {
   }
   
   public function syncdb(WaxModel $model) {
-    $sql = "SHOW TABLES FROM `{$model->table}`";
+    $sql = "SHOW COLUMNS FROM `{$model->table}`";
     $stmt = $this->db->prepare($sql);
     print_r($stmt->getColumnMeta(1)); exit;
   }
