@@ -86,7 +86,7 @@ abstract class WaxDbAdapter {
     foreach($tables as $table) {
       if($table[0]== $model->table) $exists=true;
     }
-    if(!$exists) $this->create_table($model);
+    if(!$exists) $output .= $this->create_table($model)."\n";
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
@@ -99,8 +99,9 @@ abstract class WaxDbAdapter {
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) $col_exists = true;
       }
-      if(!$exists) $this->add_column($model_field, $model);
+      if(!$exists) $output .= $this->add_column($model_field, $model)."\n";
     }
+    return $output;
   }
   
   public function view_table(WaxModel $model) {
@@ -119,7 +120,7 @@ abstract class WaxDbAdapter {
   public function create_table(WaxModel $model) {
     $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY)";
     $stmt = $this->db->prepare($sql);
-    return $this->exec($stmt);
+    return "Created table {$model->table}";
   }
   
   public function add_column(WaxModelField $field, WaxModel $model) {
@@ -131,7 +132,7 @@ abstract class WaxDbAdapter {
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
     $stmt = $this->db->prepare($sql);
-    return $this->exec($stmt);
+    return "Added column {$field->field} to {$model->table}";
   }
   
   public function alter_column() {
