@@ -62,10 +62,14 @@ abstract class WaxDbAdapter {
   }
   
   public function syncdb(WaxModel $model) {
-    $sql = "SHOW COLUMNS FROM `{$model->table}`";
-    $stmt = $this->db->prepare($sql);
+    // First check the table for this model exists
+    $stmt = $this->db->prepare("SHOW TABLES");
+    $tables = $this->exec($stmt)->fetchAll(PDO::FETCH_ASSOC);
+    print_r($tables); exit;
+    // Then fetch the existing columns from the database
+    $stmt = $this->db->prepare("SHOW COLUMNS FROM `{$model->table}`");
     $stmt = $this->exec($stmt);
-    print_r($stmt->fetchAll(PDO::FETCH_ASSOC)); exit;
+    $db_cols = $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
   public function create_table() {
