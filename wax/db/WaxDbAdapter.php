@@ -64,7 +64,7 @@ abstract class WaxDbAdapter {
   public function syncdb(WaxModel $model) {
     $sql = "SHOW TABLES FROM `{$model->table}`";
     $stmt = $this->db->prepare($sql);
-    print_r($stmt->getColumnMeta());
+    print_r($stmt->getColumnMeta("id"));
   }
   
   public function create_table() {
