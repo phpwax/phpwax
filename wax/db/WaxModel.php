@@ -142,6 +142,11 @@ class WaxModel {
     return $res;
   }
   
+  public function syncdb() {
+    $res = $this->db->syncdb($this);
+    return $res;
+  }
+  
   /**
    * Create function
    *

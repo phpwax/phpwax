@@ -61,7 +61,7 @@ abstract class WaxDbAdapter {
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
-  public function sync_db(WaxModel $model) {
+  public function syncdb(WaxModel $model) {
     $sql = "SHOW TABLES FROM `{$model->table}`";
     $stmt = $this->db->prepare($sql);
     print_r($stmt->getColumnMeta());
