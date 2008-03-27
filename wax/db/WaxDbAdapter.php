@@ -90,7 +90,7 @@ abstract class WaxDbAdapter {
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
-    
+    print_r($db_cols); exit;
     // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
