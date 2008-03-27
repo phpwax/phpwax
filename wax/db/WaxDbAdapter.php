@@ -14,8 +14,10 @@ abstract class WaxDbAdapter {
   protected $db;
   protected $date = false;
 	protected $timestamp = false;
+	protected $db_settings;
   
   public function __construct($db_settings=array()) {
+    $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
     if(!$db_settings['dbtype']) $db['dbtype']="mysql";
     if(!$db_settings['host']) $db['host']="localhost";
@@ -91,7 +93,8 @@ abstract class WaxDbAdapter {
   }
   
   public function view_columns(WaxModel $model) {
-    $stmt = $this->db->prepare("SHOW FULL COLUMNS FROM `{$model->table}`");
+    $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =`{$this->db_settings['dbname']}` 
+      AND TABLE_NAME = `{$model->table}`");
     $stmt = $this->exec($stmt);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
