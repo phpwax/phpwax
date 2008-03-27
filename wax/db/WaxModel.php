@@ -20,6 +20,7 @@ class WaxModel {
   public $order = false;
   public $limit = false;
   public $offset = "0";
+  public $errors = array();
  
 
   /**
@@ -47,9 +48,12 @@ class WaxModel {
  	}
  	
  	public function define($column, $type, $options=array()) {
- 	  $this->columns[$column]=new WaxModelField($type, $options);
+ 	  $this->columns[$column]=new $type($column, $this, $options);
  	}
  	
+ 	public function add_error($field, $message) {
+ 	  $this->errors[$field][]=$message;
+ 	}
  	
  	public function filter($filters) {
  	  if(is_string($filters)) $this->filters[]=$filters;
