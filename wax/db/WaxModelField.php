@@ -23,6 +23,8 @@ class WaxModelField {
   public $widget="CharField";
   protected $model = false;
   
+  public $errors = false;
+  
   public $messages = array(
     "short"=>       "%s needs to be at least %d characters",
     "long"=>        "%s needs to be shorter than %d characters",
@@ -38,38 +40,50 @@ class WaxModelField {
     $this->model = $model;
     $this->field = $column;
     foreach($options as $option=>$val) $this->{$option} = $val;
+    $this->setup();
   }
+  
   
   public function setup() {}
   public function validate() {}
   public function output() {}
   
+  protected function add_error($field, $message) {
+ 	  $this->errors[]=$message;
+ 	}
+ 	
+ 	
+ 	/**
+ 	 *  Default Validation Methods
+ 	 */
+  
   protected function valid_length() {
     if(strlen($this->model[$this->column])< $this->minlength) {
-      $this->model->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
+      $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
     }
     if(strlen($this->model[$this->column])> $this->maxlength) {
-      $this->model->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
+      $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
   
   protected function valid_format($name, $pattern) {
     if(!preg_match($pattern, $this->model[$this->column])) {
-      $this->model->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
+      $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
 		}
   }
   
   protected function valid_required() {
     if(strlen($this->model[$this->column])< 1) {
-      $this->model->add_error($this->column, sprintf($this->messages["required"], $this->label));
+      $this->add_error($this->column, sprintf($this->messages["required"], $this->label));
     }
   }
   
   protected function valid_confirm($confirm_field, $confirm_name) {
     if($this->model[$this->column] != $this->model[$confirm_field]) {
-        $this->model->add_error($this->column, sprintf($this->messages["confirm"], $this->label, $confirm_name));
+      $this->add_error($this->column, sprintf($this->messages["confirm"], $this->label, $confirm_name));
     }
   }
+  
 
 } // END class 
 

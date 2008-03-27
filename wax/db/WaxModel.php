@@ -48,7 +48,7 @@ class WaxModel {
  	}
  	
  	public function define($column, $type, $options=array()) {
- 	  $this->columns[$column]=new $type($column, $this, $options);
+ 	  $this->columns[$column]=array($type, $options);
  	}
  	
  	public function add_error($field, $message) {
@@ -63,6 +63,14 @@ class WaxModel {
       }
     }
     return $this;
+ 	}
+ 	
+ 	public function validate() {
+ 	  foreach($this->columns as $column=>$setup) {
+ 	    $field = new $setup[0]($column, $this, $setup[1]);
+ 	    $field->validate();
+ 	    $this->errors[$column] = $field->errors;
+ 	  }
  	}
 
   
