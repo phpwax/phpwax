@@ -15,6 +15,21 @@ abstract class WaxDbAdapter {
   protected $date = false;
 	protected $timestamp = false;
 	protected $db_settings;
+	protected $data_types = array(
+      'BooleanField'=>      'bool',
+      'CharField'=>         'varchar',
+      'DateField'=>         'date',
+      'DateTimeField'=>     'datetime',
+      'DecimalField'=>      'decimal',
+      'FileField'=>         'varchar',
+      'FilePathField'=>     'varchar',
+      'ImageField'=>        'varchar',
+      'IntegerField'=>      'int',
+      'IPAddressField'=>    'varchar',
+      'SlugField'=>         'varchar',
+      'TextField'=>         'longtext',
+      'TimeField'=>         'time'
+  );
   
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
@@ -74,16 +89,16 @@ abstract class WaxDbAdapter {
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
-    print_r($db_cols); exit;
     
     // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       $exists = false;
       $differs = false;
-      foreach($db_cols as $db_col) {
-        
-      }
+      while($col = $db_cols) {
+        if($col["column_name"]==$model_col) $exists = true;
+      } 
+      if($exists) echo "$model_col exists // ";
     }
   }
   
