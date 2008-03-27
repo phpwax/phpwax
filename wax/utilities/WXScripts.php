@@ -192,6 +192,16 @@ class WXScripts {
     }
   }
   
+  public function syncdb($argv) {
+    $this->app_setup();
+    foreach(get_declared_classes() as $class) {
+      if(is_subclass_of($class, "WaxModel")) {
+        $class = new $class;
+        $class->syncdb();
+      }
+    }
+  }
+  
   public function migrate($argv) {
     if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
       define("ENV", $argv[1]);

@@ -130,7 +130,8 @@ abstract class WaxDbAdapter {
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
-    die( $sql);
+    $stmt = $this->db->prepare($sql);
+    return $this->exec($stmt);
   }
   
   public function alter_column() {
