@@ -97,9 +97,8 @@ abstract class WaxDbAdapter {
       $differs = false;
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) $exists = true;
-      } 
-      if($exists) echo "$model_col exists // ";
-      else echo "$model_col does not exist //";
+      }
+      if(!$exists) $this->add_column($model_field);
     }
   }
   
@@ -122,8 +121,14 @@ abstract class WaxDbAdapter {
     return $this->exec($stmt);
   }
   
-  public function add_column() {
-    
+  public function add_column(WaxModelField $field) {
+    $sql = "ALTER TABLE `$table` ADD ";
+    $sql.= $field->column;
+    if($field->maxlength) $sql.= "({$field->maxlength}) ";
+    if($field->null) $sql.=" NULL";
+    else $sql.=" NOT NULL";
+    if($field->default) $sql.= " DEFAULT '{$field->default}'";
+    echo $sql;
   }
   
   public function alter_column() {
