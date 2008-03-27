@@ -65,15 +65,23 @@ abstract class WaxDbAdapter {
     // First check the table for this model exists
     $stmt = $this->db->prepare("SHOW TABLES");
     $tables = $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
-    print_r($tables); exit;
+    $exists = false;
+    foreach($tables as $table) {
+      if($table[0]== $model->table) $exists=true;
+    }
+    if(!$exists) $this->create_table($model);
+    
     // Then fetch the existing columns from the database
     $stmt = $this->db->prepare("SHOW COLUMNS FROM `{$model->table}`");
     $stmt = $this->exec($stmt);
     $db_cols = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    print_r($db_cols); exit;
   }
   
-  public function create_table() {
-    
+  public function create_table(WaxModel $model) {
+    $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY)";
+    $stmt = $this->db->prepare($sql);
+    return $this->exec($stmt);
   }
   
   public function add_column() {
