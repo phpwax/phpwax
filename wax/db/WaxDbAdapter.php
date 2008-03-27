@@ -96,8 +96,7 @@ abstract class WaxDbAdapter {
       $exists = false;
       $differs = false;
       while(list($key, $col) = each($db_cols)) {
-        print_r($col); exit;
-        if($col["column_name"]==$model_col) $exists = true;
+        if($col["COLUMN_NAME"]==$model_col) $exists = true;
       } 
       if($exists) echo "$model_col exists // ";
       else echo "$model_col does not exist //";
