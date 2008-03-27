@@ -92,11 +92,11 @@ abstract class WaxDbAdapter {
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
+      echo "Checking {$model_col} <br />";
       $model_field = $model->get_col($model_col);
       $exists = false;
       $differs = false;
       while(list($key, $col) = each($db_cols)) {
-        echo($col["COLUMN_NAME"]);
         if($col["COLUMN_NAME"]==$model_col) $exists = true;
       }
       if(!$exists) $this->add_column($model_field, $model);
