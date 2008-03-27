@@ -21,6 +21,7 @@ abstract class WaxDbAdapter {
       'DateField'=>         'date',
       'DateTimeField'=>     'datetime',
       'DecimalField'=>      'decimal',
+      'EmailField'=>        'varchar',
       'FileField'=>         'varchar',
       'FilePathField'=>     'varchar',
       'ImageField'=>        'varchar',
