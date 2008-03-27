@@ -96,7 +96,6 @@ abstract class WaxDbAdapter {
     $db = $this->db_settings["database"];
     $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =`{$db}` 
       AND TABLE_NAME = `{$model->table}`");
-    print_r($stmt); exit;
     $stmt = $this->exec($stmt);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
