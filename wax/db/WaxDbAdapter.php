@@ -98,7 +98,7 @@ abstract class WaxDbAdapter {
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) $exists = true;
       }
-      if(!$exists) $this->add_column($model_field);
+      if(!$exists) $this->add_column($model_field, $model);
     }
   }
   
@@ -121,7 +121,7 @@ abstract class WaxDbAdapter {
     return $this->exec($stmt);
   }
   
-  public function add_column(WaxModelField $field) {
+  public function add_column(WaxModelField $field, WaxModel $model) {
     $sql = "ALTER TABLE `$table` ADD ";
     $sql.= $field->column;
     if($field->maxlength) $sql.= "({$field->maxlength}) ";
