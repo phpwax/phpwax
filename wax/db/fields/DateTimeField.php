@@ -1,15 +1,15 @@
 <?php
 
 /**
- * WaxModelFields class
+ * EmailField class
  *
  * @package PHP-Wax
  **/
-class CharField extends WaxModelField {
+class DateTimeField extends WaxModelField {
   
   public $null = false;
   public $default = false;
-  public $maxlength = "255";
+  public $maxlength = "100";
   
   public function setup() {
     
@@ -18,6 +18,7 @@ class CharField extends WaxModelField {
   public function validate() {
     $this->valid_length();
  	  $this->valid_required();
+    $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
   }
 
 

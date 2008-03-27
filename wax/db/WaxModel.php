@@ -80,9 +80,15 @@ class WaxModel {
       *  @param  string  name    property name
       *  @return mixed           property value
       */
- 	public function __get( $name ) {
-    if( array_key_exists( $name, $this->row )) return $this->row[$name];
-    if(method_exists($this, $name)) return $this->{$name}();
+ 	public function __get($name) {
+    if(array_key_exists($name, $this->columns)) {
+      if($this->columns[$name]=="ForeignKey") {
+        $field = new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
+        return $field->get();
+      }
+      return $this->row[$name];
+    }
+    elseif(method_exists($this, $name)) return $this->{$name}();
   }
 
 
@@ -102,6 +108,7 @@ class WaxModel {
       */
  	public function save() {
  	  $this->before_save();
+ 	  if(!$this->validate) return false;
  	  if($this->row[$this->primary_key]) $res = $this->update();
  	  else $res = $this->insert();
  		$this->after_save();
@@ -134,9 +141,21 @@ class WaxModel {
     $this->after_insert();
     return $res;
   }
+  
+  /**
+   * Create function
+   *
+   * @return WaxModel Object
+   **/
+  public function create($attributes = array()) {
+ 		$class_name =  get_class($this);
+ 		$row = new $class_name();
+ 		$row->update_attributes($attributes);
+ 		return $row;
+  }
 
   /**
-   * Select and return data
+   * Select and return dataset
    * @return WaxRecordset Object
    */
  	public function all() {
@@ -144,6 +163,10 @@ class WaxModel {
  	  return new WaxRecordset($this, $res);
  	}
  	
+ 	/**
+   * Select and return single row data
+   * @return WaxModel Object
+   */
  	public function first() {
  	  $this->limit = "1";
  	  $row = clone $this;

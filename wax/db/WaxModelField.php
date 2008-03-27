@@ -45,7 +45,7 @@ class WaxModelField {
   
   
   public function setup() {}
-  public function validate() {}
+  public function validations() {}
   public function output() {}
   
   protected function add_error($field, $message) {
@@ -56,7 +56,7 @@ class WaxModelField {
  	/**
  	 *  Default Validation Methods
  	 */
-  
+ 	 
   protected function valid_length() {
     if(strlen($this->model[$this->column])< $this->minlength) {
       $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
@@ -73,7 +73,7 @@ class WaxModelField {
   }
   
   protected function valid_required() {
-    if(strlen($this->model[$this->column])< 1) {
+    if(!$this->blank && strlen($this->model[$this->column])< 1) {
       $this->add_error($this->column, sprintf($this->messages["required"], $this->label));
     }
   }
