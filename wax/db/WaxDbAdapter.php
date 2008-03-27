@@ -93,7 +93,8 @@ abstract class WaxDbAdapter {
   }
   
   public function view_columns(WaxModel $model) {
-    $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =`{$this->db_settings['dbname']}` 
+    $db = $this->db_settings["dbname"];
+    $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA =`{$db}` 
       AND TABLE_NAME = `{$model->table}`");
     print_r($stmt); exit;
     $stmt = $this->exec($stmt);
