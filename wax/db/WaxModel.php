@@ -111,7 +111,7 @@ class WaxModel {
       */
  	public function save() {
  	  $this->before_save();
- 	  if(!$this->validate) throw new Exception;
+ 	  if(!$this->validate) throw new WXUserException(join("\n", $this->errors));
  	  if($this->row[$this->primary_key]) $res = $this->update();
  	  else $res = $this->insert();
  		$this->after_save();
