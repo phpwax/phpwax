@@ -24,6 +24,7 @@ abstract class WaxDbAdapter {
       'EmailField'=>        'varchar',
       'FileField'=>         'varchar',
       'FilePathField'=>     'varchar',
+      'ForeignKey'=>        'int',
       'ImageField'=>        'varchar',
       'IntegerField'=>      'int',
       'IPAddressField'=>    'varchar',
