@@ -101,6 +101,7 @@ abstract class WaxDbAdapter {
         elseif($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
         elseif($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
         elseif($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
+        if($col["IS_NULLABLE"]) error_log($model_field->field." is nullable");
       }
       if(!$exists) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
