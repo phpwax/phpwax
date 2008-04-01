@@ -194,6 +194,7 @@ class WXScripts {
   
   public function syncdb($argv) {
     $this->app_setup();
+    die(MODEL_DIR);
     Autoloader::include_dir(MODEL_DIR, true);
     foreach(get_declared_classes() as $class) {
       $this->add_output("Reading $class");
