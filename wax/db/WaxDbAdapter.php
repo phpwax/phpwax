@@ -142,7 +142,7 @@ abstract class WaxDbAdapter {
   }
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
-    $sql.= "`{$field->field}`";
+    $sql.= "`{$field->col_name}`";
     $sql.=" ".$this->data_types[get_class($field)];
     if($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
