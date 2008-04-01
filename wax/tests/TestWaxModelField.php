@@ -43,8 +43,7 @@ class TestWaxModelField extends WXTestCase {
     
     public function test_validate_length() {
       $this->model->define("username", "CharField", array("maxlength"=>"3"));
-      $res = new Example();
-      $res->set_attributes($this->get_fixture("user1"));
+      $res = $this->model->set_attributes($this->get_fixture("user1"));
       $this->assertFalse($res->validate());
       $this->model->define("username", "CharField", array("maxlength"=>"6"));
       $this->assertTrue($res->validate());
