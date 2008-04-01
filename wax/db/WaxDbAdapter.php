@@ -152,7 +152,6 @@ abstract class WaxDbAdapter {
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
-    die($sql);
     $this->exec($stmt);
     return "Updated column {$field->field} in {$model->table}";
   }
