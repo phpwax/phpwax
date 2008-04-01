@@ -99,11 +99,8 @@ class WaxModel {
       */
  	public function __get($name) {
     if(array_key_exists($name, $this->columns)) {
-      if($this->columns[$name]=="ForeignKey") {
-        $field = new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
-        return $field->get();
-      }
-      return $this->row[$name];
+      $field = $this->get_col($name);
+      return $field->get();
     }
     elseif(method_exists($this, $name)) return $this->{$name}();
   }

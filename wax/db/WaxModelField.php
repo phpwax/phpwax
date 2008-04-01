@@ -43,6 +43,10 @@ class WaxModelField {
     $this->setup();
   }
   
+  public function get() {
+    return $this->model->row[$this->field];
+  }
+  
   
   public function setup() {}
   public function validate() {}
