@@ -31,6 +31,7 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user1"));
       $res = $this->model->first();
       $this->assertIsA($res, "WaxModel");
+      $this->assertEqual($res->username, "test1");
     }
     
     
