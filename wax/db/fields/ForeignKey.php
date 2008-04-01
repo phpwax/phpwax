@@ -10,9 +10,9 @@ class ForeignKey extends WaxModelField {
   public $null = false;
   public $default = false;
   public $maxlength = "11";
-  public $table;
+  public $table = false;
   public $col_name = false;
-  public $model_name;
+  public $model_name = false;
   
   
   public function setup() {
