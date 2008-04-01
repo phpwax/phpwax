@@ -43,5 +43,11 @@ class TestWaxModel extends WXTestCase {
       $this->assertEqual($res->username, "test1");
     }
     
+    public function test_delete() {
+      $res = $this->model->all();
+      $res->delete();
+      
+    }
+    
 }
 

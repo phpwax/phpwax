@@ -61,22 +61,28 @@ abstract class WaxDbAdapter {
   }
   
   public function delete(WaxModel $model) {
-    $stmt = $this->db->prepare("DELETE FROM `{$model->table}` WHERE `{$model->primary_key}`=:{$model->primary_key}");
+    $stmt = $this->db->prepare("DELETE FROM ".$this->query_sql($model)."");
+    print_r($stmt); exit;
     return $this->exec($stmt, $model->row);
   }
   
   public function select(WaxModel $model) {
     $sql .= "SELECT ";
-    if(count($this->columns)) $sql.= join(",", $this->columns) ;
-    else $sql.= "*";
-    $sql.= " FROM `{$model->table}`";
-    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);
+    $sql .= $this->query_sql($model);
     if($model->order) {
       $sql.= "ORDER BY {$model->order}";
     }
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+  
+  public function query_sql(WaxModel $model) {
+    if(count($this->columns)) $sql.= join(",", $this->columns) ;
+    else $sql.= "*";
+    $sql.= " FROM `{$model->table}`";
+    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);
+    return $sql;
   }
   
   public function syncdb(WaxModel $model) {
