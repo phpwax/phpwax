@@ -73,6 +73,8 @@ class WaxModel {
  	      $this->errors[$column] = $field->errors;
       }
  	  }
+ 	  if(count($this->errors)) return false;
+ 	  return true;
  	}
 
   public function get_col($name) {
