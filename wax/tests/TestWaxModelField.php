@@ -1,14 +1,14 @@
 <?php
-class ExampleModel extends WaxModel {
+class Example extends WaxModel {
   public function setup() {
     $this->define("username", "CharField", array("maxlength"=>40));
     $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
     $this->define("email", "EmailField", array("blank"=>false));
-    $this->define("example_owner_model", "ForeignKey");
+    $this->define("example_owner", "ForeignKey");
   }
 }
 
-class ExampleOwnerModel extends WaxModel {
+class ExampleOwner extends WaxModel {
   
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
@@ -17,8 +17,8 @@ class ExampleOwnerModel extends WaxModel {
 
 class TestWaxModelField extends WXTestCase {
     public function setUp() {
-      $this->model = new ExampleModel();
-      $this->model_owner = new ExampleOwnerModel();
+      $this->model = new Example();
+      $this->model_owner = new ExampleOwner();
       $this->model->syncdb();
       $this->model_owner->syncdb();
     }
