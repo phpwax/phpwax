@@ -24,6 +24,7 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function tearDown() {
+      $this->model->clear()->delete();
     }
     
     public function get_fixture($type) {
@@ -35,6 +36,10 @@ class TestWaxModelField extends WXTestCase {
       return $fixtures[$type];
     }
     
+    public function test_get_field() {
+      $res = $this->model->create($this->get_fixture("user1"));
+      $this->assertEqual($res->username, "test1");
+    }
 
     
 }
