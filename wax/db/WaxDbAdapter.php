@@ -95,13 +95,19 @@ abstract class WaxDbAdapter {
       $model_field = $model->get_col($model_col);
       $differs = false;
       $col_exists = false;
+      $col_changed = false;
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) $col_exists = true;
+        if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = true;
+        if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = true;
+        if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = true;
       }
       if(!$exists) $output .= $this->add_column($model_field, $model)."\n";
+      if($col_changed) $output .= $this->alter_column($model_field, $model);
     }
     return $output;
   }
+  
   
   public function view_table(WaxModel $model) {
     $stmt = $this->db->prepare("SHOW TABLES");
@@ -123,21 +129,30 @@ abstract class WaxDbAdapter {
     return "Created table {$model->table}";
   }
   
-  public function add_column(WaxModelField $field, WaxModel $model) {
-    $sql = "ALTER TABLE `$model->table` ADD ";
+  public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->field}`";
     $sql.=" ".$this->data_types[get_class($field)];
     if($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
+    return $sql;
+  }
+  
+  public function add_column(WaxModelField $field, WaxModel $model) {
+    $sql = "ALTER TABLE `$model->table` ADD ";
+    $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
     return "Added column {$field->field} to {$model->table}";
   }
   
   public function alter_column() {
-    
+    $sql = "ALTER TABLE `$model->table` CHANGE ";
+    $sql.= $this->column_sql($field, $model);
+    $stmt = $this->db->prepare($sql);
+    $this->exec($stmt);
+    return "Updated column {$field->field} in {$model->table}";
   }
   
   public function exec($pdo_statement, $bindings = array()) {
