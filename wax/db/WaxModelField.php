@@ -58,10 +58,10 @@ class WaxModelField {
  	 */
  	 
   protected function valid_length() {
-    if($this->maxlength && strlen($this->model->{$this->field})< $this->minlength) {
+    if($this->minlength && strlen($this->model->{$this->field}) < $this->minlength) {
       $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
     }
-    if($this->minlength && strlen($this->model->{$this->field})> $this->maxlength) {
+    if($this->maxlength && strlen($this->model->{$this->field})> $this->maxlength) {
       $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
