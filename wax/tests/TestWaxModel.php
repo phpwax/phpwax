@@ -60,7 +60,7 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user1"))->update_attributes(array("username"=>"altered"));
       $res = $this->model->filter(array("username"=>"altered"))->all();
       $this->assertEqual($res->count(), "1");
-      $this->model->all()->delete();
+      $this->model->clear()->delete();
     }
     
     public function test_multiple_filters() {
@@ -68,7 +68,7 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user3"));
       $res = $this->model->filter("username = 'altered'")->all()->filter(array("username"=>"user2"))->filter("username='user3'")->all();
       $this->assertEqual($res->count, "2");
-      $this->model->all()->delete();
+      $this->model->clear()->delete();
     }
     
 }

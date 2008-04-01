@@ -65,6 +65,16 @@ class WaxModel {
     return $this;
  	}
  	
+ 	public function clear() {
+ 	  $this->columns = array();
+    $this->filters = array();
+    $this->order = false;
+    $this->limit = false;
+    $this->offset = "0";
+    $this->errors = array();
+    return $this;
+ 	}
+ 	
  	public function validate() {
  	  foreach($this->columns as $column=>$setup) {
  	    $field = new $setup[0]($column, $this, $setup[1]);
