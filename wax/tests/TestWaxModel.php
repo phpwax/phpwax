@@ -17,7 +17,6 @@ class TestWaxModel extends WXTestCase {
       
     }
     
-    
     public function get_fixture($type) {
       $fixtures = array(
         "user1" => array("username"=>"test1", "password"=>"password", "email"=>"test1@test.com"),
@@ -28,8 +27,7 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function test_create() {
-      $this->model->create($this->get_fixture("user1"));
-      $res = $this->model->first();
+      $res = $this->model->create($this->get_fixture("user1"));
       $this->assertIsA($res, "WaxModel");
       $this->assertEqual($res->username, "test1");
     }
