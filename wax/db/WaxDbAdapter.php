@@ -149,7 +149,7 @@ abstract class WaxDbAdapter {
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model) {
-    $sql = "ALTER TABLE `$model->table` CHANGE ";
+    $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
     die($sql);
