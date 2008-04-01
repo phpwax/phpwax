@@ -62,8 +62,7 @@ abstract class WaxDbAdapter {
   
   public function delete(WaxModel $model) {
     $stmt = $this->db->prepare("DELETE FROM ".$this->query_sql($model)."");
-    print_r($stmt); exit;
-    return $this->exec($stmt, $model->row);
+    return $this->exec($stmt);
   }
   
   public function select(WaxModel $model) {
