@@ -45,7 +45,7 @@ class WaxModelField {
   
   
   public function setup() {}
-  public function validations() {}
+  public function validate() {}
   public function output() {}
   
   protected function add_error($field, $message) {
@@ -58,29 +58,29 @@ class WaxModelField {
  	 */
  	 
   protected function valid_length() {
-    if(strlen($this->model->{$this->column})< $this->minlength) {
+    if($this->maxlength && strlen($this->model->{$this->field})< $this->minlength) {
       $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
     }
-    if(strlen($this->model->{$this->column})> $this->maxlength) {
+    if($this->minlength && strlen($this->model->{$this->field})> $this->maxlength) {
       $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
   
   protected function valid_format($name, $pattern) {
-    if(!preg_match($pattern, $this->model->{$this->column})) {
+    if(!preg_match($pattern, $this->model->{$this->field})) {
       $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
 		}
   }
   
   protected function valid_required() {
-    if(!$this->blank && strlen($this->model->{$this->column})< 1) {
-      $this->add_error($this->column, sprintf($this->messages["required"], $this->label));
+    if(!$this->blank && strlen($this->model->{$this->field})< 1) {
+      $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
     }
   }
   
   protected function valid_confirm($confirm_field, $confirm_name) {
-    if($this->model->{$this->column} != $this->model->{$confirm_field}) {
-      $this->add_error($this->column, sprintf($this->messages["confirm"], $this->label, $confirm_name));
+    if($this->model->{$this->field} != $this->model->{$confirm_field}) {
+      $this->add_error($this->field, sprintf($this->messages["confirm"], $this->label, $confirm_name));
     }
   }
   
