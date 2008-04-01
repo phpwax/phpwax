@@ -49,6 +49,7 @@ class WaxModelField {
   public function output() {}
   
   protected function add_error($field, $message) {
+    error_log($field." validating");
  	  $this->errors[]=$message;
  	}
  	
