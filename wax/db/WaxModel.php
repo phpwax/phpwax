@@ -69,8 +69,7 @@ class WaxModel {
  	  foreach($this->columns as $column=>$setup) {
  	    $field = new $setup[0]($column, $this, $setup[1]);
  	    $field->validate();
- 	    if(count($field->errors)) {
- 	      error_log(var_export($field->errors));
+ 	    if($field->errors) {
  	      $this->errors[$column] = $field->errors;
       }
  	  }
