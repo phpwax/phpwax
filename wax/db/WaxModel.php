@@ -179,7 +179,7 @@ class WaxModel {
  	  $this->limit = "1";
  	  $row = clone $this;
  	  $res = $this->db->select($this);
- 	  print_r($res[0]); exit;
+ 	  print_r($res); exit;
  	  $row->set_attributes($res[0]);
  	  return $row;
  	}
