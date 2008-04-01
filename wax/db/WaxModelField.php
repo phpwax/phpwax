@@ -12,7 +12,7 @@ class WaxModelField {
   public $null = false;           // Can column be null
   public $default = false;        
   public $primary_key = false;
-  public $col_name                // Actual name in the storage engine
+  public $col_name;                // Actual name in the storage engine
   
   //Validation & Format Options
   public $maxlength = false;
