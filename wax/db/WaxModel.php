@@ -158,7 +158,8 @@ class WaxModel {
   public function create($attributes = array()) {
  		$class_name =  get_class($this);
  		$row = new $class_name();
- 		$row->update_attributes($attributes);
+ 		$row->set_attributes($attributes);
+ 		print_r($row); exit;
  		return $row;
   }
 
