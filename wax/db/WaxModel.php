@@ -111,7 +111,7 @@ class WaxModel {
       */
  	public function save() {
  	  $this->before_save();
- 	  if(!$this->validate) return false;
+ 	  if(!$this->validate) throw new Exception;
  	  if($this->row[$this->primary_key]) $res = $this->update();
  	  else $res = $this->insert();
  		$this->after_save();
@@ -158,7 +158,8 @@ class WaxModel {
   public function create($attributes = array()) {
  		$class_name =  get_class($this);
  		$row = new $class_name();
- 		return $row->update_attributes($attributes);
+ 		$row->update_attributes($attributes);
+ 		return $row;
   }
 
   /**
@@ -178,7 +179,6 @@ class WaxModel {
  	  $this->limit = "1";
  	  $row = clone $this;
  	  $res = $this->db->select($row);
- 	  print_r($res); exit;
  	  $row->set_attributes($res[0]);
  	  return $row;
  	}
