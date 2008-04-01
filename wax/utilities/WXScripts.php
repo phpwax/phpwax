@@ -196,8 +196,7 @@ class WXScripts {
     $this->app_setup();
     Autoloader::include_dir(MODEL_DIR, true);
     foreach(get_declared_classes() as $class) {
-      $this->add_output("Reading $class");
-      if(is_subclass_of($class, "WaxModels")) {
+      if(is_subclass_of($class, "WaxModel")) {
         $class = new $class;
         $this->add_output("Reading $class");
         $output = $class->syncdb();
