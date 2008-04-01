@@ -14,7 +14,8 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function tearDown() {
-      
+      echo "tearDown";
+      $this->model->all()->delete();
     }
     
     public function get_fixture($type) {
