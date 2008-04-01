@@ -105,6 +105,7 @@ abstract class WaxDbAdapter {
       if(!$exists) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)."\n";
     }
+    $output .= "Table {$model->table} is now synchronised";
     return $output;
   }
   
