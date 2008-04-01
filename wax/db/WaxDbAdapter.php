@@ -76,7 +76,6 @@ abstract class WaxDbAdapter {
     }
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
-    echo $sql;
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
