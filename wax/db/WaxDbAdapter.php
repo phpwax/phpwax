@@ -137,7 +137,8 @@ abstract class WaxDbAdapter {
   
   public function drop_table($table_name) {
     $sql = "DROP TABLE IF EXISTS `$table_name`";
-    $this->pdo->query($sql);
+    $this->db->prepare($sql);
+    $this->exec($stmt);
     $this->output( "...removed table $table_name"."\n" );
   }
   
