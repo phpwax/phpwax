@@ -130,6 +130,12 @@ abstract class WaxDbAdapter {
     return "Created table {$model->table}";
   }
   
+  public function drop_table($table_name) {
+    $sql = "DROP TABLE IF EXISTS `$table_name`";
+    $this->pdo->query($sql);
+    $this->output( "...removed table $table_name"."\n" );
+  }
+  
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->field}`";
     $sql.=" ".$this->data_types[get_class($field)];
