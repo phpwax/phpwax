@@ -93,15 +93,14 @@ abstract class WaxDbAdapter {
     // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
-      $differs = false;
       $col_exists = false;
       $col_changed = false;
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) $col_exists = true;
-        elseif($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
-        elseif($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
-        elseif($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
-        error_log(print_r($col, 1));
+        else continue;
+        if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
+        if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
+        if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
       }
       if(!$exists) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
