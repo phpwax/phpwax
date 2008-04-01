@@ -37,5 +37,11 @@ class TestWaxModel extends WXTestCase {
       $this->assertIsA($res, "WaxRecordset");
     }
     
+    public function test_all() {
+      $res = $this->model->first();
+      $this->assertIsA($res, "WaxModel");
+      $this->assertEqual($res->username, "test1");
+    }
+    
 }
 
