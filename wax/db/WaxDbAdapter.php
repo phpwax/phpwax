@@ -155,7 +155,7 @@ abstract class WaxDbAdapter {
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
-    return "Added column {$field->field} to {$model->table}";
+    return "Added column {$field->col_name} to {$model->table}";
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model) {

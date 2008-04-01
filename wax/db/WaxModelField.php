@@ -8,10 +8,11 @@
 class WaxModelField {
     
   // Database Specific Configuration
-  public $field = false;
-  public $null = false;
-  public $default = false;
+  public $field = false;          // How this column is referred to
+  public $null = false;           // Can column be null
+  public $default = false;        
   public $primary_key = false;
+  public $col_name                // Actual name in the storage engine
   
   //Validation & Format Options
   public $maxlength = false;
@@ -39,6 +40,7 @@ class WaxModelField {
   public function __construct($column, $model, $options = array()) {
     $this->model = $model;
     $this->field = $column;
+    $this->col_name = $this->field;
     foreach($options as $option=>$val) $this->{$option} = $val;
     $this->setup();
   }
