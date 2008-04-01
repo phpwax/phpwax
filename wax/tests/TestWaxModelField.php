@@ -45,9 +45,10 @@ class TestWaxModelField extends WXTestCase {
       $this->model->define("username", "CharField", array("maxlength"=>"3"));
       $res = $this->model->set_attributes($this->get_fixture("user1"));
       $this->assertFalse($res->validate());
-      $this->model->define("username", "CharField", array("maxlength"=>"6"));
-      $res = $this->model->set_attributes($this->get_fixture("user1"));
-      $this->dump($res);
+
+      $res = new Example;
+      $res->define("username", "CharField", array("maxlength"=>"6"));
+      $res->set_attributes($this->get_fixture("user1"));
       $this->assertTrue($res->validate());
     }
 
