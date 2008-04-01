@@ -26,7 +26,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    $model = new $this->model_name($this->model->{$this->col_name});
+    $model = new {$this->model_name}($this->model->{$this->col_name});
     return $model;
   }
   
