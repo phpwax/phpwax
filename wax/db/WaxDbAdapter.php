@@ -32,6 +32,7 @@ abstract class WaxDbAdapter {
       'TimeField'=>         'time'
   );
   
+  
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
@@ -61,7 +62,11 @@ abstract class WaxDbAdapter {
   }
   
   public function delete(WaxModel $model) {
-    $stmt = $this->db->prepare("DELETE FROM ".$this->query_sql($model)."");
+    $sql .= "DELETE FROM `{$model->table}`";
+    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
+    if($model->order) $sql.= "ORDER BY {$model->order}";
+    if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";    
+    $stmt = $this->db->prepare($sql);
     return $this->exec($stmt);
   }
   
@@ -69,20 +74,14 @@ abstract class WaxDbAdapter {
     $sql .= "SELECT ";
     if(count($this->columns)) $sql.= join(",", $this->columns) ;
     else $sql.= "*";
-    $sql .= $this->query_sql($model);
-    if($model->order) {
-      $sql.= "ORDER BY {$model->order}";
-    }
+    $sql.= " FROM `{$model->table}`";
+    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
+    if($model->order) $sql.= "ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
-  public function query_sql(WaxModel $model) {
-    $sql.= " FROM `{$model->table}`";
-    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);
-    return $sql;
-  }
   
   public function syncdb(WaxModel $model) {
     // First check the table for this model exists
