@@ -133,6 +133,7 @@ abstract class WaxDbAdapter {
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
     $stmt = $this->db->prepare($sql);
+    $stmt = $this->exec($stmt);
     return "Added column {$field->field} to {$model->table}";
   }
   
