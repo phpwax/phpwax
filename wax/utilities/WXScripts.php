@@ -198,7 +198,6 @@ class WXScripts {
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
         $class_obj = new $class;
-        $this->add_output("Reading $class");
         $output = $class_obj->syncdb();
         $this->add_output($output);
       }
