@@ -57,6 +57,10 @@ class TestWaxModelField extends WXTestCase {
       $this->assertFalse($res->validate());
       $this->assertFalse($res->save());
     }
+    
+    public function test_foreign_key() {
+      $this->model_owner->create(array("name"=>"Master"));
+    }
 
     
 }
