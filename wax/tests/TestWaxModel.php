@@ -44,7 +44,7 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function test_delete() {
-      $res = $this->model->all();
+      $res = $this->model->filter("username"=>"test1")->all();
       $res->delete();
       
     }
