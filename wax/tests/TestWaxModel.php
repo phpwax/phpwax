@@ -53,6 +53,9 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user1"));
       $this->model->create($this->get_fixture("user2"));
       $this->assertEqual($this->model->all()->count(), "2");
+      $res = $this->model->all()->delete();
+      $this->assertEqual($this->model->all()->count(), "0");
+      
     }
     
 }
