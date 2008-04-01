@@ -14,7 +14,6 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function tearDown() {
-      $this->model->all()->delete();
     }
     
     public function get_fixture($type) {
@@ -61,6 +60,15 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user1"))->update_attributes(array("username"=>"altered"));
       $res = $this->model->filter(array("username"=>"altered"))->all();
       $this->assertEqual($res->count(), "1");
+      $this->model->all()->delete();
+    }
+    
+    public function test_multiple_filters() {
+      $this->model->create($this->get_fixture("user2"))->update_attributes(array("username"=>"altered"));
+      $this->model->create($this->get_fixture("user3"))->update_attributes(array("username"=>"altered"));
+      $res = $this->model->filter("username = 'altered'")->all()->filter(array("username"=>"user2"))->filter("username='user3'")->all();
+      $this->assertEqual($res->count, "2");
+      $this->model->all()->delete();
     }
     
 }
