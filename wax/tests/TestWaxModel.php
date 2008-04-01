@@ -66,10 +66,9 @@ class TestWaxModel extends WXTestCase {
     public function test_multiple_filters() {
       $this->model->create($this->get_fixture("user2"))->update_attributes(array("username"=>"altered"));
       $this->model->create($this->get_fixture("user3"));
-      $res = $this->model->filter("username = 'altered'")->all()->filter(array("username"=>"test2"))->all();
-      $this->dump($res);
+      $res = $this->model->filter("username = 'altered'")->filter(array("username"=>"test2"))->all();
       $this->assertEqual($res->count(), "2");
-      $this->model->clear()->delete();
+      $this->model->delete();
     }
     
 }
