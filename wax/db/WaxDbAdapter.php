@@ -92,7 +92,6 @@ abstract class WaxDbAdapter {
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
-      echo "Checking {$model_col} <br />";
       $model_field = $model->get_col($model_col);
       $differs = false;
       $col_exists = false;
@@ -120,7 +119,7 @@ abstract class WaxDbAdapter {
   public function create_table(WaxModel $model) {
     $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY)";
     $stmt = $this->db->prepare($sql);
-    $stmt = $this->exec($stmt);
+    $this->exec($stmt);
     return "Created table {$model->table}";
   }
   
@@ -133,7 +132,8 @@ abstract class WaxDbAdapter {
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
     $stmt = $this->db->prepare($sql);
-    $stmt = $this->exec($stmt);
+    $this->exec($stmt);
+    print_r($stmt); exit;
     return "Added column {$field->field} to {$model->table}";
   }
   
