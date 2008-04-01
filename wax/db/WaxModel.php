@@ -39,7 +39,6 @@ class WaxModel {
  		  $res = $this->filter(array($this->primary_key=>$params))->first();
  		  $this->row = $res->row;
  		}
- 		$this->define($this->primary_key, "AutoField");
  		$this->setup();
  	}
  	
