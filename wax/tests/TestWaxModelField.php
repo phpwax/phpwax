@@ -66,8 +66,6 @@ class TestWaxModelField extends WXTestCase {
       $model2 = $this->model->create($this->get_fixture("user2"));
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
-      $this->dump($owner->examples);
-      exit;
       $this->assertEqual($owner->examples->count(), 2);
     }
 
