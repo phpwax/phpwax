@@ -34,7 +34,6 @@ class ForeignKey extends WaxModelField {
   
   public function save() {
     if($this->model->{$this->field} instanceof WaxModel) {
-      die($join->id);
       $this->model->{$this->col_name} = $this->model->{$this->field}->id;
       unset($this->model->{$this->field});
     }
