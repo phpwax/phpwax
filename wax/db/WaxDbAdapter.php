@@ -107,6 +107,7 @@ abstract class WaxDbAdapter {
       $col_changed = false;
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) {
+          echo $model_col." is found";
           $col_exists = true;
           if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
           if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
