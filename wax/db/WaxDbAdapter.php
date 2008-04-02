@@ -163,7 +163,6 @@ abstract class WaxDbAdapter {
   }
   
   public function add_column(WaxModelField $field, WaxModel $model) {
-    echo "Working on field ".get_class($field)."\n";
     if(!$field->col_name) return true;
     $sql = "ALTER TABLE `$model->table` ADD ";
     $sql.= $this->column_sql($field, $model);
@@ -173,7 +172,6 @@ abstract class WaxDbAdapter {
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model) {
-    echo "Working on field ".get_class($field)."\n";
     if(!$field->col_name) return true;
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
