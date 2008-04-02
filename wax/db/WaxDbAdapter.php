@@ -101,6 +101,7 @@ abstract class WaxDbAdapter {
     // Map definitions to database - create or alter if required
 
     foreach($model->columns as $model_col=>$model_col_setup) {
+      echo "Running {$model_col}"."\n";
       $model_field = $model->get_col($model_col);
       $col_exists = false;
       $col_changed = false;
