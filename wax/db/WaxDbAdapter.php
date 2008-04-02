@@ -101,21 +101,18 @@ abstract class WaxDbAdapter {
     // Map definitions to database - create or alter if required
     print_r($model->columns);
     foreach($model->columns as $model_col=>$model_col_setup) {
-      echo "Processing {$model_col}";
       $model_field = $model->get_col($model_col);
       $col_exists = false;
       $col_changed = false;
       while(list($key, $col) = each($db_cols)) {
         if($col["COLUMN_NAME"]==$model_col) {
           $col_exists = true;
-          echo "Column {$model_col} exists";
           if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
           if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
       }
-      echo "Finished {$model_col}";
-      if(!$col_exists) $output .= $this->add_column($model_field, $model)."\n";
+      if($col_exists==false) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
     }
     $output .= "Table {$model->table} is now synchronised";
