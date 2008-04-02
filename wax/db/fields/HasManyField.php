@@ -11,10 +11,13 @@ class HasManyField extends WaxModelField {
   public $default = false;
   public $maxlength = "11";
   public $model_name = false;
+  public $join_field = false;
   
   
   public function setup() {
     $this->col_name = false;
+    $class_name = get_class($this->model);
+    if(!$this->join_field) Inflections::underscore($class_name)."_id";
   }
 
   public function validate() {
@@ -24,7 +27,7 @@ class HasManyField extends WaxModelField {
   public function get() {
     $class = Inflections::camelize($this->model_name);
     $model = new $class();
-    print_r($model->filter(array("id"=>$this->model->row[$this->model->primary_key]))->all());
+    print_r($model->filter(array($this->join_field=>$this->model->row[$this->model->primary_key]))->all());
     exit;
   }
   
