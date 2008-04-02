@@ -24,7 +24,8 @@ class HasManyField extends WaxModelField {
   public function get() {
     $class = Inflections::camelize($this->model_name);
     $model = new $class();
-    return $model->filter(array("id"=>$this->model->row[$this->model->primary_key]))->all();
+    print_r($model->filter(array("id"=>$this->model->row[$this->model->primary_key]))->all());
+    exit;
   }
   
   public function set($value) {
