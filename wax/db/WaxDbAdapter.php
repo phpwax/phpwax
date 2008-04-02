@@ -132,7 +132,7 @@ abstract class WaxDbAdapter {
   }
   
   public function create_table(WaxModel $model) {
-    $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}`";
+    $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}`";
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
     return "Created table {$model->table}";
