@@ -113,8 +113,8 @@ abstract class WaxDbAdapter {
           if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
-        echo "Finished {$model_col}";
       }
+      echo "Finished {$model_col}";
       if(!$col_exists) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
     }
