@@ -22,7 +22,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    $class = $this->model_name;
+    $class = Inflections::camelize($this->model_name);
     $model = new $class();
     return $model->filter(array("id"=>$this->model->id))->all();
   }
