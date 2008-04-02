@@ -91,6 +91,7 @@ class WaxModel {
  	}
 
   public function get_col($name) {
+    echo $name."\n";
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
