@@ -41,9 +41,8 @@ class WaxModelField {
     $this->model = $model;
     foreach($options as $option=>$val) $this->{$option} = $val;
     if(!$this->field) $this->field = $column;
-    
-    $this->setup();
     if(!$this->col_name) $this->col_name = $this->field;
+    $this->setup();
   }
   
   public function get() {
