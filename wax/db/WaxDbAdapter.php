@@ -16,6 +16,7 @@ abstract class WaxDbAdapter {
 	protected $timestamp = false;
 	protected $db_settings;
 	protected $data_types = array(
+	    'AutoField'=>         'int',
       'BooleanField'=>      'bool',
       'CharField'=>         'varchar',
       'DateField'=>         'date',
@@ -53,7 +54,9 @@ abstract class WaxDbAdapter {
   public function insert(WaxModel $model) {
     $stmt = $this->db->prepare("INSERT into `{$model->table}` (".join(",", array_keys($model->row)).") 
       VALUES (".join(",", array_keys($this->bindings($model->row))).")");
-    return $this->exec($stmt, $model->row);
+    $stmt = $this->exec($stmt, $model->row);
+    $class_name =  get_class($model);
+    return new $class_name($this->db->lastInsertId());
   }
   
   public function update(WaxModel $model) {
