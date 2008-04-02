@@ -91,7 +91,6 @@ class WaxModel {
  	}
 
   public function get_col($name) {
-    echo $name."\n";
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
@@ -116,8 +115,10 @@ class WaxModel {
    *  @param  mixed   value   property value
    */
  	public function __set( $name, $value ) {
- 	  $field = $this->get_col($name);
- 	  $field->set($value);
+    if(array_key_exists($name, $this->columns)) {
+ 	    $field = $this->get_col($name);
+ 	    $field->set($value);
+    } else $this->row[$name]=$value;
   }
 
 
