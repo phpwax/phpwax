@@ -4,7 +4,7 @@ class Example extends WaxModel {
     $this->define("username", "CharField", array("maxlength"=>40));
     $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
     $this->define("email", "EmailField", array("blank"=>false));
-    $this->define("example_owner", "ForeignKey");
+    $this->define("example_owner", "ForeignKey", array("null"=>true));
   }
 }
 
