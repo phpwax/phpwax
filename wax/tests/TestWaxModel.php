@@ -1,5 +1,5 @@
 <?php
-class ExampleModel extends WaxModel {
+class Example extends WaxModel {
   public function setup() {
     $this->define("username", "CharField", array("maxlength"=>40));
     $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
@@ -9,7 +9,7 @@ class ExampleModel extends WaxModel {
 
 class TestWaxModel extends WXTestCase {
     public function setUp() {
-      $this->model = new ExampleModel();
+      $this->model = new Example;
       $this->model->syncdb();
     }
     
