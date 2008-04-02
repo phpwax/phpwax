@@ -104,16 +104,13 @@ abstract class WaxDbAdapter {
       $col_exists = false;
       $col_changed = false;
       while(list($key, $col) = each($db_cols)) {
-        echo "Checking {$col['COLUMN_NAME']} against {$model_col}";
-        if($col["COLUMN_NAME"]!=$model_col) $col_exists = false;
-        else {
+        if($col["COLUMN_NAME"]==$model_col) {
           $col_exists = true;
           if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
           if($col["IS_NULLABLE"]=="NO" && $model_field->null) $col_changed = "now null";
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
       }
-      if(!$col_exists) echo "No record of {$model_col} ".print_r($db_cols, 1);
       if(!$col_exists) $output .= $this->add_column($model_field, $model)."\n";
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
     }
