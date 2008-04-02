@@ -118,7 +118,8 @@ class WaxModel {
  	public function __set( $name, $value ) {
     if(array_key_exists($name, $this->columns)) {
  	    $field = $this->get_col($name);
- 	    if($value) $field->set($value);
+ 	    error_log("Saving ".get_class($value));
+ 	    $field->set($value);
     } else $this->row[$name]=$value;
   }
 
