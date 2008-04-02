@@ -15,6 +15,7 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function tearDown() {
+      $this->model->clear()->delete();
     }
     
     public function get_fixture($type) {
@@ -38,12 +39,14 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function test_first() {
+      $res = $this->model->create($this->get_fixture("user1"));
       $res = $this->model->first();
       $this->assertIsA($res, "WaxModel");
       $this->assertEqual($res->username, "test1");
     }
     
     public function test_delete() {
+      $res = $this->model->create($this->get_fixture("user1"));
       $res = $this->model->filter(array("username"=>"test1"))->all()->delete();
       $res = $this->model->filter(array("username"=>"test1"))->first();
       $this->assertFalse($res->count(), "0");
