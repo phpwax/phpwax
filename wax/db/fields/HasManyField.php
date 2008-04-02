@@ -14,9 +14,7 @@ class HasManyField extends WaxModelField {
   
   
   public function setup() {
-    if(!$this->table) $this->table = $this->field;
-    if(!$this->col_name) $this->col_name = false;
-    if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
+    $this->col_name = false;
   }
 
   public function validate() {
