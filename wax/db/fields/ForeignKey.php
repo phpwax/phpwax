@@ -31,6 +31,10 @@ class ForeignKey extends WaxModelField {
   public function set() {
     
   }
+  
+  public function save() {
+    echo "Saving a foreign key {$this->field}";
+  }
 
 
 } 

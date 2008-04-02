@@ -52,6 +52,7 @@ class WaxModelField {
   
   public function setup() {}
   public function validate() {}
+  public function save() {}
   public function output() {}
   
   protected function add_error($field, $message) {
