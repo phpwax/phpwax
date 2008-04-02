@@ -19,7 +19,7 @@ class BooleanField extends WaxModelField {
   public function validate() {
     $this->valid_length();
  	  $this->valid_required();
-    $this->valid_format("number", "/^[0-1]$/");
+    $this->valid_format("number", "/^[0-1]?$/");
   }
 
 } 
