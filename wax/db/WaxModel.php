@@ -115,7 +115,7 @@ class WaxModel {
    *  @param  mixed   value   property value
    */
  	public function __set( $name, $value ) {
-    $this->row[$name] = $value;
+ 	  $this->get_col($name)->set($value);
   }
 
 

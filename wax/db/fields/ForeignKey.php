@@ -28,16 +28,13 @@ class ForeignKey extends WaxModelField {
     return $model;
   }
   
-  public function set() {
-    
+  public function set(WaxModel $value) {
+    $this->model->{$this->col_name} = $value->{$value->primary_key};
+    unset($this->model->{$this->field});
   }
   
   public function save() {
-    if($this->model->{$this->field} instanceof WaxModel) {
-      print_r($this->model); exit;
-      $this->model->{$this->col_name} = $this->model->{$this->field}->id;
-      unset($this->model->{$this->field});
-    }
+    
   }
 
 

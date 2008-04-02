@@ -50,6 +50,10 @@ class WaxModelField {
     return $this->model->row[$this->field];
   }
   
+  public function set($value) {
+    $this->model->row[$this->field]=$value;
+  }
+  
   
   public function setup() {}
   public function validate() {}
