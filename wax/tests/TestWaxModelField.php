@@ -24,8 +24,8 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function tearDown() {
-      //$this->model->clear()->delete();
-      //$this->model_owner->clear()->delete();
+      $this->model->clear()->delete();
+      $this->model_owner->clear()->delete();
     }
     
     public function get_fixture($type) {
@@ -62,8 +62,9 @@ class TestWaxModelField extends WXTestCase {
     public function test_foreign_key() {
       $owner = $this->model_owner->create(array("name"=>"Master"));
       $model = $this->model->create($this->get_fixture("user1"));
-      $this->model->example_owner = $owner;
+      $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
+      $this->assertEqual("Master", $model->example_owner->name);
     }
 
     
