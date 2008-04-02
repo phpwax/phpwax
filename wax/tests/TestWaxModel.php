@@ -39,9 +39,9 @@ class TestWaxModel extends WXTestCase {
     
     public function test_first() {
       $res = $this->model->first();
-      $this->dump($res); exit;
       $this->assertIsA($res, "WaxModel");
       $this->assertEqual($res->username, "test1");
+      exit;
     }
     
     public function test_delete() {
