@@ -105,7 +105,7 @@ abstract class WaxDbAdapter {
       $model_field = $model->get_col($model_col);
       $col_exists = false;
       $col_changed = false;
-      while(list($key, $col) = each($db_cols)) {
+      foreach($db_cols as $key=>$col) {
         echo $col["COLUMN_NAME"].":".$model_col;
         if($col["COLUMN_NAME"]==$model_col) {
           $col_exists = true;
