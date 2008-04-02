@@ -7,8 +7,6 @@
  **/
 class TextField extends WaxModelField {
   
-  public $null = false;
-  public $default = false;
   public $maxlength = false;
   
   public function setup() {

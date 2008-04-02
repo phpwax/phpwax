@@ -7,8 +7,6 @@
  **/
 class CharField extends WaxModelField {
   
-  public $null = false;
-  public $default = false;
   public $maxlength = "255";
   
   public function setup() {

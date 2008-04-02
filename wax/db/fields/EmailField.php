@@ -7,8 +7,6 @@
  **/
 class EmailField extends WaxModelField {
   
-  public $null = false;
-  public $default = false;
   public $maxlength = "100";
   
   public function setup() {

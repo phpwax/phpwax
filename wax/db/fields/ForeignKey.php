@@ -7,8 +7,6 @@
  **/
 class ForeignKey extends WaxModelField {
   
-  public $null = false;
-  public $default = false;
   public $maxlength = "11";
   public $model_name = false;
   
@@ -20,7 +18,7 @@ class ForeignKey extends WaxModelField {
   }
 
   public function validate() {
-
+    return true;
   }
   
   public function get() {
@@ -36,7 +34,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function save() {
-    
+    return true;
   }
 
 
