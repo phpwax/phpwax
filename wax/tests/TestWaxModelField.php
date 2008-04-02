@@ -56,6 +56,7 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $this->dump($model);
       $this->assertEqual("test1", $model->username);
+      $this->dump($model->example_owner);
       $this->assertEqual("Master", $model->example_owner->name);
     }
 
