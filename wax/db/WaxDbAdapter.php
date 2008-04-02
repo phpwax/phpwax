@@ -132,7 +132,7 @@ abstract class WaxDbAdapter {
   }
   
   public function create_table(WaxModel $model) {
-    $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY)";
+    $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (`{$model->primary_key}`";
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
     return "Created table {$model->table}";
@@ -152,6 +152,8 @@ abstract class WaxDbAdapter {
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
+    if($field->auto) $sql.= " AUTO_INCREMENT";
+    if($field->primary) $sql.=" PRIMARY KEY";
     return $sql;
   }
   
