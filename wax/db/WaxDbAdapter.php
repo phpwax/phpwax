@@ -100,6 +100,7 @@ abstract class WaxDbAdapter {
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required
     print_r($model->columns);
+    print_r($db_cols);G
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       $col_exists = false;
