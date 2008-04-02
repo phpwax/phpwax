@@ -3,7 +3,7 @@ class ExampleOwner extends WaxModel {
   
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "HasManyField");
+    $this->define("examples", "HasManyField", array("model_name"=>"example"));
   }
 }
 
