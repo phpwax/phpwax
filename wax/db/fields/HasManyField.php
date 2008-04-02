@@ -17,7 +17,7 @@ class HasManyField extends WaxModelField {
   public function setup() {
     $this->col_name = false;
     $class_name = get_class($this->model);
-    if(!$this->join_field) Inflections::underscore($class_name)."_id";
+    if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_id";
   }
 
   public function validate() {
