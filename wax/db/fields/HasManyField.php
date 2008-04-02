@@ -20,7 +20,7 @@ class HasManyField extends WaxModelField {
   }
 
   public function validate() {
-
+    return true;
   }
   
   public function get() {
@@ -34,7 +34,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function save() {
-    
+    return true;
   }
 
 

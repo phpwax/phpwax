@@ -3,6 +3,7 @@ class ExampleOwner extends WaxModel {
   
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
+    $this->define("examples", "HasManyField");
   }
 }
 
@@ -56,6 +57,15 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
       $this->assertEqual("Master", $model->example_owner->name);
+    }
+    
+    public function test_has_many() {
+      $owner = $this->model_owner->create(array("name"=>"Master"));
+      $model = $this->model->create($this->get_fixture("user1"));
+      $model2 = $this->model->create($this->get_fixture("user2"));
+      $model->example_owner = $owner;
+      $model2->example_owner = $owner;
+      $this->assertEqual($owner->examples()->count(), 2);
     }
 
     
