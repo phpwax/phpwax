@@ -15,7 +15,7 @@ class ForeignKey extends WaxModelField {
   
   public function setup() {
     if(!$this->table) $this->table = $this->field;
-    if(!$this->col_name) $this->col_name = $this->table."_id";
+    $this->col_name = $this->table."_id";
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
   }
 
@@ -30,7 +30,6 @@ class ForeignKey extends WaxModelField {
   }
   
   public function set(WaxModel $value) {
-    echo "Setting {$this->col_name} to {$value->id}";
     $this->model->{$this->col_name} = $value->{$value->primary_key};
     unset($this->model->{$this->field});
   }
