@@ -101,12 +101,10 @@ abstract class WaxDbAdapter {
     // Map definitions to database - create or alter if required
 
     foreach($model->columns as $model_col=>$model_col_setup) {
-      echo "Running {$model_col}"."\n";
       $model_field = $model->get_col($model_col);
       $col_exists = false;
       $col_changed = false;
       foreach($db_cols as $key=>$col) {
-        echo $col["COLUMN_NAME"].":".$model_col;
         if($col["COLUMN_NAME"]==$model_col) {
           $col_exists = true;
           if($col["COLUMN_DEFAULT"] != $model_field->default) $col_changed = "default";
