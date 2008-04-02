@@ -30,6 +30,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function set(WaxModel $value) {
+    echo "Setting {$this->col_name} to {$value->id}";
     $this->model->{$this->col_name} = $value->{$value->primary_key};
     unset($this->model->{$this->field});
   }
