@@ -251,11 +251,15 @@ class WaxModel {
  		if(array_key_exists($function[1], $this->has_many_throughs) && count($function)==2) {
  			return $this->has_many_methods($function[0], $function[1], $args);
  		} else return $this->dynamic_finders($func, $args);
-   }
+  }
    
-   public function __clone() {
-     $this->primary_key = "id";
-     $this->setup();
+  public function __clone() {
+    $class_name =  get_class($this) ;
+  	if( $class_name != 'WaxModel' && !$this->table ) {
+      $this->table = WXInflections::underscore( $class_name );
+  	}
+  	$this->define($this->primary_key, $this->primary_type, $this->primary_options);     
+  	$this->setup();
    }
 
    /**
