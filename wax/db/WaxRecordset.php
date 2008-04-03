@@ -13,6 +13,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   protected $obj = false;
   protected $key = 0;
   protected $constraints = array();
+  public $rowset;
   
   public function __construct(WaxModel $model, $rowset) {
     $this->rowset = $rowset;
