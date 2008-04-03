@@ -16,7 +16,7 @@ class ManyToManyField extends WaxModelField {
     $this->col_name = false;
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
     $j = new $this->model_name;
-    if(strnatcmp($this->model->table, $j->table)) {
+    if(strnatcmp($this->model->table, $j->table) <0) {
       $left = $this->model;
       $right = $j;
     } else {
@@ -24,6 +24,7 @@ class ManyToManyField extends WaxModelField {
       $right = $this->model;
     }
     $join = new WaxModelJoin;
+    echo "Left is {$left->table}  Right is {$right->table}";
     $join->init($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primary_key));
