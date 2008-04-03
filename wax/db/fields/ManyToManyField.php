@@ -34,8 +34,7 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function get() {
-    $vals = $this->join_model->filter(array($this->join_model->right_field => $this->model->{$this->model->primary_key}))->all();
-    return $model->filter(array($this->join_field=>$this->model->row[$this->model->primary_key]))->all() ;
+    return $this->join_model->all() ;
   }
   
   public function set($value) {
