@@ -57,7 +57,7 @@ abstract class WaxDbAdapter {
     $stmt = $this->exec($stmt, $model->row);
     $new = array($model->primary_key = $this->db->lastInsertId());
     $res = $model->clear()->filter($new);
-    return $res;
+    return $res->first();
 	}
   
   public function update(WaxModel $model) {
