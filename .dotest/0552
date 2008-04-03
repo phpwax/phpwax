@@ -1,0 +1,26 @@
+From 45c77a68264c29ef4022049f8bac8789d2478bc8 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 23:35:11 +0100
+Subject: Added auto foreign key population to choices
+
+---
+ wax/db/WaxModelField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 675955d61d56d45774a43f943ac3f926210bc0eb..d3e19fb41de7b01edb60c3be38f2c5a7d2588f3d 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -67,7 +67,7 @@ class WaxModelField {
+   }
+   
+   public function map_choices() {
+-    if($this->text_choices) {
++    if($this->text_choices && is_array($this->choices)) {
+       $choices = $this->choices;
+       $this->choices = array();
+       foreach($choices as $key=>$choice) {
+-- 
+1.5.4
+
+

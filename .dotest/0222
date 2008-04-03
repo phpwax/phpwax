@@ -1,0 +1,26 @@
+From f72bbd742e67f12debdde8f0089483859bf7f34f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 10:51:04 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/exceptions/WXRoutingException.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index c43c8dd3dcae28efb3034d828608364b5e1d286e..ab92d2a78a80c46eccac176975fd12fbd51dd7dc 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -11,7 +11,7 @@ class WXRoutingException extends WXException
+ 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
+   	if($location = self::$redirect_on_error) {
+   	  $this->simple_routing_error_log();
+-  	  header("Status: 404 Not Found");
++  	  header("HTTP/1.1 404 Not Found");
+   	  header("Location: /{$location}");
+   	  exit;
+   	}
+-- 
+1.5.4
+
+

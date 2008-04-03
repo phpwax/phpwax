@@ -1,0 +1,46 @@
+From 2a8fa92a8d6f5c9d24d244b411682c88830bdfb5 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 09:59:34 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/WXControllerBase.php |    2 +-
+ wax/utilities/WaxLog.php |    3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 88049d4b32102111bc2c9084e2417be18c81586b..2b9d226d96bebd5f044cb267922e65f23824e6ad 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -209,7 +209,7 @@ abstract class WXControllerBase
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+ 	  }
+-	  WaxLog::add("Application", "Loading controller {$this->controller} with action {$this->action}");
++	  WaxLog::add("Application", "Loading controller {$this->controller} with action {$this->action} from route {$_GET['route']}");
+ 	  $this->controller_global();
+ 	  $this->run_filters("before");
+ 	  if(!$this->is_public_method($this, $this->action)) {
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 8d6122be79e32197cc60cc2a77e1eb3c97a53030..e99074b283813c466514eb7334aac5ee4053e822 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -14,13 +14,12 @@ class WaxLog {
+ 
+   static public $logs = array();
+   static public $logs_enabled = array();
+-  static public $log_handler = array("self", "write");
++  static public $log_handler = array("WaxLog", "write");
+   static public $auto_flush = true;
+   
+   static public function add($type, $message) {
+     self::$log_file = ENV.".log";
+     if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type, $message);
+-    error_log(print_r(self::$logs, 1));
+     if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
+   }
+   
+-- 
+1.5.4
+
+

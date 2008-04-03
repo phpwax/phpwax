@@ -1,0 +1,28 @@
+From 44464d7deda2ba6616bc8c809b58b1f5524954e8 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 13:42:36 +0100
+Subject: Fix to WaxUrl bug
+
+---
+ wax/WXControllerBase.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 72e9e546e9b037d7782d6239de76d90b813d6ec7..987954cf350c71587e47a3ab83ed0ad643fe43c1 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -202,9 +202,9 @@ abstract class WXControllerBase
+ 	 *	@access protected
+  	 */
+   public function execute_request() {
+-	  $this->route_array = $_GET;
+ 	  $this->controller = WaxUrl::get("controller");    
+ 	  $this->action = WaxUrl::get("action");
++	  $this->route_array = $_GET;
+ 	  if(strpos($this->action, ".")) {
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+-- 
+1.5.4
+
+

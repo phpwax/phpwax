@@ -1,0 +1,50 @@
+From 3471eafe07e291af9fe76f8cd8f4638dd421711c Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:57:22 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/widgets/SelectInput.php |    3 +--
+ wax/forms/widgets/TextInput.php   |    4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 03648570f74c01331e902afb6ebd903531f7f898..4e52186cd7e1a1e8542e74e4ee3bb9729034cac8 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -8,7 +8,7 @@
+  **/
+ class SelectInput extends WaxWidget {
+ 
+-  public $attributes = array();
++  public $attributes = array("class"=>"input_field select_field");
+   public $value = false;
+   public $choices = false;
+   public $blank = true;
+@@ -19,7 +19,6 @@ class SelectInput extends WaxWidget {
+   public $template = '<select %s >%s</select>';
+   
+   
+-  
+   public function render() {
+     $out ="";
+     if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+diff --git a/wax/forms/widgets/TextInput.php b/wax/forms/widgets/TextInput.php
+index 7532dc0a6f373175cce5a0908125ee3080dd5db5..b9e89f674c06631159355dcae80a5683e1f63393 100644
+--- a/wax/forms/widgets/TextInput.php
++++ b/wax/forms/widgets/TextInput.php
+@@ -9,8 +9,8 @@
+ class TextInput extends WaxWidget {
+ 
+   public $attributes = array(
+-    "type"=>"text"
+-  
++    "type"=>"text",
++    "class"=>"input_field text_field"
+   );
+   public $value = false;
+   public $choices = false;
+-- 
+1.5.4
+
+

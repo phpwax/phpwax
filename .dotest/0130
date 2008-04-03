@@ -1,0 +1,35 @@
+From 7debece47ddf103971b180f62e7ad824781e86e9 Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Mon, 7 Apr 2008 15:31:10 +0100
+Subject: whops, forgot to enable the other tests!
+
+---
+ wax/tests/TestWaxModelField.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 97a6fea1f61b2bfc4d72b0e5768b77dc78b5989d..6f8e4e61e0ea2232ec469a6219bf123ee75a8ab5 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -34,7 +34,7 @@ class TestWaxModelField extends WXTestCase {
+       $model3 = new ExampleProperty;
+       $model3->delete();
+     }
+- /*   
++    
+     public function get_fixture($type) {
+       $fixtures = array(
+         "user1" => array("username"=>"test1", "password"=>"password", "email"=>"test1@test.com"),
+@@ -99,7 +99,7 @@ class TestWaxModelField extends WXTestCase {
+       $model->properties->unlink($props->all());
+       $this->assertEqual($model->properties->count(), 0);
+     }
+-*/
++
+ 
+ 		/*** FILE UPLOAD ****/
+ 
+-- 
+1.5.4
+
+

@@ -1,0 +1,121 @@
+From f8cf461326fcec29adf7a7df79fb2994820aaa3d Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 15 Apr 2008 16:26:51 +0100
+Subject: Improved working for logs
+
+---
+ .DS_Store                             |  Bin 0 -> 6148 bytes
+ skel/app/config/development.php       |    6 +++---
+ skel/app/config/production.php        |   10 ++++++++++
+ wax/WXControllerBase.php              |    2 +-
+ wax/db/WaxDbAdapter.php               |    2 +-
+ wax/exceptions/WXRoutingException.php |    2 +-
+ wax/utilities/WaxLog.php              |    2 +-
+ 7 files changed, 17 insertions(+), 7 deletions(-)
+ create mode 100644 .DS_Store
+ create mode 100644 skel/app/config/production.php
+
+diff --git a/.DS_Store b/.DS_Store
+new file mode 100644
+index 0000000000000000000000000000000000000000..0f83b761acae90c7bff3d163cafc2316962a8430
+GIT binary patch
+literal 6148
+zcmeHKJ5B>p475p#NHi%a_Xu!<RTNIZ1t1_$q$nv6Eai6eIdNueBPDuJq@jSZWY7Bd
+zRy)P|+01<L_H<)5H?tX(XrDB#Fi&mdq9R1+8SCrSX19VD$2Ile1=u^W!5-}6d1(9B
+zkK1>ieO&cAY<AlhMD`Jv5d&gC42S_SAO_B1Am^&hF3)LFtr!pk|AGPjA37+pFB}u&
+z*8#)pJM&W_1<!H$2X^K6g<~Qz5YJX%wtB4?Ub};5JMw+ikBQlC9&g4u^=7XP#cTEO
+zF3QdOL|HK)22L56q&w&QzlHv=|DQI=69Z!4Pch)r<=t|DPpaA4d>m(O2fc@W32LJp
+lCPpzZMll?Y;;W;&j?c*Vg=1p0BOdKQT?ELBL=5}}0|#8#7@hzC
+
+literal 0
+HcmV?d00001
+
+diff --git a/skel/app/config/development.php b/skel/app/config/development.php
+index 8cc587c82c1754daa21bc183b3356db992d9e528..a5c022c8461130cddcb61554233cf446af18d8ce 100644
+--- a/skel/app/config/development.php
++++ b/skel/app/config/development.php
+@@ -4,9 +4,9 @@
+ 
+ 
+ /************ Log Levels *****************************/
+-WaxLog::log("application");
+-WaxLog::log("db");
+-WaxLog::log("sql");
++Config::set("log_info", true);
++Config::set("log_warn", true);
++Config::set("log_error", true);
+ 
+ 
+ /**** Force all emails to be delivered to one email address */
+diff --git a/skel/app/config/production.php b/skel/app/config/production.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..05e7c8a5d5d8e35072d61b501b1e7e53b4f44a8d
+--- /dev/null
++++ b/skel/app/config/production.php
+@@ -0,0 +1,10 @@
++<?php
++/******* production.php runs commands only in production environment */
++
++
++/************ Log Levels *****************************/
++
++Config::set("log_info", false);
++Config::set("log_warn", false);
++Config::set("log_error", true);
++
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 8a9cb1acc01c82012652e07ace7855c53418fdd8..cabd64065ad5cae7f44e88f354460c7f95b591d3 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -209,7 +209,7 @@ abstract class WXControllerBase
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+ 	  }
+-	  WaxLog::add("application", "Loading controller {$this->controller} with action {$this->action} from route '{$_GET['route']}'");
++	  WaxLog::add("info", "Loading controller {$this->controller} with action {$this->action} from route '{$_GET['route']}'");
+ 	  $this->controller_global();
+ 	  $this->run_filters("before");
+ 	  if(!$this->is_public_method($this, $this->action)) {
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 463d51a05100c087938c6808f93c20daa9427350..664f04caf6caeb26c53331c8ab6807377ae932fb 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -197,7 +197,7 @@ abstract class WaxDbAdapter {
+   
+   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
+     try {
+-      WaxLog::add("sql", $pdo_statement);
++      WaxLog::add("info", "[DB] ".$pdo_statement);
+ 			$pdo_statement->execute($bindings);
+ 		} catch(PDOException $e) {
+ 			$err = $pdo_statement->errorInfo();
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index cd14c093f999cb4526167ff7723699436b3c2591..c803d629026e487e532796d646ae6049a8706494 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -29,7 +29,7 @@ class WXRoutingException extends WXException
+   }
+   
+   function simple_routing_error_log() {
+-    WaxLog::add("application", $this->getMessage());
++    WaxLog::add("error", $this->getMessage());
+   }
+ }
+ 
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 24290fb51a4cba248d9cc4ab55692fe4fff5f8f5..f7c2576dbbeb0a34f324d892dba8f1bcbc66bcb2 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -20,7 +20,7 @@ class WaxLog {
+   }
+   
+   static public function log($type, $output) {
+-    if(Config::get("debug_".$type)) {
++    if(Config::get("log_".$type)) {
+       error_log("[$type] $output");
+     }
+   }
+-- 
+1.5.4
+
+

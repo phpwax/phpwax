@@ -1,0 +1,690 @@
+From c3ce61d909db8fe027ab201e4ba26038a9c6e2a3 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 00:32:33 +0100
+Subject: General Cleanup of old files
+ Started implementation of WaxLog
+ Cleaned out unnecessary configs, moved to sensible defaults
+ Discouraged deploy in config, preferably move to capistrano
+
+---
+ wax/AutoLoader.php                           |    1 +
+ wax/WXApplication.php                        |    7 +-
+ wax/WXConfiguration.php                      |  116 ----------------
+ wax/dispatch/WXRoute.php                     |  183 --------------------------
+ wax/dispatch/WaxUrl.php                      |   12 ++
+ wax/utilities/Config.php                     |  116 ++++++++++++++++
+ wax/utilities/Validate.php                   |   59 --------
+ wax/utilities/WaxLog.php                     |   49 +++++++
+ wax/utilities/deprecated/WXConfiguration.php |   25 ++++
+ 9 files changed, 208 insertions(+), 360 deletions(-)
+ delete mode 100644 wax/WXConfiguration.php
+ delete mode 100755 wax/dispatch/WXRoute.php
+ create mode 100644 wax/utilities/Config.php
+ delete mode 100644 wax/utilities/Validate.php
+ create mode 100644 wax/utilities/WaxLog.php
+ create mode 100644 wax/utilities/deprecated/WXConfiguration.php
+
+diff --git a/wax/AutoLoader.php b/wax/AutoLoader.php
+index 82ac85f1e86e4deff99c59bb17d6a13e5edc4bf8..104ea7a2d56015532440903fbdc6de791d2a6f80 100755
+--- a/wax/AutoLoader.php
++++ b/wax/AutoLoader.php
+@@ -16,6 +16,7 @@ define('CONFIG_DIR' , WAX_ROOT.'app/config/');
+ define('VIEW_DIR', WAX_ROOT.'app/view/');
+ define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
+ define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
++define('LOG_DIR', WAX_ROOT.'tmp/log/');
+ define('SESSION_DIR', WAX_ROOT.'tmp/session/');
+ define('PUBLIC_DIR', WAX_ROOT.'public/');
+ define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
+diff --git a/wax/WXApplication.php b/wax/WXApplication.php
+index fbe253f772d47c5f6e11d662dd300a73c5bee0f7..7b1d048e99045411e9a69516be64066603461798 100755
+--- a/wax/WXApplication.php
++++ b/wax/WXApplication.php
+@@ -39,11 +39,15 @@ class WXApplication {
+    *  @return void
+    */
+ 	private function setup_environment() {
++	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
+ 		if(defined('ENV')) {
+ 		  WXConfiguration::set_environment(ENV);
+-		} else {
++		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
+ 		  WXConfiguration::set_environment('development');
++		} elseif($addr) {
++		  WXConfiguration::set_environment('production');
+ 		}
++		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
+   }
+   
+   /**
+@@ -63,7 +67,6 @@ class WXApplication {
+   private function initialise_database() {
+     if($db = WXConfiguration::get('db')) {
+       if($db['dbtype']=="none") return false;
+-      if(!$db['dbtype']) $db['dbtype']="mysql";
+       if(!$db['host']) $db['host']="localhost";
+       if(!$db['port']) $db['port']="3306";
+       
+diff --git a/wax/WXConfiguration.php b/wax/WXConfiguration.php
+deleted file mode 100644
+index 42cc93db3009927d2103fa64ac7e8478372611c7..0000000000000000000000000000000000000000
+--- a/wax/WXConfiguration.php
++++ /dev/null
+@@ -1,116 +0,0 @@
+-<?php
+-/**
+- * 	@package PHP-Wax
+- */
+-
+-/**
+- *
+- * @package PHP-Wax
+- *
+- *  Exposes the application configuration to other classes.
+- *  
+- *  
+- *  The default method is to use load_yaml but since this only returns an array
+- *  then it can easily be replaced with other methods.
+- *  
+- *  This is a Singleton object which once initialised cannot be duplicated, 
+- *  the set() method allows infinite possibilites to alter the runtime
+- *  environment, either by loading another config file or overwriting via php.
+- *
+- *  @author Ross Riley
+- *
+- */
+-class WXConfiguration
+-{
+-	
+-	public $config_array;
+-	public $app_yaml_file=false;
+-	static private $instance=false;
+-	
+-	static public function set_instance($initial_config=false) {
+-	  if(self::$instance) return false;
+-	  self::$instance=new WXConfiguration();
+-		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
+-	  self::$instance->app_yaml_file = $initial_config;
+-	  self::$instance->config_array = self::$instance->load_yaml(self::$instance->app_yaml_file);
+-	}
+-	
+-	/**
+-    *  Loads any .yml file
+-    *  @return array
+-    */
+-	static private function load_yaml($config_file) {	
+-		if(is_readable($config_file)){
+-		  if(function_exists("syck_load")) {
+-		    return syck_load(file_get_contents($config_file));
+-		  }
+-		  else return Spyc::YAMLLoad($config_file);
+-	  } else {
+-		  return false;
+-    }	
+-	}
+-	
+-	
+-	/**
+-    *  The clever function. Returns the configuration array for the particular 
+-    *  portion of the file you want - or if you specify 'all' as the parameter, the whole array.
+-    *  @return array
+-    */
+-	
+-	public function return_config($config=null) {
+-		if($config=="all") return self::$instance->config_array;
+-		$config=explode("/", $config);
+-		$confarray=self::$instance->config_array;
+-		foreach($config as $conf) {
+-			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
+-			else $confarray=false;
+-		}
+-		if($confarray) {
+-		  return $confarray; 
+-		}
+-		return false;
+-	}
+-	
+-	static public function replace_yaml($file) {
+-	  self::$instance->config_array = self::$instance->load_yaml($file);
+-	}
+-	
+-	/**
+-    *  Allows you to change the configuration on the fly. Use either a file or PHP array.
+-    *  @return bool
+-    */
+-	
+-	static public function set($new_config = array()) {
+-	  if(is_array($new_config)) {
+-	    self::$instance->config_array = array_merge(self::$instance->config_array, $new_config);
+-	    return true;
+-	  } 
+-	  return false;
+-	}
+-	
+-	/**
+-    *  An environment is a sub-array of the configuration, this simply copies the environment array
+-    *  to the root of the configuration overwriting anything that gets in its way.
+-    *  @return bool
+-    */
+-	
+-	static public function set_environment($env) {
+-	  $env = self::get($env);
+-	  if(is_array($env)) {
+-	    return self::set($env);
+-	  }
+-	  return false;
+-	}
+-	
+-	/**
+-    *  @return array
+-    */
+-	
+-	static public function get($value) { 
+-	  return self::$instance->return_config($value);
+-	}
+-		
+-	
+-}
+-
+-?>
+\ No newline at end of file
+diff --git a/wax/dispatch/WXRoute.php b/wax/dispatch/WXRoute.php
+deleted file mode 100755
+index 2529adaf2871e406b325b8f23c9394896143cff9..0000000000000000000000000000000000000000
+--- a/wax/dispatch/WXRoute.php
++++ /dev/null
+@@ -1,183 +0,0 @@
+-<?php
+-/**
+- * 
+- *
+- * @author Ross Riley
+- * @package PHP-Wax
+- **/
+-
+-/**
+- * Route construction class
+- *
+- * @package PHP-Wax
+- * @author Ross Riley
+- * 
+- * This class fetches the URL parameters from $_GET
+- * It also requires access to the config object to check configurations.
+- **/
+-class WXRoute {
+-  protected static $url = array();
+-	protected $route_array=array();
+-	protected $config_array=array();
+-	protected $actions_array=array();
+-	protected $controller;
+-	public function __construct() {
+-		$this->route_array=array_values(array_filter(explode("/", $_GET['route'])));
+-		$route = $_GET['route'];
+-		unset($_GET['route']);
+-		$this->route_array = array_merge($this->route_array, $_GET);
+-		self::$url = $this->route_array;
+-		$_GET['route']=$route;
+-		$this->config_array=WXConfiguration::get('route');
+-		$this->map_routes();
+-		$this->controller = $this->pick_controller();	
+-	}
+-	
+-	
+-	/**
+-    *  In the configuration file you can setup a section called 'route'
+-    *  this allows you to magically rewrite the request to anything you like. 
+-    *  
+-    *  The left hand side specifies a match, the right hand side is the new output.
+-    *  for example, - admin/login: page/login - will rewrite the url from the left to the right.
+-    *  Hell, if you fancy it you can even include the '*' wildcard. -admin/* : page/
+-    *
+-    *  @return void
+-    */
+-    
+-	public function map_routes() {
+-	  $this->detect_maintenance();
+-	  if(empty($this->route_array)) $this->route_array[0]=$this->config_array['default'];
+-		if(isset($this->config_array[$this->route_array[0]])) {
+-			$this->route_array[0]=$this->config_array[$this->route_array[0]];
+-		}
+-		$this->map_urls();
+-	}
+-	
+-	
+-	public function pick_controller() {
+-	  if(is_dir(CONTROLLER_DIR.$this->route_array[0])) {
+-    	$this->route_array[1]=$this->route_array[0]."/".$this->route_array[1]."/";
+-    	array_shift($this->route_array);
+-    }
+-	  if($res = $this->check_controller($this->route_array[0])) return $res;
+-	}
+-	
+-	protected function detect_maintenance() {
+-	  $maintenance = WXConfiguration::get("maintenance");
+-	  if($maintenance['ip'] && $maintenance['redirect']) {
+-	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
+-	    if($this->route_array[0] != $maintenance['redirect']) $this->route_array[0]=$maintenance['redirect'];
+-	    else return false;
+-	    return true;
+-	  }
+-	  return false;
+-	}
+-	
+-	/**
+-    *  Checks whether a file exists for the named controller
+-    *  @return boolean      If file exists true
+-    */
+-	protected function check_controller($controller) {
+-		if(strpos($controller, "/")) {
+-			$path = substr($controller, 0, strpos($controller, "/")+1);
+-			$class = slashcamelize($controller, true)."Controller";
+-			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
+-		}
+-		$class = ucfirst($controller)."Controller";
+-		$default = ucfirst($this->config_array['default']."Controller");
+-		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
+-		if(is_file(CONTROLLER_DIR.$default.".php")) {
+-		  array_unshift($this->route_array, $this->config_array['default']);
+-		  return $default;
+-	  }
+-		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
+-	}
+-	
+-	/**
+-    *  Strips the controller from the route and returns an array of actions
+-    *  This is designed to be called from the delegate controller.
+-    *
+-    *  @return boolean      If file exists true
+-    */
+-	
+-	public function read_actions() {	
+-		$actions = $this->route_array;
+-		array_shift($actions);
+-		return $actions;
+-	}
+-	
+-	public function get_url_controller() {
+-	  return $this->controller_to_url($this->pick_controller());
+-	}
+-	
+-	public function controller_to_url($controller) {
+-		$url = str_replace("Controller", "", $controller);
+-		return slashify($url);
+-	}
+-	
+-	public static function get_url_val($val) {
+-	  return self::$url[$val];
+-	}
+-	
+-	public function get_url() {
+-	  return self::$url;
+-	}
+-	
+-	public function map_urls() {
+-	  foreach($this->config_array as $k=>$v) {
+-	    if($k=="default") continue;
+-	    $patterns = explode("/", $k);
+-	    $replace = explode("/", $v);
+-	    if($this->is_match($patterns)) {
+-	      foreach($patterns as $i=>$val) {
+-  	      if($val!="*" && $val!=$this->route_array[$i]) continue;
+-  	      self::$url[$replace[$i]]=$this->route_array[$i];
+-  	    }
+-  	    $matched = true;
+-  	  }
+-  	  if($matched) break;
+-	  }
+-	  return $this->get_url();
+-	}
+-	
+-	protected function is_match($pattern) {
+-	  $url = $this->route_array;
+-	  if($url[0] != $this->get_url_controller()) array_unshift($url, $this->get_url_controller());
+-	  $match = true;
+-	  foreach($pattern as $k=>$val) {
+-	    if($val != $this->route_array[$k] && $val !="*") $match=false;
+-	  }
+-	  return $match;
+-	}
+-	
+-	public function is_default($controller) {
+-	  if($this->config_array["default"]==$controller) return true;
+-	  return false;
+-	}
+-	
+-	public function build_url($params) {
+-	  if(!$params["controller"]) $url = $this->unset_numeric($this->map_urls());
+-	  else $url=array();
+-	  return $url;
+-	}
+-	
+-	public function build_params($array) {
+-	  if(!count($extra_params)) {
+-		  if(array_pop(array_values($url))=="index") array_pop($url);
+-    	return str_replace("//","/",$url_base.implode("/", $url)."/");
+-		}
+-    return $url_base . str_replace("//", "/", implode("/", $url)."/"). "?".http_build_query($extra_params, "", "&");
+-	}
+-	
+-	
+-	public function unset_numeric($array) {
+-	  foreach($array as $k=>$v) if(!is_numeric($k)) $arr[$k]=$v;
+-	  return $arr;
+-	}
+-	
+-	
+-	
+-}
+-
+-?>
+\ No newline at end of file
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index ff10b8597ff55e6dbe55ca09eddc0649b1b9670d..81575349763ce6118976afe3f48fd7b3516bcfae 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -69,6 +69,7 @@ class WaxUrl {
+    **/
+ 
+   static public function perform_mappings($pattern) {
++    self::detect_maintenance();
+     self::route_controller();
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+@@ -145,6 +146,17 @@ class WaxUrl {
+     if(!$_GET["controller"]) $_GET["controller"]=self::$default_controller;
+     if(!$_GET["action"]) $_GET["action"]=self::$default_action;
+   }
++  
++  protected function detect_maintenance() {
++	  $maintenance = Config::get("maintenance");
++	  if($maintenance['ip'] && $maintenance['redirect']) {
++	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
++	    if($_GET["route"] != $maintenance['redirect']) $_GET["route"]=$maintenance['redirect'];
++	    else return false;
++	    return true;
++	  }
++	  return false;
++	}
+   	
+ }
+ 
+diff --git a/wax/utilities/Config.php b/wax/utilities/Config.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..ba7b8b09c805fbf0d7210cce3bb2ec296f3dda6b
+--- /dev/null
++++ b/wax/utilities/Config.php
+@@ -0,0 +1,116 @@
++<?php
++/**
++ * 	@package PHP-Wax
++ */
++
++/**
++ *
++ * @package PHP-Wax
++ *
++ *  Exposes the application configuration to other classes.
++ *  
++ *  
++ *  The default method is to use load_yaml but since this only returns an array
++ *  then it can easily be replaced with other methods.
++ *  
++ *  This is a Singleton object which once initialised cannot be duplicated, 
++ *  the set() method allows infinite possibilites to alter the runtime
++ *  environment, either by loading another config file or overwriting via php.
++ *
++ *  @author Ross Riley
++ *
++ */
++class Config
++{
++	
++	public $config_array;
++	public $app_yaml_file=false;
++	static private $instance=false;
++	
++	static public function set_instance($initial_config=false) {
++	  if(self::$instance) return false;
++	  self::$instance=new WXConfiguration();
++		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
++	  self::$instance->app_yaml_file = $initial_config;
++	  self::$instance->config_array = self::$instance->load_yaml(self::$instance->app_yaml_file);
++	}
++	
++	/**
++    *  Loads any .yml file
++    *  @return array
++    */
++	static private function load_yaml($config_file) {	
++		if(is_readable($config_file)){
++		  if(function_exists("syck_load")) {
++		    return syck_load(file_get_contents($config_file));
++		  }
++		  else return Spyc::YAMLLoad($config_file);
++	  } else {
++		  return false;
++    }	
++	}
++	
++	
++	/**
++    *  The clever function. Returns the configuration array for the particular 
++    *  portion of the file you want - or if you specify 'all' as the parameter, the whole array.
++    *  @return array
++    */
++	
++	public function return_config($config=null) {
++		if($config=="all") return self::$instance->config_array;
++		$config=explode("/", $config);
++		$confarray=self::$instance->config_array;
++		foreach($config as $conf) {
++			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
++			else $confarray=false;
++		}
++		if($confarray) {
++		  return $confarray; 
++		}
++		return false;
++	}
++	
++	static public function replace_yaml($file) {
++	  self::$instance->config_array = self::$instance->load_yaml($file);
++	}
++	
++	/**
++    *  Allows you to change the configuration on the fly. Use either a file or PHP array.
++    *  @return bool
++    */
++	
++	static public function set($new_config = array()) {
++	  if(is_array($new_config)) {
++	    self::$instance->config_array = array_merge(self::$instance->config_array, $new_config);
++	    return true;
++	  } 
++	  return false;
++	}
++	
++	/**
++    *  An environment is a sub-array of the configuration, this simply copies the environment array
++    *  to the root of the configuration overwriting anything that gets in its way.
++    *  @return bool
++    */
++	
++	static public function set_environment($env) {
++	  $env = self::get($env);
++	  if(is_array($env)) {
++	    return self::set($env);
++	  }
++	  return false;
++	}
++	
++	/**
++    *  @return array
++    */
++	
++	static public function get($value) { 
++	  return self::$instance->return_config($value);
++	}
++		
++	
++}
++
++?>
+\ No newline at end of file
+diff --git a/wax/utilities/Validate.php b/wax/utilities/Validate.php
+deleted file mode 100644
+index 7ca42599b5400feab093dbf125c38029b85a50e0..0000000000000000000000000000000000000000
+--- a/wax/utilities/Validate.php
++++ /dev/null
+@@ -1,59 +0,0 @@
+-<?php
+-/**
+- *  
+- * @package PHP-Wax
+- * @author Ross Riley
+- **/
+-class Validate
+-{
+-  static public $validations = array();
+-  static public $remove_validations = array();
+-  public $input = "";
+- 
+-  /**
+-   *
+-   * @return void
+-   * @author /bin/bash: niutil: command not found
+-   **/
+-  public function __construct($input) {
+-    $this->input = $input;
+-  }
+-
+-  /**
+-   * run_pre_filters function
+-   *
+-   * @return $output
+-   **/
+-  public function validate($trigger) {
+-    foreach(self::$remove_validations as $remove_validation) {
+-      self::$validations[$remove_validation["trigger"]][$remove_validation["class"]][$remove_validation["method"]]=false;
+-    }
+-    
+-    foreach(self::$validations[$trigger] as $class) {
+-      foreach($class as $method=>$args) {
+-        if(is_array($method)) $this->input = call_user_func_array(array($class, $method), $args);
+-      }
+-    }
+-    return $this->input;
+-  }
+-  
+-  
+-  /**
+-   * add_filter function
+-   *
+-   * @return void
+-   **/
+-  static public function add_filter($trigger, $class, $method, $args=array()) {
+-    self::$filters[$trigger][$class][$method]=$args;
+-  }
+-  
+-  /**
+-   * remove_filter function
+-   *
+-   * @return void
+-   **/
+-  static public function remove_filter($trigger, $class, $method) {
+-    self::$remove_filters[]=array("trigger"=>$trigger, "class"=>$class, "method"=>$method);
+-  }
+-	
+-}
+\ No newline at end of file
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..9e17fb908f381bdd9165ace132570b64b239479a
+--- /dev/null
++++ b/wax/utilities/WaxLog.php
+@@ -0,0 +1,49 @@
++<?php
++/**
++ * Register a log message along with a namespace
++ *
++ * Output can vary depending on environment.
++ *
++ * @package PHP-Wax
++ * @author Ross Riley
++ **/
++class WaxLog {
++
++  
++  static public $log_file;
++
++  static public $logs = array();
++  static public $logs_enabled = array();
++  static public $log_handler = array("self", "log");
++  static public $auto_flush = true;
++  
++  static public function add($type, $message) {
++    self::$log_file = ENV.".log";
++    self::$logs[]=array($type=>$message);
++    if(self::$auto_flush) call_user_func_array(self::$log_handler, self::output());
++  }
++  
++  public function output() {
++    $output = "";
++    foreach(self::$logs as $type=>$log) {
++      if(in_array( $type, self::$logs_enabled)) $output .= "[$type] $message"."\n";
++    }
++    self::flush();
++    return $output;
++  }
++  
++  public function flush() {
++    self::$logs=array();
++  }
++  
++  public function __set($name, $value) {
++    self::$logs_enabled[$name]=$value;
++  }
++  
++  public function log($output) {
++    error_log($output, 3, self::$log_file);
++  }
++  
++
++}
++
+diff --git a/wax/utilities/deprecated/WXConfiguration.php b/wax/utilities/deprecated/WXConfiguration.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..3f165855d1882fecff8a882b2b43f9b0508c9227
+--- /dev/null
++++ b/wax/utilities/deprecated/WXConfiguration.php
+@@ -0,0 +1,25 @@
++<?php
++/**
++ * 	@package PHP-Wax
++ */
++
++/**
++ *
++ * @package PHP-Wax
++ *
++ *  Exposes the application configuration to other classes.
++ *  
++ *  
++ *  The default method is to use load_yaml but since this only returns an array
++ *  then it can easily be replaced with other methods.
++ *  
++ *  This is a Singleton object which once initialised cannot be duplicated, 
++ *  the set() method allows infinite possibilites to alter the runtime
++ *  environment, either by loading another config file or overwriting via php.
++ *
++ *  @deprecated
++ *
++ */
++class WXConfiguration extends Config {}
++
++?>
+\ No newline at end of file
+-- 
+1.5.4
+
+

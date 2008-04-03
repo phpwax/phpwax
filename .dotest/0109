@@ -1,0 +1,26 @@
+From e70a6fb9375c1aa47804fdbcb080dc72bb0cfc49 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 16:09:31 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/tests/TestWaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index ca6c1592ed22a4d6e447e8bf344fcef32da55903..34c51688d2a263104c9d27c22f17291984bfb774 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -33,7 +33,7 @@ class TestWaxUrl extends WXTestCase {
+     // }
+     
+     public function test_wildcard_map() {
+-      $_GET["route"]="tags/tech/humour/pics";
++      $_GET["route"]="article/tech/humour/pics";
+       WaxUrl::map("article/:tags*", array("controller"=>"blog", "action"=>"tags"));
+       WaxUrl::perform_mappings();
+       $this->assertTrue(is_array(WaxUrl::get("tags")) );
+-- 
+1.5.4
+
+

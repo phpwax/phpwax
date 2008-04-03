@@ -1,0 +1,38 @@
+From 33f1c4062def49ced539c5118b70c3337f8c07b1 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 1 May 2008 22:53:57 +0100
+Subject: Backwards Compatibility addition to WaxModel
+
+---
+ wax/db/WaxModel.php |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index ca1b00f5947375069d383ffe84695687a6248f89..c8bc99e26ac42936e01e1d444fa2d800b5203197 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -308,6 +308,20 @@ class WaxModel {
+   }
+ 
+ 
++  /**
++   * Maintains Backward compatibility 
++   *
++   * @param array $options 
++   * @return WaxRecordset
++   */
++  
++  public function find_all($options=array()) {
++    if($options["conditions"]) $this->filter($options["conditions"]);
++    if($options["limit"]) $this->limit=$options["limit"];
++    if($options["order"]) $this->order = $options["order"];
++    return $this->all();
++  }
++
+ 
+  	public function __call( $func, $args ) {
+  	  return array();
+-- 
+1.5.4
+
+

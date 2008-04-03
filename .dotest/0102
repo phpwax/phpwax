@@ -1,0 +1,27 @@
+From 65c37a3cbdefaab31e2fe5e2a0deacb66fe44e95 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 16:03:39 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 3d5c2147ca41b9a0ccbb2f6b49ddd26e71df93a4..98ffb172e68b5cb2547c5a70392d94e53c3dfab0 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -71,8 +71,8 @@ class WaxUrl {
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
+-      $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
+       $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9\-\*]*)", $left);
++      $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
+       $left = str_replace("/", "\/", $left);      
+       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+-- 
+1.5.4
+
+

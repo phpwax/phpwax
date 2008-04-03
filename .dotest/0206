@@ -1,0 +1,33 @@
+From a3ba98809884b04930d8f676bb0bbb20bf39e723 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 01:41:58 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/utilities/WaxLog.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 3a50bdaf8fb7339bd50fa839c41b93e455bab8d1..be7bdeaf9afa0456652dd8faf3eb5e96efc57cb4 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -14,13 +14,13 @@ class WaxLog {
+ 
+   static public $logs = array();
+   static public $logs_enabled = array();
+-  static public $log_handler = array("self", "write");
++  static public $log_handler = "self::write";
+   static public $auto_flush = true;
+   
+   static public function add($type, $message) {
+     self::$log_file = ENV.".log";
+     self::$logs[]=array($type=>$message);
+-    if(self::$auto_flush) call_user_func_array(self::$log_handler, self::output());
++    if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
+   }
+   
+   static public function log($type) {
+-- 
+1.5.4
+
+

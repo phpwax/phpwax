@@ -1,0 +1,25 @@
+From 771959dbe9ce47129378d8c3b85000fa32958818 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Fri, 18 Apr 2008 00:57:27 +0100
+Subject: Maps choices improvements
+
+---
+ wax/db/WaxModelField.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index d3e19fb41de7b01edb60c3be38f2c5a7d2588f3d..5fbf2f0780350a05aca57b4d6af1c8ac5aec4993 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -72,6 +72,7 @@ class WaxModelField {
+       $this->choices = array();
+       foreach($choices as $key=>$choice) {
+         if(is_numeric($key)) $this->choices[$choice]=$choice;
++        else $this->choices[$key]=$choice;
+       }
+     }
+   }
+-- 
+1.5.4
+
+

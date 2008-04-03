@@ -1,0 +1,25 @@
+From 13c7cb89f60b13f6abb094653eb172105105a2db Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 01:29:40 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 66d17872951b97ee8a75019fe46d855ec6efd808..f82e51cc317883e09b2001bac595de6a71ed9ea9 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -23,6 +23,7 @@ class WaxWidget {
+       $this->attribute("name", "[$model->table]$name");
+       $this->attribute("id", "{$model->table}_{$name}");
+       $this->value = $model->$name;
++      if(!$label) $this->label = Inflections::humanize($name);
+     }
+   }
+   
+-- 
+1.5.4
+
+

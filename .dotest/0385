@@ -1,0 +1,40 @@
+From 3ca524ad2fb854edd03048cde5acc2b30d226880 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 11 Apr 2008 12:03:45 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/helpers/UrlHelper.php |    2 +-
+ wax/helpers/WXHelpers.php |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/helpers/UrlHelper.php b/wax/helpers/UrlHelper.php
+index f5f2e22f74e785a360aa91bd707d5262d1b7b990..f4def81b0a9a1caf717d0a756567ecde19d29122 100644
+--- a/wax/helpers/UrlHelper.php
++++ b/wax/helpers/UrlHelper.php
+@@ -145,7 +145,7 @@ class UrlHelper extends WXHelpers {
+      *  </ul>
+      *  @return string
+      */
+-  public function url_for($options = array(), $url_base="/") {
++  private function url_for($options = array(), $url_base="/") {
+ 		$routes_object = new WXRoute;
+     $url = array();
+     $extra_params = array();
+diff --git a/wax/helpers/WXHelpers.php b/wax/helpers/WXHelpers.php
+index 67e944c70a4a8be670bf3630cee34557104c1b6a..00772ba41fcba8569e42b176231035889c46be7d 100755
+--- a/wax/helpers/WXHelpers.php
++++ b/wax/helpers/WXHelpers.php
+@@ -322,7 +322,7 @@ class WXHelpers {
+     return $url_base."?".http_build_query($vals);
+   }
+   
+-  public function url($val) {
++  private function url($val) {
+     return WXRoute::get_url_val($val);
+   }
+ 
+-- 
+1.5.4
+
+

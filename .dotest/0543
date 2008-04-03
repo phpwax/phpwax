@@ -1,0 +1,28 @@
+From 2eab14dd77fc988e3e3da11bdd9df3bb60b61598 Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Thu, 17 Apr 2008 15:19:39 +0100
+Subject: unset the file fields after moved
+
+---
+ wax/db/fields/FileField.php |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/FileField.php b/wax/db/fields/FileField.php
+index 107de817b0cd8e93f212bd92e82ad1bb5fb96510..14a7bd94f7b395da38daf8948bd11975b70d2b04 100644
+--- a/wax/db/fields/FileField.php
++++ b/wax/db/fields/FileField.php
+@@ -63,7 +63,9 @@ class FileField extends WaxModelField {
+ 			//save file to hdd & change col_name value to new_path
+ 			$column = $this->col_name;
+ 			$path = $this->save_file($_FILES[$this->model->table]);
+-			if($path) $this->model->$column = $path;				
++			if($path) $this->model->$column = $path;
++			unset($_FILES[$this->model->table]['name'][$this->col_name]);				
++			unset($_FILES[$this->model->table]['size'][$this->col_name]);				
+ 		} 
+ 		
+ 	}
+-- 
+1.5.4
+
+

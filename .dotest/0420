@@ -1,0 +1,31 @@
+From 13fa37e8b8b1a6074814d715230ad426ed692b3e Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Tue, 15 Apr 2008 11:05:25 +0100
+Subject: removed setup on datetime field - bug fix
+
+---
+ wax/db/fields/DateTimeField.php |    7 -------
+ 1 files changed, 0 insertions(+), 7 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index 768af729bf7d6748fac6a373fc083f6b17387d7c..6ecf6eb74ce51470fea1303d6ddb94998c8eb89a 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -10,13 +10,6 @@ class DateTimeField extends WaxModelField {
+   public $null = false;
+   public $default = false;
+   public $maxlength = false;
+-  
+-  public function setup() {
+-    //default to current date if null
+-    if(!$this->model->{$this->field}){
+-      $this->model->{$this->field} = date("Y-m-d H:i:s");
+-    }
+-  }
+ 
+   public function validate() {
+     $this->valid_length();
+-- 
+1.5.4
+
+

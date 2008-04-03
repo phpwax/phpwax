@@ -1,0 +1,54 @@
+From 377bdee9fdbd22b00488482366c4dbb16217e45b Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 18:42:22 +0100
+Subject: Fix to WaxUrl bug
+
+---
+ wax/dispatch/WaxUrl.php  |    5 ++++-
+ wax/tests/TestWaxUrl.php |    6 ++++++
+ 2 files changed, 10 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 21ddb939d28bf583b2d3b6c63f2de41c2d7d44ab..d88b9905aeab77d5b651ed56d209f12108e9e01a 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -82,7 +82,9 @@ class WaxUrl {
+         $mappings = split("/", $map[0]);
+         array_shift($matches);
+         while(count($mappings)) {
+-          if(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
++          if($_GET["controller"] && $_GET["controller"]==$matches[0]) {
++            
++          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
+             $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
+           }
+           elseif(substr($mappings[0],0,1)==":") {
+@@ -128,6 +130,7 @@ class WaxUrl {
+ 	  }
+ 	  if($controller) {
+ 	    $_GET["controller"]=$controller;
++	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+ 	    $_GET["route"]=ltrim($_GET["route"], "/");
+ 	  }
+ 	}
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 6eec9f6297232e6d8a39d39039d798adddca61e1..fa9f74000f387e7858fd2230550478053571d5fb 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -35,6 +35,12 @@ class TestWaxUrl extends WXTestCase {
+       $this->assertEqual(WaxUrl::get("controller"), "blog");
+       $this->assertEqual(WaxUrl::get("category"), "tech");
+       $this->assertEqual(WaxUrl::get("id"), "5");
++      
++      $_GET["route"]="page/tech/5";
++      WaxUrl::map("page/:category/:id", array("controller"=>"blog", "action"=>"show"));
++      $this->assertEqual(WaxUrl::get("controller"), "blog");
++      $this->assertEqual(WaxUrl::get("category"), "tech");
++      $this->assertEqual(WaxUrl::get("id"), "5");
+     }
+     
+     public function test_wildcard_map() {
+-- 
+1.5.4
+
+

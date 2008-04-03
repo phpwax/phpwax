@@ -1,0 +1,25 @@
+From 1a660d018f2917babccee36feb01b050113491af Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 15 Apr 2008 17:47:26 +0100
+Subject: Improved working for logs
+
+---
+ wax/db/WaxDbAdapter.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 6a788f2dc9b8bc453936b0edb7dfb1ae4ea45256..89d08085a7434f5312dce3dff36b2894d02cc7f4 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -201,6 +201,7 @@ abstract class WaxDbAdapter {
+ 			$pdo_statement->execute($bindings);
+ 		} catch(PDOException $e) {
+ 			$err = $pdo_statement->errorInfo();
++			WaxLog("error", "[DB]". $err[2]);
+       if(!$swallow_errors) throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
+ 		}
+ 		return $pdo_statement;
+-- 
+1.5.4
+
+

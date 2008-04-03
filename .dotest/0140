@@ -1,0 +1,38 @@
+From a928649a2d3ec196d635ba919fa0e7a4fea19f16 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 13:03:53 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/tests/TestWaxModelField.php |    7 +++----
+ 1 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index c217a6e57d36bb3947d0bbc311cd9fcf677fb963..e9ea268b8cfff22dea962ac672217ead5eb33820 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -83,8 +83,7 @@ class TestWaxModelField extends WXTestCase {
+       $model->example_owner = $owner;
+       $model2->example_owner = $owner;
+       $this->assertEqual($owner->examples->count(), 2);
+-      // And test the reverse way
+-      
++
+     }
+     
+     public function test_has_many_without_foreign_key_definition() {
+@@ -97,8 +96,8 @@ class TestWaxModelField extends WXTestCase {
+       $editor->examples->unlink($this->model->all());
+       $this->assertEqual($editor->examples->count(), 0);
+       $model2 = $this->model->create($this->get_fixture("user3"));
+-      $editor->examples = $this->model->all();
+-      $this->assertEqual($editor->examples->count(), 3);
++      $editor->examples = $model2;
++      $this->assertEqual($editor->examples->count(), 1);
+     }
+     
+     public function test_many_many() {
+-- 
+1.5.4
+
+

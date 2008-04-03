@@ -1,0 +1,26 @@
+From ab331e75b2296e336734580d4e2ead74e63e79b6 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 12:57:51 +0100
+Subject: Fix to 404 status rendering
+
+---
+ wax/exceptions/WXRoutingException.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index 9f7a602c5aa5921ccb144f8b18f0d75f75386a35..35e17d26145c97cfb9797afe17880e0f89e9a9e7 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -6,7 +6,7 @@
+  **/
+ class WXRoutingException extends WXException
+ {
+-  static $redirect_on_error="error-404";
++  static $redirect_on_error="error_404";
+   
+ 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
+   	if($location = self::$redirect_on_error) {
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 39c90dad95422b06c598fcb91888bff654600c20 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 01:17:55 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/widgets/TextInput.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/widgets/TextInput.php b/wax/forms/widgets/TextInput.php
+index 597fbfd9178214891ff0ad878706973bc770c5f9..6ddf599adb32f1a0b9e16784697914aae1565dd7 100644
+--- a/wax/forms/widgets/TextInput.php
++++ b/wax/forms/widgets/TextInput.php
+@@ -18,7 +18,7 @@ class TextInput extends WaxWidget {
+   public $label = false;
+   public $help_text = false;
+   public $show_label = true;
+-  public $label_template = '<label for="%s>%s</label>';
++  public $label_template = '<label for="%s">%s</label>';
+   public $template = '<input %s />"';
+   
+   
+-- 
+1.5.4
+
+

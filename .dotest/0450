@@ -1,0 +1,26 @@
+From 60ae2403be62241161b4a3c13e9baca21c332bfa Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 01:31:09 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index f82e51cc317883e09b2001bac595de6a71ed9ea9..ad4b035bde93fd1c0da983397419055b72a8d9a8 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -16,7 +16,7 @@ class WaxWidget {
+   public $help_text = false;
+   public $show_label = true;
+   public $label_template = '<label for="%s>%s</label>';
+-  public $template = '<input %s />"';
++  public $template = '<input %s />';
+   
+   public function __construct($name, WaxModel $model=null) {
+     if($model) {
+-- 
+1.5.4
+
+

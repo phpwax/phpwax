@@ -1,0 +1,27 @@
+From 60c74438cf926c3c4c0f73290b1c80b833133de7 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 12:22:48 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/exceptions/WXException.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/exceptions/WXException.php b/wax/exceptions/WXException.php
+index ec6c0f6a983631fc8801363257d9e294f7714aa8..f4751c4d54ba3da1df3a67a5bc67d895ce8fbc4d 100755
+--- a/wax/exceptions/WXException.php
++++ b/wax/exceptions/WXException.php
+@@ -29,8 +29,7 @@ class WXException extends Exception
+   }
+   
+ 	public function format_trace($e) {
+-	  error_log(FRAMEWORK_DIR."template/builtin/trace");
+-		return WXControllerBase::view_to_string(FRAMEWORK_DIR."template/builtin/trace", array("e"=>$e));
++		return WXControllerBase::view_to_string(FRAMEWORK_DIR."/template/builtin/trace", array("e"=>$e));
+ 	}
+ 	
+ 	
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 0fa8ba8197f693bfb9c738a0eff92bb1a626be34 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 12:51:49 +0100
+Subject: Added error sniffing to widgets
+
+---
+ wax/forms/WaxForm.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 122f0e83ab71a32078a5be6d95d17dfe16a48356..3c96b1462647d08cdbbea92e694c833bd8210c8c 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -58,7 +58,7 @@ class WaxForm {
+    
+    public function is_valid() {
+      foreach($this->elements as $el) {
+-       if($el->error_messages) {print_r($el); exit;}
++       if($el->error_messages) return false;
+      }
+      return true;
+    }
+-- 
+1.5.4
+
+

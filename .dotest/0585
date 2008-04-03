@@ -1,0 +1,67 @@
+From c53a0aade880c445224157784a2cc266a4fd3079 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 13:25:24 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/forms/WaxForm.php   |    2 +-
+ wax/forms/WaxWidget.php |   29 -----------------------------
+ 2 files changed, 1 insertions(+), 30 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 800e52e12c35e7e7b5e541fc745c470d4df30083..be8cc54ad9ea02c48560b69b55fdda65efa8ab38 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -62,7 +62,7 @@ class WaxForm {
+    
+    public function is_valid() {
+      foreach($this->elements as $el) {
+-       if($el->error_messages) return false;
++       if($el->errors) return false;
+      }
+      return true;
+    }
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index ab3310df5a239bc4e5ad0a0d5dc1e89b15e0156e..55bc23881cf27f232b45dae6b7f9e7d9e5dc4719 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -23,35 +23,6 @@ class WaxWidget {
+     if($data) $this->bound_data = $data;
+   }
+   
+-  /**
+-   * This function maps data to the elements in the form
+-   * Possible paramaters are:
+-   * 1. A WaxModel instance
+-   * 2. An associative array of values.
+-   * @param mixed $data 
+-   * @return void
+-   */
+-  
+-  public function map_data($data) {
+-    if($data instanceof WaxModel) {
+-      $this->name = $data->table[$name];
+-      $this->id=$data->table."_".$name;
+-      $this->value = $data->output_val($name);
+-      
+-      $field = $data->columns[$name];
+-      $model_field = new $field[0]($name, $data, $field[1]);
+-      $this->blank = $model_field->blank;
+-      $this->choices = $model_field->choices;
+-      $this->label = $model_field->label;
+-      $this->help_text = $model_field->help_text;
+-      if($er = $data->errors[$name]) $this->error_messages = (array)$er;
+-    } elseif (is_array($data)) {
+-      foreach ($data as $key => $value) {
+-        $this->$key = $value;
+-      }
+-    }
+-  }
+-  
+   
+   public function render() {
+     $out ="";
+-- 
+1.5.4
+
+

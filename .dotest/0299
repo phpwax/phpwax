@@ -1,0 +1,90 @@
+From 6bdc5e64a685e85e770812d3e29098a5f1b4fc4b Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Thu, 10 Apr 2008 13:03:16 +0100
+Subject: added unique validation and field for character fields
+
+---
+ wax/db/fields/CharField.php     |   15 ++++++++++++++-
+ wax/db/fields/EmailField.php    |    5 ++---
+ wax/tests/TestWaxModelField.php |    7 +++++++
+ 3 files changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/wax/db/fields/CharField.php b/wax/db/fields/CharField.php
+index 41ba5515c74291c5eda2747809ca37527b808afc..50cbfb25a187f988fd9084e7118a8155781e895e 100644
+--- a/wax/db/fields/CharField.php
++++ b/wax/db/fields/CharField.php
+@@ -8,6 +8,7 @@
+ class CharField extends WaxModelField {
+   
+   public $maxlength = "255";
++  public $unique = false;
+   
+   public function setup() {
+     
+@@ -16,7 +17,19 @@ class CharField extends WaxModelField {
+   public function validate() {
+     $this->valid_length();
+  	  $this->valid_required();
++ 	  $this->valid_unique();
+   }
+ 
++  protected function valid_unique() {
++    if($this->unique){
++      $model_name = get_class($this->model);
++      $model = new $model_name();
++    
++      //checks if the id in the database is the same as the id of the current row (will also pass if there's no entry in the database)
++      if($model->filter(array($this->field => $this->model->{$this->field}))->first()->id != $this->model->id){
++        $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
++      }
++    }
++  }
+ 
+-} 
++}
+\ No newline at end of file
+diff --git a/wax/db/fields/EmailField.php b/wax/db/fields/EmailField.php
+index 72af60e21d70389a8865a47a1d9c3d4a600b836f..bcf2cba818c0267f3cba2383592b8c7a1054d882 100644
+--- a/wax/db/fields/EmailField.php
++++ b/wax/db/fields/EmailField.php
+@@ -5,7 +5,7 @@
+  *
+  * @package PHP-Wax
+  **/
+-class EmailField extends WaxModelField {
++class EmailField extends CharField {
+   
+   public $maxlength = "100";
+   
+@@ -14,8 +14,7 @@ class EmailField extends WaxModelField {
+   }
+ 
+   public function validate() {
+-    $this->valid_length();
+- 	  $this->valid_required();
++    parent::validate();
+     $this->valid_format("email", '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i');
+   }
+ 
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index c177c8ab6ac7e8ed96595e94bebe42c2f51e0a6e..00e9ce4a1baf876523be61bf7025beda2f663fef 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -68,6 +68,13 @@ class TestWaxModelField extends WXTestCase {
+       $this->assertFalse($res->save());
+     }
+     
++    public function test_validate_unique() {
++      $this->model->define("username", "CharField", array("unique" => true));
++      $model1 = $this->model->create($this->get_fixture("user1"));
++      $model2 = $this->model->set_attributes($this->get_fixture("user1"));
++      $this->assertFalse($model2->validate());
++    }
++    
+     public function test_foreign_key() {
+       $owner = $this->model_owner->create(array("name"=>"Master"));
+       $model = $this->model->create($this->get_fixture("user1"));
+-- 
+1.5.4
+
+

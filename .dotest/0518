@@ -1,0 +1,55 @@
+From 6283760b90ecdcc3f80fd6987deb1e0e8f466eb9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 12:05:58 +0100
+Subject: Added error sniffing to widgets
+
+---
+ wax/forms/WaxWidget.php |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 32f507c8f99e6a9f00cfd061a433b5879b0d3d94..9aca2ce74405f6929b5c29f2b3cc08655570db09 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -17,6 +17,8 @@ class WaxWidget {
+   public $help_text = false;
+   public $label_template = '<label for="%s>%s</label>';
+   public $template = '<input %s />';
++  public $error_message = false;
++  public $error_template = '<span class="error_message">%s</span>';
+   
+   public function __construct($name, WaxModel $model=null) {
+     if($model) {
+@@ -32,14 +34,17 @@ class WaxWidget {
+       $this->label = $model_field->label;
+       $this->help_text = $model_field->help_text;
+       if($label===true) $this->label = Inflections::humanize($name);
++      if($er = $model->errors[$name]) $this->error_message = $er;
+     }
+   }
+   
+   
+   public function render() {
+     $out ="";
++    if($this->error_message) $this->attributes["class"].=" error_field";
+     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+     $out .= sprintf($this->template, $this->make_attributes());
++    if($this->error_message) $out .= sprintf($this->error_template, $this->error_message);
+     return $out;
+   }
+   
+@@ -55,6 +60,10 @@ class WaxWidget {
+     return $res;
+   }
+   
++  public function is_valid() {
++    if($this->error_message) return true;
++    return false;
++  }  
+ 
+ 
+ 
+-- 
+1.5.4
+
+

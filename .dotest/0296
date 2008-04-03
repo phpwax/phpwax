@@ -1,0 +1,65 @@
+From f3a2ecddf947864148f57b75fc2cf599ab864aa0 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 12:42:06 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/exceptions/WXActiveRecordException.php |    5 +++--
+ wax/exceptions/WXException.php             |    3 ++-
+ wax/template/builtin/trace.html            |    2 +-
+ 3 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/wax/exceptions/WXActiveRecordException.php b/wax/exceptions/WXActiveRecordException.php
+index 899c24b0f87781a333407d820d3805d32b85cedb..77b3b052a4802bc7b5cbbb220529145c32039655 100755
+--- a/wax/exceptions/WXActiveRecordException.php
++++ b/wax/exceptions/WXActiveRecordException.php
+@@ -4,8 +4,9 @@
+  * @package PHP-Wax
+  * @author Ross Riley
+  **/
+-class WXActiveRecordException extends WXException
+-{
++class WXActiveRecordException extends WXException {
++  
++  
+ 	function __construct( $message ) {
+   	return parent::__construct( $message, "Database Error");
+   }
+diff --git a/wax/exceptions/WXException.php b/wax/exceptions/WXException.php
+index d0c68a5c9bb54ac1779a5c7568f545be88fce802..e87f94c901ced4a6466d2bb77e907f442e8a1604 100755
+--- a/wax/exceptions/WXException.php
++++ b/wax/exceptions/WXException.php
+@@ -18,6 +18,7 @@ class WXException extends Exception
+   static $email_on_error=false;
+   static $email_subject_on_error="Application error on production server";
+ 	public $div = "------------------------------------------------------------------------------------------------------\n";
++  public $help = "No further information was available";
+ 
+ 	public function __construct($message, $heading, $code = "500") {
+     parent::__construct($message, $code);
+@@ -31,7 +32,7 @@ class WXException extends Exception
+ 	public function format_trace($e) {
+     if(!self::$double_redirect) {
+       self::$double_redirect=true;
+-      $view= new WXTemplate(array("e"=>$e));
++      $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
+   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
+   		return $view->parse();
+ 	  } else return $this->cli_error_message;
+diff --git a/wax/template/builtin/trace.html b/wax/template/builtin/trace.html
+index facb6e556fab3b657ad8d0fbe12ea5b575bd7797..d4ef792834894c648526608d230e60d80aa6b0ff 100644
+--- a/wax/template/builtin/trace.html
++++ b/wax/template/builtin/trace.html
+@@ -39,7 +39,7 @@ Line:     <?=$e->getLine()?>
+     </div>
+     <div id="help">
+       <h2>Further Information</h2>
+-      <?=$help?>
++      <p><?=$help?></p>
+     </div>
+     <div id="environment">
+       <h2>HTTP Request, cookie and server information</h2>
+-- 
+1.5.4
+
+

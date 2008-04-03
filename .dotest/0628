@@ -1,0 +1,32 @@
+From 04b125302cb06ffc8dde9fa0cf9885355c330e03 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 15:04:10 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/db/fields/ForeignKey.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index c45ae6355cb6866bea01141f38fb194631844720..648c8e68f611a40da5ca371d896d81414a1806cf 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -16,13 +16,13 @@ class ForeignKey extends WaxModelField {
+   
+   public function setup() {
+     if(!$this->table) $this->table = $this->field;
+-    if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
+     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
+     if($this->identifier) {
+       $link = new $this->model_name;
+       $this->choices[""]="Select";
+       foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
+     }
++    $this->col_name = $this->model_name."_".$link->primary_key;
+   }
+ 
+   public function validate() {
+-- 
+1.5.4
+
+

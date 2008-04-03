@@ -1,0 +1,57 @@
+From 3b7357f6bb229bb917a0fb804f370d2e5339f3db Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 4 May 2008 12:05:08 +0100
+Subject: BC addition to WaxModel find function
+
+---
+ wax/db/WaxModel.php |   30 +++++++++++++++++++++++++-----
+ 1 files changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index dc25707798131cfe677b34a6bfd6dd82afd1e685..fff681c3f7200b8c83288d546fb4cde500554b6c 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -335,14 +335,34 @@ class WaxModel {
+     if($options["order"]) $this->order = $options["order"];
+     return $this->first();
+   }
++  
++  public function dynamic_finders($func, $args) {
++		$func = WXInflections::underscore($func);
++	  $finder = explode("by", $func);
++		$what=explode("and", $finder[1]);
++		foreach($what as $key=>$val) {
++		  $what[$key]=rtrim(ltrim($val, "_"), "_");
++		}
++    if( $args ) {
++      if(count($what)==2) {
++        $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
++			}else{
++			  $this->filter(array($what[0]=>$args[0]));
++			}
++			if(is_array($args[1])) $params = $args[1];
++			elseif(is_array($args[2])) $params = $args[2];
++			
++			if($finder[0]=="find_all_") {
++        return $this->find_all($params);
++      } else {
++        return $this->find($params);
++      }
++    }
++	}
+ 
+ 
+  	public function __call( $func, $args ) {
+- 	  return array();
+- 	  $function = explode("_", $func);
+- 		if(array_key_exists($function[1], $this->has_many_throughs) && count($function)==2) {
+- 			return $this->has_many_methods($function[0], $function[1], $args);
+- 		} else return $this->dynamic_finders($func, $args);
++ 	  return $this->dynamic_finders($func, $args);
+   }
+    
+   public function __clone() {
+-- 
+1.5.4
+
+

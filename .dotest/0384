@@ -1,0 +1,32 @@
+From 3f4a0f7e59030ed04fdcc0632b10d5087923ef9d Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Fri, 11 Apr 2008 11:09:47 +0100
+Subject: fix to paginate_url function: force the arg seperator to be &, as it seems to ignore whats in the php ini file...
+
+---
+ wax/helpers/WXHelpers.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/helpers/WXHelpers.php b/wax/helpers/WXHelpers.php
+index ed10ea4ad09baf0a72610285115ac0d5302b8630..03190c64db68e0c46e41ff184fbfae891478a5a5 100755
+--- a/wax/helpers/WXHelpers.php
++++ b/wax/helpers/WXHelpers.php
+@@ -314,12 +314,12 @@ class WXHelpers {
+     return $this->content_tag("ul", $content, array("class"=>"pagination"));
+   }
+   
+-  public function paginate_url($param, $page) {
++ 	public function paginate_url($param, $page) {
+     $vals = $_GET;
+     $url_base = "/".$vals["route"];
+     unset($vals["route"]);
+     $vals[$param]= $page;
+-    return $url_base."?".http_build_query($vals);
++    return $url_base."?".http_build_query($vals, false, "&");
+   }
+   
+   public function url($val) {
+-- 
+1.5.4
+
+

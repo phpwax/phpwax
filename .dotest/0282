@@ -1,0 +1,37 @@
+From acf7af00a10dd791ba53743f7e0696b84b0ad379 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 12:03:32 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/db/deprecated/WXActiveRecord.php |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/wax/db/deprecated/WXActiveRecord.php b/wax/db/deprecated/WXActiveRecord.php
+index 655c5341614966f604914dd729a643e7c66e410e..e68fe7c201f435de8c8fe17bcc9deba3386ce8a3 100755
+--- a/wax/db/deprecated/WXActiveRecord.php
++++ b/wax/db/deprecated/WXActiveRecord.php
+@@ -84,13 +84,12 @@ class WXActiveRecord extends WXValidations implements Iterator
+   		} else {
+   			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+   		}
+-		
+-  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+-  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+-  		print_r($pdo); exit;
+-  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+-      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+-      }
++		  try {
++		    $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
++    		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
++		  } catch (Exception $e) {
++		    throw new WXException("Cannot Initialise DB", "Database Configuration Error");
++		  }
+       self::$default_pdo = $pdo;
+     }
+     return self::$default_pdo;
+-- 
+1.5.4
+
+

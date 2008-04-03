@@ -1,0 +1,51 @@
+From 0078881faa500850802f05786d8bc2296f12f39f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 4 Apr 2008 16:15:13 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    4 +---
+ wax/tests/TestWaxUrl.php |    1 +
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index b68467c6b1c212347c5acd56b81a5ff5ebe4fbcc..758d475d04cc808caa0b6e76b6b589a1f68733ff 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -72,11 +72,9 @@ class WaxUrl {
+       $subject = explode("/", $_GET['route']);
+       for($i=0;$i< count($subject); $i++) {
+         if($pattern[$i]==$subject[$i]) continue;
+-        
+         if(substr($pattern[$i],0,1) ==":") {
+           $_GET[substr($pattern[$i], 1)]=$subject[$i];
+         }
+-        
+       }
+       $outcome = $map[1];
+       $conditions = $map[2];
+@@ -84,7 +82,7 @@ class WaxUrl {
+   }
+   
+   /**
+-   * undocumented function
++   * get function
+    *
+    * @return mixed
+    **/
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index d79472344de55102074c748dfd966321c4e11339..7662e7edcc5221be4fdd8a1035b33b0d1acfe703 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -12,6 +12,7 @@ class TestWaxUrl extends WXTestCase {
+       $_GET["route"]="mycontroller/myaction/myid";
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
++      print_r($_GET);
+     }
+     
+     public function test_default_map() {
+-- 
+1.5.4
+
+

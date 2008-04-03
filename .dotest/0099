@@ -1,0 +1,30 @@
+From d98170b61acaaaab3c47a1ba2716bcca3ccdb61b Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 15:41:03 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 9e0abbe98492d561cd209b2daaf11225b4fdcda6..af4e255bdedb0141448cbfe7690d0a2858d8a34d 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -78,11 +78,10 @@ class WaxUrl {
+         $mappings = split("/", $map[0]);
+         array_shift($matches);
+         while(count($mappings)) {
+-          echo "Testing {$mappings[0]}"."\n";
+           if(substr($mappings[0],0,1)==":") {
+             $mapped_route[substr($mappings[0],1)]=$matches[0];
++            array_shift($matches); 
+           }
+-          array_shift($matches); 
+           array_shift($mappings);
+         }
+         $mapped_route = array_merge($mapped_route, (array) $map[1]);
+-- 
+1.5.4
+
+

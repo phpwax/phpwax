@@ -1,0 +1,26 @@
+From f2ed25b0688f59c47a39cb74f50787021bd2d2ff Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 16:42:28 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/dispatch/WaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 74eeee3c10630272c375d08a64fadce2f7edf501..c8de08a5dcb2b5f5e23c23aca7e6a9ebc110f2d0 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -69,7 +69,7 @@ class WaxUrl {
+    **/
+ 
+   static public function perform_mappings($pattern) {
+-    self::route_controller;
++    self::route_controller();
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
+-- 
+1.5.4
+
+

@@ -1,0 +1,96 @@
+From d6274be2ca081ca795ea3def7ccbdaf5ba8606b7 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 12:46:59 +0100
+Subject: Added new widgets
+
+---
+ wax/db/WaxModel.php             |   12 ++++++++++++
+ wax/db/WaxModelField.php        |    5 ++++-
+ wax/db/fields/DateTimeField.php |   12 ++++++++++++
+ wax/forms/WaxWidget.php         |    2 +-
+ 4 files changed, 29 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index fec74562cf1d9ed42225043fac1bded07458140b..c22d9797e4a3d23b5d1cd5df8782ce433596add1 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -106,6 +106,18 @@ class WaxModel {
+     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
+   }
+   
++  /**
++   * output_val function
++   * Gets the output value of a field,
++   * Allows transformation of data to display to user
++   * @param string $name 
++   * @return mixed
++   */
++  
++  public function output_val($name) {
++    $field = $this->get_col($name);
++    return $field->output();
++  }
+ 
+      /**
+       *  get property
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 8e5b57ec441365c9023e79bcfeae348b79eae3de..5d2e80408b4a7ed6c06320ebee99c1cb0df0b22a 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -58,7 +58,10 @@ class WaxModelField {
+   public function setup() {}
+   public function validate() {}
+   public function save() {}
+-  public function output() {}
++  
++  public function output() {
++    return $this->model->row[$this->field];
++  }
+   
+   protected function add_error($field, $message) {
+  	  $this->errors[]=$message;
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index bb56e499cc8b32a85793dcc0b3816c4fb43515f2..14cfc2aa1d1425e1420a85762196c0541bc36129 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -11,11 +11,23 @@ class DateTimeField extends WaxModelField {
+   public $default = false;
+   public $maxlength = false;
+   public $widget = "DateInput";
++  public $output_format = "Y-m-d H:i:s";
++  public $save_format = "Y-m-d H:i:s";
+ 
+   public function validate() {
+     $this->valid_length();
+  	  $this->valid_required();
+     $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
+   }
++  
++  public function output() {
++    return date($this->output_format, strtotime($this->get()));
++  }
++  
++  public function save() {
++    $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
++  }
++  
++  
+ 
+ } 
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index d1eae4e9a999e3be90033d81e86ec9b807f46bd7..273f10a4b79142027cc67ce763e36a6953018d6c 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -23,7 +23,7 @@ class WaxWidget {
+     if($model) {
+       $this->attribute("name", "[$model->table]$name");
+       $this->attribute("id", "{$model->table}_{$name}");
+-      $this->value = $model->{$name};
++      $this->value = $model->output_val($name);
+       $this->attribute("value", $this->value);
+       
+       $field = $model->columns[$name];
+-- 
+1.5.4
+
+

@@ -1,0 +1,27 @@
+From 9c98ad68c7f0bddfc364ef9e3637c0ffee738912 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 4 Apr 2008 09:25:44 +0100
+Subject: Final touches to ManyToMany model tests : fingers crossed
+
+---
+ wax/db/WaxModelAssociation.php |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 7730da188b844c70d52cedfd020207d81103d56a..7632b7ffc1544941bb0fe7bc5a6d9e659adcccb2 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -30,7 +30,8 @@ class WaxModelAssociation extends WaxRecordset {
+         $id = $obj->primval;
+         $filter[]= $this->target_model->table."_".$this->target_model->primary_key."=".  $id;
+       }
+-      $this->model->filter("(".join(" OR ", $filter).")")->delete();
++      $res = $this->model->filter("(".join(" OR ", $filter).")")->delete();
++      die($res);
+     }
+     return $this->model;
+   }
+-- 
+1.5.4
+
+

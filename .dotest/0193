@@ -1,0 +1,27 @@
+From e87f2f3de3965d9b89fea40aa577f903774a65c7 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 00:51:57 +0100
+Subject: Bug fix to delegate_request
+
+---
+ wax/WXApplication.php |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXApplication.php b/wax/WXApplication.php
+index 15c6cea1fbd76b7967457f9e0164ae4ca7dbce7f..82a20af5871b5d0774e5e636c8c0f8b9b93d036d 100755
+--- a/wax/WXApplication.php
++++ b/wax/WXApplication.php
+@@ -98,7 +98,8 @@ class WXApplication {
+    */
+ 	private function delegate_request() {
+ 	  Session::start();
+-		$delegate_controller = new slashcamelize(WaxUrl::get("controller"), true);
++	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true);
++		$delegate_controller = new $delegate;
+ 		$delegate_controller->execute_request();
+   }
+ 
+-- 
+1.5.4
+
+

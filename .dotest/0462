@@ -1,0 +1,26 @@
+From de34c34fef151d6e9a14925f0e8cc32ea9990a80 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:30:46 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 86090521f02690ec28d19a22ae3bf65226643823..0e9618ecf1a905edc62406f5c1af0096476da550 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -24,7 +24,7 @@ class WaxWidget {
+       $this->attribute("name", "[$model->table]$name");
+       $this->attribute("id", "{$model->table}_{$name}");
+       $this->value = $model->{$name};
+-      $field = $model->columns->[$name];
++      $field = $model->columns[$name];
+       $model_field = new $field[1]($name, $model, $field[2]);
+       $this->blank = $model_field->blank;
+       $this->choices = $model_field->choices;
+-- 
+1.5.4
+
+

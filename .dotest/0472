@@ -1,0 +1,26 @@
+From 1dd9960e0010fe88ab8a817cd199717ca7301332 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:42:03 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/widgets/SelectInput.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 00ec92939e6b53c85646fcb1d10005532ac0b615..c4d72f8d4f661034a0dcb21bd8157d88a015feee 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -47,7 +47,7 @@ class SelectInput extends WaxWidget {
+       if($this->name == $option && $this->value==$value) $sel = ' selected="selected"';
+       $ouput .= sprintf($choice, $value, $sel, $option);
+     }
+-    die($output);
++    echo htmlspecialchars($output);
+     return $output;
+   }
+   
+-- 
+1.5.4
+
+

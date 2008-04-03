@@ -1,0 +1,27 @@
+From 6c564bbd5e4ea2e6315b29b532da8105bae56f47 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 12:10:55 +0100
+Subject: Added new widgets
+
+---
+ wax/forms/widgets/SubmitInput.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/widgets/SubmitInput.php b/wax/forms/widgets/SubmitInput.php
+index ea546ef55d8d7a2ff4d2c7ec6b68da2fe131678d..84c14828b56e608663f168b173010969fc241236 100644
+--- a/wax/forms/widgets/SubmitInput.php
++++ b/wax/forms/widgets/SubmitInput.php
+@@ -12,7 +12,7 @@ class SubmitInput extends TextInput {
+     "class"=>"input_field submit_field"
+   );
+ 
+-  public $label = false;
++  public $show_label = false;
+ 
+ 
+ } // END class
+\ No newline at end of file
+-- 
+1.5.4
+
+

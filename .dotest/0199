@@ -1,0 +1,26 @@
+From e8d6ca59bd9cd1389eb4028aef94cb2c8ff628db Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 01:04:18 +0100
+Subject: Moved ControllerBase to use new route mapping
+
+---
+ wax/WXControllerBase.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 4bf616cbf5a349c7d20f24832ccc9a3a6460b120..88049d4b32102111bc2c9084e2417be18c81586b 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -209,7 +209,7 @@ abstract class WXControllerBase
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+ 	  }
+-	  WaxLog:add("Application", "Loading controller {$this->controller} with action {$this->action}");
++	  WaxLog::add("Application", "Loading controller {$this->controller} with action {$this->action}");
+ 	  $this->controller_global();
+ 	  $this->run_filters("before");
+ 	  if(!$this->is_public_method($this, $this->action)) {
+-- 
+1.5.4
+
+

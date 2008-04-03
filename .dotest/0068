@@ -1,0 +1,28 @@
+From 7f9dbd5c7267470517c7965e32ad65cc0526af4d Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Sat, 5 Apr 2008 09:57:06 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/tests/TestWaxUrl.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 15625709f2ff92ecf340aec30261287e1502a6ad..b945cd7bc51a6e32004b7461e05eee31c53481cb 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -16,8 +16,8 @@ class TestWaxUrl extends WXTestCase {
+     }
+     
+     public function test_default_map() {
+-      $_GET["route"]="";
+-      WaxUrl::perform_mappings();
++      //$_GET["route"]="";
++      //WaxUrl::perform_mappings();
+       //$this->assertEqual(WaxUrl::get("controller"), "page");
+     }
+     
+-- 
+1.5.4
+
+

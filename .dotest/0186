@@ -1,0 +1,41 @@
+From 1435ab4c04551241dfb0f7d182fcf4123eeea97c Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 17:38:53 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    1 -
+ wax/tests/TestWaxUrl.php |    4 +---
+ 2 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 72cc1cce47453bff2d64301e3029ad23af8b7839..ff10b8597ff55e6dbe55ca09eddc0649b1b9670d 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -125,7 +125,6 @@ class WaxUrl {
+ 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
+ 	    if(!$controller) array_pop($route);
+ 	  }
+-	  error_log("Reduced to ".$controller);
+ 	  if($controller) {
+ 	    $_GET["controller"]=$controller;
+ 	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index f5e1c50321d7fac80e919450e862b90f1f207be2..07bd681781fe9d528ef8bb6d45be9104dd30caaa 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -6,9 +6,7 @@ class TestWaxUrl extends WXTestCase {
+     }
+     
+     public function tearDown() {
+-      error_log("-------------");
+-      print_r($_GET);
+-      error_log("-------------");
++     
+     }
+     
+     public function test_basic_map() {
+-- 
+1.5.4
+
+

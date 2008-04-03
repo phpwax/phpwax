@@ -1,0 +1,68 @@
+From 90fc99d55830df6ec72cc50feffa154729600895 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 13:03:05 +0100
+Subject: Fix to 404 status rendering
+
+---
+ wax/WXControllerBase.php              |    9 ---------
+ wax/exceptions/WXRoutingException.php |   19 +++++++++++++------
+ 2 files changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 9ef6c0732e4cf33c4085540c07765d592c4fdc12..8e49b62b3d5bf7826eca8db96f37cd120a1c63bf 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -238,15 +238,6 @@ abstract class WXControllerBase
+ 		else return false;
+ 	}
+ 	
+-	/**
+-	 * Default  Error handling page
+-	 *
+-	 * @return void
+-	 * @author /bin/bash: niutil: command not found
+-	 **/
+-	public function error_404(){
+-	  throw new WXException("Application Error", "A Page not found error was triggered and you have not set up a page to handle it");
+-	}
+ }
+ 
+ ?>
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index 3c8ea57e6e497cfd4182d0fedf6374ad0c744afc..8f6ab6e3a1cac24f1a6ab38e5502d502ed0397b8 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -7,16 +7,23 @@
+ class WXRoutingException extends WXException
+ {
+   static $redirect_on_error=false;
++  static $double_redirect = false;
+   
+ 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
+   	if($location = self::$redirect_on_error) {
+   	  $this->simple_routing_error_log();
+-      header("HTTP/1.1 404 Not Found",1, 404);  
+-      $_GET["route"]=$location;
+-      $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+-  		$delegate_controller = new $delegate;
+-  		$delegate_controller->execute_request();
+-  		exit;
++  	  if(!self::$double_redirect) {
++  	    self::$double_redirect = true;
++        header("HTTP/1.1 404 Not Found",1, 404);  
++        $_GET["route"]=$location;
++        $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
++  		  $delegate_controller = new $delegate;
++  		  $delegate_controller->execute_request();
++  		  exit;
++		  } else {
++		    $code ="Application Error"; 
++		    $message = "A Page not found error was triggered and you have not set up a page to handle it";
++		  }
+   	}
+   	parent::__construct($message, $code);
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,48 @@
+From f7e8c556570484d734e060cabd1185f8cf5336dc Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 00:58:22 +0100
+Subject: Moved ControllerBase to use new route mapping
+
+---
+ wax/WXControllerBase.php |   17 +++++++----------
+ 1 files changed, 7 insertions(+), 10 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 9b59496032b43a2a287f5d9dd3f3e4f74168b2a9..945c34a4a156c2882f0b8518c23ca26c16a34aba 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -201,23 +201,20 @@ abstract class WXControllerBase
+ 	 *
+ 	 *	@access protected
+  	 */
+-	public function execute_request() {
+-		$route = new WXRoute;
+-	  $this->route_array = $route->read_actions();
+-	  $this->controller = $route->get_url_controller();    
+-	  if(!$this->action = $this->route_array[0]) {
+-	    $this->action = "index";
+-	  }
++  public function execute_request() {
++	  $route = new WXRoute;
++	  $this->route_array = $_GET;
++	  $this->controller = WaxUrl::get("controller");    
++	  $this->action = WaxUrl::get("action");
+ 	  if(strpos($this->action, ".")) {
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+ 	  }
+-	  array_shift($this->route_array);
+ 	  $this->controller_global();
+ 	  $this->run_filters("before");
+ 	  if(!$this->is_public_method($this, $this->action)) {
+-	    if($this->is_public_method($this, WXInflections::underscore($this->action))) {
+-	      $underscore_action = WXInflections::underscore($this->action);
++	    if($this->is_public_method($this, Inflections::underscore($this->action))) {
++	      $underscore_action = Inflections::underscore($this->action);
+ 	      $this->{$underscore_action}();
+ 	    } elseif(method_exists($this, 'method_missing') ) {
+ 			  $this->method_missing();
+-- 
+1.5.4
+
+

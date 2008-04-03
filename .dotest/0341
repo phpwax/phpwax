@@ -1,0 +1,27 @@
+From 72cd60a6c6d758216a15e4831a208e2451e71e7a Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 17:18:42 +0100
+Subject: Request wrapper tests
+
+---
+ wax/tests/TestRequest.php |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/wax/tests/TestRequest.php b/wax/tests/TestRequest.php
+index b7439f0f203c31d224f5c0a20c7eeb7b4d7ffe26..5bb9b63312b56acfbbd2541ef6ac81bdc88b9a69 100644
+--- a/wax/tests/TestRequest.php
++++ b/wax/tests/TestRequest.php
+@@ -17,7 +17,9 @@ class TestRequest extends WXTestCase {
+     
+     public function test_filters() {
+       $_GET["test"]="<script>hello</script>";
++      $_GET["test2"]="<p>hello</p>";
+       $this->assertEqual(Request::get("test"), "hello");
++      $this->assertEqual(Request::get("test2"), "hello");
+     }
+    
+ }
+-- 
+1.5.4
+
+

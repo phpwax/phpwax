@@ -1,0 +1,25 @@
+From dfe308f3c892a4ba5aae007206e95f4e9690f193 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 15:35:11 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index b717de50362974d96fb5755115878a24131f56d9..3687eecd58a128af0e5363eb46064f72c2466be6 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -68,6 +68,7 @@ class WaxUrl {
+    **/
+ 
+   static public function perform_mappings($pattern) {
++    print_r(self::$mappings);
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
+-- 
+1.5.4
+
+

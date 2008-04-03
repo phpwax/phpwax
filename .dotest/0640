@@ -1,0 +1,51 @@
+From 59caa2f669e0b650c0b0ef955e08c6dfcdcab0cd Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 23 Apr 2008 12:32:15 +0100
+Subject: More streamlining of form manipulation
+
+---
+ wax/forms/WaxForm.php   |    6 +++++-
+ wax/forms/WaxWidget.php |    2 ++
+ 2 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 41df3b8c5fe768777f65e71c35722a973a7891d7..63036544e961e212619b827ccf97bd9b521039e1 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -69,7 +69,11 @@ class WaxForm {
+    
+    public function __get($name) {
+      if(array_key_exists($name, $this->elements)) return $this->elements[$name];
+-   } 
++   }
++   
++   public function __set($name, $value) {
++     if(class_exists($value)) $this->elements[$name] = new $value;
++   }
+ 
+   
+ 
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 52660cc9bc759efcfeaf722c7056e08f74a19296..70fea6cce9379247e71d62060d9c88312fc7df2c 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -18,6 +18,7 @@ class WaxWidget {
+   public $error_template = '<span class="error_message">%s</span>';
+   public $bound_data = false;
+   
++  
+   public function __construct($name, $data=false) {
+     if($data) $this->bound_data = $data;
+   }
+@@ -60,6 +61,7 @@ class WaxWidget {
+     if($this->bound_data instanceof WaxModelField) {
+       return $this->bound_data->{$value};
+     }
++    if(is_array($this->bound_data)) return $this->bound_data[$value];
+   }
+ 
+ 
+-- 
+1.5.4
+
+

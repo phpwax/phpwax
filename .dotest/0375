@@ -1,0 +1,26 @@
+From 37bd581059a7408c5442e5cb15279457b5a287e6 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Fri, 11 Apr 2008 01:46:36 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/tests/TestPaginatedRecordset.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestPaginatedRecordset.php b/wax/tests/TestPaginatedRecordset.php
+index 7402c3d8ecceee660b5ffc0b14c6ba1aa8632075..519896dee4f3fc108a4632b0eb2c630f464023f8 100644
+--- a/wax/tests/TestPaginatedRecordset.php
++++ b/wax/tests/TestPaginatedRecordset.php
+@@ -18,7 +18,7 @@ class TestPaginatedRecordset extends WXTestCase {
+     }
+     
+     public function tearDown() {
+-      $this->model->clear()->delete();
++     // $this->model->clear()->delete();
+     }
+     
+     public function gen_fixtures($field, $value, $number) {
+-- 
+1.5.4
+
+

@@ -1,0 +1,139 @@
+From 55bbafd06dd7f559ae1922b82363188ca142cdf4 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 15:20:25 +0100
+Subject: Wrapper request object
+
+---
+ wax/dispatch/WaxUrl.php   |   25 +++++++++++++------------
+ wax/utilities/Request.php |    9 ++++++---
+ 2 files changed, 19 insertions(+), 15 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 4c80981e27b9815e17f0487e391ff9d98ed6ae5f..1eb97065fbf6a14c1cdaa9c0a36291a8da54ed86 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -31,6 +31,7 @@ class WaxUrl {
+   
+   static public $default_controller = "page";
+   static public $default_action = "index";
++  static public $params;
+ 
+ 
+   
+@@ -61,23 +62,23 @@ class WaxUrl {
+   
+   /**
+    *  Loops through the defined lookup patterns until one matches
+-   *  Uses the result to set the global $_GET parameters
+    *  Any url variables that are explicitly set are ignored, this only works on the url portion
+    *
+    * @return void
+    **/
+ 
+   static public function perform_mappings() {
++    self::$params = $_GET;
+     self::detect_maintenance();
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+-      $right = $_GET["route"];
++      $right = self::$params["route"];
+       $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9.-/]*)", $left);
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9.-]*)", $left);
+       $left = str_replace("/", "\/", $left);  
+       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+-        if(!$_GET["controller"] && !$map[1]["controller"]) {
++        if(!self::$params["controller"] && !$map[1]["controller"]) {
+           self::route_controller();
+           break;
+         }
+@@ -101,7 +102,7 @@ class WaxUrl {
+       
+       if($mapped_route) {
+         foreach($mapped_route as $k=>$val) {
+-          $_GET[$k]=$val;
++          self::$params[$k]=$val;
+         }
+       break;
+       }
+@@ -116,7 +117,7 @@ class WaxUrl {
+    **/
+   static public function get($val) {
+     self::perform_mappings();
+-    return $_GET[$val];
++    return self::$params[$val];
+   }
+   
+   
+@@ -125,15 +126,15 @@ class WaxUrl {
+     *  @return boolean      If file exists true
+     */
+ 	protected function route_controller() {
+-	  $route = split("/", $_GET["route"]);
++	  $route = split("/", self::$params["route"]);
+ 	  while(count($route) >0) {
+ 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
+ 	    if(!$controller) array_pop($route);
+ 	  }
+ 	  if($controller) {
+-	    $_GET["controller"]=$controller;
+-	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+-	    $_GET["route"]=ltrim($_GET["route"], "/");
++	    self::$params["controller"]=$controller;
++	    self::$params["route"]=str_replace($controller, "", self::$params["route"]);
++	    self::$params["route"]=ltrim(self::$params["route"], "/");
+ 	  }
+ 	}
+ 	
+@@ -147,15 +148,15 @@ class WaxUrl {
+ 	}
+ 	
+   protected function force_defaults() {
+-    if(!$_GET["controller"]) $_GET["controller"]=self::$default_controller;
+-    if(!$_GET["action"]) $_GET["action"]=self::$default_action;
++    if(!self::$params["controller"]) self::$params["controller"]=self::$default_controller;
++    if(!self::$params["action"]) self::$params["action"]=self::$default_action;
+   }
+   
+   protected function detect_maintenance() {
+ 	  $maintenance = Config::get("maintenance");
+ 	  if($maintenance['ip'] && $maintenance['redirect']) {
+ 	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
+-	    if($_GET["route"] != $maintenance['redirect']) $_GET["route"]=$maintenance['redirect'];
++	    if(self::$params["route"] != $maintenance['redirect']) self::$params["route"]=$maintenance['redirect'];
+ 	    else return false;
+ 	    return true;
+ 	  }
+diff --git a/wax/utilities/Request.php b/wax/utilities/Request.php
+index 2f4abc52381f96b77532faa63e2e66d445ed1f77..e72199081ce53558eef07b3faeb363384043bf9e 100644
+--- a/wax/utilities/Request.php
++++ b/wax/utilities/Request.php
+@@ -9,11 +9,13 @@
+  */
+ class Request {
+ 		
+-	
++	self::$post;
++	self::$get;
++	static $params = false;
+ 	
+ 	public function filter($name, $raw) {
+-	  if(!$raw) $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS);
+-    else      $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW);
++	  if(!$raw) $val = filter_var(self::$params, $name, FILTER_SANITIZE_SPECIAL_CHARS);
++    else      $val = filter_var(self::$params, $name, FILTER_UNSAFE_RAW);
+ 	  return $val;
+ 	}
+ 	
+@@ -22,6 +24,7 @@ class Request {
+ 	}
+ 	
+ 	public function get($name) {
++	  if(!self::$params) self::$params = array_merge(WaxUrl::$params, $_POST);
+ 	  return self::filter($name, false);
+ 	}
+ 
+-- 
+1.5.4
+
+

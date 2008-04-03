@@ -1,0 +1,39 @@
+From 555fc54024e1c54423cef4d323b6c99b366e77fe Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:16:13 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php           |    2 +-
+ wax/forms/widgets/SelectInput.php |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index c643af5a6f7cc251f029107d2d31c65791d76da7..4baa014053be3b05d5c530635f6a8a1c5b4af90a 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -22,7 +22,7 @@ class WaxWidget {
+     if($model) {
+       $this->attribute("name", "[$model->table]$name");
+       $this->attribute("id", "{$model->table}_{$name}");
+-      $this->value = $model->name;
++      $this->value = $model->{$name};
+       $this->blank = $model->blank;
+       $this->choices = $model->choices;
+       $this->label = $model->label;
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 064344a74cdf8aa4f0373edabf0303ea107ea166..b69b83a2cdd98eaf92c8e5a683cf1360496380fe 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -21,6 +21,7 @@ class SelectInput extends WaxWidget {
+   
+   
+   public function render() {
++    print_r($this); exit;
+     $out ="";
+     if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+     $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
+-- 
+1.5.4
+
+

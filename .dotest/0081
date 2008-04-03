@@ -1,0 +1,26 @@
+From 67cce7dbbde755cda1866c4bf2723c465dce49eb Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Sat, 5 Apr 2008 10:32:16 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/tests/TestWaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index b4778bc1e755752980fef0374f710bdce3b80c19..b45c1a78c6b4c0478beca865bea3a13de9af18b1 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -24,7 +24,7 @@ class TestWaxUrl extends WXTestCase {
+     
+     public function test_pattern_map() {
+       $_GET["route"]="blog/tech/5";
+-      WaxUrl::map("blog/:category/:id", array("controller"=>"blog"));
++      WaxUrl::map("blog/:category/:id", array("controller"=>"blog", "action"=>"show"));
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "blog");
+       $this->assertEqual(WaxUrl::get("category"), "tech");
+-- 
+1.5.4
+
+

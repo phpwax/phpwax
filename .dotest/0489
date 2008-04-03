@@ -1,0 +1,26 @@
+From 1176872df6c9892eb081cce36aa76928b71164ad Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 12:53:31 +0100
+Subject: Added new widgets
+
+---
+ wax/forms/WaxForm.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 8f388cc54df50861262d206b1e880db9cc33b9a7..2b7577c2afb0cad2f6ae2d02d7731016591c4a6a 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -46,7 +46,7 @@ class WaxForm {
+       $submit->attribute("value", $this->submit_text);
+       $output.= $submit->render();
+     }
+-    return sprintf($this->template, $this->make_attributes, $output);
++    return sprintf($this->template, $this->make_attributes(), $output);
+   }
+   
+   public function make_attributes() {
+-- 
+1.5.4
+
+

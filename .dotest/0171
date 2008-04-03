@@ -1,0 +1,33 @@
+From a1e2bd97eb53a9f68581ddd642d7187cc121ab1f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 16:52:33 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 91659b2183995be2c72d85ae49ac93cd7505f419..872108955bfe4849a6bfeeca111c03fd46885b1c 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -125,10 +125,11 @@ class WaxUrl {
+ 	    if(self::is_controller($route)) $controller = $route;
+ 	    $route = substr($route, 0, strrpos("/", $route));
+ 	  }
+-	  if($controller) $_GET["controller"]=$controller;
+-	  if(self::$default_controller) $controller = self::$default_controller;
+-	  $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+-	  $_GET["route"]=ltrim($_GET["route"], "/");
++	  if($controller) {
++	    $_GET["controller"]=$controller;
++	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
++	    $_GET["route"]=ltrim($_GET["route"], "/");
++	  }
+ 	}
+ 	
+ 	protected function is_controller($test) {
+-- 
+1.5.4
+
+

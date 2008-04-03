@@ -1,0 +1,50 @@
+From b2cb81e57fc5b6719a512b3d8c74750fbae67d6b Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 12:06:03 +0100
+Subject: Added new widgets
+
+---
+ wax/forms/WaxForm.php             |    7 +++++++
+ wax/forms/widgets/SubmitInput.php |    1 -
+ 2 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index df9eaae37716b646933c18aea9f07dd75ec2eedf..3c3186e8bad40aa11495d2b4427a1c891d2aada6 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -15,6 +15,8 @@ class WaxForm {
+   public $method="post";
+   public $encoding = "";
+   public $attributes = array();
++  public $submit = true;
++  public $submit_text = "Submit";
+   
+   public $template = '<form %s>%s</form>';
+   
+@@ -39,6 +41,11 @@ class WaxForm {
+       $output.= $el->render();
+       if($el_divider) $ouput.=$el_divider;
+     }
++    if($this->submit) {
++      $submit = new SubmitInput;
++      $submit->attribute("value", $this->submit_value);
++      $output.= $submit->render;
++    }
+     return sprintf($this->template, $this->make_attributes, $output);
+   }
+   
+diff --git a/wax/forms/widgets/SubmitInput.php b/wax/forms/widgets/SubmitInput.php
+index 71a42f147939832b2b63603a559d7e94083c4782..4448b69649ba0b57c905856639a2720a9a1cc7fa 100644
+--- a/wax/forms/widgets/SubmitInput.php
++++ b/wax/forms/widgets/SubmitInput.php
+@@ -1,6 +1,5 @@
+ <?php
+ 
+-
+ /**
+  * Submit Input Widget class
+  *
+-- 
+1.5.4
+
+

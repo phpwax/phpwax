@@ -1,0 +1,26 @@
+From f7497420d62fe44db72f946c0c868a8f64ec3d42 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 4 May 2008 12:24:33 +0100
+Subject: Fix to route array
+
+---
+ wax/WXControllerBase.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index dcd8aace87bfbb6d41c2d2de0a946895e3723655..c3e4f8114710f4ae1b1c88cc0a4084de32260c29 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -204,7 +204,7 @@ abstract class WXControllerBase
+   public function execute_request() {
+ 	  $this->controller = WaxUrl::get("controller");    
+ 	  $this->action = WaxUrl::get("action");
+-	  $this->route_array = $_GET;
++	  $this->route_array = explode("/", $_GET["route"]);
+ 	  if(strpos($this->action, ".")) {
+ 	    $this->use_format = substr(strstr($this->action, "."),1);
+ 	    $this->action = substr($this->action,0,strpos($this->action,"."));
+-- 
+1.5.4
+
+

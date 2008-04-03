@@ -1,0 +1,26 @@
+From 0582d97649309558058fd8b686af1c9b9f88a148 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 13:19:44 +0100
+Subject: Sync_db swallows errors
+
+---
+ wax/utilities/WaxLog.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 26b31718267a8c5893f327adfcccf307ef4d3a01..3bcb80d15fff76465c4a666a5f7f18a44f27f0b5 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -29,7 +29,7 @@ class WaxLog {
+   }
+   
+   public function output() {
+-    $output = "";
++    $output = array();
+     foreach(self::$logs as $log) {
+       $output[]= "[".$log[0]."] ". $log[1];
+     }
+-- 
+1.5.4
+
+

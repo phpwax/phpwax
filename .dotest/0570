@@ -1,0 +1,25 @@
+From a571525df82ddb33be76f360a86c835a8289de1d Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 12:44:29 +0100
+Subject: Added more extensibility to SelectInput
+
+---
+ wax/forms/widgets/SelectInput.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 5e7479249feca1f62ac9e1a4c3a11a26a29dca64..f1ae612df4b339368afdbcc15cd1e5020446102a 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -18,6 +18,7 @@ class SelectInput extends WaxWidget {
+   }
+   
+   public function make_choices() {
++    return $this->value;
+     $output = "";
+     $choice = '<option value="%s"%s>%s</option>';
+     foreach($this->choices as $value=>$option) {
+-- 
+1.5.4
+
+

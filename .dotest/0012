@@ -1,0 +1,26 @@
+From 68113f35c4bbec399f9b6a23fd2cb40d6ee86bf3 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 3 Apr 2008 21:16:22 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/db/WaxModelAssociation.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index e98a716ba4d92af40debdd5e114beaab6422836e..4c98bc789cb048340fd66cc3b2e929ad406a1bb6 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -15,7 +15,7 @@ class WaxModelAssociation extends WaxRecordset {
+   } 
+   
+   public function unlink($model) {
+-    return $this->model->{$this->field}->unlink($model);
++    return $this->model->get_col($this->field)->unlink($model);
+   }
+   
+ 
+-- 
+1.5.4
+
+

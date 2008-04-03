@@ -1,0 +1,174 @@
+From 9d9a154d2b5e78d9cbcaef633348fefd789d25c5 Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Tue, 8 Apr 2008 09:08:46 +0100
+Subject: support for HasManyField without a Foreign Key
+
+---
+ wax/db/fields/ForeignKey.php    |    2 +-
+ wax/db/fields/HasManyField.php  |   30 ++++++++++++++++++++++++++----
+ wax/dispatch/WaxUrl.php         |    1 -
+ wax/tests/TestWaxModel.php      |    7 +++++++
+ wax/tests/TestWaxModelField.php |   16 ++++++++++++++++
+ wax/tests/TestWaxUrl.php        |    2 --
+ 6 files changed, 50 insertions(+), 8 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index 1f86b285f20fc12ef22a6e184e0881f40a8da10a..959403463ac1d339634c5ab62d05572ebe122f67 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -13,7 +13,7 @@ class ForeignKey extends WaxModelField {
+   
+   public function setup() {
+     if(!$this->table) $this->table = $this->field;
+-    $this->col_name = $this->table."_id";
++    if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
+     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
+   }
+ 
+diff --git a/wax/db/fields/HasManyField.php b/wax/db/fields/HasManyField.php
+index c357033aa87e8a15261ca4eaff5c93c0ab2d9f8f..5a44575905d3b8dfa1d94c33399890576d9acf2b 100644
+--- a/wax/db/fields/HasManyField.php
++++ b/wax/db/fields/HasManyField.php
+@@ -16,7 +16,7 @@ class HasManyField extends WaxModelField {
+     $this->col_name = false;
+     $class_name = get_class($this->model);
+     if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
+-    if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_id";
++    if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_".$this->model->primary_key;
+   }
+ 
+   public function validate() {
+@@ -25,11 +25,33 @@ class HasManyField extends WaxModelField {
+   
+   public function get() {
+     $model = new $this->model_name();
+-    return $model->filter(array($this->join_field=>$this->model->primval))->all() ;
++    return $model->filter(array($this->join_field=>$this->model->primval))->all();
+   }
+   
+   public function set($value) {
+-    return true;
++    if($value instanceof $this->model_name){
++      $value->{$this->join_field} = $this->model->primval();
++      $value->save();
++    }
++    if($value instanceof WaxRecordset) {
++      foreach($value as $row){
++        $row->{$this->join_field} = $this->model->primval();
++        $row->save();
++      }
++    }
++  }
++  
++  public function unlink($value) {
++    if($value instanceof $this->model_name){
++      $value->{$this->join_field} = 0;
++      $value->save();
++    }
++    if($value instanceof WaxRecordset) {
++      foreach($value as $row){
++        $row->{$this->join_field} = 0;
++        $row->save();
++      }
++    }
+   }
+   
+   public function save() {
+@@ -38,7 +60,7 @@ class HasManyField extends WaxModelField {
+ 
+   public function before_sync() {
+     //define a foreign key in the target model and recursively sync that model
+-    $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey");
++    $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey", array("col_name" => $this->join_field, "table" => $this->model->table));
+     $output .= parent::before_sync();
+     return $output;
+   }
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 40f8e89bedd5adab051d920aeae87d8341d9f836..f07c316aa5b606165835564f1abda6798194053f 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -72,7 +72,6 @@ class WaxUrl {
+       $left = $map[0];
+       $right = $_GET["route"];
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "$1=([A-Za-z0-9\-])&", $left);
+-      echo $left."\n";
+       $outcome = $map[1];
+       $conditions = $map[2];
+     }
+diff --git a/wax/tests/TestWaxModel.php b/wax/tests/TestWaxModel.php
+index c0ff9cd5283ffdda5f9707b6c2cd47426c5e5c28..6a2921cb01e897d044baa8fb00adf8fdd7845ef5 100644
+--- a/wax/tests/TestWaxModel.php
++++ b/wax/tests/TestWaxModel.php
+@@ -17,6 +17,13 @@ class ExampleOwner extends WaxModel {
+   }
+ }
+ 
++class ExampleEditor extends WaxModel {
++  public function setup() {
++    $this->define("name", "CharField", array("maxlength"=>40));
++    $this->define("examples", "HasManyField", array("model_name"=>"Example"));
++  }
++}
++
+ class ExampleProperty extends WaxModel {
+   public function setup() {
+     $this->define("name", "CharField", array("maxlength"=>40));
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 5d2edae398c13a7a3b08e6396ea5d7e685a7e626..f6137674f0c2abfc41ebba1eec311b0e3cb6ad56 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -4,8 +4,10 @@ class TestWaxModelField extends WXTestCase {
+     public function setUp() {
+       $this->model = new Example();
+       $this->model_owner = new ExampleOwner();
++      $this->model_editor = new ExampleEditor();
+       $this->model->syncdb();
+       $this->model_owner->syncdb();
++      $this->model_editor->syncdb();
+       $model3 = new ExampleProperty;
+       $model3->syncdb();
+     }
+@@ -67,6 +69,20 @@ class TestWaxModelField extends WXTestCase {
+       $this->assertEqual($owner->examples->count(), 2);
+     }
+     
++    public function test_has_many_without_foreign_key_definition() {
++      $editor = $this->model_editor->create(array("name"=>"Editor"));
++      $model = $this->model->create($this->get_fixture("user1"));
++      $model2 = $this->model->create($this->get_fixture("user2"));
++      $editor->examples = $model;
++      $editor->examples = $model2;
++      $this->assertEqual($editor->examples->count(), 2);
++      $editor->examples->unlink($this->model->all());
++      $this->assertEqual($editor->examples->count(), 0);
++      $model2 = $this->model->create($this->get_fixture("user3"));
++      $editor->examples = $this->model->all();
++      $this->assertEqual($editor->examples->count(), 3);
++    }
++    
+     public function test_many_many() {
+       $model = $this->model->create($this->get_fixture("user1"));
+       $props = new ExampleProperty;
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 55c991c2dded77e71895e7af11d47d30cdbaf7fd..ca5f75ee52269f05acc0dec55bfc8ff11f1bb1d0 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -13,14 +13,12 @@ class TestWaxUrl extends WXTestCase {
+       $_GET["route"]="mycontroller/myaction/myid";
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+-      print_r($_GET);
+     }
+     
+     public function test_default_map() {
+       $_GET["route"]="";
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "page");
+-      print_r($_GET);
+     }
+     
+ }
+-- 
+1.5.4
+
+

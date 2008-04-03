@@ -1,0 +1,26 @@
+From 118fbeee081bc54a16cca07564a0bd1d81e64b7d Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 12:46:48 +0100
+Subject: Work on TestModelField
+
+---
+ wax/tests/TestWaxModelField.php |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 6f8e4e61e0ea2232ec469a6219bf123ee75a8ab5..7d15a4120292f73a19a308b4368ff6c5b1b694bb 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -81,6 +81,8 @@ class TestWaxModelField extends WXTestCase {
+       $model->example_owner = $owner;
+       $model2->example_owner = $owner;
+       $this->assertEqual($owner->examples->count(), 2);
++      // And test the reverse way
++      
+     }
+     
+     public function test_many_many() {
+-- 
+1.5.4
+
+

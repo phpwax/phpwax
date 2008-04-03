@@ -1,0 +1,26 @@
+From fe2f3f2f793ac13d59465a4aa53573b3f03fcb68 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 19:52:30 +0100
+Subject: Encoding for form widget
+
+---
+ wax/forms/WaxForm.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 37f0bd61556d7417543896c353e669194e7e7adc..912df8afb1aedda0a0c3b4f7e73e1d0ac5c1582e 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -14,7 +14,7 @@ class WaxForm {
+     "id"=>"",
+     "action"=>"",
+     "method"=>"post",
+-    "encoding"=>""
++    "encoding"=>"multipart/form-data"
+   );
+   public $submit = true;
+   public $submit_text = "Submit";
+-- 
+1.5.4
+
+

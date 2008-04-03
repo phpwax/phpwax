@@ -1,0 +1,38 @@
+From 4e39a289de7a8abe7fd297a64cad6fd8edb470a2 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 03:13:42 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/utilities/WaxLog.php |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 959c8b64d091f2d9809d2b66f11998aa2da15ffa..20c77b3138d60c5790dc22059f9a3e84ada6babf 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -19,7 +19,7 @@ class WaxLog {
+   
+   static public function add($type, $message) {
+     self::$log_file = ENV.".log";
+-    if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type=>$message);
++    if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type, $message);
+     if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
+   }
+   
+@@ -30,10 +30,9 @@ class WaxLog {
+   public function output() {
+     $output = "";
+     foreach(self::$logs as $log) {
+-      $output .= "[".key($log)."] ". $log;
++      $output .= "[".$log[0]."] ". $log[1];
+     }
+     self::flush();
+-    error_log(var_export($output));
+     return $output;
+   }
+   
+-- 
+1.5.4
+
+

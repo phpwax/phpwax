@@ -1,0 +1,38 @@
+From dc5d3e6ca09bf5856e040649dc767e25255f8800 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 4 May 2008 11:56:19 +0100
+Subject: BC addition to WaxModel find function
+
+---
+ wax/db/WaxModel.php |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index c8bc99e26ac42936e01e1d444fa2d800b5203197..dc25707798131cfe677b34a6bfd6dd82afd1e685 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -322,6 +322,20 @@ class WaxModel {
+     return $this->all();
+   }
+ 
++  /**
++   * Maintains Backward compatibility 
++   *
++   * @param array $options 
++   * @return WaxModel
++   */
++  
++  public function find($options=array()) {
++    if($options["conditions"]) $this->filter($options["conditions"]);
++    if($options["limit"]) $this->limit=$options["limit"];
++    if($options["order"]) $this->order = $options["order"];
++    return $this->first();
++  }
++
+ 
+  	public function __call( $func, $args ) {
+  	  return array();
+-- 
+1.5.4
+
+

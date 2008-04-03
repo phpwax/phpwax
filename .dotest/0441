@@ -1,0 +1,25 @@
+From b138c4b188fde4dc1d6cc654af0afb0fdeae2334 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 15 Apr 2008 17:55:11 +0100
+Subject: Fix to catch all url parameters
+
+---
+ wax/db/WaxModel.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index c5dce14c566768e8c8c1b6ea7828d60311e38104..fec74562cf1d9ed42225043fac1bded07458140b 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -43,6 +43,7 @@ class WaxModel {
+  		if($params) {
+  		  $res = $this->filter(array($this->primary_key => $params))->first();
+  		  $this->row=$res->row;
++ 		  $this->clear();
+  		}
+  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
+  		$this->setup();
+-- 
+1.5.4
+
+

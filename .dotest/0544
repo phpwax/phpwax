@@ -1,0 +1,63 @@
+From a9c521a104030bb09feb3f80074173d43fbfeb3b Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 21:25:41 +0100
+Subject: Fix to error display for select input
+
+---
+ wax/db/fields/DateTimeField.php   |    8 +++++++-
+ wax/forms/widgets/SelectInput.php |    7 +++++--
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index c557dcd16dee94def07fe3ab22cfeb3640559037..f299118dcebc62c5d6c5e2f032c266f8a07f6549 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -13,6 +13,7 @@ class DateTimeField extends WaxModelField {
+   public $widget = "DateInput";
+   public $output_format = "Y-m-d H:i:s";
+   public $save_format = "Y-m-d H:i:s";
++  public $use_uk_date = false;
+ 
+   public function validate() {
+     $this->valid_length();
+@@ -31,7 +32,12 @@ class DateTimeField extends WaxModelField {
+   }
+   
+   public function save() {
+-    $this->model->row[$this->field]= date($this->save_format, strtotime($this->model->row[$this->field] ));    
++    mktime()
++    $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
++  }
++  
++  public function uk_date_switch() {
++    
+   }
+   
+   
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 55c4a95ceadbd9575028a61f20d880dc2c821d35..43328cd0f33ba5279f08394331c90722b98afa5c 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -20,13 +20,16 @@ class SelectInput extends WaxWidget {
+   
+   public function render() {
+     $out ="";
+-    if($this->error_message) $this->attributes["class"].=" error_field";
++    if($this->error_messages) $this->attributes["class"].=" error_field";
+     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+     $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
+-    if($this->error_message) $out .= sprintf($this->error_template, $this->error_message);
++    if($this->error_messages) {
++      foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $error);
++    }
+     return $out;
+   }
+   
++  
+   public function attribute($name, $value) {
+     $this->attributes[$name]=$value;
+   }
+-- 
+1.5.4
+
+

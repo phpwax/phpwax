@@ -1,0 +1,84 @@
+From fb0433ccc1cb79952b8850f9fc9858e3b05ec134 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 11 Apr 2008 12:11:15 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/helpers/UrlHelper.php |   28 ++++++++--------------------
+ 1 files changed, 8 insertions(+), 20 deletions(-)
+
+diff --git a/wax/helpers/UrlHelper.php b/wax/helpers/UrlHelper.php
+index c332b67edb734a75c3bcf4ecca59a404577df731..37ee2eb463e421d09402bc0d8b3cb98d6ba062e3 100644
+--- a/wax/helpers/UrlHelper.php
++++ b/wax/helpers/UrlHelper.php
+@@ -33,7 +33,7 @@ class UrlHelper extends WXHelpers {
+      *  @uses convert_confirm_option_to_javascript()
+      *  @uses url_for()
+      */
+-    /*
++    
+     public function link_to($name, $options = array(), $html_options = array()) {
+         $html_options =
+             $this->convert_confirm_option_to_javascript($html_options);
+@@ -62,7 +62,7 @@ class UrlHelper extends WXHelpers {
+             $html = $this->content_tag("a", $name, $html_options);
+         }
+         return $html;
+-    } */
++    }
+ 
+     /**
+      *  @todo Document this method
+@@ -146,34 +146,22 @@ class UrlHelper extends WXHelpers {
+      *  </ul>
+      *  @return string
+      */
+-  /*
++  
+   public function url_for($options = array(), $url_base="/") {
+-		$routes_object = new WXRoute;
+     $url = array();
+     $extra_params = array();
+-    if(!is_array($options)) {
+-      $options=array("action"=>$options);
+-    }
+-		
++    
+ 		if(array_key_exists("controller", $options)) {
+-		  if($options['controller'] != WXConfiguration::get("route/default")) {
+-    	  $url[] = $options["controller"];
+-		  }
++		  $url[] = $options["controller"];
+ 		  unset($options["controller"]);
+-    } else {
+-    	$url[] = $routes_object->get_url_controller();
+-    }
++    } else $url[] = WaxUrl::get("controller");
+       
+     //  If controller found, get action from $options
+    	if(array_key_exists("action", $options)) {
+     	$url[] = $options["action"];
+ 			unset($options["action"]);
+-    } 
++    } else $url[]= WaxUrl::get("action");
+     
+-		if(array_key_exists("id", $options)) {
+-    	$url[] = $options["id"];
+-			unset($options["id"]);
+-    }
+           
+     if(count($options)) {
+     	foreach($options as $key => $value) {
+@@ -186,7 +174,7 @@ class UrlHelper extends WXHelpers {
+     	return str_replace("//","/",$url_base.implode("/", $url)."/");
+ 		}
+     return $url_base . str_replace("//", "/", implode("/", $url)."/"). "?".http_build_query($extra_params, "", "&");
+-  }   */
++  }   
+ 
+ }
+ 
+-- 
+1.5.4
+
+

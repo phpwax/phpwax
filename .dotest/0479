@@ -1,0 +1,66 @@
+From ba433f0ecde9d7fc0e4ef59ba6025d54657f86af Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 11:30:48 +0100
+Subject: Added new widgets
+
+---
+ wax/forms/widgets/DateInput.php     |   18 ++++++++++++++++++
+ wax/forms/widgets/PasswordInput.php |   18 ++++++++++++++++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+ create mode 100644 wax/forms/widgets/DateInput.php
+ create mode 100644 wax/forms/widgets/PasswordInput.php
+
+diff --git a/wax/forms/widgets/DateInput.php b/wax/forms/widgets/DateInput.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..ce5d9194373eccd94e29eda362387f4764b2051c
+--- /dev/null
++++ b/wax/forms/widgets/DateInput.php
+@@ -0,0 +1,18 @@
++<?php
++
++
++/**
++ * Text Input Widget class
++ *
++ * @package PHP-Wax
++ **/
++class DateInput extends TextInput {
++
++  public $attributes = array(
++    "type"=>"text",
++    "class"=>"input_field text_field date_field"
++  );
++
++
++
++} // END class
+\ No newline at end of file
+diff --git a/wax/forms/widgets/PasswordInput.php b/wax/forms/widgets/PasswordInput.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..4277362b68886fab8aaec218e9dbdaf026b4451c
+--- /dev/null
++++ b/wax/forms/widgets/PasswordInput.php
+@@ -0,0 +1,18 @@
++<?php
++
++
++/**
++ * Text Input Widget class
++ *
++ * @package PHP-Wax
++ **/
++class PasswordInput extends TextInput {
++
++  public $attributes = array(
++    "type"=>"password",
++    "class"=>"input_field text_field password_field"
++  );
++
++
++
++} // END class
+\ No newline at end of file
+-- 
+1.5.4
+
+

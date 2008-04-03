@@ -1,0 +1,143 @@
+From 1ecf4e3a76120abc303de34a17bcc0c62db2124b Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Mon, 7 Apr 2008 11:52:48 +0100
+Subject: changes
+
+---
+ wax/db/fields/FileField.php     |   32 +++++++++++++++++++++++++++++---
+ wax/tests/TestWaxModelField.php |   29 ++++++++++++++++++++++-------
+ 2 files changed, 51 insertions(+), 10 deletions(-)
+
+diff --git a/wax/db/fields/FileField.php b/wax/db/fields/FileField.php
+index 6c9c30ec218f45b3601d6adefa9aaffb8d890aed..829b301daf18b3d91178d113f0cde5fcbc377875 100644
+--- a/wax/db/fields/FileField.php
++++ b/wax/db/fields/FileField.php
+@@ -13,6 +13,19 @@ class FileField extends WaxModelField {
+ 	//extra file values
+ 	public $file_root = "public/files/";
+ 	public $url_root = "files/";
++	//allowed extensions - array of exts, false means everythings allowed
++	public $allowed_extensions = false;
++
++	public function __construct($column, $model, $options = array()) {	
++    if(isset($options['allowed_extensions'])){
++			if(is_array($options['allowed_extensions']) ){
++				foreach($options['allowed_extensions'] as $index=> $extension) $this->allowed_extensions[] = $extension; 
++			} else $this->allowed_extensions[] = $options['allowed_extensions'];
++			unset($options['allowed_extensions']);
++		}
++		$this->col_name = $column;
++		parent::__construct($column, $model, $options = array());
++  }
+ 
+   public function setup() {	
+ 		$this->create_directory(WAX_ROOT.$this->file_root);
+@@ -28,14 +41,18 @@ class FileField extends WaxModelField {
+ 	
+ 	//save function needs to handle the post upload of a single file
+ 	public function save() {
++		echo "called..\n";
+ 		//file is present and has a valid size
+ 		if(isset($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
++			echo "saving..\n";
+ 			//save file to hdd & change col_name value to new_path
+ 			$column = $this->col_name;
+ 			$path = $this->save_file($_FILES[$this->model->table]);
+-			if($path) $this->model->$column = $path;
+-			parent::save();
+-		}
++			if($path) {
++				$this->model->$column = $path;
++				parent::save();
++			}
++		} else $this->add_error($this->col_name, " no file present");
+ 		
+ 	}
+ 	
+@@ -61,6 +78,15 @@ class FileField extends WaxModelField {
+ 	private function save_file($file){
+ 		$up_tmp_name = $file['tmp_name'][$this->col_name];
+ 		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
++		//check file extention is allowed
++		$ext = strtolower(substr($file_destination, strrpos($file_destination, ".") ));
++		echo "ext:$ext\n";
++		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ){ 
++			echo ":".$this->field.":\n";
++			$this->add_error($this->field, sprintf($this->messages["format"], $ext));
++			echo "error added\n";
++			return false;
++		}
+ 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
+ 		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
+ 		else return false;
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 181bd5888175d638ccf9e1c7744e350e4a6b04f5..ba58f6c91f9eb78df4865c7d09099f2e07b2632a 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -2,7 +2,13 @@
+ class ExampleFile extends WaxModel {
+   
+   public function setup() {
+-    $this->define("file", "FileField", array("maxlength"=>255));
++    $this->define("filename", "FileField", array("maxlength"=>255));
++  }
++}
++class ExampleFileField extends WaxModel {
++  
++  public function setup() {
++    $this->define("file", "FileField", array("maxlength"=>255, 'allowed_extensions'=> array('.gif', '.jpg') ));
+   }
+ }
+ class TestWaxModelField extends WXTestCase {
+@@ -10,9 +16,11 @@ class TestWaxModelField extends WXTestCase {
+       $this->model = new Example();
+       $this->model_owner = new ExampleOwner();
+       $this->model_file = new ExampleFile();
++			$this->model_file_field = new ExampleFileField();
+       $this->model->syncdb();
+       $this->model_owner->syncdb();
+       $this->model_file->syncdb();
++      $this->model_file_field->syncdb();
+       $model3 = new ExampleProperty;
+       $model3->syncdb();
+     }
+@@ -94,7 +102,7 @@ class TestWaxModelField extends WXTestCase {
+ 
+ 		/*** FILE UPLOAD ****/
+ 
+-	  public function test_file_save_with_missing_file_dir() {  
++	  /*public function test_file_save_with_missing_file_dir() {  
+ 			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
+ 			system("rm -Rf ". $test_dir);
+ 			$this->file_upload_prep();
+@@ -118,14 +126,21 @@ class TestWaxModelField extends WXTestCase {
+ 	   	$second_name = $model->filename;	
+ 			if($second_name != $first_name) $this->assertTrue(true);
+ 			else $this->assertFalse(false);
+-	  }
++	  }*/	
++	
++		public function test_excepted_files(){
++			$model_name = "example_file_field";
++			$this->file_upload_prep("file", $model_name);
++			if($this->model_file_field->save() ) echo "File accepted\n";
++			else echo "file rejected\n";
++		}
+ 
+-		protected function file_upload_prep($model_name = 'example_file'){
++		protected function file_upload_prep($column="filename", $model_name = 'example_file'){
+ 			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
+ 		  file_put_contents(PUBLIC_DIR."testfile.txt", "test file");
+-	    $_FILES[$model_name]['name']['filename'] = "testfile.txt";
+-			$_FILES[$model_name]['size']['filename'] = filesize(PUBLIC_DIR."testfile.txt");
+-			$_FILES[$model_name]['tmp_name']['filename'] = PUBLIC_DIR."testfile.txt";
++	    $_FILES[$model_name]['name'][$column] = "testfile.txt";
++			$_FILES[$model_name]['size'][$column] = filesize(PUBLIC_DIR."testfile.txt");
++			$_FILES[$model_name]['tmp_name'][$column] = PUBLIC_DIR."testfile.txt";
+ 		}
+     
+ }
+-- 
+1.5.4
+
+

@@ -1,0 +1,34 @@
+From 11070d52ff5f89d09108b7324a316838dd336175 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 00:37:41 +0100
+Subject: Allowed foreign key to save raw id
+
+---
+ wax/db/fields/ForeignKey.php |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index ba5e52e4c0ee1d5e7a82f2284f1318665f023d69..0d98ff0069f51ce9eb9aa3f2d56277dc4f7690cb 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -29,10 +29,12 @@ class ForeignKey extends WaxModelField {
+     return $model;
+   }
+   
+-  public function set(WaxModel $value) {
+-    $this->model->{$this->col_name} = $value->{$value->primary_key};
+-    unset($this->model->{$this->field});
+-    return $this->model->save();
++  public function set($value) {
++    if($value instanceof WaxModel) {
++      $this->model->{$this->col_name} = $value->{$value->primary_key};
++      unset($this->model->{$this->field});
++      return $this->model->save();
++    }
+   }
+   
+   public function save() {
+-- 
+1.5.4
+
+

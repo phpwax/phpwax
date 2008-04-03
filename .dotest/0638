@@ -1,0 +1,98 @@
+From 2bbff25aafc527fa6c62d4d99bc57ffed6ac875a Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 22 Apr 2008 11:46:44 +0100
+Subject: Added custom sql feature to model
+
+---
+ wax/db/WaxDbAdapter.php |   27 +++++++++++++++------------
+ wax/db/WaxModel.php     |    5 +++++
+ wax/forms/WaxForm.php   |    4 ++++
+ 3 files changed, 24 insertions(+), 12 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 6b8e5c5a8092fe7bcb698ef7902ba8f2b8957771..bc93480080c9d5cfda41765845c0f39e6d6cbcde 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -78,16 +78,20 @@ abstract class WaxDbAdapter {
+   }
+   
+   public function select(WaxModel $model) {
+-    $sql .= "SELECT ";
+-    if(count($this->columns)) $sql.= join(",", $this->columns) ;
+-		//mysql extra - if limit then record the number of rows found without limits
+-		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
+-    else $sql.= "*";
+-    $sql.= " FROM `{$model->table}`";
+-    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
+-  	if($model->group_by) $sql .= " GROUP BY {$model->group_by}";   
+-    if($model->order) $sql.= " ORDER BY {$model->order}";
+-    if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
++    if($this->sql) {
++      $sql = $this->sql;
++    } else {
++      $sql .= "SELECT ";
++      if(count($this->columns)) $sql.= join(",", $this->columns) ;
++  		//mysql extra - if limit then record the number of rows found without limits
++  		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
++      else $sql.= "*";
++      $sql.= " FROM `{$model->table}`";
++      if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
++    	if($model->group_by) $sql .= " GROUP BY {$model->group_by}";   
++      if($model->order) $sql.= " ORDER BY {$model->order}";
++      if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
++    }
+     $stmt = $this->db->prepare($sql);
+ 		//altered to include extra mysql found rows data
+ 		if($model->limit >0 && $this->exec($stmt)){
+@@ -97,8 +101,7 @@ abstract class WaxDbAdapter {
+ 			$found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
+ 			$this->total_without_limits = $found[0]['FOUND_ROWS()'];
+ 			return $res;
+-		}
+-    elseif($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
++		} elseif($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+   }
+   
+   
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index c834405f087417367ed9e28e0c3b99e64ed87ecf..ca1b00f5947375069d383ffe84695687a6248f89 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -24,6 +24,7 @@ class WaxModel {
+   public $order = false;
+   public $limit = false;
+   public $offset = "0";
++  public $sql = false;
+   public $errors = array();
+   public $persistent = true;
+ 
+@@ -199,6 +200,10 @@ class WaxModel {
+ 		$this->group_by = $group_by;
+ 		return $this;
+ 	}
++	public function sql($query) {
++	  $this->sql = $query;
++	  return $this;
++	}
+ 	
+ 	//take the page number, number to show per page, return paginated record set..
+ 	public function page($page_number="1", $per_page=10){
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index be8cc54ad9ea02c48560b69b55fdda65efa8ab38..41df3b8c5fe768777f65e71c35722a973a7891d7 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -66,6 +66,10 @@ class WaxForm {
+      }
+      return true;
+    }
++   
++   public function __get($name) {
++     if(array_key_exists($name, $this->elements)) return $this->elements[$name];
++   } 
+ 
+   
+ 
+-- 
+1.5.4
+
+

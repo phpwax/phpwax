@@ -1,0 +1,28 @@
+From c813bd9d3e60f08a380d375986d508c88fa8a8e6 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Mon, 14 Apr 2008 16:50:09 +0100
+Subject: Added multiple directory support for sync_db script
+
+---
+ wax/utilities/WXScripts.php |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/utilities/WXScripts.php b/wax/utilities/WXScripts.php
+index fe7ce2fecb72e1ec04712eb75da64214b9b83952..18eeb8ae75c78bcd6c9b6ad218a0c6a952d21524 100755
+--- a/wax/utilities/WXScripts.php
++++ b/wax/utilities/WXScripts.php
+@@ -208,8 +208,9 @@ class WXScripts {
+   public function syncdb($dir=false) {
+     $this->app_setup();
+     if($dir && is_dir($dir)) Autoloader::include_dir($dir);
+-    print_r(get_declared_classes());
+     else Autoloader::include_dir(MODEL_DIR, true);
++    print_r(get_declared_classes());
++    
+     foreach(get_declared_classes() as $class) {
+       if(is_subclass_of($class, "WaxModel")) {
+         $this->add_output("Loading model $class");
+-- 
+1.5.4
+
+

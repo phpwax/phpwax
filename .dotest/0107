@@ -1,0 +1,38 @@
+From 34c22849caea491ef339eaedd3ec9213e3f28ccc Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 16:08:19 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    1 -
+ wax/tests/TestWaxUrl.php |    1 +
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index fb7e968f1a55feca7978426709110cdbc3abb3e0..d23dee9666a264fae1cf1ff5c0b1a2ab1fe1bc72 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -71,7 +71,6 @@ class WaxUrl {
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
+-      echo $left."  :  ".$right."\n";    
+       $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9\-\/]*)", $left);
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
+       $left = str_replace("/", "\/", $left);  
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 91dd0586c8326e76778fc8ad3465bdb3530ec0ca..ca6c1592ed22a4d6e447e8bf344fcef32da55903 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -35,6 +35,7 @@ class TestWaxUrl extends WXTestCase {
+     public function test_wildcard_map() {
+       $_GET["route"]="tags/tech/humour/pics";
+       WaxUrl::map("article/:tags*", array("controller"=>"blog", "action"=>"tags"));
++      WaxUrl::perform_mappings();
+       $this->assertTrue(is_array(WaxUrl::get("tags")) );
+       $this->assertEqual(count(WaxUrl::get("tags")), 3);
+     }
+-- 
+1.5.4
+
+

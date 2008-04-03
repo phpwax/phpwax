@@ -1,0 +1,47 @@
+From c988defcda69e6b001042cc0b1d476c8293dc847 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Fri, 4 Apr 2008 01:11:06 +0100
+Subject: Final touches to ManyToMany model tests : fingers crossed
+
+---
+ wax/db/WaxModelAssociation.php  |    7 +++++++
+ wax/tests/TestWaxModelField.php |    4 ++++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index af438138fc5b88a04077aa091197cc0d334bf6ae..1f6896e0e695c679689044ae60ac7f603e05cac3 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -25,6 +25,13 @@ class WaxModelAssociation extends WaxRecordset {
+       $id = $model->primval;
+       $this->join_model->filter(array($this->target_model->table."_".$this->target_model->primary_key => $id))->delete();
+     }
++    if($model instanceof WaxRecordset) {
++      foreach($model as $obj) {
++        $id = $obj->primval;
++        $filter[]= $this->target_model->table."_".$this->target_model->primary_key => $id;
++      }
++      $this->join_model->filter(join(" OR ", $filter))->delete();
++    }
+     return $this;
+   }
+   
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index d74c1d22e454c8e8001c151fe96c58cd29088732..5d2edae398c13a7a3b08e6396ea5d7e685a7e626 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -78,6 +78,10 @@ class TestWaxModelField extends WXTestCase {
+       $this->assertEqual($model->properties->count(), 2);
+       $model->properties->unlink($prop1);
+       $this->assertEqual($model->properties->count(), 1);
++      $model->properties = $prop1;
++      $this->assertEqual($model->properties->count(), 2);
++      $model->properties->unlink($props->all());
++      $this->assertEqual($model->properties->count(), 0);
+     }
+ 
+     
+-- 
+1.5.4
+
+

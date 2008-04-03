@@ -1,0 +1,39 @@
+From 3cdfe4e7d6483de003a27973ecfbfc251b5d73f8 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 01:22:29 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/db/WaxDbAdapter.php  |    2 +-
+ wax/utilities/WaxLog.php |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 3ec5da6ead05dc58efd64e2008d7505047e87d3a..637dc722c392eb0caeab454e1970944199b4bafa 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -189,7 +189,7 @@ abstract class WaxDbAdapter {
+ 			$pdo_statement->execute($bindings);
+ 		} catch(PDOException $e) {
+ 			$err = $pdo_statement->errorInfo();
+-			WaxLog::add("sql", $pdo_statement);
++			WaxLog::add("db", $pdo_statement);
+       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
+ 		}
+ 		return $pdo_statement;
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index 9e17fb908f381bdd9165ace132570b64b239479a..646fcbe54147601c1776f97c845225aac5e07bba 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -41,6 +41,7 @@ class WaxLog {
+   }
+   
+   public function log($output) {
++    die($output);
+     error_log($output, 3, self::$log_file);
+   }
+   
+-- 
+1.5.4
+
+

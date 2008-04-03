@@ -1,0 +1,65 @@
+From 35cdf9f9433116033666b4569f85fe2bb32f9d11 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 4 Apr 2008 13:26:55 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    9 +++++++++
+ wax/tests/TestWaxUrl.php |   24 ++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 0 deletions(-)
+ create mode 100644 wax/tests/TestWaxUrl.php
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 1bd1c87de4e38503c59364977074fb26afccd91c..9b35d826e65f5131fd06612a1efcf800bad94aed 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -81,6 +81,15 @@ class WaxUrl {
+       $conditions = $map[2];
+     }
+   }
++  
++  /**
++   * undocumented function
++   *
++   * @return mixed
++   **/
++  static public function get($val) {
++    return $_GET[$val]
++  }
+   	
+ }
+ 
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..8ba00f6598142b93012ce189a237f7195de7f6c1
+--- /dev/null
++++ b/wax/tests/TestWaxUrl.php
+@@ -0,0 +1,24 @@
++<?php
++
++class TestWaxUrl extends WXTestCase {
++    public function setUp() {
++      $_GET["route"]="mycontroller/myaction/myid";
++    }
++    
++    public function tearDown() {
++
++    }
++    
++    public function test_map() {
++      WaxUrl::perform_mappings();
++      echo WaxUrl::get("controller");
++    }
++    
++}
++
++
++
++
++
++
++
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From b65055a212e0166116a4d05f781750fdf4286497 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 11:26:00 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/db/WaxModel.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index 8a88286b6b7db6ad9f26239bd1ea469ca7f733ad..80b45a9ed1bec669f48aaf31b4147dc67efd66ae 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -49,7 +49,7 @@ class WaxModel {
+  	static public function load_adapter($db_settings) {
+  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
+  	  self::$adapter = $adapter;
+- 	  self::$db_setings = $db_settings;
++ 	  self::$db_settings = $db_settings;
+  	}
+  	
+  	public function define($column, $type, $options=array()) {
+-- 
+1.5.4
+
+

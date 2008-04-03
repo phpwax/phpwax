@@ -1,0 +1,26 @@
+From b34139cb84b7e26c4cb84821511cd24dbd75fe86 Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Fri, 18 Apr 2008 11:59:55 +0100
+Subject: country_select fix
+
+---
+ wax/helpers/FormOptionsHelper.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/helpers/FormOptionsHelper.php b/wax/helpers/FormOptionsHelper.php
+index bfd32790829aa513953f525214b49ad51eeac7c3..21d528efaa4d49c06ec87f8aa1c335573494bab1 100644
+--- a/wax/helpers/FormOptionsHelper.php
++++ b/wax/helpers/FormOptionsHelper.php
+@@ -120,7 +120,7 @@ class FormOptionsHelper extends FormHelper {
+ 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
+ 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
+ 	  if($with_label) $html.= $this->make_label($with_label);
+-	  $html.= $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
++	  $html.= $this->options_for_select($GLOBALS['COUNTRIES'], $options);
+ 		return $html;
+ 	}
+   
+-- 
+1.5.4
+
+

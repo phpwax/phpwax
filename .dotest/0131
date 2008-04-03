@@ -1,0 +1,49 @@
+From 7ba9e4638f5fc02ed8ff3fd077d492777f7ccbc6 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Tue, 8 Apr 2008 00:47:16 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    3 +++
+ wax/tests/TestWaxUrl.php |    3 +++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 2aedff180e75fc2781030c20ee4c7f36f5c18045..280d2ca4be3c8d182210606a031857eac42c742e 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -27,6 +27,8 @@ class WaxUrl {
+   static $mappings = array(
+     array("", array("controller"=>"page")),
+     array(":controller/:action/:id")
++    array(":controller/:action")
++    array(":controller")
+   );
+ 
+ 
+@@ -99,6 +101,7 @@ class WaxUrl {
+       break;
+       }
+     }
++    
+   }
+   
+   
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 45c68fa705439ec049d6b19a76c2bb9bf5707111..c47b223a163ca4744249f8d5dc2979937add3284 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -23,6 +23,9 @@ class TestWaxUrl extends WXTestCase {
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+       $this->assertEqual(WaxUrl::get("action"), "myaction");
++      $_GET["route"]="mycontroller";
++      WaxUrl::perform_mappings();
++      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+     }
+     
+     public function test_default_map() {
+-- 
+1.5.4
+
+

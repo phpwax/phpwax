@@ -1,0 +1,27 @@
+From ece6107fa14af120ec4218f983127acca6259b45 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 14:55:32 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/db/fields/ForeignKey.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index 67132bd0a3448c43b1edefe6656d19df4a3eb7d6..335864e283a04caf27dbf139ed51f011c25de0c8 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -49,8 +49,7 @@ class ForeignKey extends WaxModelField {
+   
+   public function __get($name) {
+     if($name == "value") return $this->model->{$this->model->primary_key};
+-    print_r($this); exit;
+- 	  if($value =="name") return $this->table."[".$this->col_name."]";
++ 	  if($value =="name") return $this->table."[{$this->col_name}]";
+     if($value =="id") return $this->table."_{$this->col_name}";
+   }
+ 
+-- 
+1.5.4
+
+

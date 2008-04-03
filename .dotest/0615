@@ -1,0 +1,29 @@
+From 02ee361837bc3282edcb328a010bf2b194bdf54f Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 14:09:21 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/forms/widgets/SelectInput.php |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 9c76e0b66ec8711853238bf7493884557c012512..2172aa84d4abe8e147f383818cbb803fb807fe33 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -9,9 +9,8 @@
+ class SelectInput extends WaxWidget {
+ 
+   public $allowable_attributes = array(
+-    "name", "value", "checked", "disabled", "readonly", "size", "id", "class",
+-    "alt", "accesskey", "tabindex", "multiple"
+-  );
++    "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple"
++  ); 
+   
+   public $class = "input_field select_field";
+   public $label_template = '<label for="%s">%s</label>';
+-- 
+1.5.4
+
+

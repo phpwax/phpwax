@@ -1,0 +1,44 @@
+From 8d1efa9fa4fc0cfd6beaa872c12df0ac61a45b8d Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 11:24:12 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/db/WaxModel.php |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index d7710220a204ba816290c2790bd4d929f9cf2bab..8a88286b6b7db6ad9f26239bd1ea469ca7f733ad 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -11,6 +11,7 @@
+ class WaxModel {
+   
+   static public $adapter;
++  static public $db_settings;
+   protected $db = false;
+   public $table = false;
+   public $primary_key="id";
+@@ -32,7 +33,7 @@ class WaxModel {
+    *                          or constraints (if array) but param['pdo'] is PDO instance
+    */
+  	function __construct($params=null) {
+- 		$this->db = self::$adapter;
++ 		$this->db = new self::$adapter(self::$db_settings);
+  		$class_name =  get_class($this) ;
+  		if( $class_name != 'WaxModel' && !$this->table ) {
+  			$this->table = WXInflections::underscore( $class_name );
+@@ -47,7 +48,8 @@ class WaxModel {
+  	
+  	static public function load_adapter($db_settings) {
+  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
+- 	  self::$adapter = new $adapter($db_settings);
++ 	  self::$adapter = $adapter;
++ 	  self::$db_setings = $db_settings;
+  	}
+  	
+  	public function define($column, $type, $options=array()) {
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 3a058035c6053947657a1e807d7bebd1b1728880 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 12:21:03 +0100
+Subject: Added error sniffing to widgets
+
+---
+ wax/db/WaxModelField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 5d2e80408b4a7ed6c06320ebee99c1cb0df0b22a..aeb7a075a1e3c00b4b5f55a622289ed556ae3004 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -20,7 +20,7 @@ class WaxModelField {
+   public $choices = false;
+   public $editable = true; // Only editable options will be displayed in forms
+   public $blank = true;
+-  public $label = false;
++  public $label = true; // Set to false to never show labels
+   public $help_text = false;
+   public $widget="TextInput";
+   protected $model = false;
+-- 
+1.5.4
+
+

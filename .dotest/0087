@@ -1,0 +1,39 @@
+From db4d60746d234e982a940201bbfbad01b608db07 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 15:28:05 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    1 +
+ wax/tests/TestWaxUrl.php |    2 ++
+ 2 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 9be95b44078279d751111b70f8963c98829da590..e92a4ecdd135dfcf4fa18a6ca54a9e18425fc14d 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -84,6 +84,7 @@ class WaxUrl {
+           array_shift($matches); 
+           array_shift($mappings);
+         }
++        $mapped_route = array_merge($mapped_route, $map[1]);
+       }
+       // Map against named parameters in options array
+       
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index b45c1a78c6b4c0478beca865bea3a13de9af18b1..35bb60e34d4f85479ffc2546d398723720c6aa5f 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -14,6 +14,8 @@ class TestWaxUrl extends WXTestCase {
+       $_GET["route"]="mycontroller/myaction/myid";
+       WaxUrl::perform_mappings();
+       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
++      $this->assertEqual(WaxUrl::get("action"), "myaction");
++      $this->assertEqual(WaxUrl::get("id"), "myid");
+     }
+     
+     public function test_default_map() {
+-- 
+1.5.4
+
+

@@ -1,0 +1,25 @@
+From 57dd0b961b62fbfa6d423b634dafb3f31a1e9822 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 12:51:11 +0100
+Subject: Fix to 404 status rendering
+
+---
+ wax/exceptions/WXRoutingException.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index 800cdc063f480a2563fbf39230b59f2622b629a5..8c4522180dbe94b63856ce526987c96b7c33bae6 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -16,6 +16,7 @@ class WXRoutingException extends WXException
+       $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+   		$delegate_controller = new $delegate;
+   		$delegate_controller->execute_request();
++  		exit;
+   	}
+   	parent::__construct($message, $code);
+   }
+-- 
+1.5.4
+
+
