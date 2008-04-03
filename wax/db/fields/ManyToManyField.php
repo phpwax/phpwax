@@ -39,14 +39,12 @@ class ManyToManyField extends WaxModelField {
     $vals = $this->join_model->all();
     $links = new $this->hasmany_model;
     foreach($vals as $val) $links->filter(array($links->primary_key=>$val->right_field));
-    return $links->all();
+    return new WaxModelAssociation($links);
   }
   
   public function set($value) {
-    if($value instanceof WaxModel) echo $value->id;
-    if($value instanceof WaxRecordset) {
-      foreach($value as $model) echo $model->id;
-    }
+    $ass = new WaxModelAssociation($value);
+    return $ass->set();
   }
   
   public function save() {
