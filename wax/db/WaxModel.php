@@ -254,7 +254,7 @@ class WaxModel {
    }
    
    public function __clone() {
-     $this->primary_key = clone $this->primary_key;
+     $this->primary_key = "id";
      $this->setup();
    }
 
