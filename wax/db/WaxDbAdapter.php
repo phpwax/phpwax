@@ -59,7 +59,6 @@ abstract class WaxDbAdapter {
 	}
   
   public function update(WaxModel $model) {
-    echo "Updating {$model->table}";
     $stmt = $this->db->prepare("UPDATE `{$model->table}` SET ".$this->update_values($model->row).
       " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
     $this->exec($stmt, $model->row);
