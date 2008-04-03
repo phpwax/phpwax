@@ -176,8 +176,7 @@ class WaxModel {
    * @return WaxModel Object
    **/
   public function create($attributes = array()) {
- 		$class_name =  get_class($this);
- 		$row = new $class_name();
+ 		$row = clone $this;
  		return $row->update_attributes($attributes);
   }
 
