@@ -16,7 +16,7 @@ class WaxModelAssociation extends WaxRecordset {
   } 
   
   public function unlink($model) {
-    $this->model->get_col(field)->unlink($model);
+    $this->model->{$this->field}->unlink($model);
     return $this->model;
   }
   
