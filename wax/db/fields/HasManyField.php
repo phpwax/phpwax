@@ -25,7 +25,6 @@ class HasManyField extends WaxModelField {
   
   public function get() {
     $model = new $this->model_name();
-    print_r($model->filter(array($this->join_field=>$this->model->primval))->all());
     return $model->filter(array($this->join_field=>$this->model->primval))->all() ;
   }
   
