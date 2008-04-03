@@ -62,7 +62,8 @@ class WaxModel {
  	  if(is_string($filters)) $this->filters[]=$filters;
  	  else {
       foreach((array)$filters as $key=>$filter) {
-        $this->filters[]= $key."=".$this->db->quote($filter);
+        if(is_array($filter)) $this->filters[]= $key." IN(".join(",",$filter).")";
+        else $this->filters[]= $key."=".$this->db->quote($filter);
       }
     }
     return $this;

@@ -1,11 +1,4 @@
 <?php
-class ExampleOwner extends WaxModel {
-  
-  public function setup() {
-    $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "HasManyField", array("model_name"=>"example"));
-  }
-}
 
 class TestWaxModelField extends WXTestCase {
     public function setUp() {
@@ -16,8 +9,8 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function tearDown() {
-      $this->model->clear()->delete();
-      $this->model_owner->clear()->delete();
+      //$this->model->clear()->delete();
+      //$this->model_owner->clear()->delete();
     }
     
     public function get_fixture($type) {
@@ -67,6 +60,14 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
       $this->assertEqual($owner->examples->count(), 2);
+    }
+    
+    public function test_many_many() {
+      $model = $this->model->create($this->get_fixture("user1"));
+      $props = new ExampleProperty;
+      $prop1 = $props->create(array("name"=>"Property 1"));
+      $prop2 = $props->create(array("name"=>"Property 2"));
+      $model->properties = $props->all();
     }
 
     

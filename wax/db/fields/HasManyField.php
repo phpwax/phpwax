@@ -15,6 +15,7 @@ class HasManyField extends WaxModelField {
   public function setup() {
     $this->col_name = false;
     $class_name = get_class($this->model);
+    if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
     if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_id";
   }
 
@@ -23,8 +24,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    $class = Inflections::camelize($this->model_name);
-    $model = new $class();
+    $model = new $this->model_name();
     return $model->filter(array($this->join_field=>$this->model->row[$this->model->primary_key]))->all() ;
   }
   
