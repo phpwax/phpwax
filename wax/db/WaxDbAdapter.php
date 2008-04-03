@@ -114,7 +114,10 @@ abstract class WaxDbAdapter {
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
       }
-      if($col_exists==false) $output .= $this->add_column($model_field, $model)."\n";
+      if($col_exists==false){
+        $output .= $model_field->before_sync();
+        $output .= $this->add_column($model_field, $model)."\n";
+      }
       if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
     }
     $output .= "Table {$model->table} is now synchronised";
