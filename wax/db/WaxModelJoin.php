@@ -5,10 +5,13 @@ class WaxModelJoin extends WaxModel {
   
   public function init(WaxModel $left, WaxModel $right) {
     $this->table = $left->table."_".$right->table;
-    $this->left_field = $left->table."_".$left->primary_key;
-    $this->right_field = $right->table."_".$right->primary_key;
-    $this->define($this->left_field, "IntegerField");
-    $this->define($this->right_field, "IntegerField");
+    $fields[] = $left->table."_".$left->primary_key;
+    $fields[] = $right->table."_".$right->primary_key;
+    asort($fields);
+    $this->define($fields[0], "IntegerField");
+    $this->define($fields[1], "IntegerField");
+    $this->left_field = $fields[0];
+    $this->right_field = $fields[1];
   }
   
 }
