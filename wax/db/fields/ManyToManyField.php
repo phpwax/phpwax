@@ -26,7 +26,7 @@ class ManyToManyField extends WaxModelField {
     $join = new WaxModelJoin;
     $join->init($left, $right);
     $join->syncdb();
-    $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primary_key));
+    $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->{$this->model->primary_key}));
   }
 
   public function validate() {
