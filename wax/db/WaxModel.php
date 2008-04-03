@@ -233,6 +233,16 @@ class WaxModel {
  	  }
  	  return false;
  	}
+ 	
+ 	/**
+ 	 * primval() function
+ 	 *
+ 	 * @return mixed
+ 	 * simple helper to return the value of the primary key
+ 	 **/
+ 	public function primval() {
+    return $this->{$this->primary_key};
+  }
 
 
 
