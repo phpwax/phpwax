@@ -55,7 +55,6 @@ class TestWaxModelField extends WXTestCase {
       $model = $this->model->create($this->get_fixture("user1"));
       $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
-      print_r($model);
       $this->assertEqual("Master", $model->example_owner->name);
     }
     
@@ -68,18 +67,18 @@ class TestWaxModelField extends WXTestCase {
       $this->assertEqual($owner->examples->count(), 2);
     }
     
-    public function test_many_many() {
-      $model = $this->model->create($this->get_fixture("user1"));
-      $props = new ExampleProperty;
-      
-      $prop1 = $props->create(array("name"=>"Property 1"));
-      $prop2 = $props->create(array("name"=>"Property 2"));
-      $model->properties = $props->all();
-      $this->assertIsA($model->properties, "WaxModelAssociation");
-      $this->assertEqual($model->properties->count(), 2);
-      $model->properties->unlink($prop1);
-      $this->assertEqual($model->properties->count(), 1);
-    }
+    // public function test_many_many() {
+    //      $model = $this->model->create($this->get_fixture("user1"));
+    //      $props = new ExampleProperty;
+    //      
+    //      $prop1 = $props->create(array("name"=>"Property 1"));
+    //      $prop2 = $props->create(array("name"=>"Property 2"));
+    //      $model->properties = $props->all();
+    //      $this->assertIsA($model->properties, "WaxModelAssociation");
+    //      $this->assertEqual($model->properties->count(), 2);
+    //      $model->properties->unlink($prop1);
+    //      $this->assertEqual($model->properties->count(), 1);
+    //    }
 
     
 }
