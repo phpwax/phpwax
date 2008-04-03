@@ -56,7 +56,7 @@ abstract class WaxDbAdapter {
       VALUES (".join(",", array_keys($this->bindings($model->row))).")");
     $stmt = $this->exec($stmt, $model->row);
     $new = array($model->primary_key = $this->db->lastInsertId());
-    print_r($new);
+    print_r($model);
     $res = $model->clear()->filter($new);
     return $res->first();
 	}
