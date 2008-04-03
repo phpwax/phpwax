@@ -49,8 +49,9 @@ class ManyToManyField extends WaxModelField {
     if($value instanceof WaxRecordset) {
       foreach($value as $join) {
         if(!$this->join_model->filter(array($this->join_field($join) => $join->primval) )->all()->count() ) {
-          print_r($this->model);
-          $this->join_model->create(array($this->join_field($join)=>$join->primval, $this->join_field($this->model) => $this->model->primval));
+          $new = array($this->join_field($join)=>$join->primval, $this->join_field($this->model) => $this->model->primval);
+          print_r($new);
+          $this->join_model->create($new);
         }
       }
     }
