@@ -55,8 +55,10 @@ abstract class WaxDbAdapter {
     $stmt = $this->db->prepare("INSERT into `{$model->table}` (".join(",", array_keys($model->row)).") 
       VALUES (".join(",", array_keys($this->bindings($model->row))).")");
     $stmt = $this->exec($stmt, $model->row);
-    $res = $model->clear()->filter(array($model->primary_key = $this->db->lastInsertId()));
-    return $model->first();
+    $new = array($model->primary_key = $this->db->lastInsertId());
+    print_r($new);
+    $res = $model->clear()->filter($new);
+    return $res->first();
 	}
   
   public function update(WaxModel $model) {
