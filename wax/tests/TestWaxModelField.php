@@ -12,11 +12,11 @@ class TestWaxModelField extends WXTestCase {
     
     public function tearDown() {
       $model1 = new Example;
-      $model1->delete();
+      //$model1->delete();
       $model2 = new ExampleOwner;
-      $model2->delete();
+      //$model2->delete();
       $model3 = new ExampleProperty;
-      $model3->delete();
+      //$model3->delete();
     }
     
     public function get_fixture($type) {

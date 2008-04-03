@@ -2,6 +2,7 @@
 class WaxModelJoin extends WaxModel {
   
   public $left_field = false;
+  public $right_field = false;
   
   public function init(WaxModel $left, WaxModel $right) {
     $this->table = $left->table."_".$right->table;
