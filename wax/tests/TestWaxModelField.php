@@ -6,11 +6,17 @@ class TestWaxModelField extends WXTestCase {
       $this->model_owner = new ExampleOwner();
       $this->model->syncdb();
       $this->model_owner->syncdb();
+      $model3 = new ExampleProperty;
+      $model3->syncdb();
     }
     
     public function tearDown() {
-      $this->model->clear()->delete();
-      $this->model_owner->clear()->delete();
+      $model1 = new Example;
+      $model1->delete();
+      $model2 = new ExampleOwner;
+      $model2->delete();
+      $model3 = new ExampleProperty;
+      $model3->delete();
     }
     
     public function get_fixture($type) {
@@ -65,7 +71,6 @@ class TestWaxModelField extends WXTestCase {
     public function test_many_many() {
       $model = $this->model->create($this->get_fixture("user1"));
       $props = new ExampleProperty;
-      $props->syncdb();
       
       $prop1 = $props->create(array("name"=>"Property 1"));
       $prop2 = $props->create(array("name"=>"Property 2"));
