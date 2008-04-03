@@ -14,7 +14,7 @@ class WaxModelAssociation extends WaxRecordset {
   } 
   
   public function unlink() {
-    
+    return $this;
   }
   
 
