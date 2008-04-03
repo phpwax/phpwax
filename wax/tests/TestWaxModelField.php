@@ -70,6 +70,8 @@ class TestWaxModelField extends WXTestCase {
       $prop1 = $props->create(array("name"=>"Property 1"));
       $prop2 = $props->create(array("name"=>"Property 2"));
       $model->properties = $props->all();
+      $this->assertIsA($model->properties, "WaxRecordset");
+      $this->assertEqual($model->properties->count(), "2");
     }
 
     
