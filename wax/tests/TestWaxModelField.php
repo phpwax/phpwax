@@ -65,6 +65,8 @@ class TestWaxModelField extends WXTestCase {
     public function test_many_many() {
       $model = $this->model->create($this->get_fixture("user1"));
       $props = new ExampleProperty;
+      $props->syncdb();
+      
       $prop1 = $props->create(array("name"=>"Property 1"));
       $prop2 = $props->create(array("name"=>"Property 2"));
       $model->properties = $props->all();
