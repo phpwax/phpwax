@@ -10,6 +10,7 @@
 class WaxModelAssociation extends WaxRecordset {
 
   public function __construct($model) {
+    print_r($model->all()->rowset);
     parent::__construct($model, $model->all()->rowset);
   } 
   
