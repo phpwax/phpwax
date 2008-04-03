@@ -46,8 +46,6 @@ class ManyToManyField extends WaxModelField {
     
       foreach($value as $join) {
         echo get_class($join)."\n";
-        $res = $this->join_model->filter(array($this->join_field($join) => $join->{$join->primary_key} ));
-        if(!$res->count()) $this->join_model->create(array($this->join_field($join) => $join->{$join->primary_key}));
       }
 
   }
