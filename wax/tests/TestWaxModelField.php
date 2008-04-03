@@ -9,8 +9,8 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function tearDown() {
-      //$this->model->clear()->delete();
-      //$this->model_owner->clear()->delete();
+      $this->model->clear()->delete();
+      $this->model_owner->clear()->delete();
     }
     
     public function get_fixture($type) {
