@@ -15,7 +15,7 @@ abstract class WaxDbAdapter {
   protected $date = false;
 	protected $timestamp = false;
 	protected $db_settings;
-	protected $data_types = array(
+	public $data_types = array(
 	    'AutoField'=>         'int',
       'BooleanField'=>      'int',
       'CharField'=>         'varchar',
