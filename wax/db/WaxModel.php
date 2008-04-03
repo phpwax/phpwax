@@ -132,7 +132,7 @@ class WaxModel {
  	  $this->before_save();
  	  if(!$this->validate) return false;
  	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
- 	  if($this->row[$this->primary_key]) $res = $this->update();
+ 	  if($this->{$this->primary_key}) $res = $this->update();
  	  else $res = $this->insert();
  		$this->after_save();
  		return $res;
