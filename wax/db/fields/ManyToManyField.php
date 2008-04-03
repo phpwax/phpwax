@@ -24,6 +24,7 @@ class ManyToManyField extends WaxModelField {
       $left = $j;
       $right = $this->model;
     }
+    echo $left->table.":::".$right->table."\n";
     $join = new WaxModelJoin($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
