@@ -77,9 +77,7 @@ class TestWaxModel extends WXTestCase {
     }
     
     public function test_update() {
-      print_r($this->model);
       $res = $this->model->create($this->get_fixture("user1"));
-      print_r($res);
       $res = $this->model->filter(array("username"=>"altered"))->all();
       $this->assertEqual($res->count(), "1");
       $this->model->clear()->delete();
