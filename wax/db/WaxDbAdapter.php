@@ -63,7 +63,7 @@ abstract class WaxDbAdapter {
       " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
     $this->exec($stmt, $model->row);
     $id = $model->primval;
-    return $model->clear()->filter(array($model->primary_key => $id))->first();
+    return $model->clear()->filter(array("id" => $id))->first();
   }
   
   public function delete(WaxModel $model) {
