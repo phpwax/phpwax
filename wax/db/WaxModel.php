@@ -38,7 +38,7 @@ class WaxModel {
  			$this->table = WXInflections::underscore( $class_name );
  		}
  		if($params) {
- 		  $res = $this->filter(array($this->primary_key=>$params))->first();
+ 		  $res = $this->filter(array($this->primary_key => $params))->first();
  		  $this->row = $res->row;
  		}
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
