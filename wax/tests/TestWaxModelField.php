@@ -69,14 +69,15 @@ class TestWaxModelField extends WXTestCase {
     
     public function test_many_many() {
       $model = $this->model->create($this->get_fixture("user1"));
-      
-      $prop1 = ExampleProperty::create(array("name"=>"Property 1"));
-      $prop2 = ExampleProperty::create(array("name"=>"Property 2"));
-      $model->properties = ExampleProperty::all();
-      $this->assertIsA($model->properties, "WaxModelAssociation");
-      $this->assertEqual($model->properties->count(), 2);
-      $model->properties->unlink($prop1);
-      $this->assertEqual($model->properties->count(), 1);
+      $props = new ExampleProperty;
+      $prop1 = $props->create(array("name"=>"Property 1"));
+      $prop2 = $props->create(array("name"=>"Property 2"));
+      $this->dump($props->all());
+      //$model->properties = $props->all();
+      //$this->assertIsA($model->properties, "WaxModelAssociation");
+      //$this->assertEqual($model->properties->count(), 2);
+      //$model->properties->unlink($prop1);
+      //$this->assertEqual($model->properties->count(), 1);
     }
 
     
