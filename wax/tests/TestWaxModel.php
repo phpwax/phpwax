@@ -20,7 +20,7 @@ class ExampleOwner extends WaxModel {
 class ExampleProperty extends WaxModel {
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "ManyToManyField");
+    $this->define("examples", "ManyToManyField", array("model_name"=>"Example"));
   } 
 }
 
