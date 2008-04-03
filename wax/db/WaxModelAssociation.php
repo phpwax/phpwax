@@ -9,12 +9,13 @@
 
 class WaxModelAssociation extends WaxRecordset {
 
-  public function __construct($model) {
+  public function __construct($model, WaxModelField $field) {
     parent::__construct($model, $model->all()->rowset);
+    $this->field = $field;
   } 
   
-  public function unlink() {
-    return $this;
+  public function unlink($model) {
+    return $this->model->{$this->field}->unlink($model);
   }
   
 
