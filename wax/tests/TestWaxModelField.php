@@ -53,7 +53,6 @@ class TestWaxModelField extends WXTestCase {
     public function test_foreign_key() {
       $owner = $this->model_owner->create(array("name"=>"Master"));
       $model = $this->model->create($this->get_fixture("user1"));
-      print_r($model);
       $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
       $this->assertEqual("Master", $model->example_owner->name);
