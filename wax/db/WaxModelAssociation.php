@@ -23,7 +23,7 @@ class WaxModelAssociation extends WaxRecordset {
   public function unlink($model) {
     if($model instanceof WaxModel) {
       $id = $model->primval;
-      $this->join_model->filter(array($this->target_model->table.$this->target_model->primary_key => $id))->delete();
+      $this->join_model->filter(array($this->target_model->table."_".$this->target_model->primary_key => $id))->delete();
     }
     return $this;
   }
