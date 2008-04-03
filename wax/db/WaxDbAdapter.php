@@ -62,7 +62,8 @@ abstract class WaxDbAdapter {
     $stmt = $this->db->prepare("UPDATE `{$model->table}` SET ".$this->update_values($model->row).
       " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
     $this->exec($stmt, $model->row);
-    return $model;
+    $id = $model->primval;
+    return $model->first(array($model->primary_key => $id));
   }
   
   public function delete(WaxModel $model) {
