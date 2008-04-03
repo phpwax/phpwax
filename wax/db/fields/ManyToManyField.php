@@ -51,10 +51,11 @@ class ManyToManyField extends WaxModelField {
     }
     if($value instanceof WaxRecordset) {
       foreach($value as $join) {
-        $existing = false;
+        $existing = clone $this->join_model();
+        $filter = false;
         // Check for an existing association
         $filter = array($this->join_field($join) => $join->primval);
-        $existing = $this->join_model->filter($filter)->all();
+        $existing = $existing->filter($filter)->all();
         print_r($existing);
         if($existing) {
           $new = array($this->join_field($join)=>$join->primval, $this->join_field($this->model) => $this->model->primval);
