@@ -54,6 +54,12 @@ class WaxModel {
  	  $this->columns[$column]=array($type, $options);
  	}
  	
+ 	static public function model_setup($model, $column, $type, $options= array()) {
+ 	  $obj = new $model;
+ 	  $obj->define($column, $type, $options);
+ 	  $obj->syncdb();
+ 	}
+ 	
  	public function add_error($field, $message) {
  	  $this->errors[$field][]=$message;
  	}
