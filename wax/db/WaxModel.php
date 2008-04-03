@@ -254,12 +254,6 @@ class WaxModel {
   }
    
   public function __clone() {
-    die($this->primary_key);
-    $class_name =  get_class($this) ;
-  	if( $class_name != 'WaxModel' && !$this->table ) {
-      $this->table = WXInflections::underscore( $class_name );
-  	}
-  	$this->define($this->primary_key, $this->primary_type, $this->primary_options);     
   	$this->setup();
    }
 
