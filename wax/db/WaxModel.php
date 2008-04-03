@@ -252,6 +252,10 @@ class WaxModel {
  			return $this->has_many_methods($function[0], $function[1], $args);
  		} else return $this->dynamic_finders($func, $args);
    }
+   
+   public function __clone() {
+     $this->setup();
+   }
 
    /**
    	*  These are left deliberately empty in the base class
