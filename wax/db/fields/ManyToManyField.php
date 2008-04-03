@@ -10,6 +10,7 @@ class ManyToManyField extends WaxModelField {
   public $maxlength = "11";
   public $model_name = false;
   public $join_model = false;
+  public $hasmany_model = false;
   
   
   public function setup() {
@@ -27,6 +28,7 @@ class ManyToManyField extends WaxModelField {
     $join->init($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->{$this->model->primary_key}));
+    $this->hasmany_model = get_class($j);
   }
 
   public function validate() {
@@ -34,7 +36,10 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function get() {
-    return $this->join_model->all() ;
+    $vals = $this->join_model->all();
+    $links = new $this->hasmany_model;
+    foreach($vals as $val) $links->filter(array($links->primary_key=>$val->right_field));
+    return $links->all();
   }
   
   public function set($value) {
