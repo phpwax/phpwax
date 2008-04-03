@@ -24,7 +24,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    $model = clone $this;
+    $model = new $this->model_name();
     return $model->filter(array($this->join_field=>$this->model->primval))->all() ;
   }
   
