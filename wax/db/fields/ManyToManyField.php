@@ -43,11 +43,10 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function set($value) {
-    
-      foreach($value as $join) {
-        echo get_class($join)."\n";
-      }
-
+    if($value instanceof WaxModel) echo $value->id;
+    if($value instanceof WaxRecordset) {
+      foreach($value as $model) echo $model->id;
+    }
   }
   
   public function save() {
