@@ -59,11 +59,11 @@ abstract class WaxDbAdapter {
 	}
   
   public function update(WaxModel $model) {
+    echo "Updating {$model->table}";
     $stmt = $this->db->prepare("UPDATE `{$model->table}` SET ".$this->update_values($model->row).
       " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
     $this->exec($stmt, $model->row);
     $id = $model->primval;
-    echo "Updating {$model->primary_key} with {$id}";
     return $model->clear()->filter(array($model->primary_key => $id))->first();
   }
   
