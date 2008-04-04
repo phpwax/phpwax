@@ -14,7 +14,6 @@ class WaxModelAssociation extends WaxRecordset {
   public $model;
 
   public function __construct($target, $join_model) {
-    print_r($target);
     parent::__construct($target, $target->all()->rowset);
     $this->field = $field;
     $this->target_model = $target;
