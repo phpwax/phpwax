@@ -68,7 +68,7 @@ class WaxUrl {
 
   static public function perform_mappings($pattern) {
     foreach(self::$mappings as $map) {
-      $pattern = explode("/", $map[0])
+      $pattern = explode("/", $map[0]);
       $subject = explode("/", $_GET['route']);
       foreach($subject as $k=>$input) {
         if(substr($pattern[$k],0,1) !=":") {
@@ -88,7 +88,7 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
-    return $_GET[$val]
+    return $_GET[$val];
   }
   	
 }
