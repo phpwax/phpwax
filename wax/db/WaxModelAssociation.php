@@ -30,7 +30,8 @@ class WaxModelAssociation extends WaxRecordset {
         $id = $obj->primval;
         $filter[]= $this->target_model->table."_".$this->target_model->primary_key."=".  $id;
       }
-      $this->model->filter("(".join(" OR ", $filter).")")->delete();
+      $res = $this->model->filter("(".join(" OR ", $filter).")")->delete();
+      die($res);
     }
     return $this->model;
   }
