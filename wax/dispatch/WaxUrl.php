@@ -81,6 +81,15 @@ class WaxUrl {
       $conditions = $map[2];
     }
   }
+  
+  /**
+   * undocumented function
+   *
+   * @return mixed
+   **/
+  static public function get($val) {
+    return $_GET[$val]
+  }
   	
 }
 
