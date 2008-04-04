@@ -2,6 +2,7 @@
 
 class TestWaxUrl extends WXTestCase {
     public function setUp() {
+      $_GET = false;
     }
     
     public function tearDown() {
