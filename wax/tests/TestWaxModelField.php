@@ -16,7 +16,7 @@ class TestWaxModelField extends WXTestCase {
       $model2 = new ExampleOwner;
       $model2->delete();
       $model3 = new ExampleProperty;
-      $model3->delete();
+      //$model3->delete();
     }
     
     public function get_fixture($type) {
