@@ -76,6 +76,7 @@ class WaxUrl {
       elseif(preg_match($left, $right, $matches)) {
         print_r($matches);
       }
+      echo $left." : ".$right."\n";
     }
   }
   
