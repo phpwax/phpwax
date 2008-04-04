@@ -39,7 +39,7 @@ class ManyToManyField extends WaxModelField {
     $vals = $this->join_model->all();
     $links = new $this->hasmany_model;
     foreach($vals as $val) $links->filter(array($links->primary_key=> $val->{$val->right_field}));
-    return = new WaxModelAssociation($links);
+    return new WaxModelAssociation($links);
   }
   
   public function set($value) {
