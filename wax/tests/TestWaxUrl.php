@@ -12,7 +12,7 @@ class TestWaxUrl extends WXTestCase {
     public function test_map() {
       WaxUrl::perform_mappings();
       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
-
+      print_r($_GET);
     }
     
 }
