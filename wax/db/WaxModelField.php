@@ -53,7 +53,7 @@ class WaxModelField {
     $this->model->row[$this->field]=$value;
   }
   
-  
+  public function before_sync() {}  
   public function setup() {}
   public function validate() {}
   public function save() {}

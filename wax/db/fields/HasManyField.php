@@ -36,5 +36,10 @@ class HasManyField extends WaxModelField {
     return true;
   }
 
-
+  public function before_sync() {
+    //define a foreign key in the target model and recursively sync that model
+    $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey");
+    $output .= parent::before_sync();
+    return $output;
+  }
 } 
