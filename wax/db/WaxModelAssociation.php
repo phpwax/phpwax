@@ -32,7 +32,7 @@ class WaxModelAssociation extends WaxRecordset {
       }
       $this->model->filter("(".join(" OR ", $filter).")")->delete();
     }
-    return $this->all();
+    return $this->model->all();
   }
   
 
