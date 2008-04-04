@@ -28,7 +28,7 @@ class WaxModelAssociation extends WaxRecordset {
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) {
         $id = $obj->primval;
-        $filter[]= $this->target_model->table."_".$this->target_model->primary_key => $id;
+        $filter[]= $this->target_model->table."_".$this->target_model->primary_key."=".  $id;
       }
       $this->join_model->filter(join(" OR ", $filter))->delete();
     }
