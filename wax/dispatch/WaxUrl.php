@@ -72,9 +72,9 @@ class WaxUrl {
       $subject = explode("/", $_GET['route']);
       foreach($subject as $k=>$input) {
         if(substr($pattern[$k],0,1) !=":") {
-          
+          $_GET[$k]=$v;
         } else {
-          
+          $_GET[$k]=$k;
         }
       }
       $outcome = $map[1];
