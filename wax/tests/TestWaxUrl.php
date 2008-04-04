@@ -11,7 +11,8 @@ class TestWaxUrl extends WXTestCase {
     
     public function test_map() {
       WaxUrl::perform_mappings();
-      echo WaxUrl::get("controller");
+      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+
     }
     
 }
