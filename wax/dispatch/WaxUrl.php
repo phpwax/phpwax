@@ -17,6 +17,7 @@
  **/
 class WaxUrl {
   
+  
   /**
    *  This is simply a stackable array of mappings - new mappings are added to the top of the stack
    *  The lookup keeps going till it gets a match, falling back on the two defaults where necessary.
@@ -68,18 +69,17 @@ class WaxUrl {
 
   static public function perform_mappings($pattern) {
     foreach(self::$mappings as $map) {
-      $pattern = explode("/", $map[0]);
-      $subject = explode("/", $_GET['route']);
-      for($i=0;$i< count($subject); $i++) {
-        if($pattern[$i]==$subject[$i]) continue;
-        if(substr($pattern[$i],0,1) ==":") {
-          $_GET[substr($pattern[$i], 1)]=$subject[$i];
-        }
-      }
+      $left = $map[0];
+      $right = $_GET["route"];
+      $left = preg_replace("/:[A-Za-z0-9\-]/", "/([A-Za-z0-9\-])/", $left);
+      echo $left."\n";
       $outcome = $map[1];
       $conditions = $map[2];
     }
   }
+  
+  
+  
   
   /**
    * get function
