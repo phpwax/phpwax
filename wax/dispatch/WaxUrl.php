@@ -70,11 +70,10 @@ class WaxUrl {
     foreach(self::$mappings as $map) {
       $pattern = explode("/", $map[0]);
       $subject = explode("/", $_GET['route']);
-      foreach($subject as $k=>$input) {
-        if(substr($pattern[$k],0,1) !=":") {
-          $_GET[$k]=$v;
-        } else {
-          $_GET[$k]=$k;
+      for($i=0;$i< count($subject); $i++) {
+        if($pattern[$i]==$subject[$i]) continue;
+        if(substr($pattern[$i],0,1) ==":") {
+          $_GET[substr($pattern[$i], 1)]=$subject[$i];
         }
       }
       $outcome = $map[1];
