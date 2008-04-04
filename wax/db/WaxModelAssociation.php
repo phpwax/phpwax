@@ -8,19 +8,24 @@
  **/
 
 class WaxModelAssociation extends WaxRecordset {
+  
+  public $field;
+  public $target_model;
+  public $join_model;
 
-  public function __construct($model, $field) {
-    parent::__construct($model, $model->all()->rowset);
+  public function __construct($target, $join_model) {
+    parent::__construct($target, $target->all()->rowset);
     $this->field = $field;
-    print_r($this);
   } 
   
   public function unlink($model) {
-    $this->model->{$this->field}->unlink($model);
-    return $this->model;
+    if($model instanceof WaxModel) {
+      $id = $model->primval;
+      $this->join_model->filter(array($this->target_model->table.$this->target_model->primary_key => $id))->delete();
+    }
+    return $this;
   }
   
 
-  
   
 }
