@@ -77,7 +77,7 @@ class WaxUrl {
       if($left===$right) $mapped_route = $map[1];
       elseif(preg_match("/".$left."/", $right, $matches)) {
         array_shift($matches);
-        while($mappings) {
+        while(count($mappings)) {
           if(substr($mappings[0],0,1)==":") {
             $mapped_route[substr($mappings[0],1)]=$matches[0];
           }
