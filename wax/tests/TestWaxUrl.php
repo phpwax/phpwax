@@ -6,7 +6,8 @@ class TestWaxUrl extends WXTestCase {
     }
     
     public function tearDown() {
-
+      print_r($_GET);
+      echo "\n"."-------------"."\n";
     }
     
     public function test_basic_map() {
@@ -21,6 +22,7 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("controller"), "page");
     }
     
+   
 }
 
 
