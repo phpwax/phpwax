@@ -82,6 +82,7 @@ class WaxUrl {
             $mapped_route[substr($mappings[0],1)]=$matches[0];
           }
           array_shift($matches); array_shift($mappings);
+          echo count($mappings);
         }
       }
       if($mapped_route) {print_r($mapped_route); return true;}
