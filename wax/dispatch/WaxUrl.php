@@ -85,6 +85,10 @@ class WaxUrl {
           array_shift($mappings);
         }
       }
+      // Map against named parameters in options array
+      $mapped_route = array_merge($mapped_route, $map[1]);
+      
+      
       if($mapped_route) {
         foreach($mapped_route as $k=>$val) {
           $_GET[$k]=$val;
