@@ -22,6 +22,14 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("controller"), "page");
     }
     
+    public function test_pattern_map() {
+      $_GET["route"]="blog/tech/5";
+      WaxUrl::map("blog/:category/:id", array("controller"=>"blog"));
+      WaxUrl::perform_mappings();
+      $this->assertEqual(WaxUrl::get("controller"), "blog");
+      $this->assertEqual(WaxUrl::get("category"), "tech");
+    }
+    
    
 }
 
