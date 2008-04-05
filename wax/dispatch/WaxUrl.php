@@ -78,7 +78,6 @@ class WaxUrl {
         $mappings = split("/", $map[0]);
         array_shift($matches);
         while(count($mappings)) {
-          echo $mappings[0];
           if(substr($mappings[0],0,1)==":") {
             $mapped_route[substr($mappings[0],1)]=$matches[0];
           }
