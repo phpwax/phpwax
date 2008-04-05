@@ -85,7 +85,11 @@ class WaxUrl {
           array_shift($mappings);
         }
       }
-      if($mapped_route) {print_r($mapped_route); return true;}
+      if($mapped_route) {
+        foreach($mapped_route as $k=>$val) {
+          $_GET[$k]=$val;
+        }
+      }
     }
   }
   
