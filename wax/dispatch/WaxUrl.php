@@ -74,6 +74,7 @@ class WaxUrl {
       $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9\-\/]*)", $left);
       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
       $left = str_replace("/", "\/", $left);  
+      echo $left."  :  ".$right."\n";    
       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
       elseif(preg_match("/".$left."/", $right, $matches)) {
         $mappings = split("/", $map[0]);
