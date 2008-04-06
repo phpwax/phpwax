@@ -10,19 +10,19 @@ class TestWaxUrl extends WXTestCase {
       echo "\n"."-------------"."\n";
     }
     
-    // public function test_basic_map() {
-    //   $_GET["route"]="mycontroller/myaction/myid";
-    //   WaxUrl::perform_mappings();
-    //   $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
-    //   $this->assertEqual(WaxUrl::get("action"), "myaction");
-    //   $this->assertEqual(WaxUrl::get("id"), "myid");
-    // }
-    // 
-    // public function test_default_map() {
-    //   $_GET["route"]="";
-    //   WaxUrl::perform_mappings();
-    //   $this->assertEqual(WaxUrl::get("controller"), "page");
-    // }
+    public function test_basic_map() {
+      $_GET["route"]="mycontroller/myaction/myid";
+      WaxUrl::perform_mappings();
+      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+      $this->assertEqual(WaxUrl::get("action"), "myaction");
+      $this->assertEqual(WaxUrl::get("id"), "myid");
+    }
+    
+    public function test_default_map() {
+      $_GET["route"]="";
+      WaxUrl::perform_mappings();
+      $this->assertEqual(WaxUrl::get("controller"), "page");
+    }
     
     public function test_pattern_map() {
       $_GET["route"]="blog/tech/5";
