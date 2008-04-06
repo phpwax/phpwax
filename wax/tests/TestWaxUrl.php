@@ -32,6 +32,13 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("category"), "tech");
     }
     
+    public function test_wildcard_map() {
+      $_GET["route"]="tags/tech/humour/pics";
+      WaxUrl::map("article/:tags*", array("controller"=>"blog", "action"=>"tags"));
+      $this->assertTrue(is_array(WaxUrl::get("tags")) );
+      $this->assertEqual(count(WaxUrl::get("tags")), 3);
+    }
+    
    
 }
 
