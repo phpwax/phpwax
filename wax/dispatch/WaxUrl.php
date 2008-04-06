@@ -68,7 +68,6 @@ class WaxUrl {
    **/
 
   static public function perform_mappings($pattern) {
-    print_r(self::$mappings);
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
@@ -94,6 +93,7 @@ class WaxUrl {
         foreach($mapped_route as $k=>$val) {
           $_GET[$k]=$val;
         }
+      break;
       }
     }
   }
