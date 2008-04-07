@@ -16,10 +16,10 @@ class FileField extends WaxModelField {
 
   public function setup() {	
 		$this->create_directory(WAX_ROOT.$this->file_root);
+		parent::setup();
 	}
 
   public function validate() {
-    $this->valid_length();
  	  $this->valid_required();
   }
 	/**** overides *****/
@@ -28,15 +28,19 @@ class FileField extends WaxModelField {
 	
 	//save function needs to handle the post upload of a single file
 	public function save() {
-		echo $this->model->table."::".$this->col_name."\n";
 		//file is present and has a valid size
 		if(isset($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
 			//save file to hdd & change col_name value to new_path
 			$column = $this->col_name;
 			$path = $this->save_file($_FILES[$this->model->table]);
 			if($path) $this->model->$column = $path;
+			parent::save();
 		}
-		parent::save();
+		
+	}
+	
+	public function get(){
+		return $this;
 	}
 	
 	/**** EXTRAS *****/
@@ -58,9 +62,9 @@ class FileField extends WaxModelField {
 		$up_tmp_name = $file['tmp_name'][$this->col_name];
 		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
-		if(rename($up_tmp_name, $file_destination) ){
-				chmod($file_destination, 0777);
-		} else return false;
+		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
+		else return false;
+		
 		return $file_destination;
 	}
 

@@ -1,11 +1,18 @@
 <?php
-
+class ExampleFile extends WaxModel {
+  
+  public function setup() {
+    $this->define("file", "FileField", array("maxlength"=>255));
+  }
+}
 class TestWaxModelField extends WXTestCase {
     public function setUp() {
       $this->model = new Example();
       $this->model_owner = new ExampleOwner();
+      $this->model_file = new ExampleFile();
       $this->model->syncdb();
       $this->model_owner->syncdb();
+      $this->model_file->syncdb();
       $model3 = new ExampleProperty;
       $model3->syncdb();
     }
@@ -84,6 +91,42 @@ class TestWaxModelField extends WXTestCase {
       $this->assertEqual($model->properties->count(), 0);
     }
 
+
+		/*** FILE UPLOAD ****/
+
+	  public function test_file_save_with_missing_file_dir() {  
+			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
+			system("rm -Rf ". $test_dir);
+			$this->file_upload_prep();
+			$this->model_file->save();			
+			$file = $test_dir ."testfile.txt";
+			//test if directory was created
+ 	    $this->assertTrue(is_dir($test_dir));
+			//test if file was moved
+	   	$this->assertTrue(is_readable($file) );
+			unlink(PUBLIC_DIR."testfile.txt");
+			unlink($test_dir."testfile.txt");			
+	  }
+		
+	  public function test_duplicate_file_renames() {
+	    $this->file_upload_prep();
+			$this->model_file->save();
+	   	$first_name = $this->model_file->filename;
+			$model = new ExampleFile;
+	    $this->file_upload_prep();
+			$model->save();
+	   	$second_name = $model->filename;	
+			if($second_name != $first_name) $this->assertTrue(true);
+			else $this->assertFalse(false);
+	  }
+
+		protected function file_upload_prep($model_name = 'example_file'){
+			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
+		  file_put_contents(PUBLIC_DIR."testfile.txt", "test file");
+	    $_FILES[$model_name]['name']['filename'] = "testfile.txt";
+			$_FILES[$model_name]['size']['filename'] = filesize(PUBLIC_DIR."testfile.txt");
+			$_FILES[$model_name]['tmp_name']['filename'] = PUBLIC_DIR."testfile.txt";
+		}
     
 }
 
