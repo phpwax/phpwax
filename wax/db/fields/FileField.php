@@ -49,10 +49,8 @@ class FileField extends WaxModelField {
 	
 	//save function needs to handle the post upload of a single file
 	public function save() {
-		echo "called..\n";
 		//file is present and has a valid size
 		if(isset($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
-			echo "saving..\n";
 			//save file to hdd & change col_name value to new_path
 			$column = $this->col_name;
 			$path = $this->save_file($_FILES[$this->model->table]);
