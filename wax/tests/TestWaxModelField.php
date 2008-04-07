@@ -2,7 +2,13 @@
 class ExampleFile extends WaxModel {
   
   public function setup() {
-    $this->define("file", "FileField", array("maxlength"=>255));
+    $this->define("filename", "FileField", array("maxlength"=>255));
+  }
+}
+class ExampleFileField extends WaxModel {
+  
+  public function setup() {
+    $this->define("file", "FileField", array("maxlength"=>255, 'allowed_extensions'=> array('.gif', '.jpg') ));
   }
 }
 class TestWaxModelField extends WXTestCase {
@@ -10,9 +16,11 @@ class TestWaxModelField extends WXTestCase {
       $this->model = new Example();
       $this->model_owner = new ExampleOwner();
       $this->model_file = new ExampleFile();
+			$this->model_file_field = new ExampleFileField();
       $this->model->syncdb();
       $this->model_owner->syncdb();
       $this->model_file->syncdb();
+      $this->model_file_field->syncdb();
       $model3 = new ExampleProperty;
       $model3->syncdb();
     }
@@ -94,7 +102,7 @@ class TestWaxModelField extends WXTestCase {
 
 		/*** FILE UPLOAD ****/
 
-	  public function test_file_save_with_missing_file_dir() {  
+	  /*public function test_file_save_with_missing_file_dir() {  
 			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
 			system("rm -Rf ". $test_dir);
 			$this->file_upload_prep();
@@ -118,14 +126,21 @@ class TestWaxModelField extends WXTestCase {
 	   	$second_name = $model->filename;	
 			if($second_name != $first_name) $this->assertTrue(true);
 			else $this->assertFalse(false);
-	  }
+	  }*/	
+	
+		public function test_excepted_files(){
+			$model_name = "example_file_field";
+			$this->file_upload_prep("file", $model_name);
+			if($this->model_file_field->save() ) echo "File accepted\n";
+			else echo "file rejected\n";
+		}
 
-		protected function file_upload_prep($model_name = 'example_file'){
+		protected function file_upload_prep($column="filename", $model_name = 'example_file'){
 			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
 		  file_put_contents(PUBLIC_DIR."testfile.txt", "test file");
-	    $_FILES[$model_name]['name']['filename'] = "testfile.txt";
-			$_FILES[$model_name]['size']['filename'] = filesize(PUBLIC_DIR."testfile.txt");
-			$_FILES[$model_name]['tmp_name']['filename'] = PUBLIC_DIR."testfile.txt";
+	    $_FILES[$model_name]['name'][$column] = "testfile.txt";
+			$_FILES[$model_name]['size'][$column] = filesize(PUBLIC_DIR."testfile.txt");
+			$_FILES[$model_name]['tmp_name'][$column] = PUBLIC_DIR."testfile.txt";
 		}
     
 }

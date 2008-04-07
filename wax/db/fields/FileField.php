@@ -13,6 +13,19 @@ class FileField extends WaxModelField {
 	//extra file values
 	public $file_root = "public/files/";
 	public $url_root = "files/";
+	//allowed extensions - array of exts, false means everythings allowed
+	public $allowed_extensions = false;
+
+	public function __construct($column, $model, $options = array()) {	
+    if(isset($options['allowed_extensions'])){
+			if(is_array($options['allowed_extensions']) ){
+				foreach($options['allowed_extensions'] as $index=> $extension) $this->allowed_extensions[] = $extension; 
+			} else $this->allowed_extensions[] = $options['allowed_extensions'];
+			unset($options['allowed_extensions']);
+		}
+		$this->col_name = $column;
+		parent::__construct($column, $model, $options = array());
+  }
 
   public function setup() {	
 		$this->create_directory(WAX_ROOT.$this->file_root);
@@ -28,14 +41,18 @@ class FileField extends WaxModelField {
 	
 	//save function needs to handle the post upload of a single file
 	public function save() {
+		echo "called..\n";
 		//file is present and has a valid size
 		if(isset($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
+			echo "saving..\n";
 			//save file to hdd & change col_name value to new_path
 			$column = $this->col_name;
 			$path = $this->save_file($_FILES[$this->model->table]);
-			if($path) $this->model->$column = $path;
-			parent::save();
-		}
+			if($path) {
+				$this->model->$column = $path;
+				parent::save();
+			}
+		} else $this->add_error($this->col_name, " no file present");
 		
 	}
 	
@@ -61,6 +78,15 @@ class FileField extends WaxModelField {
 	private function save_file($file){
 		$up_tmp_name = $file['tmp_name'][$this->col_name];
 		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
+		//check file extention is allowed
+		$ext = strtolower(substr($file_destination, strrpos($file_destination, ".") ));
+		echo "ext:$ext\n";
+		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ){ 
+			echo ":".$this->field.":\n";
+			$this->add_error($this->field, sprintf($this->messages["format"], $ext));
+			echo "error added\n";
+			return false;
+		}
 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		else return false;
