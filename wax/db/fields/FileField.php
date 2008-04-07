@@ -8,13 +8,14 @@
 class FileField extends WaxModelField {
   
 	//default name
-	public $col_name = "filename";
+	public $col_name;
   public $maxlength = "255";
 	//extra file values
 	public $file_root = "public/files/";
 	public $url_root = "files/";
 	//allowed extensions - array of exts, false means everythings allowed
 	public $allowed_extensions = false;
+	
 
 	public function __construct($column, $model, $options = array()) {	
     if(isset($options['allowed_extensions'])){
@@ -44,9 +45,16 @@ class FileField extends WaxModelField {
 
 	}
 	/**** overides *****/
-	//before run the sync function, add the extra_db_fields
-	public function before_sync() {}  
+
+	public function get(){
+		$ret = array("filename"=>$this->filename(), "path"=>$this->path(), "extension"=>$this->extension(), "url"=>$this->url() );
+		return $ret;
+	}
 	
+	public function __toString() {
+		$file_info = $this->get();
+		return $file_info["filename"];
+	}
 	//save function needs to handle the post upload of a single file
 	public function save() {
 		//file is present and has a valid size
@@ -54,18 +62,12 @@ class FileField extends WaxModelField {
 			//save file to hdd & change col_name value to new_path
 			$column = $this->col_name;
 			$path = $this->save_file($_FILES[$this->model->table]);
-			if($path) {
-				$this->model->$column = $path;
-				parent::save();
-				return true;
-			}
-		} else $this->add_error($this->col_name, " no file present");
+			if($path) $this->model->$column = $path;				
+		} 
 		
 	}
 	
-	public function get(){
-		return $this;
-	}
+
 	
 	/**** EXTRAS *****/
 	private function create_directory($dir){
@@ -94,12 +96,20 @@ class FileField extends WaxModelField {
 
 	//url path
 	public function url(){
-		$column = $this->col_name;
-		return "/".str_replace(WAX_ROOT.$this->file_root, $this->url_root, $this->model->$column);
+		$path = $this->path();
+		return "/".str_replace(WAX_ROOT.$this->file_root, $this->url_root, $path);
 	}
 	//file path
 	public function path(){
 		$column = $this->col_name;
-		return $this->model->$column;
+		return $this->model->row[$column];
+	}
+	public function filename(){
+		$path = $this->path();
+		return substr($path, strrpos($path, "/")+1 );
+	}
+	public function extension(){
+		$path = $this->path();
+		return substr($path, strrpos($path, "."));
 	}
 } 
