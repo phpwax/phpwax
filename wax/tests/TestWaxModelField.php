@@ -34,7 +34,7 @@ class TestWaxModelField extends WXTestCase {
       $model3 = new ExampleProperty;
       $model3->delete();
     }
- /*   
+    
     public function get_fixture($type) {
       $fixtures = array(
         "user1" => array("username"=>"test1", "password"=>"password", "email"=>"test1@test.com"),
@@ -99,7 +99,7 @@ class TestWaxModelField extends WXTestCase {
       $model->properties->unlink($props->all());
       $this->assertEqual($model->properties->count(), 0);
     }
-*/
+
 
 		/*** FILE UPLOAD ****/
 
