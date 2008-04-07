@@ -26,8 +26,8 @@ class WaxUrl {
    **/
   static $mappings = array(
     array("", array("controller"=>"page")),
-    array(":controller/:action/:id")
-    array(":controller/:action")
+    array(":controller/:action/:id"),
+    array(":controller/:action"),
     array(":controller")
   );
 
