@@ -34,7 +34,16 @@ class FileField extends WaxModelField {
 
   public function validate() {
  	  $this->valid_required();
+		$file = $_FILES[$this->model->table];
+		
   }
+	public function valid_extension(){
+		$this->valid_extension();
+		$name= $file['name'][$this->col_name];
+		$ext = strtolower(substr($name, strrpos($name, ".") ));
+		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
+
+	}
 	/**** overides *****/
 	//before run the sync function, add the extra_db_fields
 	public function before_sync() {}  
@@ -51,6 +60,7 @@ class FileField extends WaxModelField {
 			if($path) {
 				$this->model->$column = $path;
 				parent::save();
+				return true;
 			}
 		} else $this->add_error($this->col_name, " no file present");
 		
@@ -78,15 +88,6 @@ class FileField extends WaxModelField {
 	private function save_file($file){
 		$up_tmp_name = $file['tmp_name'][$this->col_name];
 		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
-		//check file extention is allowed
-		$ext = strtolower(substr($file_destination, strrpos($file_destination, ".") ));
-		echo "ext:$ext\n";
-		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ){ 
-			echo ":".$this->field.":\n";
-			$this->add_error($this->field, sprintf($this->messages["format"], $ext));
-			echo "error added\n";
-			return false;
-		}
 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		else return false;
