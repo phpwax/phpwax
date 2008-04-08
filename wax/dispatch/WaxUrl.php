@@ -134,6 +134,7 @@ class WaxUrl {
 	}
 	
 	protected function is_controller($test) {
+	  error_log("Looking for ".CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php");
 	  if(is_readable(CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  return false;
 	}
