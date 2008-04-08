@@ -83,8 +83,7 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
       $this->assertEqual($owner->examples->count(), 2);
-      // And test the reverse way
-      
+
     }
     
     public function test_has_many_without_foreign_key_definition() {
@@ -97,8 +96,8 @@ class TestWaxModelField extends WXTestCase {
       $editor->examples->unlink($this->model->all());
       $this->assertEqual($editor->examples->count(), 0);
       $model2 = $this->model->create($this->get_fixture("user3"));
-      $editor->examples = $this->model->all();
-      $this->assertEqual($editor->examples->count(), 3);
+      $editor->examples = $model2;
+      $this->assertEqual($editor->examples->count(), 1);
     }
     
     public function test_many_many() {
