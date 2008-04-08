@@ -81,6 +81,8 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
       $this->assertEqual($owner->examples->count(), 2);
+      // And test the reverse way
+      
     }
     
     public function test_many_many() {
