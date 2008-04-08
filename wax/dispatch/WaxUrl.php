@@ -68,7 +68,7 @@ class WaxUrl {
    * @return void
    **/
 
-  static public function perform_mappings($pattern) {
+  static public function perform_mappings() {
     self::detect_maintenance();
     self::route_controller();
     foreach(self::$mappings as $map) {
