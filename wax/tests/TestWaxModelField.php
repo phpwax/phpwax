@@ -4,8 +4,10 @@ class TestWaxModelField extends WXTestCase {
     public function setUp() {
       $this->model = new Example();
       $this->model_owner = new ExampleOwner();
+      $this->model_editor = new ExampleEditor();
       $this->model->syncdb();
       $this->model_owner->syncdb();
+      $this->model_editor->syncdb();
       $model3 = new ExampleProperty;
       $model3->syncdb();
     }
@@ -65,6 +67,20 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
       $this->assertEqual($owner->examples->count(), 2);
+    }
+    
+    public function test_has_many_without_foreign_key_definition() {
+      $editor = $this->model_editor->create(array("name"=>"Editor"));
+      $model = $this->model->create($this->get_fixture("user1"));
+      $model2 = $this->model->create($this->get_fixture("user2"));
+      $editor->examples = $model;
+      $editor->examples = $model2;
+      $this->assertEqual($editor->examples->count(), 2);
+      $editor->examples->unlink($this->model->all());
+      $this->assertEqual($editor->examples->count(), 0);
+      $model2 = $this->model->create($this->get_fixture("user3"));
+      $editor->examples = $this->model->all();
+      $this->assertEqual($editor->examples->count(), 3);
     }
     
     public function test_many_many() {

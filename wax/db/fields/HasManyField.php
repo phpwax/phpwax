@@ -16,7 +16,7 @@ class HasManyField extends WaxModelField {
     $this->col_name = false;
     $class_name = get_class($this->model);
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
-    if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_id";
+    if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_".$this->model->primary_key;
   }
 
   public function validate() {
@@ -25,11 +25,33 @@ class HasManyField extends WaxModelField {
   
   public function get() {
     $model = new $this->model_name();
-    return $model->filter(array($this->join_field=>$this->model->primval))->all() ;
+    return $model->filter(array($this->join_field=>$this->model->primval))->all();
   }
   
   public function set($value) {
-    return true;
+    if($value instanceof $this->model_name){
+      $value->{$this->join_field} = $this->model->primval();
+      $value->save();
+    }
+    if($value instanceof WaxRecordset) {
+      foreach($value as $row){
+        $row->{$this->join_field} = $this->model->primval();
+        $row->save();
+      }
+    }
+  }
+  
+  public function unlink($value) {
+    if($value instanceof $this->model_name){
+      $value->{$this->join_field} = 0;
+      $value->save();
+    }
+    if($value instanceof WaxRecordset) {
+      foreach($value as $row){
+        $row->{$this->join_field} = 0;
+        $row->save();
+      }
+    }
   }
   
   public function save() {
@@ -38,7 +60,7 @@ class HasManyField extends WaxModelField {
 
   public function before_sync() {
     //define a foreign key in the target model and recursively sync that model
-    $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey");
+    $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey", array("col_name" => $this->join_field, "table" => $this->model->table));
     $output .= parent::before_sync();
     return $output;
   }

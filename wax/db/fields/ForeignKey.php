@@ -13,7 +13,7 @@ class ForeignKey extends WaxModelField {
   
   public function setup() {
     if(!$this->table) $this->table = $this->field;
-    $this->col_name = $this->table."_id";
+    if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
   }
 
