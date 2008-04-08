@@ -12,11 +12,6 @@ class TestWaxUrl extends WXTestCase {
     public function test_basic_map() {
       $_GET["route"]="mycontroller/myaction/myid";
       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
-<<<<<<< HEAD:wax/tests/TestWaxUrl.php
-<<<<<<< HEAD:wax/tests/TestWaxUrl.php
-=======
-=======
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxUrl.php
       $this->assertEqual(WaxUrl::get("action"), "myaction");
       $this->assertEqual(WaxUrl::get("id"), "myid");
     }
@@ -27,10 +22,6 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("action"), "myaction");
       $_GET["route"]="mycontroller";
       $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
-<<<<<<< HEAD:wax/tests/TestWaxUrl.php
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxUrl.php
-=======
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxUrl.php
     }
     
     public function test_default_map() {

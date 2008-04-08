@@ -16,20 +16,14 @@ class TestWaxModelField extends WXTestCase {
     public function setUp() {
       $this->model = new Example();
       $this->model_owner = new ExampleOwner();
-<<<<<<< HEAD:wax/tests/TestWaxModelField.php
       $this->model_editor = new ExampleEditor();
-=======
       $this->model_file = new ExampleFile();
 			$this->model_file_field = new ExampleFileField();
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxModelField.php
       $this->model->syncdb();
       $this->model_owner->syncdb();
-<<<<<<< HEAD:wax/tests/TestWaxModelField.php
       $this->model_editor->syncdb();
-=======
       $this->model_file->syncdb();
       $this->model_file_field->syncdb();
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxModelField.php
       $model3 = new ExampleProperty;
       $model3->syncdb();
     }
