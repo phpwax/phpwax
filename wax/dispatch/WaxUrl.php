@@ -125,10 +125,11 @@ class WaxUrl {
 	    if(self::is_controller($route)) $controller = $route;
 	    $route = substr($route, 0, strrpos("/", $route));
 	  }
-	  if($controller) $_GET["controller"]=$controller;
-	  if(self::$default_controller) $controller = self::$default_controller;
-	  $_GET["route"]=str_replace($controller, "", $_GET["route"]);
-	  $_GET["route"]=ltrim($_GET["route"], "/");
+	  if($controller) {
+	    $_GET["controller"]=$controller;
+	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+	    $_GET["route"]=ltrim($_GET["route"], "/");
+	  }
 	}
 	
 	protected function is_controller($test) {
