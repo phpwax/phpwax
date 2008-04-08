@@ -121,7 +121,7 @@ class WaxUrl {
     */
 	protected function route_controller() {
 	  $route = split("/", $_GET["route"]);
-	  while(count($route) ) {
+	  while(count($route) >0) {
 	    if(self::is_controller(join("/",$route))) $controller = join("/",$route);
 	    if(!$controller) array_pop($route);
 	  }
