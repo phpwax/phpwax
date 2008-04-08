@@ -123,7 +123,7 @@ class WaxUrl {
 	  $route = split("/", $_GET["route"]);
 	  while(count($route) ) {
 	    if(self::is_controller(join("/",$route))) $controller = $route;
-	    array_pop($route);
+	    if(!$controller) array_pop($route);
 	  }
 	  error_log("Reduced to ".$controller);
 	  if($controller) {
