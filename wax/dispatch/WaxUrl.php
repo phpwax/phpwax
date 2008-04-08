@@ -120,10 +120,10 @@ class WaxUrl {
     *  @return boolean      If file exists true
     */
 	protected function route_controller() {
-	  $route = $_GET["route"];
-	  while(count(split("/", $route))) {
-	    if(self::is_controller($route)) $controller = $route;
-	    $route = substr($route, 0, strrpos("/", $route));
+	  $route = split("/", $_GET["route"]);
+	  while(count($route) ) {
+	    if(self::is_controller(join("/",$route))) $controller = $route;
+	    array_pop($route);
 	  }
 	  error_log("Reduced to ".$controller);
 	  if($controller) {
