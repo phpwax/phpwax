@@ -23,8 +23,8 @@ class WaxModelAssociation extends WaxRecordset {
   
   
   public function __call($method, $args) {
-    error_log($args);
-    return call_user_func(array($this->model->get_col($this->owner_field), $method), $args);
+    error_log($method);
+    return call_user_func_array(array($this->model->get_col($this->owner_field), $method), $args);
   }
 
   
