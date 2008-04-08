@@ -1,0 +1,43 @@
+# This defines a deployment "recipe" that you can feed to capistrano
+# (http://manuals.rubyonrails.com/read/book/17). It allows you to automate
+# (among other things) the deployment of your application.
+
+# =============================================================================
+# REQUIRED VARIABLES
+# =============================================================================
+# You must always specify the application and repository for every recipe. The
+# repository must be the URL of the repository you want this recipe to
+# correspond to. The deploy_to path must be the path on each machine that will
+# form the root of the application path.
+
+set :application, "appname"
+set :repository, "svn://yourrepo.com/home/svn/#{application}"
+
+
+role :web, "appname"
+set :user, "user"
+
+# =============================================================================
+# OPTIONAL VARIABLES
+# =============================================================================
+set :deploy_to, "."
+
+
+
+# =============================================================================
+# TASKS
+# =============================================================================
+# Define tasks that run on all (or only some) of the machines. You can specify
+# a role (or set of roles) that each task should be executed on. You can also
+# narrow the set of servers to a subset of a role by specifying options, which
+# must match the options given for the servers to select (like :primary => true)
+
+desc "This will deploy the app"
+task :deploy do
+  run "svn export #{repository} #{deploy_to} --force"
+end
+
+desc "Updates the database on the remote server"
+task :migrate do
+  run "script/syncdb"
+end

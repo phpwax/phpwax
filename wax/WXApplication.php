@@ -47,6 +47,8 @@ class WXApplication {
 		} elseif($addr) {
 		  WXConfiguration::set_environment('production');
 		}
+		
+		/*  Looks for an environment specific file inside app/config */
 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
   }
   
@@ -70,6 +72,7 @@ class WXApplication {
       if(!$db['host']) $db['host']="localhost";
       if(!$db['port']) $db['port']="3306";
       
+    /****** Deprecated support for WXActiveRecord only around for one more version *****/
       if(isset($db['socket']) && strlen($db['socket'])>2) {
   			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
   		} else {
@@ -80,7 +83,9 @@ class WXApplication {
   		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
       	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
-      }
+      }  
+    /**********************************************************/
+      
       WaxModel::load_adapter($db);
     }
   }
@@ -93,9 +98,7 @@ class WXApplication {
    */
 	private function delegate_request() {
 	  Session::start();
-		$route=new WXRoute( );
-		$delegate = $route->pick_controller();
-		$delegate_controller = new $delegate;
+		$delegate_controller = new slashcamelize(WaxUrl::get("controller"), true);
 		$delegate_controller->execute_request();
   }
 
