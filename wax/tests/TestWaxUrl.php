@@ -44,6 +44,12 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(count(WaxUrl::get("tags")), 3);
     }
     
+    public function test_nested_controller() {
+      $_GET["route"]="admin/content";
+      WaxUrl::map("admin/:controller/:action");
+      
+    }
+    
     public function test_formats() {
       $_GET["route"]="sitemap.xml";
     }

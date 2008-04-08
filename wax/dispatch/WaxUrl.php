@@ -25,15 +25,13 @@ class WaxUrl {
    * @var array
    **/
   static public $mappings = array(
-    array("", array("controller"=>"page")),
-    array(":controller/:action/:id"),
-    array(":controller/:action"),
-    array(":controller")
+    array(":action/:id"),
+    array(":action")
   );
   
   static public $default_controller = "page";
   static public $default_action = "index";
-
+  static public $available_controllers = false;
 
 
   
@@ -71,6 +69,7 @@ class WaxUrl {
    **/
 
   static public function perform_mappings($pattern) {
+    self::route_controller;
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
@@ -115,25 +114,28 @@ class WaxUrl {
     return $_GET[$val];
   }
   
+  
   /**
     *  Checks whether a file exists for the named controller
     *  @return boolean      If file exists true
     */
-	protected function check_controller() {
-	  $controller = self::get("controller");
-		if(strpos($controller, "/")) {
-			$path = substr($controller, 0, strpos($controller, "/")+1);
-			$class = slashcamelize($controller, true)."Controller";
-			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
-		}
-		$class = ucfirst($controller)."Controller";
-		$default = ucfirst(self::$default_controller."Controller");
-		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
-		if(is_file(CONTROLLER_DIR.$default.".php")) { return $default;
+	protected function route_controller() {
+	  $route = $_GET["route"];
+	  while($route) {
+	    if(self::is_controller($route)) $controller = $route;
+	    $route = substr($route, 0, strrpos("/", $route));
 	  }
-		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
+	  if($controller) $_GET["controller"]=$controller;
+	  if(self::$default_controller) $controller = self::$default_controller;
+	  $_GET["route"]=str_replace($controller, "", $_GET["route"]);
 	}
-  
+	
+	protected function is_controller($test) {
+	  if(is_readable(CONTROLLER_DIR.Inflections::slashcamelize($test)."Controller.php")) return true;
+	  return false;
+	}
+	
+
   	
 }
 
