@@ -9,7 +9,7 @@ class ManyToManyField extends WaxModelField {
   
   public $maxlength = "11";
   public $model_name = false;
-  public $join_model = false;
+  public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
   public $hasmany_model = false;
   
   
@@ -66,17 +66,22 @@ class ManyToManyField extends WaxModelField {
     
   }
   
-  public function unlink() {
-    if($value instanceof WaxModel) {
-      $existing = clone $this->join_model;
-      $existing->filter(array($this->join_field($value) => $value->primval))->delete();
+  public function unlink($model) {
+    
+    $links = new $this->hasmany_model;
+    
+    if($model instanceof WaxModel) {
+      $id = $model->primval;
+      $this->join_model->filter(array($links->table."_".$links->primary_key => $id))->delete();
     }
-    if($value instanceof WaxRecordset) {
-      foreach($value as $join) {
-        $existing = clone $this->join_model;
-        $existing->filter(array($this->join_field($join) => $join->primval))->delete();
+    if($model instanceof WaxRecordset) {
+      foreach($model as $obj) {
+        $id = $obj->primval;
+        $filter[]= $links->table."_".$links->primary_key."=".  $id;
       }
+      $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
     }
+    return $this->join_model;
   }
   
   public function save() {
