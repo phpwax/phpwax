@@ -138,8 +138,7 @@ class WaxUrl {
 	  if(strpos($test, "/")) {
 			$path = substr($test, 0, strpos($test, "/")+1);
 		}
-	  error_log("Looking for ".CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php");
-	  if(is_file(CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php")) return true;
+	  if(is_file(CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  return false;
 	}
 	
