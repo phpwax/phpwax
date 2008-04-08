@@ -71,11 +71,6 @@ class WaxUrl {
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
-<<<<<<< HEAD:wax/dispatch/WaxUrl.php
-      $left = preg_replace("/:([A-Za-z0-9\-]*)/", "$1=([A-Za-z0-9\-])&", $left);
-      $outcome = $map[1];
-      $conditions = $map[2];
-=======
       $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9.-/]*)", $left);
       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9.-]*)", $left);
       $left = str_replace("/", "\/", $left);  
@@ -103,7 +98,6 @@ class WaxUrl {
         }
       break;
       }
->>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/dispatch/WaxUrl.php
     }
     
   }
