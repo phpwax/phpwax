@@ -50,8 +50,6 @@ class WaxUrl {
    *  WaxUrl::map("/tags/:tags*", array("controller"=>"tags", "action"=>"show"))
    *    - Looks for trigger pattern and then returns an array of the named parameter
    *
-   *  WaxUrl::map("files/:file", array("controller"=>"file"), array("file"=>"^\w*\.doc|zip|jpg|gif"))
-   *    - Using the conditions array allows you to provide a pattern that a parameter must match
    *
    * @return void
    **/
@@ -113,6 +111,7 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
+    self::perform_mappings();
     return $_GET[$val];
   }
   	
