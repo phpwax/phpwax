@@ -26,7 +26,9 @@ class WaxUrl {
    **/
   static $mappings = array(
     array("", array("controller"=>"page")),
-    array(":controller/:action/:id")
+    array(":controller/:action/:id"),
+    array(":controller/:action"),
+    array(":controller")
   );
 
 
@@ -48,8 +50,6 @@ class WaxUrl {
    *  WaxUrl::map("/tags/:tags*", array("controller"=>"tags", "action"=>"show"))
    *    - Looks for trigger pattern and then returns an array of the named parameter
    *
-   *  WaxUrl::map("files/:file", array("controller"=>"file"), array("file"=>"^\w*\.doc|zip|jpg|gif"))
-   *    - Using the conditions array allows you to provide a pattern that a parameter must match
    *
    * @return void
    **/
@@ -71,10 +71,41 @@ class WaxUrl {
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
+<<<<<<< HEAD:wax/dispatch/WaxUrl.php
       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "$1=([A-Za-z0-9\-])&", $left);
       $outcome = $map[1];
       $conditions = $map[2];
+=======
+      $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9.-/]*)", $left);
+      $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9.-]*)", $left);
+      $left = str_replace("/", "\/", $left);  
+      if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+      elseif(preg_match("/".$left."/", $right, $matches)) {
+        $mappings = split("/", $map[0]);
+        array_shift($matches);
+        while(count($mappings)) {
+          if(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
+            $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
+          }
+          elseif(substr($mappings[0],0,1)==":") {
+            $mapped_route[substr($mappings[0],1)]=$matches[0];
+            array_shift($matches); 
+          }
+          array_shift($mappings);
+        }
+        $mapped_route = array_merge($mapped_route, (array) $map[1]);
+      }
+      // Map against named parameters in options array
+      
+      if($mapped_route) {
+        foreach($mapped_route as $k=>$val) {
+          $_GET[$k]=$val;
+        }
+      break;
+      }
+>>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/dispatch/WaxUrl.php
     }
+    
   }
   
   
@@ -86,6 +117,7 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
+    self::perform_mappings();
     return $_GET[$val];
   }
   	

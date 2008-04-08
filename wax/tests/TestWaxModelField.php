@@ -1,13 +1,35 @@
 <?php
-
+class ExampleFile extends WaxModel {
+  
+  public function setup() {
+    $this->define("filename", "FileField", array("maxlength"=>255));
+  }
+}
+class ExampleFileField extends WaxModel {
+  
+  public function setup() {
+		//restrict file uploads to just gifs and jpgs
+    $this->define("file", "FileField", array("maxlength"=>255, 'allowed_extensions'=> array('.gif', '.jpg') ));
+  }
+}
 class TestWaxModelField extends WXTestCase {
     public function setUp() {
       $this->model = new Example();
       $this->model_owner = new ExampleOwner();
+<<<<<<< HEAD:wax/tests/TestWaxModelField.php
       $this->model_editor = new ExampleEditor();
+=======
+      $this->model_file = new ExampleFile();
+			$this->model_file_field = new ExampleFileField();
+>>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxModelField.php
       $this->model->syncdb();
       $this->model_owner->syncdb();
+<<<<<<< HEAD:wax/tests/TestWaxModelField.php
       $this->model_editor->syncdb();
+=======
+      $this->model_file->syncdb();
+      $this->model_file_field->syncdb();
+>>>>>>> 998c8595b5f2b41a8784197b3f8270c0d620fd2d:wax/tests/TestWaxModelField.php
       $model3 = new ExampleProperty;
       $model3->syncdb();
     }
@@ -100,6 +122,50 @@ class TestWaxModelField extends WXTestCase {
       $this->assertEqual($model->properties->count(), 0);
     }
 
+
+		/*** FILE UPLOAD ****/
+
+	  /* //HIDDEN DUE TO ITS DESTRUCTIVE NATURE - notice the system rm command!
+		public function test_file_save_with_missing_file_dir() {  
+			$test_dir = WAX_ROOT.$this->model_file->file->file_root;
+			system("rm -Rf ". $test_dir);
+			$this->file_upload_prep();
+			$this->model_file->save();			
+			$file = $test_dir ."testfile.txt";
+			//test if directory was created
+ 	    $this->assertTrue(is_dir($test_dir));
+			//test if file was moved
+	   	$this->assertTrue(is_readable($file) );
+			unlink(PUBLIC_DIR."testfile.txt");
+			unlink($test_dir."testfile.txt");			
+	  }
+		*/
+	  public function test_duplicate_file_renames() {
+	    $this->file_upload_prep();
+			$this->model_file->save();
+	   	$first_name = $this->model_file->filename;
+			$model = new ExampleFile;
+	    $this->file_upload_prep();
+			$model->save();
+	   	$second_name = $model->filename;	
+			if($second_name != $first_name) $this->assertTrue(true);
+			else $this->assertFalse(false);
+	  }
+	
+		public function test_excepted_files(){
+			$file = new ExampleFileField();
+			$this->file_upload_prep("file", $file);
+			if($file = $file->save() ) $this->assertFalse(false);
+			else $this->assertTrue(true);
+		}
+
+		protected function file_upload_prep($column="filename", $model){
+			$test_dir = WAX_ROOT.$model->file->file_root;
+		  file_put_contents(PUBLIC_DIR."testfile.txt", "test file");
+	    $_FILES[$model->table]['name'][$column] = "testfile.txt";
+			$_FILES[$model->table]['size'][$column] = filesize(PUBLIC_DIR."testfile.txt");
+			$_FILES[$model->table]['tmp_name'][$column] = PUBLIC_DIR."testfile.txt";
+		}
     
 }
 
