@@ -98,7 +98,8 @@ class WXApplication {
    */
 	private function delegate_request() {
 	  Session::start();
-		$delegate_controller = new slashcamelize(WaxUrl::get("controller"), true);
+	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true);
+		$delegate_controller = new $delegate;
 		$delegate_controller->execute_request();
   }
 
