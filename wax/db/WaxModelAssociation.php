@@ -20,6 +20,11 @@ class WaxModelAssociation extends WaxRecordset {
     $this->owner_field = $owner_field;
   } 
   
+  public function offsetGet($offset) {
+     $obj = clone $this-target_>model;
+     $obj->set_attributes($this->rowset[$offset]);
+     return $obj;
+   }
   
   
   public function __call($method, $args) {
