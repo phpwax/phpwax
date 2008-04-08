@@ -101,7 +101,7 @@ class WaxUrl {
       break;
       }
     }
-    
+    self::force_defaults();
   }
   
   /**
@@ -142,7 +142,10 @@ class WaxUrl {
 	  return false;
 	}
 	
-
+  protected function force_defaults() {
+    if(!$_GET["controller"]) $_GET["controller"]=self::$default_controller;
+    if(!$_GET["action"]) $_GET["action"]=self::$default_action;
+  }
   	
 }
 
