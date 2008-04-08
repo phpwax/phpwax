@@ -122,7 +122,7 @@ class WaxUrl {
 	protected function route_controller() {
 	  $route = split("/", $_GET["route"]);
 	  while(count($route) ) {
-	    if(self::is_controller(join("/",$route))) $controller = $route;
+	    if(self::is_controller(join("/",$route))) $controller = join("/",$route);
 	    if(!$controller) array_pop($route);
 	  }
 	  error_log("Reduced to ".$controller);
@@ -135,7 +135,7 @@ class WaxUrl {
 	
 	protected function is_controller($test) {
 	  error_log("Looking for ".CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php");
-	  if(is_readable(CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php")) return true;
+	  if(is_file(CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  return false;
 	}
 	
