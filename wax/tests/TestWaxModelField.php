@@ -108,6 +108,8 @@ class TestWaxModelField extends WXTestCase {
       $model->properties = $props->all();
       $test = $model->properties;
       $this->assertIsA($model->properties, "WaxModelAssociation");
+      //print_r($model->properties);
+      $this->assertIsA($model->properties[0], "ExampleProperty");
       $this->assertEqual($model->properties->count(), 2);
       $model->properties->unlink($prop1);
       $this->assertEqual($model->properties->count(), 1);
