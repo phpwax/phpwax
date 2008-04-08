@@ -201,23 +201,20 @@ abstract class WXControllerBase
 	 *
 	 *	@access protected
  	 */
-	public function execute_request() {
-		$route = new WXRoute;
-	  $this->route_array = $route->read_actions();
-	  $this->controller = $route->get_url_controller();    
-	  if(!$this->action = $this->route_array[0]) {
-	    $this->action = "index";
-	  }
+  public function execute_request() {
+	  $route = new WXRoute;
+	  $this->route_array = $_GET;
+	  $this->controller = WaxUrl::get("controller");    
+	  $this->action = WaxUrl::get("action");
 	  if(strpos($this->action, ".")) {
 	    $this->use_format = substr(strstr($this->action, "."),1);
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
 	  }
-	  array_shift($this->route_array);
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
-	    if($this->is_public_method($this, WXInflections::underscore($this->action))) {
-	      $underscore_action = WXInflections::underscore($this->action);
+	    if($this->is_public_method($this, Inflections::underscore($this->action))) {
+	      $underscore_action = Inflections::underscore($this->action);
 	      $this->{$underscore_action}();
 	    } elseif(method_exists($this, 'method_missing') ) {
 			  $this->method_missing();
