@@ -202,7 +202,6 @@ abstract class WXControllerBase
 	 *	@access protected
  	 */
   public function execute_request() {
-	  $route = new WXRoute;
 	  $this->route_array = $_GET;
 	  $this->controller = WaxUrl::get("controller");    
 	  $this->action = WaxUrl::get("action");
