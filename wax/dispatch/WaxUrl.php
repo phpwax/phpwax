@@ -24,12 +24,15 @@ class WaxUrl {
    *
    * @var array
    **/
-  static $mappings = array(
+  static public $mappings = array(
     array("", array("controller"=>"page")),
     array(":controller/:action/:id"),
     array(":controller/:action"),
     array(":controller")
   );
+  
+  static public $default_controller = "page";
+  static public $default_action = "index";
 
 
 
@@ -102,9 +105,6 @@ class WaxUrl {
     
   }
   
-  
-  
-  
   /**
    * get function
    *
@@ -114,6 +114,26 @@ class WaxUrl {
     self::perform_mappings();
     return $_GET[$val];
   }
+  
+  /**
+    *  Checks whether a file exists for the named controller
+    *  @return boolean      If file exists true
+    */
+	protected function check_controller() {
+	  $controller = self::get("controller");
+		if(strpos($controller, "/")) {
+			$path = substr($controller, 0, strpos($controller, "/")+1);
+			$class = slashcamelize($controller, true)."Controller";
+			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
+		}
+		$class = ucfirst($controller)."Controller";
+		$default = ucfirst(self::$default_controller."Controller");
+		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
+		if(is_file(CONTROLLER_DIR.$default.".php")) { return $default;
+	  }
+		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
+	}
+  
   	
 }
 
