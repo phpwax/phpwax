@@ -10,18 +10,18 @@ class TestWaxUrl extends WXTestCase {
     }
     
     public function test_basic_map() {
-      $_GET["route"]="mycontroller/myaction/myid";
-      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+      $_GET["route"]="page/myaction/myid";
+      $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "myaction");
       $this->assertEqual(WaxUrl::get("id"), "myid");
     }
     
     public function test_partial_basic() {
-      $_GET["route"]="mycontroller/myaction";
-      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+      $_GET["route"]="page/myaction";
+      $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "myaction");
-      $_GET["route"]="mycontroller";
-      $this->assertEqual(WaxUrl::get("controller"), "mycontroller");
+      $_GET["route"]="page";
+      $this->assertEqual(WaxUrl::get("controller"), "page");
     }
     
     public function test_default_map() {
@@ -46,8 +46,7 @@ class TestWaxUrl extends WXTestCase {
     
     public function test_nested_controller() {
       $_GET["route"]="admin/content";
-      WaxUrl::map("admin/:controller/:action");
-      
+      $this->assertEqual(WaxUrl::get("controller"), "admin/content");      
     }
     
     public function test_formats() {
