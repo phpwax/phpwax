@@ -17,6 +17,7 @@ class WaxModelAssociation extends WaxRecordset {
     parent::__construct($target, $target->all()->rowset);
     $this->target_model = $target;
     $this->model = $join_model;
+    $this->owner_field = $owner_field;
   } 
   
   public function unlink($model) {
