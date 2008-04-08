@@ -16,6 +16,7 @@ define('CONFIG_DIR' , WAX_ROOT.'app/config/');
 define('VIEW_DIR', WAX_ROOT.'app/view/');
 define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
 define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
+define('LOG_DIR', WAX_ROOT.'tmp/log/');
 define('SESSION_DIR', WAX_ROOT.'tmp/session/');
 define('PUBLIC_DIR', WAX_ROOT.'public/');
 define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');

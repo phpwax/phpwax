@@ -20,7 +20,7 @@
  *  @author Ross Riley
  *
  */
-class WXConfiguration
+class Config
 {
 	
 	public $config_array;

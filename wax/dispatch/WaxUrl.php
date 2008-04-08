@@ -69,6 +69,7 @@ class WaxUrl {
    **/
 
   static public function perform_mappings($pattern) {
+    self::detect_maintenance();
     self::route_controller();
     foreach(self::$mappings as $map) {
       $left = $map[0];
@@ -145,6 +146,17 @@ class WaxUrl {
     if(!$_GET["controller"]) $_GET["controller"]=self::$default_controller;
     if(!$_GET["action"]) $_GET["action"]=self::$default_action;
   }
+  
+  protected function detect_maintenance() {
+	  $maintenance = Config::get("maintenance");
+	  if($maintenance['ip'] && $maintenance['redirect']) {
+	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
+	    if($_GET["route"] != $maintenance['redirect']) $_GET["route"]=$maintenance['redirect'];
+	    else return false;
+	    return true;
+	  }
+	  return false;
+	}
   	
 }
 

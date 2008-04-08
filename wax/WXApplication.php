@@ -39,11 +39,15 @@ class WXApplication {
    *  @return void
    */
 	private function setup_environment() {
+	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 		if(defined('ENV')) {
 		  WXConfiguration::set_environment(ENV);
-		} else {
+		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
 		  WXConfiguration::set_environment('development');
+		} elseif($addr) {
+		  WXConfiguration::set_environment('production');
 		}
+		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
   }
   
   /**
@@ -63,7 +67,6 @@ class WXApplication {
   private function initialise_database() {
     if($db = WXConfiguration::get('db')) {
       if($db['dbtype']=="none") return false;
-      if(!$db['dbtype']) $db['dbtype']="mysql";
       if(!$db['host']) $db['host']="localhost";
       if(!$db['port']) $db['port']="3306";
       
