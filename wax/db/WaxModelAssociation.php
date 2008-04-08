@@ -23,7 +23,7 @@ class WaxModelAssociation extends WaxRecordset {
   
   
   public function __call($method, $args) {
-    return $this->model->get_col($this->owner_field)->$method($model);
+    return $this->model->get_col($this->owner_field)->$method($args);
   }
 
   
