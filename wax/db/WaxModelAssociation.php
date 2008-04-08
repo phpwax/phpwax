@@ -20,12 +20,11 @@ class WaxModelAssociation extends WaxRecordset {
     $this->owner_field = $owner_field;
   } 
   
-  public function unlink($model) {
-    error_log(get_class($this->model));
-    error_log($this->owner_field);
-    return $this->model->get_col($this->owner_field)->unlink($model);
-  }
   
+  public function __call($method, $args) {
+    if($method == $this->owner_field)  return $this->model->get_col($this->owner_field)->$method($args);
+    else parent::__call($method, $args);
+  }
 
   
 }
