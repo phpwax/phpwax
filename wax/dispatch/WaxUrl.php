@@ -125,7 +125,6 @@ class WaxUrl {
 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
 	    if(!$controller) array_pop($route);
 	  }
-	  error_log("Reduced to ".$controller);
 	  if($controller) {
 	    $_GET["controller"]=$controller;
 	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
