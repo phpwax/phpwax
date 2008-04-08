@@ -69,7 +69,7 @@ class WaxUrl {
    **/
 
   static public function perform_mappings($pattern) {
-    self::route_controller;
+    self::route_controller();
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
