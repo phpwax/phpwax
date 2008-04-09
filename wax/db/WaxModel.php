@@ -11,6 +11,7 @@
 class WaxModel {
   
   static public $adapter;
+  static public $db_settings;
   protected $db = false;
   public $table = false;
   public $primary_key="id";
@@ -32,7 +33,7 @@ class WaxModel {
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 		$this->db = self::$adapter;
+ 		$this->db = new self::$adapter(self::$db_settings);
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = WXInflections::underscore( $class_name );
@@ -47,7 +48,8 @@ class WaxModel {
  	
  	static public function load_adapter($db_settings) {
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
- 	  self::$adapter = new $adapter($db_settings);
+ 	  self::$adapter = $adapter;
+ 	  self::$db_setings = $db_settings;
  	}
  	
  	public function define($column, $type, $options=array()) {
