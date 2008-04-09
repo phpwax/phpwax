@@ -29,8 +29,8 @@ class WaxLog {
   
   public function output() {
     $output = "";
-    foreach(self::$logs as $type=>$log) {
-      $output .= "[$type] $log"."\n";
+    foreach(self::$logs as $log) {
+      $output .= "[".key($log)."] $log"."\n";
     }
     self::flush();
     error_log($output);
