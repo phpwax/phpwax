@@ -40,7 +40,7 @@ class ManyToManyField extends WaxModelField {
     $links = new $this->hasmany_model;
     if(!$vals->count()) return new WaxRecordset($this->model);
     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
-    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->model, $this->field);
+    return new WaxModelAssociation($links->filter("(".join(" OR ", $filters).")"), $this->model, $this->field);
   }
   
   public function set($value) {
@@ -90,6 +90,16 @@ class ManyToManyField extends WaxModelField {
 
   protected function join_field(WaxModel $model) {
     return $model->table."_".$model->primary_key;
+  }
+
+  public function __call($method, $args) {
+    $vals = $this->join_model->all();
+    $links = new $this->hasmany_model;
+    if(!$vals->count()) return new WaxRecordset($this->model);
+    foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
+    $links->filter("(".join(" OR ", $filters).")");
+
+    return call_user_func_array(array($links, $method), $args);
   }
 
 } 

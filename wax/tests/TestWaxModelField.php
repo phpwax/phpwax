@@ -93,10 +93,12 @@ class TestWaxModelField extends WXTestCase {
       $editor->examples = $model;
       $editor->examples = $model2;
       $this->assertEqual($editor->examples->count(), 2);
+      $this->assertEqual($editor->examples->filter(array("email" => "test1@test.com"))->all()->count(), 1);
+      $model3 = $this->model->create($this->get_fixture("user3"));
+      $this->assertEqual($editor->examples->filter(array("email" => "test3@test.com"))->all()->count(), 0);
       $editor->examples->unlink($this->model->all());
       $this->assertEqual($editor->examples->count(), 0);
-      $model2 = $this->model->create($this->get_fixture("user3"));
-      $editor->examples = $model2;
+      $editor->examples = $model3;
       $this->assertEqual($editor->examples->count(), 1);
     }
     
@@ -109,7 +111,11 @@ class TestWaxModelField extends WXTestCase {
       $test = $model->properties;
       $this->assertIsA($model->properties, "WaxModelAssociation");
       $this->assertIsA($model->properties[0], "ExampleProperty");
+      $this->assertIsA($model->properties[0]->examples[0], "Example");
       $this->assertEqual($model->properties->count(), 2);
+      $this->assertEqual($model->properties->filter(array("name" => "Property 1"))->all()->count(), 1);
+      $prop3 = $props->create(array("name"=>"Property 3"));
+      $this->assertEqual($model->properties->filter(array("name" => "Property 3"))->all()->count(), 0);
       $model->properties->unlink($prop1);
       $this->assertEqual($model->properties->count(), 1);
       $model->properties = $prop1;
