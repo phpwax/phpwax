@@ -83,11 +83,10 @@ class WaxUrl {
         array_shift($matches);
         while(count($mappings)) {
           if($_GET["controller"] && $_GET["controller"]==$matches[0]) {
-            
+            array_shift($matches);
           } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
             $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
-          }
-          elseif(substr($mappings[0],0,1)==":") {
+          } elseif(substr($mappings[0],0,1)==":") {
             $mapped_route[substr($mappings[0],1)]=$matches[0];
             array_shift($matches); 
           }
