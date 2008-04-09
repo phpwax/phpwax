@@ -30,7 +30,7 @@ class WaxLog {
   public function output() {
     $output = "";
     foreach(self::$logs as $log) {
-      $output .= "[".key($log)."] $log"."\n";
+      $output .= "[".key($log)."] ".(string) $log."\n";
     }
     self::flush();
     error_log($output);
