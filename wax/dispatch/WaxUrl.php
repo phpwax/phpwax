@@ -31,7 +31,6 @@ class WaxUrl {
   
   static public $default_controller = "page";
   static public $default_action = "index";
-  static public $available_controllers = false;
 
 
   
@@ -70,7 +69,6 @@ class WaxUrl {
 
   static public function perform_mappings() {
     self::detect_maintenance();
-    self::route_controller();
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = $_GET["route"];
@@ -79,7 +77,10 @@ class WaxUrl {
       $left = str_replace("/", "\/", $left);  
       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
       elseif(preg_match("/".$left."/", $right, $matches)) {
-        echo $left." : ".$right."\n";
+        if(!$_GET["controller"] && !$map[1]["controller"]) {
+          self::route_controller();
+        }
+
         $mappings = split("/", $map[0]);
         array_shift($matches);
         while(count($mappings)) {
