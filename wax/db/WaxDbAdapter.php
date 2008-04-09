@@ -116,9 +116,9 @@ abstract class WaxDbAdapter {
       }
       if($col_exists==false){
         $output .= $model_field->before_sync();
-        $output .= $this->add_column($model_field, $model)."\n";
+        $output .= $this->add_column($model_field, $model, true)."\n";
       }
-      if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
+      if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed."\n";
     }
     $output .= "Table {$model->table} is now synchronised";
     return $output;
@@ -166,21 +166,21 @@ abstract class WaxDbAdapter {
     return $sql;
   }
   
-  public function add_column(WaxModelField $field, WaxModel $model) {
+  public function add_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
     if(!$field->col_name) return true;
     $sql = "ALTER TABLE `$model->table` ADD ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
-    $this->exec($stmt);
+    $this->exec($stmt, $swallow_errors);
     return "Added column {$field->col_name} to {$model->table}";
   }
   
-  public function alter_column(WaxModelField $field, WaxModel $model) {
+  public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
     if(!$field->col_name) return true;
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
-    $this->exec($stmt);
+    $this->exec($stmt, $swallow_errors);
     return "Updated column {$field->field} in {$model->table}";
   }
   
