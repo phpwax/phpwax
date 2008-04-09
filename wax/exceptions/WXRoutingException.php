@@ -6,7 +6,7 @@
  **/
 class WXRoutingException extends WXException
 {
-  static $redirect_on_error=false;
+  static $redirect_on_error="error-404";
   static $double_redirect = false;
   
 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
