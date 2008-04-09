@@ -158,7 +158,15 @@ class WaxModel {
     return $res;
   }
 
- 
+ 	public function order($order_by){
+		$this->order = $order_by;
+		return $this;
+	}
+	public function limit($limit){
+		$this->limit = $limit;
+		return $this;
+	}
+	
   public function update( $id_list = array() ) {
     $this->before_update();
     $res = $this->db->update($this);
