@@ -29,7 +29,7 @@ class WaxLog {
   }
   
   public function output() {
-    $output = "";
+    $output = array();
     foreach(self::$logs as $log) {
       $output[]= "[".$log[0]."] ". $log[1];
     }
