@@ -66,6 +66,7 @@ class TestWaxUrl extends WXTestCase {
       $_GET["route"]="contact";
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "contact");
+      $_GET=array();
       $_GET["route"]="page";
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "index");
