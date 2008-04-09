@@ -14,7 +14,7 @@ class WaxLog {
 
   static public $logs = array();
   static public $logs_enabled = array();
-  static public $log_handler = "self::write";
+  static public $log_handler = array("self", "write");
   static public $auto_flush = true;
   
   static public function add($type, $message) {
