@@ -19,7 +19,7 @@ class WaxLog {
   
   static public function add($type, $message) {
     self::$log_file = ENV.".log";
-    if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type=>$message);
+    if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type, $message);
     if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
   }
   
@@ -30,10 +30,9 @@ class WaxLog {
   public function output() {
     $output = "";
     foreach(self::$logs as $log) {
-      $output .= "[".key($log)."] ". $log;
+      $output .= "[".$log[0]."] ". $log[1];
     }
     self::flush();
-    error_log(var_export($output));
     return $output;
   }
   
