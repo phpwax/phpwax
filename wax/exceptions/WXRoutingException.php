@@ -12,7 +12,7 @@ class WXRoutingException extends WXException
   	if($location = self::$redirect_on_error) {
   	  $this->simple_routing_error_log();
       header("HTTP/1.1 404 Not Found");  
-      header("Location: /{$location}");
+      header("Location: /{$location}",1,404);
   	  exit;
   	}
   	parent::__construct($message, $code);
