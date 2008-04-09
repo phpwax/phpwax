@@ -14,13 +14,13 @@ class WaxLog {
 
   static public $logs = array();
   static public $logs_enabled = array();
-  static public $log_handler = array("self", "write");
+  static public $log_handler = "self::write";
   static public $auto_flush = true;
   
   static public function add($type, $message) {
     self::$log_file = ENV.".log";
     self::$logs[]=array($type=>$message);
-    if(self::$auto_flush) call_user_func_array(self::$log_handler, self::output());
+    if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
   }
   
   static public function log($type) {
