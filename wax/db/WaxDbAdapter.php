@@ -171,7 +171,7 @@ abstract class WaxDbAdapter {
     $sql = "ALTER TABLE `$model->table` ADD ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
-    $this->exec($stmt, $swallow_errors);
+    $this->exec($stmt, array(), $swallow_errors);
     return "Added column {$field->col_name} to {$model->table}";
   }
   
@@ -180,7 +180,7 @@ abstract class WaxDbAdapter {
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
-    $this->exec($stmt, $swallow_errors);
+    $this->exec($stmt, array(), $swallow_errors);
     return "Updated column {$field->field} in {$model->table}";
   }
   
