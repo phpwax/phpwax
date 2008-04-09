@@ -30,7 +30,7 @@ class WaxLog {
   public function output() {
     $output = "";
     foreach(self::$logs as $log) {
-      $output .= "[".$log[0]."] ". $log[1];
+      $output[]= "[".$log[0]."] ". $log[1];
     }
     self::flush();
     return $output;
@@ -42,7 +42,7 @@ class WaxLog {
  
   
   public function write($output) {
-    error_log($output, 3, self::$log_file);
+    foreach($output as $log) error_log($log, 3, self::$log_file);
   }
   
 
