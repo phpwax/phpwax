@@ -18,7 +18,8 @@ class WaxLog {
   static public $auto_flush = true;
   
   static public function add($type, $message) {
-    self::$log_file = ENV.".log";
+    self::$log_file = self::$log_file;
+    ini_set("error_log","/path/to/php.err");
     if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type, $message);
     if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
   }
@@ -42,7 +43,7 @@ class WaxLog {
  
   
   public function write($output) {
-    foreach($output as $log) error_log($log, 3, self::$log_file);
+    foreach($output as $log) error_log($log);
   }
   
 
