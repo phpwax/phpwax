@@ -20,6 +20,7 @@ class WaxLog {
   static public function add($type, $message) {
     self::$log_file = ENV.".log";
     if(in_array( $type, self::$logs_enabled)) self::$logs[]=array($type, $message);
+    error_log(print_r(self::$logs, 1));
     if(self::$auto_flush) call_user_func(self::$log_handler, self::output());
   }
   
