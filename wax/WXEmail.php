@@ -100,6 +100,13 @@ class WXEmail
     private $error_count     = 0;
     private $LE              = "\n";
     
+    /**
+     * Sets an email intercept that all mails will be delivered to
+     * Ideal for use in development environment.
+     * @var string
+     **/
+    public static $email_intercept = false;
+    
     
     /////////////////////////////////////////////////
     // VARIABLE METHODS
@@ -389,11 +396,13 @@ class WXEmail
             $result .= $this->HeaderLine("Return-Path", trim($this->sender));
         
         // To be created automatically by mail()
-        if(is_array($this->to) && count($this->to) > 0)
-                $result .= $this->AddrAppend("To", $this->to);
+        if(self::$email_intercept) {
+          $result .= $this->AddrAppend("To", self::$email_intercept);
+        } elseif(is_array($this->to) && count($this->to) > 0)
+          $result .= $this->AddrAppend("To", $this->to);
         else $result .= $this->HeaderLine("To", $this->to);
         if(count($this->cc) > 0)
-                $result .= $this->AddrAppend("Cc", $this->cc);
+          $result .= $this->AddrAppend("Cc", $this->cc);
  
 
         $from = array();

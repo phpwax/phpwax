@@ -128,7 +128,6 @@ class WaxUrl {
 	  }
 	  if($controller) {
 	    $_GET["controller"]=$controller;
-	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
 	    $_GET["route"]=ltrim($_GET["route"], "/");
 	  }
 	}

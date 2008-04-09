@@ -10,7 +10,7 @@
  */
 
 /* You can change the version number to run on older versions of the framework  */
-define('WAX_VERSION', '0.7.4'); // This is set to your install path as created above.
+define('WAX_VERSION', '0.7.5'); // This is set to your install path as created above.
 
 /* You normally wouldn't change this line, unless you want to have the PEAR package somewhere unusual */
 define('WAX_PATH', PEAR_INSTALL_DIR); 
@@ -61,10 +61,7 @@ require_once(FRAMEWORK_DIR."/AutoLoader.php");
 //WXException::$email_subject_on_error="";
 /*********************************************************************************************/
 
-/************** Plugins **********************************************************************
-* Any plugins that have been installed in your plugins directory are activated using the example below. */
 
-//AutoLoader::include_plugin("cms");
 /*********************************************************************************************/
 
 /*********** Your Additional Application Configuration ***************************************
@@ -75,5 +72,3 @@ require_once(FRAMEWORK_DIR."/AutoLoader.php");
 
 
 
-
-?>
