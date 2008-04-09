@@ -197,6 +197,11 @@ class WaxModel {
  	  return new WaxRecordset($this, $res);
  	}
  	
+	public function order($order_by){
+		$this->order = $order_by;
+		return $this;
+	}
+
  	/**
    * Select and return single row data
    * @return WaxModel Object
