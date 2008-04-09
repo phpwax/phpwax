@@ -11,8 +11,8 @@ class WXRoutingException extends WXException
 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
   	if($location = self::$redirect_on_error) {
   	  $this->simple_routing_error_log();
-  	  header("HTTP/1.1 404 Not Found", 1, 404);
-  	  header("Location: /{$location}",1,404);
+  	  header("Status: 404 Not Found");
+  	  header("Location: /{$location}");
   	  exit;
   	}
   	parent::__construct($message, $code);
