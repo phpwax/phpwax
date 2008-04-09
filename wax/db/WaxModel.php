@@ -49,7 +49,7 @@ class WaxModel {
  	static public function load_adapter($db_settings) {
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
  	  self::$adapter = $adapter;
- 	  self::$db_setings = $db_settings;
+ 	  self::$db_settings = $db_settings;
  	}
  	
  	public function define($column, $type, $options=array()) {
