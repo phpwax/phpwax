@@ -189,7 +189,7 @@ abstract class WaxDbAdapter {
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
-			WaxLog::add("db", $pdo_statement);
+			WaxLog::add("db", print_r($pdo_statement, 1));
       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
 		}
 		return $pdo_statement;
