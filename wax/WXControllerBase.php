@@ -238,11 +238,7 @@ abstract class WXControllerBase
 		else return false;
 	}
 	
-	/**
-	 * Default  Error handling page
-	 * Can be overridden if required
-	 **/
-	public function error_404(){}
+
 }
 
 ?>
