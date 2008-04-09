@@ -158,7 +158,10 @@ class WaxModel {
     return $res;
   }
 
- 
+ 	public function order($order_by){
+		$this->order = $order_by;
+		return $this;
+	}
   public function update( $id_list = array() ) {
     $this->before_update();
     $res = $this->db->update($this);
@@ -197,11 +200,6 @@ class WaxModel {
  	  return new WaxRecordset($this, $res);
  	}
  	
-	public function order($order_by){
-		$this->order = $order_by;
-		return $this;
-	}
-
  	/**
    * Select and return single row data
    * @return WaxModel Object
