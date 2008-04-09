@@ -82,7 +82,9 @@ class WaxUrl {
         $mappings = split("/", $map[0]);
         array_shift($matches);
         while(count($mappings)) {
-          if(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
+          if($_GET["controller"] && $_GET["controller"]==$matches[0]) {
+            
+          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
             $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
           }
           elseif(substr($mappings[0],0,1)==":") {
@@ -128,6 +130,7 @@ class WaxUrl {
 	  }
 	  if($controller) {
 	    $_GET["controller"]=$controller;
+	    $_GET["route"]=str_replace($controller, "", $_GET["route"]);
 	    $_GET["route"]=ltrim($_GET["route"], "/");
 	  }
 	}
