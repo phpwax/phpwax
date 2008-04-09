@@ -13,6 +13,9 @@ class WXRoutingException extends WXException
   	  $this->simple_routing_error_log();
       header("HTTP/1.1 404 Not Found",1, 404);  
       $_GET["route"]=$location;
+      $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+  		$delegate_controller = new $delegate;
+  		$delegate_controller->execute_request();
   	}
   	parent::__construct($message, $code);
   }
