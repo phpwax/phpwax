@@ -41,6 +41,7 @@ class WaxLog {
   }
   
   public function log($output) {
+    die($output);
     error_log($output, 3, self::$log_file);
   }
   
