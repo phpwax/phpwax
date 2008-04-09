@@ -236,7 +236,17 @@ abstract class WXControllerBase
 		$file_path = VIEW_DIR . $path . ".html";
 		if(is_readable($file_path)) return true;
 		else return false;
-	} 
+	}
+	
+	/**
+	 * Default  Error handling page
+	 *
+	 * @return void
+	 * @author /bin/bash: niutil: command not found
+	 **/
+	public function error_404(){
+	  throw new WXException("Application Error", "A Page not found error was triggered and you have not set up a page to handle it");
+	}
 }
 
 ?>
