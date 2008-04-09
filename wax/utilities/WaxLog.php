@@ -32,6 +32,7 @@ class WaxLog {
     foreach(self::$logs as $type=>$log) {
       if(in_array( $type, self::$logs_enabled)) $output .= "[$type] $message"."\n";
     }
+    error_log($output);
     self::flush();
     return $output;
   }
