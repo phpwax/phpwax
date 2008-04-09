@@ -209,7 +209,7 @@ abstract class WXControllerBase
 	    $this->use_format = substr(strstr($this->action, "."),1);
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
 	  }
-	  WaxLog:add("Application", "Loading controller {$this->controller} with action {$this->action}");
+	  WaxLog::add("Application", "Loading controller {$this->controller} with action {$this->action}");
 	  $this->controller_global();
 	  $this->run_filters("before");
 	  if(!$this->is_public_method($this, $this->action)) {
