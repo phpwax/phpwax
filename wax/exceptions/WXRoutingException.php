@@ -16,6 +16,7 @@ class WXRoutingException extends WXException
       $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
   		$delegate_controller = new $delegate;
   		$delegate_controller->execute_request();
+  		exit;
   	}
   	parent::__construct($message, $code);
   }
