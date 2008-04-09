@@ -79,20 +79,21 @@ class WaxUrl {
       elseif(preg_match("/".$left."/", $right, $matches)) {
         if(!$_GET["controller"] && !$map[1]["controller"]) {
           self::route_controller();
-        }
+        } else {
 
-        $mappings = split("/", $map[0]);
-        array_shift($matches);
-        while(count($mappings)) {
-          if($mappings[0]==$matches[0]) {
-            array_shift($matches);
-          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
-            $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
-          } elseif(substr($mappings[0],0,1)==":") {
-            $mapped_route[substr($mappings[0],1)]=$matches[0];
-            array_shift($matches); 
+          $mappings = split("/", $map[0]);
+          array_shift($matches);
+          while(count($mappings)) {
+            if($mappings[0]==$matches[0]) {
+              array_shift($matches);
+            } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
+              $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
+            } elseif(substr($mappings[0],0,1)==":") {
+              $mapped_route[substr($mappings[0],1)]=$matches[0];
+              array_shift($matches); 
+            }
+            array_shift($mappings);
           }
-          array_shift($mappings);
         }
         $mapped_route = array_merge($mapped_route, (array) $map[1]);
       }
