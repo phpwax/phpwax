@@ -30,8 +30,10 @@
     <div id="instructions">
       <pre>
         <p><?=$e->getTraceAsString()?></p>
-        <code><?=$e->getFile()?>
-        Line: <?=$e->getLine()?></code>
+        <code>
+        In File:  <?=$e->getFile()?>
+        Line:     <?=$e->getLine()?>
+        </code>
       </pre>
     </div>
     <div id="environment">
