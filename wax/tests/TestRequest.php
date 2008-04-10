@@ -21,7 +21,7 @@ class TestRequest extends WXTestCase {
       $_GET["test24"]="poo";
       $this->assertEqual(Request::get("test"), "hello");
       $this->assertEqual(Request::get("test2"), "hello");
-      $this->assertEqual(Request::get("test24"), "poo");
+      $this->assertEqual(Request::raw("test24"), "poo");
     }
    
 }
