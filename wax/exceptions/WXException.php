@@ -18,6 +18,7 @@ class WXException extends Exception
   static $email_on_error=false;
   static $email_subject_on_error="Application error on production server";
 	public $div = "------------------------------------------------------------------------------------------------------\n";
+  public $help = "No further information was available";
 
 	public function __construct($message, $heading, $code = "500") {
     parent::__construct($message, $code);
@@ -31,7 +32,7 @@ class WXException extends Exception
 	public function format_trace($e) {
     if(!self::$double_redirect) {
       self::$double_redirect=true;
-      $view= new WXTemplate(array("e"=>$e));
+      $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
 	  } else return $this->cli_error_message;
