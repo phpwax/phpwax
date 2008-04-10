@@ -6,7 +6,7 @@ class TestWaxUrl extends WXTestCase {
     }
     
     public function tearDown() {
-      print_r(WaxUrl::$mappings);
+      print_r(WaxUrl::$params);
     }
     
     public function test_basic_map() {
