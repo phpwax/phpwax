@@ -6,7 +6,6 @@ class TestWaxUrl extends WXTestCase {
     }
     
     public function tearDown() {
-      print_r(WaxUrl::$params);
     }
     
     public function test_basic_map() {
@@ -71,7 +70,9 @@ class TestWaxUrl extends WXTestCase {
       $_GET["route"]="contact";
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "contact");
-      $_GET=array();
+    }
+    
+    public function test_defaults2() {
       $_GET["route"]="page";
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "index");
