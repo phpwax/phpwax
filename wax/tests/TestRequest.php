@@ -7,6 +7,7 @@ class TestRequest extends WXTestCase {
     }
     
     public function tearDown() {
+      print_r(Request::$params);
     }
     
     public function test_basic_get_post() {
@@ -20,7 +21,7 @@ class TestRequest extends WXTestCase {
       $_GET["test"]="<script>hello</script>";
       $_GET["test2"]="<p>hello</p>";
       $_GET["test24"]="poo";
-      $this->assertEqual(Request::get("test"), "hello");
+      $this->assertEqual(Request::get("test"), "<script>hello</script>");
       $this->assertEqual(Request::get("test2"), "hello");
       $this->assertEqual(Request::raw("test24"), "poo");
     }
