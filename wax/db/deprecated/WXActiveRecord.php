@@ -15,7 +15,7 @@
 class WXActiveRecord extends WXValidations implements Iterator
 {
 	protected static $default_pdo = null;
-	protected static $pdo_settings = null;
+	public static $pdo_settings = null;
 	protected static $column_cache = null;
 	protected $pdo = null;
   public $table = null;
