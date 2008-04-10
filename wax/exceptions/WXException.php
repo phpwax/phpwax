@@ -20,7 +20,7 @@ class WXException extends Exception
 	public $div = "------------------------------------------------------------------------------------------------------\n";
   public $help = "No further information was available";
 
-	public function __construct($message, $heading, $code = "500") {
+	public function __construct($message, $heading) {
     parent::__construct($message, $code);
     $this->error_heading = $heading;
 		$this->cli_error_message = $this->cli_format_trace($this);
