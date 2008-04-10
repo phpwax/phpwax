@@ -2,7 +2,7 @@
 
 class TestWaxUrl extends WXTestCase {
     public function setUp() {
-
+      WaxUrl::$mappings = false;
     }
     
     public function tearDown() {
