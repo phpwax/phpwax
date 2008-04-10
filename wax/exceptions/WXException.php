@@ -23,16 +23,13 @@ class WXException extends Exception
     parent::__construct($message, $code);
     $this->error_heading = $heading;
     $this->error_message = $this->format_trace($this);
-    $this->error_code = $code;
 		$this->cli_error_message = $this->cli_format_trace($this);
-		if(defined('CLI_ENV')) {
-			$this->cli_giveup();
-		} else {
-			$this->handle_error();
-		}
+		if(defined('CLI_ENV')) $this->cli_giveup();
+		else $this->handle_error();
   }
+  
 	public function format_trace($e) {
-		return WXControllerBase::view_to_string(FRAMEWORK_DIR."template/builtin/trace.html", array("e"=>$e));
+		return WXControllerBase::view_to_string(FRAMEWORK_DIR."template/builtin/trace", array("e"=>$e));
 	}
 	
 	
