@@ -29,8 +29,10 @@ class WXException extends Exception
   }
   
 	public function format_trace($e) {
-	  error_log(FRAMEWORK_DIR."template/builtin/trace");
-		return WXControllerBase::view_to_string(FRAMEWORK_DIR."/template/builtin/trace", array("e"=>$e));
+    if(!self::$double_redirect) {
+      self::$double_redirect=true;
+		  return WXControllerBase::view_to_string(FRAMEWORK_DIR."/template/builtin/trace", array("e"=>$e));
+	  }
 	}
 	
 	
