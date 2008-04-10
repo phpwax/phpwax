@@ -32,7 +32,7 @@ class WXException extends Exception
     if(!self::$double_redirect) {
       self::$double_redirect=true;
 		  return WXControllerBase::view_to_string(FRAMEWORK_DIR."/template/builtin/trace", array("e"=>$e));
-	  }
+	  } else return $this->cli_error_message;
 	}
 	
 	
