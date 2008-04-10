@@ -2,7 +2,8 @@
 
 class TestRequest extends WXTestCase {
     public function setUp() {
-      WaxUrl::$params=array();
+      WaxUrl::$params=false;
+      Request::$params=false;
     }
     
     public function tearDown() {
