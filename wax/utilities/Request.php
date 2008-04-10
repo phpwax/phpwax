@@ -9,7 +9,7 @@
  */
 class Request {
 		
-	static $params = false;
+	static $params = array();
 	
 	public function filter($name, $raw) {
 	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH|FILTER_FLAG_ENCODE_LOW);
