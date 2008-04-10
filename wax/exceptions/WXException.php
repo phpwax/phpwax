@@ -14,6 +14,7 @@ class WXException extends Exception
 {
   
   static $redirect_on_error=false;
+  static $double_redirect = false;
   static $email_on_error=false;
   static $email_subject_on_error="Application error on production server";
 	public $div = "------------------------------------------------------------------------------------------------------\n";
@@ -100,9 +101,16 @@ class WXException extends Exception
 	  }
 	  if($location = self::$redirect_on_error) {
   	  error_log($this->getMessage());
-  	  header("Status: 404 Not Found");
-  	  header("Location: /{$location}");
-  	  exit;
+  	  static $double_redirect = false;
+      if(!self::$double_redirect) {
+  	    self::$double_redirect = true;
+        header("HTTP/1.1 500 Application Error",1, 500);  
+        $_GET["route"]=$location;
+        $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+  		  $delegate_controller = new $delegate;
+  		  $delegate_controller->execute_request();
+  		  exit;
+		  }
   	}
 		header("Status: 500 Application Error");
 		echo $this->simple_error_message;
