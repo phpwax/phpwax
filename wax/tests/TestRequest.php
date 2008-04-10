@@ -8,8 +8,15 @@ class TestRequest extends WXTestCase {
     public function tearDown() {
     }
     
-    public function test_basic_get() {
+    public function test_basic_get_post() {
       $_GET["test"]="hello";
+      $_POST["test2"]="hello";
+      $this->assertEqual(Request::get("test"), "hello");
+      $this->assertEqual(Request::get("test2"), "hello");
+    }
+    
+    public function test_filters() {
+      $_GET["test"]="<script>hello</script>";
       $this->assertEqual(Request::get("test"), "hello");
     }
    
