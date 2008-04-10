@@ -7,12 +7,30 @@
  **/
 
 
-class WaxPaginatedRecordset extends WXRecordset {
+class WaxPaginatedRecordset extends WaxRecordset {
   
   public $current_page=1;
   public $total_pages=false;
   public $per_page=false;
   public $count=false;
+
+	public function __construct(WaxModel $model, $page, $per_page) {
+		$this->per_page = $per_page;
+		//setup model 
+    $this->model = $model;	
+		$this->model->offset = ($page * $per_page);
+		$this->model->limit = $per_page;
+		//paginate the model
+		$rowset = $this->paginate($model);
+		$this->set_count($rowset['total_without_limits']);
+		parent::__construct($model, $rowset);
+  }
+
+	public function paginate(WaxModel $model){
+		$newmodel = clone $model;
+		return $newmodel->all()->rowset;
+	}
+	
   public function set_count($count) {
     $this->count = $count;
     $this->total_pages = ceil($count / $this->per_page);

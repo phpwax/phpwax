@@ -79,13 +79,24 @@ abstract class WaxDbAdapter {
   public function select(WaxModel $model) {
     $sql .= "SELECT ";
     if(count($this->columns)) $sql.= join(",", $this->columns) ;
+		//mysql extra - if limit then record the number of rows found without limits
+		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
     if($model->order) $sql.= "ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
-    if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		//altered to include extra mysql found rows data
+		if($model->limit >0 && $this->exec($stmt)){
+			$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
+			$this->exec($extrastmt);
+			$found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
+			$res['total_without_limits'] = $found[0]['FOUND_ROWS()'];
+			return $res;
+		}
+    elseif($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
   

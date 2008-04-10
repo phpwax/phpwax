@@ -24,8 +24,8 @@ class WaxModel {
   public $limit = false;
   public $offset = "0";
   public $errors = array();
- 
 
+	
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
@@ -167,6 +167,11 @@ class WaxModel {
 	public function limit($limit){
 		$this->limit = $limit;
 		return $this;
+	}
+	
+	//take the page number, number to show per page, return paginated record set..
+	public function page($page_number, $per_page){
+		return new WaxPaginatedRecordset($this, $page_number, $per_page);
 	}
 	
   public function update( $id_list = array() ) {
