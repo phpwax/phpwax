@@ -22,7 +22,7 @@ class Request {
 	}
 	
 	public function raw($name) {
-	  return self::$filter($name, true);
+	  return self::filter($name, true);
 	}
 	
 	public function get($name) {
