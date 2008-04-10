@@ -13,7 +13,7 @@ class Request {
 	
 	public function filter($name, $raw) {
 	  if(!$raw) $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS);
-    else if($val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW));
+    else      $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW);
 	  return $val;
 	}
 	
