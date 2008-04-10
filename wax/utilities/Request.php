@@ -12,7 +12,7 @@ class Request {
 	static $params = false;
 	
 	public function filter($name, $raw) {
-	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH);
+	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH|FILTER_FLAG_ENCODE_LOW);
     else      $val = filter_var(self::$params[$name], FILTER_UNSAFE_RAW);
 	  return $val;
 	}
