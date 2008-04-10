@@ -28,6 +28,10 @@
       <h1><?=$e->error_heading?></h1>
       <h2><?=$e->getMessage()?></h2>
     </div>
+    <div id="help">
+      <h2>Further Information</h2>
+      <p><?=$help?></p>
+    </div>
     <div id="instructions">
       <pre>
         <p><?=$e->getTraceAsString()?></p>
@@ -37,10 +41,6 @@ In File:  <?=$e->getFile()?>
 Line:     <?=$e->getLine()?>
         </code>
       </pre>
-    </div>
-    <div id="help">
-      <h2>Further Information</h2>
-      <p><?=$help?></p>
     </div>
     <div id="environment">
       <h2>HTTP Request, cookie and server information</h2>
