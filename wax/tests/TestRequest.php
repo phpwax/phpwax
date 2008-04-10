@@ -4,10 +4,10 @@ class TestRequest extends WXTestCase {
     public function setUp() {
       WaxUrl::$params=false;
       Request::$params=false;
+      $_POST=false;
     }
     
     public function tearDown() {
-      print_r(Request::$params);
     }
     
     public function test_basic_get_post() {
