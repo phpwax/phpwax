@@ -22,7 +22,7 @@ class Request {
 	}
 	
 	public function get($name) {
-	  if(!self::$params) self::$params = array_merge(WaxUrl::$params, $_POST);
+	  if(!self::$params) self::$params = array_merge(WaxUrl::get_params(), $_POST);
 	  return self::filter($name, false);
 	}
 

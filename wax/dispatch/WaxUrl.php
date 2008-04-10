@@ -120,6 +120,11 @@ class WaxUrl {
     return self::$params[$val];
   }
   
+  static public function get_params() {
+    self::perform_mappings();
+    return self::$params;
+  }
+  
   
   /**
     *  Checks whether a file exists for the named controller
