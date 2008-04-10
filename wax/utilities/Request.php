@@ -9,11 +9,13 @@
  */
 class Request {
 		
-	
+	self::$post;
+	self::$get;
+	static $params = false;
 	
 	public function filter($name, $raw) {
-	  if(!$raw) $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS);
-    else      $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW);
+	  if(!$raw) $val = filter_var(self::$params, $name, FILTER_SANITIZE_SPECIAL_CHARS);
+    else      $val = filter_var(self::$params, $name, FILTER_UNSAFE_RAW);
 	  return $val;
 	}
 	
@@ -22,6 +24,7 @@ class Request {
 	}
 	
 	public function get($name) {
+	  if(!self::$params) self::$params = array_merge(WaxUrl::$params, $_POST);
 	  return self::filter($name, false);
 	}
 
