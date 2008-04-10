@@ -14,7 +14,7 @@ class Request {
 	static $post = false;
 	
 	public function filter($val) {
-	  return filter_var($val, FILTER_SANITIZE_STRING);
+	  return filter_var($val, FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW | FILTER_FLAG_ENCODE_HIGH | FILTER_FLAG_ENCODE_AMP);
 	}
 	
 	

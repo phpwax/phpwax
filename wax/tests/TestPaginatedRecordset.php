@@ -29,7 +29,7 @@ class TestPaginatedRecordset extends WXTestCase {
     }
     
     public function test_simple_page() {
-      $this->assertEqual($this->model->all()->count(), 40);
+      $this->assertEqual($this->model->all()->count(), 45);
     }
     
     
