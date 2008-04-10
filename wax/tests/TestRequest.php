@@ -2,7 +2,7 @@
 
 class TestRequest extends WXTestCase {
     public function setUp() {
-      $_GET = array();
+
     }
     
     public function tearDown() {
