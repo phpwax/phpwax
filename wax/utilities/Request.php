@@ -19,6 +19,7 @@ class Request {
 	    if($val = filter_input(INPUT_GET, $name, FILTER_UNSAFE_RAW));
 	    if($val = filter_input(INPUT_POST, $name, FILTER_UNSAFE_RAW));    
 	  }
+	  return $val;
 	}
 	
 	public function raw($name) {
