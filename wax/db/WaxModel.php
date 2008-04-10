@@ -170,7 +170,7 @@ class WaxModel {
 	}
 	
 	//take the page number, number to show per page, return paginated record set..
-	public function page($page_number, $per_page){
+	public function page($page_number, $per_page=10){
 		return new WaxPaginatedRecordset($this, $page_number, $per_page);
 	}
 	
