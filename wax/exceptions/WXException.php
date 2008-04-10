@@ -32,8 +32,7 @@ class WXException extends Exception
 		}
   }
 	public function format_trace($e) {
-	  $view = new WXControllerBase();
-		return $view->view_to_string(FRAMEWORK_DIR."template/builtin/trace.html", array("e"=>$e));
+		return WXControllerBase::view_to_string(FRAMEWORK_DIR."template/builtin/trace.html", array("e"=>$e));
 	}
 	
 	
