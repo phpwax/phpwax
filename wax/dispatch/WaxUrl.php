@@ -31,7 +31,7 @@ class WaxUrl {
   
   static public $default_controller = "page";
   static public $default_action = "index";
-  static public $params;
+  static public $params = false;
 
 
   
@@ -68,7 +68,7 @@ class WaxUrl {
    **/
 
   static public function perform_mappings() {
-    self::$params = $_GET;
+    if(!self::$params) self::$params = $_GET;
     self::detect_maintenance();
     foreach(self::$mappings as $map) {
       $left = $map[0];
