@@ -14,7 +14,7 @@ class Request {
 	static $post = false;
 	
 	public function filter($val) {
-	  return filter_var($val, FILTER_FLAG_ENCODE_LOW, FILTER_FLAG_ENCODE_HIGH);
+	  return filter_var($val, FILTER_FLAG_ENCODE_HIGH);
 	}
 	
 	
