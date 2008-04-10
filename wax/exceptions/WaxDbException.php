@@ -10,7 +10,7 @@ class WaxDbException extends WXException {
   
 	function __construct( $message, $code, $db_settings = array() ) {
 	  $this->help .= "<br />".var_export($db_settings);
-  	return parent::__construct( $message, $code);
+  	parent::__construct( $message, $code);
   }
 }
 
