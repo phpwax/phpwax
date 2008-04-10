@@ -31,7 +31,9 @@ class WXException extends Exception
 	public function format_trace($e) {
     if(!self::$double_redirect) {
       self::$double_redirect=true;
-		  return WXControllerBase::view_to_string(FRAMEWORK_DIR."/template/builtin/trace", array("e"=>$e));
+      $view= new WXTemplate(array("e"=>$e));
+  		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
+  		return $view->parse();
 	  } else return $this->cli_error_message;
 	}
 	
