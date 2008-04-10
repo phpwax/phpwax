@@ -23,17 +23,17 @@ class Request {
 	  return self::$get[$name];
 	}
 	
-	public function post() {
+	public function post($name) {
 	  if(!self::$post) self::$post = $_POST;
 	  return self::$post[$name];
 	}
 	
-	public function safe_get() {
-	  return self::filter($get[$name]);
+	public function safe_get($name) {
+	  return self::filter(self::get($name));
 	}
 	
-	public function safe_post() {
-	  return self::filter($post[$name]);
+	public function safe_post($name) {
+	  return self::filter(self::post($name));
 	}
 
 
