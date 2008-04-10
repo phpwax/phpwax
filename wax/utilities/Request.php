@@ -26,7 +26,7 @@ class Request {
 	}
 	
 	public function get($name) {
-	  return self::$filter($name, false);
+	  return self::filter($name, false);
 	}
 
 
