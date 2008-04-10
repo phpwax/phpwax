@@ -9,8 +9,6 @@
  */
 class Request {
 		
-	self::$post;
-	self::$get;
 	static $params = false;
 	
 	public function filter($name, $raw) {
