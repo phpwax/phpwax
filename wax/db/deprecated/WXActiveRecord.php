@@ -38,19 +38,7 @@ class WXActiveRecord extends WXValidations implements Iterator
   */
 	function __construct($param=null) {
 	  $db = self::$pdo_settings;
-	  if(!self::getDefaultPDO()) {
-		  if(isset($db['socket']) && strlen($db['socket'])>2) {
-  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
-  		} else {
-  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
-  		}
-		
-  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
-      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
-      }
-    } else $this->pdo = self::getDefaultPDO();
+	  $this->pdo = self::getDefaultPDO();
       
 		$class_name =  get_class($this) ;
 		
@@ -89,7 +77,22 @@ class WXActiveRecord extends WXValidations implements Iterator
   *  @return object      PDO instance
   */
 	static function getDefaultPDO() {
-  	return self::$default_pdo;
+	  if(!self::$default_pdo) {
+	    $db = self::$pdo_settings;
+		  if(isset($db['socket']) && strlen($db['socket'])>2) {
+  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
+  		} else {
+  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+  		}
+		
+  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+      }
+      self::$default_pdo = $pdo;
+    }
+    return self::$default_pdo;
   }
 
     /**
