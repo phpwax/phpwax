@@ -5,7 +5,9 @@ class TestRequest extends WXTestCase {
       $_GET = array();
     }
     
-    public function tearDown() {}
+    public function tearDown() {
+      echo filter_input("test");
+    }
     
     public function test_basic_get() {
       $_GET["test"]="hello";
