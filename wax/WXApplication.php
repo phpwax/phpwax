@@ -73,17 +73,7 @@ class WXApplication {
       if(!$db['port']) $db['port']="3306";
       
     /****** Deprecated support for WXActiveRecord only around for one more version *****/
-      if(isset($db['socket']) && strlen($db['socket'])>2) {
-  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
-  		} else {
-  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
-  		}
-  		
-  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
-      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
-      }  
+      WXActiveRecord::$pdo_settings = $db; 
     /**********************************************************/
       
       WaxModel::load_adapter($db);
