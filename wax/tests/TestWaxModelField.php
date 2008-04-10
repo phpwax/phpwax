@@ -68,6 +68,13 @@ class TestWaxModelField extends WXTestCase {
       $this->assertFalse($res->save());
     }
     
+    public function test_validate_unique() {
+      $this->model->define("username", "CharField", array("unique" => true));
+      $model1 = $this->model->create($this->get_fixture("user1"));
+      $model2 = $this->model->set_attributes($this->get_fixture("user1"));
+      $this->assertFalse($model2->validate());
+    }
+    
     public function test_foreign_key() {
       $owner = $this->model_owner->create(array("name"=>"Master"));
       $model = $this->model->create($this->get_fixture("user1"));
