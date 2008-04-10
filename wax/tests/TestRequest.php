@@ -18,15 +18,6 @@ class TestRequest extends WXTestCase {
       $this->assertEqual(Request::get("test"), "hello");
       $this->assertEqual(Request::post("test2"), "hello");
     }
-    
-    public function test_filters() {
-      $_GET["test"]="<script>hello</script>";
-      $_GET["test2"]="<p>hello</p>";
-      $_GET["test3"]="'hello'";
-      $this->assertEqual(Request::safe_get("test"), "hello");
-      $this->assertEqual(Request::safe_get("test2"), "hello");
-      $this->assertEqual(Request::safe_get("test3"), "hello");
-    }
    
 }
 

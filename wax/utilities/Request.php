@@ -27,14 +27,6 @@ class Request {
 	  if(!self::$post) self::$post = $_POST;
 	  return self::$post[$name];
 	}
-	
-	public function safe_get($name) {
-	  return self::filter(self::get($name));
-	}
-	
-	public function safe_post($name) {
-	  return self::filter(self::post($name));
-	}
 
 
 }
