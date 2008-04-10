@@ -84,13 +84,12 @@ class WXActiveRecord extends WXValidations implements Iterator
   		} else {
   			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
   		}
-		
-  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
-  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  		print_r($pdo); exit;
-  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
-      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
-      }
+		  try {
+		    $pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+    		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		  } catch (Exception $e) {
+		    throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+		  }
       self::$default_pdo = $pdo;
     }
     return self::$default_pdo;
