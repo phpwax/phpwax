@@ -6,7 +6,6 @@ class TestRequest extends WXTestCase {
     }
     
     public function tearDown() {
-      echo filter_input("test");
     }
     
     public function test_basic_get() {
