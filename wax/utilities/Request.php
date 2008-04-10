@@ -14,10 +14,12 @@ class Request {
 	public function filter($name, $raw) {
 	  if(!$raw) {
 	    if($val = filter_input(INPUT_GET, $name, FILTER_SANITIZE_SPECIAL_CHARS));
-	    if($val = filter_input(INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS));
+	    elseif($val = filter_input(INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS));
+	    else $val = false;
     } else {
 	    if($val = filter_input(INPUT_GET, $name, FILTER_UNSAFE_RAW));
-	    if($val = filter_input(INPUT_POST, $name, FILTER_UNSAFE_RAW));    
+	    elseif($val = filter_input(INPUT_POST, $name, FILTER_UNSAFE_RAW));
+	    else $val = false;   
 	  }
 	  return $val;
 	}
