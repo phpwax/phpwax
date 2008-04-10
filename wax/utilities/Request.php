@@ -12,8 +12,8 @@ class Request {
 	static $params = false;
 	
 	public function filter($name, $raw) {
-	  if(!$raw) $val = filter_var(self::$params, $name, FILTER_SANITIZE_SPECIAL_CHARS);
-    else      $val = filter_var(self::$params, $name, FILTER_UNSAFE_RAW);
+	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_SPECIAL_CHARS);
+    else      $val = filter_var(self::$params[$name], FILTER_UNSAFE_RAW);
 	  return $val;
 	}
 	
