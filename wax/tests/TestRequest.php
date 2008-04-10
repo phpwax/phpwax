@@ -17,7 +17,9 @@ class TestRequest extends WXTestCase {
     
     public function test_filters() {
       $_GET["test"]="<script>hello</script>";
+      $_GET["test2"]="<p>hello</p>";
       $this->assertEqual(Request::get("test"), "hello");
+      $this->assertEqual(Request::get("test2"), "hello");
     }
    
 }
