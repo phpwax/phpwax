@@ -16,7 +16,7 @@ class WaxLog {
   static public function add($type, $message) {
     if(!self::$log_file) self::$log_file = LOG_DIR.ENV.".log";
     ini_set("error_log",self::$log_file);
-    call_user_func(self::$log_handler, self::output());
+    call_user_func_array(self::$log_handler, array($type, $message));
   }
   
   static public function log($type, $output) {
