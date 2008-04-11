@@ -280,6 +280,9 @@ class WaxModel {
   	$this->setup();
    }
 
+	public function total_without_limits(){
+		return $this->db->total_without_limits;
+	}
    /**
    	*  These are left deliberately empty in the base class
    	*  

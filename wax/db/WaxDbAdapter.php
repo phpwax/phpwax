@@ -33,7 +33,7 @@ abstract class WaxDbAdapter {
       'TextField'=>         'longtext',
       'TimeField'=>         'time'
   );
-  
+  public $total_without_limits = false;
   
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
@@ -93,7 +93,7 @@ abstract class WaxDbAdapter {
 			$extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
 			$this->exec($extrastmt);
 			$found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
-			$res['total_without_limits'] = $found[0]['FOUND_ROWS()'];
+			$this->total_without_limits = $found[0]['FOUND_ROWS()'];
 			return $res;
 		}
     elseif($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
