@@ -162,6 +162,11 @@ class UrlHelper extends WXHelpers {
 			unset($options["action"]);
     } else $url[]= WaxUrl::get("action");
     
+    if(array_key_exists("id", $options)) {
+    	$url[] = $options["id"];
+			unset($options["action"]);
+    } else $url[]= WaxUrl::get("id");
+    
           
     if(count($options)) {
     	foreach($options as $key => $value) {
