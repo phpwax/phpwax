@@ -33,7 +33,7 @@ class UrlHelper extends WXHelpers {
      *  @uses convert_confirm_option_to_javascript()
      *  @uses url_for()
      */
-    /*
+    
     public function link_to($name, $options = array(), $html_options = array()) {
         $html_options =
             $this->convert_confirm_option_to_javascript($html_options);
@@ -62,7 +62,7 @@ class UrlHelper extends WXHelpers {
             $html = $this->content_tag("a", $name, $html_options);
         }
         return $html;
-    } */
+    }
 
     /**
      *  @todo Document this method
@@ -146,34 +146,22 @@ class UrlHelper extends WXHelpers {
      *  </ul>
      *  @return string
      */
-  /*
+  
   public function url_for($options = array(), $url_base="/") {
-		$routes_object = new WXRoute;
     $url = array();
     $extra_params = array();
-    if(!is_array($options)) {
-      $options=array("action"=>$options);
-    }
-		
+    
 		if(array_key_exists("controller", $options)) {
-		  if($options['controller'] != WXConfiguration::get("route/default")) {
-    	  $url[] = $options["controller"];
-		  }
+		  $url[] = $options["controller"];
 		  unset($options["controller"]);
-    } else {
-    	$url[] = $routes_object->get_url_controller();
-    }
+    } else $url[] = WaxUrl::get("controller");
       
     //  If controller found, get action from $options
    	if(array_key_exists("action", $options)) {
     	$url[] = $options["action"];
 			unset($options["action"]);
-    } 
+    } else $url[]= WaxUrl::get("action");
     
-		if(array_key_exists("id", $options)) {
-    	$url[] = $options["id"];
-			unset($options["id"]);
-    }
           
     if(count($options)) {
     	foreach($options as $key => $value) {
@@ -186,7 +174,7 @@ class UrlHelper extends WXHelpers {
     	return str_replace("//","/",$url_base.implode("/", $url)."/");
 		}
     return $url_base . str_replace("//", "/", implode("/", $url)."/"). "?".http_build_query($extra_params, "", "&");
-  }   */
+  }   
 
 }
 
