@@ -145,7 +145,8 @@ class UrlHelper extends WXHelpers {
      *  </ul>
      *  @return string
      */
-  private function url_for($options = array(), $url_base="/") {
+  /*
+  public function url_for($options = array(), $url_base="/") {
 		$routes_object = new WXRoute;
     $url = array();
     $extra_params = array();
@@ -184,7 +185,7 @@ class UrlHelper extends WXHelpers {
     	return str_replace("//","/",$url_base.implode("/", $url)."/");
 		}
     return $url_base . str_replace("//", "/", implode("/", $url)."/"). "?".http_build_query($extra_params, "", "&");
-  }   
+  }   */
 
 }
 
