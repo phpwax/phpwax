@@ -314,12 +314,12 @@ class WXHelpers {
     return $this->content_tag("ul", $content, array("class"=>"pagination"));
   }
   
-  public function paginate_url($param, $page) {
+ 	public function paginate_url($param, $page) {
     $vals = $_GET;
     $url_base = "/".$vals["route"];
     unset($vals["route"]);
     $vals[$param]= $page;
-    return $url_base."?".http_build_query($vals);
+    return $url_base."?".http_build_query($vals, false, "&");
   }
   
   public function url($val) {
