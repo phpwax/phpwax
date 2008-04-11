@@ -16,6 +16,7 @@ class WaxPaginatedRecordset extends WaxRecordset {
 
 	public function __construct(WaxModel $model, $page, $per_page) {
 		$this->per_page = $per_page;
+		$this->current_page = $page;
 		//setup model 
     $this->model = $model;	
 		$this->model->offset = (($page-1) * $per_page);
