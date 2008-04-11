@@ -23,7 +23,7 @@ class TestPaginatedRecordset extends WXTestCase {
     
     public function gen_fixtures($field, $value, $number) {
       for($i=1; $i <=$number; $i++) {
-        $fixtures[]= array($field => $value.$number);
+        $fixtures[]= array($field => $value.$i);
       }
       return $fixtures;
     }
