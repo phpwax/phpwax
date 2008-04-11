@@ -276,7 +276,7 @@ class WXHelpers {
 	}
 	
 	public function paginate_links($recordset, $window = "1", $prev_content="&laquo;", $next_content="&raquo;", $param="page", $prev_content_disabled="&laquo;", $next_content_disabled="&raquo;") {
-    if(!$recordset instanceof WXPaginatedRecordset) return false;
+    if(!$recordset instanceof WXPaginatedRecordset && !$recordset instanceof WaxPaginatedRecordset) return false;
 		if($recordset->total_pages <=1) return false;
     $content = "";
     $page = 1; $links = array();
