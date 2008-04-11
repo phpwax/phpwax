@@ -33,6 +33,7 @@ class UrlHelper extends WXHelpers {
      *  @uses convert_confirm_option_to_javascript()
      *  @uses url_for()
      */
+    /*
     public function link_to($name, $options = array(), $html_options = array()) {
         $html_options =
             $this->convert_confirm_option_to_javascript($html_options);
@@ -61,7 +62,7 @@ class UrlHelper extends WXHelpers {
             $html = $this->content_tag("a", $name, $html_options);
         }
         return $html;
-    }
+    } */
 
     /**
      *  @todo Document this method
