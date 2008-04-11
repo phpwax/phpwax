@@ -154,7 +154,7 @@ class FormOptionsHelper extends FormHelper {
     } else {
       $date_markup = $this->make_date_select($shared_id);
     }
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
+    $output .= content_tag("script", "function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
