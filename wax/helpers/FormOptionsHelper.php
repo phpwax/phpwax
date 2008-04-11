@@ -201,7 +201,7 @@ class FormOptionsHelper extends FormHelper {
       $datetime_markup = $this->make_date_select($shared_id)."&nbsp;&nbsp;&nbsp;";
       $datetime_markup .= $this->make_time_select($shared_id);
     }
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
+    $output .= content_tag("script","function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + 
       '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value
       + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value+':00';
