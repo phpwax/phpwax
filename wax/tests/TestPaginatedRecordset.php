@@ -18,7 +18,7 @@ class TestPaginatedRecordset extends WXTestCase {
     }
     
     public function tearDown() {
-     // $this->model->clear()->delete();
+     $this->model->clear()->delete();
     }
     
     public function gen_fixtures($field, $value, $number) {
