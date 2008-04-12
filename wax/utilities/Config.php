@@ -31,7 +31,7 @@ class Config
 	  if(self::$initialised) return true;
 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
 	  self::$app_yaml_file = $initial_config;
-	  self::$config_array = self::$load_yaml(self::$app_yaml_file);
+	  self::$config_array = self::load_yaml(self::$app_yaml_file);
 	  self::$initialised=true;
 	}
 	
