@@ -18,9 +18,14 @@ class TestConfig extends WXTestCase
   	  $this->assertEqual(Config::get('myconf'), "myval");
   	}
 
-    public function test_get($value) { 
+    public function test_get() { 
   	  $config = Config::get('all');
   	  $this->assertTrue(is_array($config));
+  	}
+  	
+  	public function test_return_false() { 
+  	  $config = Config::get('rubbish');
+  	  $this->assertFalse($config);
   	}
 
   	public function test_set_environment($env) {
