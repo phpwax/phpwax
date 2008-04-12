@@ -23,8 +23,8 @@
 class Config
 {
 	
-	public $config_array;
-	public $app_yaml_file=false;
+	static $config_array;
+	static $app_yaml_file=false;
 	static $initialised = false;
 	
 	static public function initialise($initial_config=false) {
