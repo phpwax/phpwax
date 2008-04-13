@@ -18,7 +18,7 @@ class TestRequest extends WXTestCase {
       $this->assertEqual(Request::get("test"), "hello");
       $this->assertEqual(Request::post("test2"), "hello");
       $this->assertEqual(Request::param("test"), "hello");
-       $this->assertEqual(Request::param("test2"), "hello");
+      $this->assertEqual(Request::param("test2"), "hello");
     }
    
 }
