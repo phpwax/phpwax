@@ -209,10 +209,8 @@ class WXScripts {
     $this->app_setup();
     if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
     else Autoloader::include_dir(MODEL_DIR, true);
-    
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
-        $this->add_output("Loading model $class");
         $class_obj = new $class;
         $output = $class_obj->syncdb();
         $this->add_output($output);
