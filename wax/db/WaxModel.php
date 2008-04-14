@@ -193,8 +193,8 @@ class WaxModel {
     return $res;
   }
   
-  public function exec($statement) {
-    return $this->db->exec($statement);
+  public function exec($query) {
+    return $this->db->query($query);
   }
   
   /**

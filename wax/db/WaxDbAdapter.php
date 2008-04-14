@@ -206,6 +206,12 @@ abstract class WaxDbAdapter {
 		return $pdo_statement;
   }
   
+  public function query($query) {
+    $stmt = $this->db->prepare($sql);
+    $res = $this->exec($stmt);
+    return $res->fetchAll(PDO::FETCH_ASSOC);
+  }
+  
   public function quote($string) {
     return $this->db->quote($string);
   }
