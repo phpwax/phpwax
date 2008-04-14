@@ -322,7 +322,7 @@ class WXHelpers {
     return $url_base."?".http_build_query($vals, false, "&");
   }
   
-  public function url($val) {
+  private function url($val) {
     return WXRoute::get_url_val($val);
   }
 

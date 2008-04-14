@@ -23,16 +23,16 @@
 class Config
 {
 	
-	public $config_array;
-	public $app_yaml_file=false;
-	static private $instance=false;
+	static $config_array;
+	static $app_yaml_file=false;
+	static $initialised = false;
 	
-	static public function set_instance($initial_config=false) {
-	  if(self::$instance) return false;
-	  self::$instance=new WXConfiguration();
+	static public function initialise($initial_config=false) {
+	  if(self::$initialised) return true;
 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
-	  self::$instance->app_yaml_file = $initial_config;
-	  self::$instance->config_array = self::$instance->load_yaml(self::$instance->app_yaml_file);
+	  self::$app_yaml_file = $initial_config;
+	  self::$config_array = self::load_yaml(self::$app_yaml_file);
+	  self::$initialised=true;
 	}
 	
 	/**
@@ -58,9 +58,9 @@ class Config
     */
 	
 	public function return_config($config=null) {
-		if($config=="all") return self::$instance->config_array;
+		if($config=="all") return self::$config_array;
 		$config=explode("/", $config);
-		$confarray=self::$instance->config_array;
+		$confarray=self::$config_array;
 		foreach($config as $conf) {
 			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
 			else $confarray=false;
@@ -72,7 +72,7 @@ class Config
 	}
 	
 	static public function replace_yaml($file) {
-	  self::$instance->config_array = self::$instance->load_yaml($file);
+	  self::$config_array = self::load_yaml($file);
 	}
 	
 	/**
@@ -80,12 +80,12 @@ class Config
     *  @return bool
     */
 	
-	static public function set($new_config = array()) {
-	  if(is_array($new_config)) {
-	    self::$instance->config_array = array_merge(self::$instance->config_array, $new_config);
-	    return true;
-	  } 
-	  return false;
+	static public function set($new_config, $new_value=false) {
+	  self::initialise();
+	  if(!is_array($new_config)) {
+	    $new_config = array($new_config=>$new_value);
+	  }
+	  self::$config_array = array_merge(self::$config_array, $new_config);
 	}
 	
 	/**
@@ -95,6 +95,7 @@ class Config
     */
 	
 	static public function set_environment($env) {
+	  self::initialise();
 	  $env = self::get($env);
 	  if(is_array($env)) {
 	    return self::set($env);
@@ -107,7 +108,8 @@ class Config
     */
 	
 	static public function get($value) { 
-	  return self::$instance->return_config($value);
+	  self::initialise();
+	  return self::return_config($value);
 	}
 		
 	

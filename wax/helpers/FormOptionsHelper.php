@@ -154,13 +154,13 @@ class FormOptionsHelper extends FormHelper {
     } else {
       $date_markup = $this->make_date_select($shared_id);
     }
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
+    $output .= content_tag("script", "function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output.= content_tag("span", $date_markup, array("class"=>"multiple_date_select"));
     $output .= $this->hidden_field($obj, $att);
-    $output .= javascript_tag("{$shared_id}_set_date()");
+    $output .= content_tag("script","{$shared_id}_set_date()");
     return $output;
   }
   
@@ -175,14 +175,14 @@ class FormOptionsHelper extends FormHelper {
     } else {
       $time_markup = $this->make_time_select($shared_id);
     }
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
+    $output .= content_tag("script","function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value + ':00';
     }");
     if($with_label) $output .= $this->make_label($with_label);
     $output .= $time_markup;
     $output.= content_tag("span", $time_markup, array("class"=>"multiple_time_select"));
     $output .= $this->hidden_field($obj, $att);
-    $output .= javascript_tag("{$shared_id}_set_date()");
+    $output .= content_tag("script","{$shared_id}_set_date()");
     return $output;
   }
   
@@ -201,7 +201,7 @@ class FormOptionsHelper extends FormHelper {
       $datetime_markup = $this->make_date_select($shared_id)."&nbsp;&nbsp;&nbsp;";
       $datetime_markup .= $this->make_time_select($shared_id);
     }
-    $output .= javascript_tag("function {$shared_id}_set_date() { 
+    $output .= content_tag("script","function {$shared_id}_set_date() { 
       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + 
       '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value
       + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value+':00';
@@ -209,7 +209,7 @@ class FormOptionsHelper extends FormHelper {
     if($with_label) $output .= $this->make_label($with_label);
     $output.= content_tag("span", $datetime_markup, array("class"=>"multiple_datetime_select"));
     $output .= $this->hidden_field($obj, $att);
-    $output .= javascript_tag("{$shared_id}_set_date()");
+    $output .= content_tag("script","{$shared_id}_set_date()");
     return $output;
   }
   
