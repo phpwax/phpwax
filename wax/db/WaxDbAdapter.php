@@ -206,7 +206,7 @@ abstract class WaxDbAdapter {
 		return $pdo_statement;
   }
   
-  public function query($query) {
+  public function query($sql) {
     $stmt = $this->db->prepare($sql);
     if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
     return false;
