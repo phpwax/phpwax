@@ -207,9 +207,8 @@ class WXScripts {
   
   public function syncdb($dir=false) {
     $this->app_setup();
-    if($dir && is_dir($dir)) Autoloader::include_dir($dir);
+    if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
     else Autoloader::include_dir(MODEL_DIR, true);
-    print_r(get_declared_classes());
     
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
