@@ -208,8 +208,8 @@ abstract class WaxDbAdapter {
   
   public function query($query) {
     $stmt = $this->db->prepare($sql);
-    $res = $this->exec($stmt);
-    return $res->fetchAll(PDO::FETCH_ASSOC);
+    if($res = $this->exec($stmt)) return $res->fetchAll(PDO::FETCH_ASSOC);
+    return false;
   }
   
   public function quote($string) {
