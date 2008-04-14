@@ -154,7 +154,7 @@ class WXScripts {
     if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
     if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
     $this->app_setup();
-    $syncdir = PLUGIN_DIR.$dir."lib/model";
+    $syncdir = PLUGIN_DIR.$dir."/lib/model";
     $this->add_output("Running sync from ".$syncdir);
     $this->syncdb($syncdir);
     $this->add_output("Plugin database has been synchronised");
