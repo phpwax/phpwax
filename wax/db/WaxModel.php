@@ -43,6 +43,7 @@ class WaxModel {
  		if($params) {
  		  $res = $this->filter(array($this->primary_key => $params))->first();
  		  $this->row=$res->row;
+ 		  $this->clear();
  		}
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
