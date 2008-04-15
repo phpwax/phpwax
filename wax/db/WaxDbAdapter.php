@@ -197,7 +197,7 @@ abstract class WaxDbAdapter {
   
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
-      WaxLog::add("db", $pdo_statement);
+      WaxLog::add("sql", $pdo_statement);
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
