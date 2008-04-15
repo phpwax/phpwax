@@ -163,7 +163,7 @@ class UrlHelper extends WXHelpers {
     } else $url[]= WaxUrl::get("action");
     
           
-    if(count($options)) {
+    if(is_array($options) && count($options)) {
     	foreach($options as $key => $value) {
       	$extra_params[$key] = $value; 
      	}    
