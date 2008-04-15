@@ -34,15 +34,14 @@ class WaxModel {
    */
  	function __construct($params=null) {
  		if(!$this->db = new self::$adapter(self::$db_settings)) {
-    	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+    	throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
     }
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
- 			$this->table = WXInflections::underscore( $class_name );
+ 			$this->table = Inflections::underscore( $class_name );
  		}
  		if($params) {
  		  $res = $this->filter(array($this->primary_key => $params))->first();
- 		  $this->row = $res->row;
  		}
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
