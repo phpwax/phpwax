@@ -18,6 +18,7 @@ class WaxModelField {
   public $maxlength = false;
   public $minlength = false;
   public $choices = false;
+  public $editable = true; // Only editable options will be displayed in forms
   public $blank = true;
   public $label = false;
   public $help_text = false;
