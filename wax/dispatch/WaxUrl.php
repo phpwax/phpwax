@@ -25,6 +25,7 @@ class WaxUrl {
    * @var array
    **/
   static public $mappings = array(
+    array(":action/:id/:params*"),
     array(":action/:id"),
     array(":action")
   );
