@@ -4,9 +4,9 @@
 
 
 /************ Log Levels *****************************/
-WaxLog::log("application");
-WaxLog::log("db");
-WaxLog::log("sql");
+Config::set("log_info", true);
+Config::set("log_warn", true);
+Config::set("log_error", true);
 
 
 /**** Force all emails to be delivered to one email address */

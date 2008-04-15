@@ -29,7 +29,7 @@ class WXRoutingException extends WXException
   }
   
   function simple_routing_error_log() {
-    WaxLog::add("application", $this->getMessage());
+    WaxLog::add("error", $this->getMessage());
   }
 }
 

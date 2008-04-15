@@ -20,7 +20,7 @@ class WaxLog {
   }
   
   static public function log($type, $output) {
-    if(Config::get("debug_".$type)) {
+    if(Config::get("log_".$type)) {
       error_log("[$type] $output");
     }
   }
