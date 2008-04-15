@@ -208,7 +208,6 @@ abstract class WaxDbAdapter {
   
   public function query($sql) {
     return $this->db->query($sql);
-    return $stmt;
   }
   
   public function quote($string) {
