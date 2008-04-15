@@ -29,7 +29,7 @@ class WXRoutingException extends WXException
   }
   
   function simple_routing_error_log() {
-    WaxLog::add("error", "[Routing] Couldn't load a requested page: {$_GET['route']}");
+    WaxLog::log("error", "[Routing] Couldn't load a requested page: {$_GET['route']}");
   }
 }
 
