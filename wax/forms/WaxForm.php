@@ -42,7 +42,7 @@ class WaxForm {
       if($el_divider) $ouput.=$el_divider;
     }
     if($this->submit) {
-      $submit = new SubmitInput;
+      $submit = new SubmitInput("submit");
       $submit->attribute("value", $this->submit_value);
       $output.= $submit->render;
     }
