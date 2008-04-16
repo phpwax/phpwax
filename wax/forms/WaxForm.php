@@ -14,7 +14,7 @@ class WaxForm {
     "id"=>"",
     "action"=>"",
     "method"=>"post",
-    "encoding"=>""
+    "encoding"=>"multipart/form-data"
   );
   public $submit = true;
   public $submit_text = "Submit";
