@@ -85,7 +85,7 @@ abstract class WaxDbAdapter {
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
-    if($model->order) $sql.= "ORDER BY {$model->order}";
+    if($model->order) $sql.= " ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
 		//altered to include extra mysql found rows data
