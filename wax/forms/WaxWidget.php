@@ -26,7 +26,6 @@ class WaxWidget {
       $this->value = $model->{$name};
       $field = $model->columns[$name];
       $model_field = new $field[0]($name, $model, $field[1]);
-      $this->options = $field[1];
       $this->blank = $model_field->blank;
       $this->choices = $model_field->choices;
       $this->label = $model_field->label;
