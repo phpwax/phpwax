@@ -46,7 +46,7 @@ class WaxForm {
       $submit->attribute("value", $this->submit_text);
       $output.= $submit->render();
     }
-    return sprintf($this->template, $this->make_attributes, $output);
+    return sprintf($this->template, $this->make_attributes(), $output);
   }
   
   public function make_attributes() {
