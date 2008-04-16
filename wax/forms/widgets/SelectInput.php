@@ -43,11 +43,11 @@ class SelectInput extends WaxWidget {
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     foreach($this->choices as $option=>$value) {
+      echo " $option :: $value <br />";
       $sel = "";
       if($this->name == $option && $this->value==$value) $sel = ' selected="selected"';
       $ouput .= sprintf($choice, $value, $sel, $option);
     }
-    echo htmlspecialchars($output);
     return $output;
   }
   
