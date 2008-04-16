@@ -19,7 +19,7 @@ class TextInput extends WaxWidget {
   public $help_text = false;
   public $show_label = true;
   public $label_template = '<label for="%s">%s</label>';
-  public $template = '<input %s />"';
+  public $template = '<input %s />';
   
   
   
