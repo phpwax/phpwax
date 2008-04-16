@@ -2,11 +2,11 @@
 
 
 /**
- * Base Widget class
+ * Text Input Widget class
  *
  * @package PHP-Wax
  **/
-class WaxWidget {
+class SelectInput extends WaxWidget {
 
   public $attributes = array();
   public $value = false;
@@ -15,21 +15,9 @@ class WaxWidget {
   public $label = false;
   public $help_text = false;
   public $show_label = true;
-  public $label_template = '<label for="%s>%s</label>';
-  public $template = '<input %s />';
+  public $label_template = '<label for="%s">%s</label>';
+  public $template = '<select %s >%s</select>';
   
-  public function __construct($name, WaxModel $model=null) {
-    if($model) {
-      $this->attribute("name", "[$model->table]$name");
-      $this->attribute("id", "{$model->table}_{$name}");
-      $this->value = $model->$name;
-      $this->blank = $model->$blank;
-      $this->choices = $model->$choices;
-      $this->label = $model->$label;
-      $this->help_text = $model->$help_text;
-      if(!$label) $this->label = Inflections::humanize($name);
-    }
-  }
   
   
   public function render() {
@@ -51,7 +39,20 @@ class WaxWidget {
     return $res;
   }
   
+  public function make_choices() {
+    if($this->choices) {
+      $output = ""
+      $choice = '<option value="%s"%s>%s</option>';
+      foreach($this->choices as $option=>$value) {
+        $sel = "";
+        if($this->name == $option && $this->value==$value) $sel = 'selected="selected"';
+        $ouput .= sprintf($choice, $value, $sel, $option);
+      }
+      
+    }
+  }
+  
 
 
 
-} // END class 
+} // END class
