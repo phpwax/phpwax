@@ -12,5 +12,6 @@ class AutoField extends WaxModelField {
   public $maxlength = "11";
   public $auto = true;
   public $primary = true;
+  public $editable = false;
 
 } 

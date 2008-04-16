@@ -197,13 +197,18 @@ abstract class WaxDbAdapter {
   
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
-      WaxLog::add("db", $pdo_statement);
+      WaxLog::log("info", "[DB] ".print_r($pdo_statement, 1));
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
+			WaxLog::log("error", "[DB]". $err[2]);
       if(!$swallow_errors) throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
 		}
 		return $pdo_statement;
+  }
+  
+  public function query($sql) {
+    return $this->db->query($sql);
   }
   
   public function quote($string) {

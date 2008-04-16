@@ -151,19 +151,23 @@ class UrlHelper extends WXHelpers {
     $url = array();
     $extra_params = array();
     
-		if(array_key_exists("controller", $options)) {
+		if(is_array($options) && array_key_exists("controller", $options)) {
 		  $url[] = $options["controller"];
 		  unset($options["controller"]);
     } else $url[] = WaxUrl::get("controller");
       
     //  If controller found, get action from $options
-   	if(array_key_exists("action", $options)) {
+   	if(is_array($options) && array_key_exists("action", $options)) {
     	$url[] = $options["action"];
 			unset($options["action"]);
     } else $url[]= WaxUrl::get("action");
     
+    if(is_array($options) && array_key_exists("id", $options)) {
+    	$url[] = $options["id"];
+			unset($options["id"]);
+    } else $url[]= WaxUrl::get("id");
           
-    if(count($options)) {
+    if(is_array($options) && count($options)) {
     	foreach($options as $key => $value) {
       	$extra_params[$key] = $value; 
      	}    

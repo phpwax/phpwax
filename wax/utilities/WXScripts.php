@@ -106,6 +106,9 @@ class WXScripts {
         $this->plugin_migrate($argv[2]);
         $this->plugin_post_setup($argv[2]);
         break;
+      case "syncdb":
+        $this->plugin_syncdb($argv[2]);
+        break;
     }
   }
   
@@ -145,6 +148,16 @@ class WXScripts {
     $migrate = new WXMigrate;
     $migrate->version_less_migrate($migrate_dir);
     $this->add_output("Plugin database setup completed");
+  }
+  
+  protected function plugin_syncdb($dir) {
+    if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
+    if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
+    $this->app_setup();
+    $syncdir = PLUGIN_DIR.$dir."/lib/model";
+    $this->add_output("Running sync from ".$syncdir);
+    $this->syncdb($syncdir);
+    $this->add_output("Plugin database has been synchronised");
   }
   
   public function run_tests($argv) {
@@ -192,9 +205,10 @@ class WXScripts {
     }
   }
   
-  public function syncdb($argv) {
+  public function syncdb($dir=false) {
     $this->app_setup();
-    Autoloader::include_dir(MODEL_DIR, true);
+    if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
+    else Autoloader::include_dir(MODEL_DIR, true);
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
         $class_obj = new $class;

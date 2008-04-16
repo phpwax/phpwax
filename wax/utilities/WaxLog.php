@@ -11,16 +11,16 @@ class WaxLog {
 
   
   static $log_file=false;
-  static $log_handler = array("WaxLog", "log");
   
-  static public function add($type, $message) {
-    if(!self::$log_file) self::$log_file = LOG_DIR.ENV.".log";
+  static public function init() {
+    if(self::$log_file) return true;
+    self::$log_file = LOG_DIR.ENV.".log";
     ini_set("error_log",self::$log_file);
-    call_user_func_array(self::$log_handler, array($type, $message));
   }
   
   static public function log($type, $output) {
-    if(Config::get("debug_".$type)) {
+    self::init();
+    if(Config::get("log_".$type)) {
       error_log("[$type] $output");
     }
   }
