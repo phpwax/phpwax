@@ -9,6 +9,7 @@ class ForeignKey extends WaxModelField {
   
   public $maxlength = "11";
   public $model_name = false;
+  public $widget = "SelectInput";
   
   
   public function setup() {
