@@ -9,7 +9,6 @@
 class WaxWidget {
 
 
-  public $model_field;
   public $attributes = array();
   public $value = false;
   public $choices = false;
@@ -25,11 +24,12 @@ class WaxWidget {
       $this->attribute("name", "[$model->table]$name");
       $this->attribute("id", "{$model->table}_{$name}");
       $this->value = $model->{$name};
-      $this->model_field = $model->get_col($name);
-      $this->blank = $this->model_field->blank;
-      $this->choices = $this->model_field->choices;
-      $this->label = $this->model_field->label;
-      $this->help_text = $this->model_field->help_text;
+      $field = $model->columns->[$name];
+      $model_field = new $field[1]($name, $model, $field[2]);
+      $this->blank = $model_field->blank;
+      $this->choices = $model_field->choices;
+      $this->label = $model_field->label;
+      $this->help_text = $model_field->help_text;
       if(!$label) $this->label = Inflections::humanize($name);
     }
   }
