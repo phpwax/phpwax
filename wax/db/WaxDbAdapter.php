@@ -29,6 +29,7 @@ abstract class WaxDbAdapter {
       'ImageField'=>        'varchar',
       'IntegerField'=>      'int',
       'IPAddressField'=>    'varchar',
+      'PasswordField'=>     'varchar',
       'SlugField'=>         'varchar',
       'TextField'=>         'longtext',
       'TimeField'=>         'time'
