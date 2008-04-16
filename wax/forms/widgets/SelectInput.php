@@ -47,7 +47,7 @@ class SelectInput extends WaxWidget {
       if($this->name == $option && $this->value==$value) $sel = ' selected="selected"';
       $ouput .= sprintf($choice, $value, $sel, $option);
     }
-    die($output);
+    echo htmlspecialchars($output);
     return $output;
   }
   
