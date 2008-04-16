@@ -15,6 +15,8 @@ class WaxForm {
   public $method="post";
   public $encoding = "";
   public $attributes = array();
+  public $submit = true;
+  public $submit_text = "Submit";
   
   public $template = '<form %s>%s</form>';
   
@@ -38,6 +40,11 @@ class WaxForm {
     foreach($this->elements as $el) {
       $output.= $el->render();
       if($el_divider) $ouput.=$el_divider;
+    }
+    if($this->submit) {
+      $submit = new SubmitInput;
+      $submit->attribute("value", $this->submit_value);
+      $output.= $submit->render;
     }
     return sprintf($this->template, $this->make_attributes, $output);
   }

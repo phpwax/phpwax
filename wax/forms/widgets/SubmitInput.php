@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Submit Input Widget class
  *
