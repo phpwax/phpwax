@@ -11,7 +11,7 @@ class WaxForm {
   //Validation & Format Options
   public $attributes = array(
     "name"=>"",
-    "id"="",
+    "id"=>"",
     "action"=>"",
     "method"=>"post",
     "encoding"=>""
