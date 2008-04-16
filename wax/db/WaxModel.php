@@ -106,6 +106,18 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
+  /**
+   * output_val function
+   * Gets the output value of a field,
+   * Allows transformation of data to display to user
+   * @param string $name 
+   * @return mixed
+   */
+  
+  public function output_val($name) {
+    $field = $this->get_col($name);
+    return $field->output();
+  }
 
      /**
       *  get property
