@@ -40,6 +40,8 @@ class SelectInput extends WaxWidget {
   }
   
   public function make_choices() {
+    print_r($this->choices);
+    return true;
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     foreach($this->choices as $option=>$value) {
