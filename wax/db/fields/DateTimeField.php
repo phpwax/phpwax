@@ -8,7 +8,7 @@
 class DateTimeField extends WaxModelField {
   
   public $null = false;
-  public $default = false;
+  public $default = "now";
   public $maxlength = false;
   public $widget = "DateInput";
   public $output_format = "Y-m-d H:i:s";
@@ -21,7 +21,9 @@ class DateTimeField extends WaxModelField {
   }
   
   public function setup() {
-    if(!$this->default) $this->default = date($this->save_format);
+    if(!$this->model->row[$this->field] && $this->default=="now") {
+      $this->model->row[$this->field]  = date($this->save_format);
+    }
   }
   
   public function output() {
