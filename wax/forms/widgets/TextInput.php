@@ -21,9 +21,7 @@ class TextInput extends WaxWidget {
   public $label_template = '<label for="%s>%s</label>';
   public $template = '<input %s />"';
   
-  public function __construct($name, WaxModel $model=null) {
-    
-  }
+  
   
   public function render() {
     $out ="";
