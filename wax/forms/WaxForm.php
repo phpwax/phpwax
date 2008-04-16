@@ -31,7 +31,6 @@ class WaxForm {
         if($el->editable) $this->elements[$column] = $widget;
       }
     }
-    print_r($this); exit;
   }
   
   public function render($el_divider = false) {
