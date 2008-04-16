@@ -20,6 +20,10 @@ class DateTimeField extends WaxModelField {
     $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
   }
   
+  public function setup() {
+    if(!$this->default) $this->default = date($this->save_format);
+  }
+  
   public function output() {
     return date($this->output_format, strtotime($this->get()));
   }
