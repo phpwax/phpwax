@@ -8,7 +8,7 @@
  **/
 class SelectInput extends WaxWidget {
 
-  public $attributes = array();
+  public $attributes = array("class"=>"input_field select_field");
   public $value = false;
   public $choices = false;
   public $blank = true;
@@ -17,7 +17,6 @@ class SelectInput extends WaxWidget {
   public $show_label = true;
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<select %s >%s</select>';
-  
   
   
   public function render() {

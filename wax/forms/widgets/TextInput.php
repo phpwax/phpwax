@@ -9,8 +9,8 @@
 class TextInput extends WaxWidget {
 
   public $attributes = array(
-    "type"=>"text"
-  
+    "type"=>"text",
+    "class"=>"input_field text_field"
   );
   public $value = false;
   public $choices = false;
