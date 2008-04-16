@@ -9,17 +9,16 @@ class WaxForm {
     
   
   //Validation & Format Options
-  public $name = "";
-  public $id = "";
-  public $action = "";
-  public $method="post";
-  public $encoding = "";
-  public $attributes = array();
+  public $attributes = array(
+    "name"=>"",
+    "id"="",
+    "action"=>"",
+    "method"=>"post",
+    "encoding"=>""
+  );
   public $submit = true;
   public $submit_text = "Submit";
-  
   public $template = '<form %s>%s</form>';
-  
   public $elements = array();
   
   
