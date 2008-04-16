@@ -44,7 +44,7 @@ class WaxForm {
     if($this->submit) {
       $submit = new SubmitInput("submit");
       $submit->attribute("value", $this->submit_value);
-      $output.= $submit->render;
+      $output.= $submit->render();
     }
     return sprintf($this->template, $this->make_attributes, $output);
   }
