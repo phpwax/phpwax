@@ -102,7 +102,7 @@ class WXDBAuthenticate
     $object = WXInflections::camelize($this->db_table, true);
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
-    $result = $user->filter(array($this->user_field=>$username, $this->password_field, $password))->first();
+    $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
     if($result) {
       $this->user_object = $result;
       $this->user_id = $result->id;
