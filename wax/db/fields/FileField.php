@@ -15,6 +15,7 @@ class FileField extends WaxModelField {
 	public $url_root = "files/";
 	//allowed extensions - array of exts, false means everythings allowed
 	public $allowed_extensions = false;
+	public $widget = "FileInput";
 	
 
 	public function __construct($column, $model, $options = array()) {	

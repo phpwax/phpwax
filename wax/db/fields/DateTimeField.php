@@ -10,6 +10,7 @@ class DateTimeField extends WaxModelField {
   public $null = false;
   public $default = false;
   public $maxlength = false;
+  public $widget = "DateInput";
 
   public function validate() {
     $this->valid_length();

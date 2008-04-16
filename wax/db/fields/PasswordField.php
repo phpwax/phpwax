@@ -9,6 +9,7 @@ class PasswordField extends CharField {
   
   public $maxlength = "32";
   public $unique = false;
+  public $widget = "PasswordInput";
   
   public function setup() {
     
