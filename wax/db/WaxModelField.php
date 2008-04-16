@@ -22,7 +22,7 @@ class WaxModelField {
   public $blank = true;
   public $label = false;
   public $help_text = false;
-  public $widget="CharField";
+  public $widget="TextInput";
   protected $model = false;
   
   public $errors = false;
