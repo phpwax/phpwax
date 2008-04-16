@@ -23,7 +23,7 @@ class SelectInput extends WaxWidget {
   public function render() {
     $out ="";
     if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
-    $out .= sprintf($this->template, $this->make_attributes());
+    $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
     return $out;
   }
   
@@ -50,6 +50,7 @@ class SelectInput extends WaxWidget {
       }
       
     }
+    return $output;
   }
   
 
