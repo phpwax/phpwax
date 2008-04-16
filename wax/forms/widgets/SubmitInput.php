@@ -12,7 +12,7 @@ class SubmitInput extends TextInput {
     "class"=>"input_field submit_field"
   );
 
-  public $label = false;
+  public $show_label = false;
 
 
 } // END class
