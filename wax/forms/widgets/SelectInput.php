@@ -40,15 +40,14 @@ class SelectInput extends WaxWidget {
   }
   
   public function make_choices() {
-    print_r($this->choices);
-    return true;
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     foreach($this->choices as $option=>$value) {
       $sel = "";
-      if($this->name == $option && $this->value==$value) $sel = 'selected="selected"';
+      if($this->name == $option && $this->value==$value) $sel = ' selected="selected"';
       $ouput .= sprintf($choice, $value, $sel, $option);
     }
+    die($output);
     return $output;
   }
   
