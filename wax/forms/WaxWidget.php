@@ -24,7 +24,7 @@ class WaxWidget {
       $this->attribute("name", "[$model->table]$name");
       $this->attribute("id", "{$model->table}_{$name}");
       $this->value = $model->{$name};
-      $field = $model->columns->[$name];
+      $field = $model->columns[$name];
       $model_field = new $field[1]($name, $model, $field[2]);
       $this->blank = $model_field->blank;
       $this->choices = $model_field->choices;
