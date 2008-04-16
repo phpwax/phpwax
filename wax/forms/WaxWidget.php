@@ -22,11 +22,11 @@ class WaxWidget {
     if($model) {
       $this->attribute("name", "[$model->table]$name");
       $this->attribute("id", "{$model->table}_{$name}");
-      $this->value = $model->$name;
-      $this->blank = $model->$blank;
-      $this->choices = $model->$choices;
-      $this->label = $model->$label;
-      $this->help_text = $model->$help_text;
+      $this->value = $model->name;
+      $this->blank = $model->blank;
+      $this->choices = $model->choices;
+      $this->label = $model->label;
+      $this->help_text = $model->help_text;
       if(!$label) $this->label = Inflections::humanize($name);
     }
   }
