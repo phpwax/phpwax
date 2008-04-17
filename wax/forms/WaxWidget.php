@@ -45,7 +45,7 @@ class WaxWidget {
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes());
     if($this->error_messages) {
-      foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $this->error_message);
+      foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $error);
     }
     return $out;
   }
