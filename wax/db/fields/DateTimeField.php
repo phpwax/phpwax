@@ -31,7 +31,7 @@ class DateTimeField extends WaxModelField {
   }
   
   public function save() {
-    $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
+    $this->model->row[$this->field]= date($this->save_format, strtotime($this->model->row[$this->field] ));    
   }
   
   
