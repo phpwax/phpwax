@@ -13,6 +13,7 @@ class DateTimeField extends WaxModelField {
   public $widget = "DateInput";
   public $output_format = "Y-m-d H:i:s";
   public $save_format = "Y-m-d H:i:s";
+  public $use_uk_date = false;
 
   public function validate() {
     $this->valid_length();
@@ -31,7 +32,12 @@ class DateTimeField extends WaxModelField {
   }
   
   public function save() {
-    $this->model->row[$this->field]= date($this->save_format, strtotime($this->model->row[$this->field] ));    
+    mktime()
+    $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
+  }
+  
+  public function uk_date_switch() {
+    
   }
   
   
