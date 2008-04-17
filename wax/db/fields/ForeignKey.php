@@ -11,12 +11,17 @@ class ForeignKey extends WaxModelField {
   public $model_name = false;
   public $widget = "SelectInput";
   public $choices = array();
+  public $identifier = false;
   
   
   public function setup() {
     if(!$this->table) $this->table = $this->field;
     if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
+    if($identifier) {
+      $link = new $this->model_name;
+      foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
+    }
   }
 
   public function validate() {
