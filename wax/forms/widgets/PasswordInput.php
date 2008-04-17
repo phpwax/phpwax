@@ -2,7 +2,7 @@
 
 
 /**
- * Text Input Widget class
+ * Password Input Widget class
  *
  * @package PHP-Wax
  **/

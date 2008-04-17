@@ -2,11 +2,11 @@
 
 
 /**
- * Text Input Widget class
+ * File Input Widget class
  *
  * @package PHP-Wax
  **/
-class DateInput extends TextInput {
+class FileInput extends TextInput {
 
   public $attributes = array(
     "type"=>"file",

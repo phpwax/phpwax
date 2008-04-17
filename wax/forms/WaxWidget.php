@@ -13,9 +13,8 @@ class WaxWidget {
   public $value = false;
   public $choices = false;
   public $blank = true;
-  public $label = false;
+  public $label = true;
   public $help_text = false;
-  public $show_label = true;
   public $label_template = '<label for="%s>%s</label>';
   public $template = '<input %s />';
   
@@ -32,14 +31,14 @@ class WaxWidget {
       $this->choices = $model_field->choices;
       $this->label = $model_field->label;
       $this->help_text = $model_field->help_text;
-      if(!$label) $this->label = Inflections::humanize($name);
+      if($label===true) $this->label = Inflections::humanize($name);
     }
   }
   
   
   public function render() {
     $out ="";
-    if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+    if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes());
     return $out;
   }
