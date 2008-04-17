@@ -2,7 +2,7 @@
 
 
 /**
- * Text Input Widget class
+ * Textarea Input Widget class
  *
  * @package PHP-Wax
  **/
@@ -14,9 +14,8 @@ class TextareaInput extends WaxWidget {
   );
   public $value = false;
   public $blank = true;
-  public $label = false;
+  public $label = true;
   public $help_text = false;
-  public $show_label = true;
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<textarea %s>%s</textarea>';
   
@@ -25,7 +24,7 @@ class TextareaInput extends WaxWidget {
   public function render() {
     $out ="";
     unset($this->attributes["value"]);
-    if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+    if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->value);
     return $out;
   }

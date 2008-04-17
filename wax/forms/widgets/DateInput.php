@@ -2,7 +2,7 @@
 
 
 /**
- * Text Input Widget class
+ * Date Input Widget class
  *
  * @package PHP-Wax
  **/
