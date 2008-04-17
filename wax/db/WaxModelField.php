@@ -20,7 +20,7 @@ class WaxModelField {
   public $choices = false;
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true;
-  public $label = false;
+  public $label = true; // Set to false to never show labels
   public $help_text = false;
   public $widget="TextInput";
   protected $model = false;
