@@ -10,6 +10,7 @@ class HasManyField extends WaxModelField {
   public $maxlength = "11";
   public $model_name = false;
   public $join_field = false;
+  public $editable = false;
   
   
   public function setup() {
