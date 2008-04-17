@@ -17,7 +17,7 @@ class DateTimeField extends WaxModelField {
   public function validate() {
     $this->valid_length();
  	  $this->valid_required();
-    $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
+    $this->valid_format("datetime", '/^([0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}|[0-9-]{4}-[0-9]{2}-[0-9]{2})$/');
   }
   
   public function setup() {
