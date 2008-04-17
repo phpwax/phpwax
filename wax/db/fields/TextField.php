@@ -8,6 +8,7 @@
 class TextField extends WaxModelField {
   
   public $maxlength = false;
+	public $widget = "TextareaInput";
   
   public function setup() {
     

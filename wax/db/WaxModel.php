@@ -106,6 +106,18 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
+  /**
+   * output_val function
+   * Gets the output value of a field,
+   * Allows transformation of data to display to user
+   * @param string $name 
+   * @return mixed
+   */
+  
+  public function output_val($name) {
+    $field = $this->get_col($name);
+    return $field->output();
+  }
 
      /**
       *  get property
@@ -141,8 +153,8 @@ class WaxModel {
       */
  	public function save() {
  	  $this->before_save();
- 	  if(!$this->validate) return false;
  	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
+ 	  if(!$this->validate) return false;
  	  if($this->primval) $res = $this->update();
  	  else $res = $this->insert();
  		$this->after_save();
@@ -232,6 +244,7 @@ class WaxModel {
 
  	public function update_attributes($array) {
     foreach($array as $k=>$v) {
+      WaxLog::log("info", "Setting $k as $v");
       $this->$k=$v;
 		}
 		return $this->save();

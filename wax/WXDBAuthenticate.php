@@ -90,8 +90,7 @@ class WXDBAuthenticate
   public function setup_user() {
     if($id = Session::get($this->session_key)) {
       $object = WXInflections::camelize($this->db_table, true);
-      $user = new $object;
-      $result = $user->find($id);
+      $result = new $object($id);
       if($result) {
         $this->user_object = $result;
         $this->user_id = $result->id;
@@ -102,9 +101,8 @@ class WXDBAuthenticate
   public function verify($username, $password) {
     $object = WXInflections::camelize($this->db_table, true);
     $user = new $object;
-    $method = "find_by_".$this->user_field."_and_".$this->password_field;
     if($this->encrypt) $password = $this->encrypt($password);
-    $result = $user->$method($username, $password);
+    $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
     if($result) {
       $this->user_object = $result;
       $this->user_id = $result->id;

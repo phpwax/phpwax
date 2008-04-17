@@ -58,7 +58,10 @@ class WaxModelField {
   public function setup() {}
   public function validate() {}
   public function save() {}
-  public function output() {}
+  
+  public function output() {
+    return $this->model->row[$this->field];
+  }
   
   protected function add_error($field, $message) {
  	  $this->errors[]=$message;

@@ -29,6 +29,7 @@ abstract class WaxDbAdapter {
       'ImageField'=>        'varchar',
       'IntegerField'=>      'int',
       'IPAddressField'=>    'varchar',
+      'PasswordField'=>     'varchar',
       'SlugField'=>         'varchar',
       'TextField'=>         'longtext',
       'TimeField'=>         'time'
@@ -84,7 +85,7 @@ abstract class WaxDbAdapter {
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
-    if($model->order) $sql.= "ORDER BY {$model->order}";
+    if($model->order) $sql.= " ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
 		//altered to include extra mysql found rows data
@@ -197,7 +198,7 @@ abstract class WaxDbAdapter {
   
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
-      WaxLog::log("info", "[DB] ".print_r($pdo_statement, 1));
+      WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();

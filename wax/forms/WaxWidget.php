@@ -21,9 +21,9 @@ class WaxWidget {
   
   public function __construct($name, WaxModel $model=null) {
     if($model) {
-      $this->attribute("name", "[$model->table]$name");
+      $this->attribute("name", "$model->table[$name]");
       $this->attribute("id", "{$model->table}_{$name}");
-      $this->value = $model->{$name};
+      $this->value = $model->output_val($name);
       $this->attribute("value", $this->value);
       
       $field = $model->columns[$name];
