@@ -72,6 +72,7 @@ class WaxModelField {
       $this->choices = array();
       foreach($choices as $key=>$choice) {
         if(is_numeric($key)) $this->choices[$choice]=$choice;
+        else $this->choices[$key]=$choice;
       }
     }
   }
