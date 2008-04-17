@@ -33,7 +33,6 @@ class WaxWidget {
       $this->choices = $model_field->choices;
       $this->label = $model_field->label;
       $this->help_text = $model_field->help_text;
-      if($this->label===true) $this->label = Inflections::humanize($name);
       if($er = $model->errors[$name]) $this->error_messages = (array)$er;
     }
   }

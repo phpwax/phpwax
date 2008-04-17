@@ -43,6 +43,7 @@ class WaxModelField {
     foreach($options as $option=>$val) $this->{$option} = $val;
     if(!$this->field) $this->field = $column;
     if(!$this->col_name) $this->col_name = $this->field;
+    if($this->label===true) $this->label = Inflections::humanize($this->field);
     $this->setup();
   }
   
