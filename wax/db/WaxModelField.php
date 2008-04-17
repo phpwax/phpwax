@@ -18,6 +18,7 @@ class WaxModelField {
   public $maxlength = false;
   public $minlength = false;
   public $choices = false;
+  public $text_choices = true; // Store choices as text in database
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true;
   public $label = true; // Set to false to never show labels
@@ -45,6 +46,7 @@ class WaxModelField {
     if(!$this->col_name) $this->col_name = $this->field;
     if($this->label===true) $this->label = Inflections::humanize($this->field);
     $this->setup();
+    $this->map_choices();
   }
   
   public function get() {
@@ -62,6 +64,16 @@ class WaxModelField {
   
   public function output() {
     return $this->model->row[$this->field];
+  }
+  
+  public function map_choices() {
+    if($this->text_choices) {
+      $choices = $this->choices;
+      $this->choices = array();
+      foreach($choices as $key=>$choice) {
+        if(is_numeric($key)) $this->choices[$choice]=$choice;
+      }
+    }
   }
   
   protected function add_error($field, $message) {
