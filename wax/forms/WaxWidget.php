@@ -62,7 +62,7 @@ class WaxWidget {
   }
   
   public function is_valid() {
-    if(count($this->error_messages)) return false;
+    if(count($this->error_messages)>0) return false;
     return true;
   }  
 
