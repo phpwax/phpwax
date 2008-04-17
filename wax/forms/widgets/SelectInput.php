@@ -20,8 +20,10 @@ class SelectInput extends WaxWidget {
   
   public function render() {
     $out ="";
+    if($this->error_message) $this->attributes["class"].=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
+    if($this->error_message) $out .= sprintf($this->error_template, $this->error_message);
     return $out;
   }
   
