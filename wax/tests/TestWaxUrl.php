@@ -85,6 +85,13 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("id"), "anyid");
     }
     
+    public function test_hyphenated_actions() {
+      $_GET["route"]="gallery-create/anyid";
+      $this->assertEqual(WaxUrl::get("controller"), "page");
+      $this->assertEqual(WaxUrl::get("action"), "gallery-create");
+      $this->assertEqual(WaxUrl::get("id"), "anyid");
+    }
+    
    
 }
 
