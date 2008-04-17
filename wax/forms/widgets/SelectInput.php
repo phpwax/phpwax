@@ -19,6 +19,7 @@ class SelectInput extends WaxWidget {
   
   
   public function render() {
+    unset($this->attributes["value"]);
     $out ="";
     if($this->error_messages) $this->attributes["class"].=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
