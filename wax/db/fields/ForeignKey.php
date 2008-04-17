@@ -9,6 +9,8 @@ class ForeignKey extends WaxModelField {
   
   public $maxlength = "11";
   public $model_name = false;
+  public $widget = "SelectInput";
+  public $choices = array();
   
   
   public function setup() {
@@ -27,10 +29,12 @@ class ForeignKey extends WaxModelField {
     return $model;
   }
   
-  public function set(WaxModel $value) {
-    $this->model->{$this->col_name} = $value->{$value->primary_key};
-    unset($this->model->{$this->field});
-    return $this->model->save();
+  public function set($value) {
+    if($value instanceof WaxModel) {
+      $this->model->{$this->col_name} = $value->{$value->primary_key};
+      unset($this->model->{$this->field});
+      return $this->model->save();
+    }
   }
   
   public function save() {

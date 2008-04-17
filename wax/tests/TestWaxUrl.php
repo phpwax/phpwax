@@ -6,6 +6,7 @@ class TestWaxUrl extends WXTestCase {
     }
     
     public function tearDown() {
+
     }
     
     public function test_basic_map() {
@@ -82,6 +83,13 @@ class TestWaxUrl extends WXTestCase {
       $_GET["route"]="gallery/anyid";
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "gallery");
+      $this->assertEqual(WaxUrl::get("id"), "anyid");
+    }
+    
+    public function test_hyphenated_actions() {
+      $_GET["route"]="gallery-create/anyid";
+      $this->assertEqual(WaxUrl::get("controller"), "page");
+      $this->assertEqual(WaxUrl::get("action"), "gallery-create");
       $this->assertEqual(WaxUrl::get("id"), "anyid");
     }
     

@@ -9,15 +9,16 @@ class WaxForm {
     
   
   //Validation & Format Options
-  public $name = "";
-  public $id = "";
-  public $action = "";
-  public $method="post";
-  public $encoding = "";
-  public $attributes = array();
-  
+  public $attributes = array(
+    "name"=>"",
+    "id"=>"",
+    "action"=>"",
+    "method"=>"post",
+    "encoding"=>"multipart/form-data"
+  );
+  public $submit = true;
+  public $submit_text = "Submit";
   public $template = '<form %s>%s</form>';
-  
   public $elements = array();
   
   
@@ -39,7 +40,12 @@ class WaxForm {
       $output.= $el->render();
       if($el_divider) $ouput.=$el_divider;
     }
-    return sprintf($this->template, $this->make_attributes, $output);
+    if($this->submit) {
+      $submit = new SubmitInput("submit");
+      $submit->attribute("value", $this->submit_text);
+      $output.= $submit->render();
+    }
+    return sprintf($this->template, $this->make_attributes(), $output);
   }
   
   public function make_attributes() {
