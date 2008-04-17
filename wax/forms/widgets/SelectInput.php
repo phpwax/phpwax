@@ -15,7 +15,7 @@ class SelectInput extends WaxWidget {
   public $label = true;
   public $help_text = false;
   public $label_template = '<label for="%s">%s</label>';
-  public $template = '<select %s >%s</select>';
+  public $template = '<select %s>%s</select>';
   
   
   public function render() {
