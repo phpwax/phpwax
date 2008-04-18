@@ -23,7 +23,7 @@ class DateTimeField extends WaxModelField {
   
   public function setup() {
     if($this->model->row[$this->field]==0 && $this->default=="now") {
-      $this->model->row[$this->field]  = date($this->save_format);
+      $this->model->row[$this->field] = date($this->save_format);
     }
   }
   
@@ -39,6 +39,8 @@ class DateTimeField extends WaxModelField {
     
   }
   
-  
+  public function before_sync() {
+    $this->default = false;
+  }
 
 } 
