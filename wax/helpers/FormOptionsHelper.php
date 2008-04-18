@@ -120,7 +120,7 @@ class FormOptionsHelper extends FormHelper {
 		$options['name']  = $this->object_name . "[" . $this->attribute_name . "]" ;
 	  $options['id']    = $this->object_name . "_" . $this->attribute_name;
 	  if($with_label) $html.= $this->make_label($with_label);
-	  $html.= $this->to_select_tag($GLOBALS['COUNTRIES'], $options);
+	  $html.= $this->options_for_select($GLOBALS['COUNTRIES'], $options);
 		return $html;
 	}
   
