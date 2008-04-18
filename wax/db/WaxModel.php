@@ -20,6 +20,7 @@ class WaxModel {
   public $row = array();
   public $columns = array();
   public $filters = array();
+	public $group_by = false;
   public $order = false;
   public $limit = false;
   public $offset = "0";
@@ -179,6 +180,10 @@ class WaxModel {
 	}
 	public function limit($limit){
 		$this->limit = $limit;
+		return $this;
+	}
+	public function group($group_by){
+		$this->group_by = $group_by;
 		return $this;
 	}
 	

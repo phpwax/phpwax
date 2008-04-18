@@ -84,7 +84,8 @@ abstract class WaxDbAdapter {
 		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
-    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
+    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
+  	if($model->group_by) $sql .= " GROUP BY {$model->group_by}";   
     if($model->order) $sql.= " ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     $stmt = $this->db->prepare($sql);
