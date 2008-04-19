@@ -12,7 +12,7 @@ class TextInput extends WaxWidget {
   public $class = "input_field text_field";
   
   public $label_template = '<label for="%s">%s</label>';
-  public $template = '<input %s />';
+  public $template = '<input %s />%s';
   
 
 
