@@ -71,7 +71,7 @@ class WaxWidget {
   public function make_attributes() {
     $res = "";
     foreach($this->allowable_attributes as $name=>$value) {
-      if($this->$name) $res.=sprintf('%s="%s" ', $name, $value);
+      if(isset($this->$name)) $res.=sprintf('%s="%s" ', $name, $value);
     }
     return $res;
   }
