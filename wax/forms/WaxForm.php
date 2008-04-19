@@ -27,7 +27,7 @@ class WaxForm {
     if($model) {
       foreach($model->columns as $column=>$options) {
         $element = $model->get_col($column);
-        $widget_name = $el->widget;
+        $widget_name = $element->widget;
         $widget = new $widget_name($column, $element);
         $this->elements[$column] = $widget;
       }
