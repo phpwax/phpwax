@@ -8,12 +8,9 @@
  **/
 class SelectInput extends WaxWidget {
 
-  public $attributes = array("class"=>"input_field select_field");
   public $value = false;
+  public $class = "input_field select_field";
   public $choices = false;
-  public $blank = true;
-  public $label = true;
-  public $help_text = false;
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<select %s>%s</select>';
   
@@ -28,19 +25,6 @@ class SelectInput extends WaxWidget {
       foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $error);
     }
     return $out;
-  }
-  
-  
-  public function attribute($name, $value) {
-    $this->attributes[$name]=$value;
-  }
-  
-  public function make_attributes() {
-    $res = "";
-    foreach($this->attributes as $name=>$value) {
-      $res.=sprintf('%s="%s" ', $name, $value);
-    }
-    return $res;
   }
   
   public function make_choices() {

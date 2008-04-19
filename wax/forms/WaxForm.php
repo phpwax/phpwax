@@ -26,12 +26,16 @@ class WaxForm {
   public function __construct(WaxModel $model = null) {
     if($model) {
       foreach($model->columns as $column=>$options) {
-        $el = $model->get_col($column);
-        $widg = $el->widget;
-        $widget = new $widg($column, $model);
-        if($el->editable) $this->elements[$column] = $widget;
+        $element = $model->get_col($column);
+        $widget_name = $el->widget;
+        $widget = new $widget_name($column, $element);
+        $this->elements[$column] = $widget;
       }
     }
+  }
+  
+  public function add_element($name, $field_type) {
+    
   }
   
   public function render($el_divider = false) {

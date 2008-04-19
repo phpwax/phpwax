@@ -12,7 +12,7 @@ class WaxModel {
   
   static public $adapter;
   static public $db_settings;
-  protected $db = false;
+  public $db = false;
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
@@ -25,6 +25,7 @@ class WaxModel {
   public $limit = false;
   public $offset = "0";
   public $errors = array();
+  public $persistent = true;
 
 	
   /**
@@ -149,15 +150,19 @@ class WaxModel {
 
 
 
-     /**
-      *  insert record to table, or update record data
-      */
+ /**
+  *  Insert record to table, or update record data
+  *  Note that this operation is only carried out if the model
+  *  is configured to be persistent.
+  */
  	public function save() {
  	  $this->before_save();
  	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
  	  if(!$this->validate) return false;
- 	  if($this->primval) $res = $this->update();
- 	  else $res = $this->insert();
+ 	  if($this->persistent) {
+ 	    if($this->primval) $res = $this->update();
+ 	    else $res = $this->insert();
+ 		}
  		$this->after_save();
  		return $res;
   }

@@ -8,10 +8,8 @@
  **/
 class HiddenInput extends TextInput {
 
-  public $attributes = array(
-    "type"=>"hidden",
-    "class"=>"input_field hidden_field"
-  );
+  public $type="hidden";
+  public $class = "input_field hidden_field";
 
 
 

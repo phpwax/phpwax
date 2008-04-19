@@ -8,11 +8,8 @@
  **/
 class FileInput extends TextInput {
 
-  public $attributes = array(
-    "type"=>"file",
-    "class"=>"input_field file_field"
-  );
-
+  public $type="file";
+  public $class = "input_field file_field";
 
 
 } // END class

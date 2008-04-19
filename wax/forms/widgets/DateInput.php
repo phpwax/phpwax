@@ -8,11 +8,9 @@
  **/
 class DateInput extends TextInput {
 
-  public $attributes = array(
-    "type"=>"text",
-    "class"=>"input_field text_field date_field"
-  );
-
+  public $type="text";
+  public $class = "input_field text_field date_field";
+  
 
 
 } // END class

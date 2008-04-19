@@ -12,6 +12,7 @@ class WaxModelField {
   public $null = true;           // Can column be null
   public $default = false;        
   public $primary_key = false;
+  public $table = false;          // Table name in the storage engine
   public $col_name;               // Actual name in the storage engine
   
   //Validation & Format Options
@@ -43,6 +44,7 @@ class WaxModelField {
     $this->model = $model;
     foreach($options as $option=>$val) $this->{$option} = $val;
     if(!$this->field) $this->field = $column;
+    if(!$this->table) $this->table = $this->model->table;
     if(!$this->col_name) $this->col_name = $this->field;
     if($this->label===true) $this->label = Inflections::humanize($this->field);
     $this->setup();
@@ -79,6 +81,15 @@ class WaxModelField {
   
   protected function add_error($field, $message) {
  	  $this->errors[]=$message;
+ 	}
+ 	
+ 	public function __get($name) {
+    if($name=="value") return $this->get();
+    return false;
+ 	}
+ 	
+ 	public function __set($name, $value) {
+    if($name=="value") $this->set($value);
  	}
  	
  	

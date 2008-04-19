@@ -7,11 +7,9 @@
  **/
 class SubmitInput extends TextInput {
 
-  public $attributes = array(
-    "type"=>"submit",
-    "class"=>"input_field submit_field"
-  );
 
+  public $type="submit";
+  public $class = "input_field submit_field";
   public $label = false;
 
 
