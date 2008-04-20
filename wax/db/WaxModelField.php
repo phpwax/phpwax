@@ -19,7 +19,7 @@ class WaxModelField {
   public $maxlength = false;
   public $minlength = false;
   public $choices = false;
-  public $text_choices = true; // Store choices as text in database
+  public $text_choices = false; // Store choices as text in database
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true;
   public $label = true; // Set to false to never show labels
