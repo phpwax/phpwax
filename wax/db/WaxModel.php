@@ -147,6 +147,14 @@ class WaxModel {
  	    $field->set($value);
     } else $this->row[$name]=$value;
   }
+  
+  /**
+   *  __toString overload
+   *  @return  primary key of class
+   */
+ 	public function __toString() {
+    return $this->{$this->primary_key};
+  }
 
 
 
