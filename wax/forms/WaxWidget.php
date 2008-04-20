@@ -14,7 +14,7 @@ class WaxWidget {
   );
 
   public $label_template = '<label for="%s>%s</label>';
-  public $template = '<input %s />';
+  public $template = '<input %s />%s';
   public $error_template = '<span class="error_message">%s</span>';
   public $bound_data = false;
   
