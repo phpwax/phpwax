@@ -66,7 +66,7 @@ class WaxWidget {
       try {
         if(isset($this->bound_data->{$value})) return $this->bound_data->{$value};
       } catch (Exception $e) {
-        return false;
+        die("What a hideous way to die");
       }
     }
   }
