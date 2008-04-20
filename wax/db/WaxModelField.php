@@ -84,10 +84,6 @@ class WaxModelField {
  	  $this->errors[]=$message;
  	}
  	
- 	public function __get($name) {
-    if($name == "value") return $this->get();
-    return false;
- 	}
  	
  	public function __set($name, $value) {
     if($name=="value") $this->set($value);
