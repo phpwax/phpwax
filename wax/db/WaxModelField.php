@@ -89,6 +89,10 @@ class WaxModelField {
     if($name=="value") $this->set($value);
  	}
  	
+ 	public function __get($value) {
+ 	  if($value =="value") return $this->get();
+ 	}
+ 	
  	
  	/**
  	 *  Default Validation Methods
