@@ -49,6 +49,7 @@ class ForeignKey extends WaxModelField {
   
   public function __get($name) {
     if($name == "value") return $this->model->{$this->model->primary_key};
+    print_r($this); exit;
  	  if($value =="name") return $this->table."[".$this->col_name."]";
     if($value =="id") return $this->table."_{$this->col_name}";
   }
