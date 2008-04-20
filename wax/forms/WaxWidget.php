@@ -63,11 +63,7 @@ class WaxWidget {
       if($value =="id") return $this->bound_data->table."_{$this->bound_data->field}";
       if($value =="value") return $this->bound_data->get();
       error_log($this->name." :: $value");
-      try {
-        if(isset($this->bound_data->{$value})) return $this->bound_data->{$value};
-      } catch (Exception $e) {
-        die("What a hideous way to die");
-      }
+      return "Hello";
     }
   }
 
