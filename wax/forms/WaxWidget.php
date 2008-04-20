@@ -58,7 +58,6 @@ class WaxWidget {
   public function __get($value) {
     if(!$this->bound_data) return false;
     if($this->bound_data instanceof WaxModelField) {
-      
       return $this->bound_data->{$value};
     }
   }
