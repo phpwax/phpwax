@@ -19,7 +19,6 @@ class WaxWidget {
   public $bound_data = false;
   
   public function __construct($name, $data=false) {
-    $this->name = $name;
     if($data) $this->bound_data = $data;
   }
   
