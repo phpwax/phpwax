@@ -48,7 +48,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function __get($name) {
-    if($name == "value") return $this->model->primval();
+    if($name == "value") return $this->model->{$this->col_name};
     return parent::__get($name);
   }
 
