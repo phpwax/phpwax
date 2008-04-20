@@ -86,8 +86,7 @@ class WaxModelField {
  	
  	public function __get($name) {
     if($name=="value") {
-      if($val = $this->get()) return $val;
-      else return ""; 
+      return "1"; 
     }
     return false;
  	}
