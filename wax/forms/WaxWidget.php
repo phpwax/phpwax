@@ -61,10 +61,10 @@ class WaxWidget {
     if($this->bound_data instanceof WaxModelField) {
       if($value =="name") return $this->bound_data->table."[{$this->bound_data->field}]";
       if($value =="id") return $this->bound_data->table."_{$this->bound_data->field}";
+      if($value =="type") return false;
       if($value =="value") return $this->bound_data->get();
       if(array_key_exists($value, get_object_vars($this->bound_data))) return $this->bound_data->{$value};
       error_log($this->name." :: $value  ::  ".print_r(get_object_vars($this->bound_data),1) );
-      return array();
       return false;
     }
   }
