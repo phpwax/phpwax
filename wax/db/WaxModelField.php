@@ -27,7 +27,7 @@ class WaxModelField {
   public $widget="TextInput";
   protected $model = false;
   
-  public $errors = false;
+  public $errors = array();
   
   public $messages = array(
     "short"=>       "%s needs to be at least %d characters",
