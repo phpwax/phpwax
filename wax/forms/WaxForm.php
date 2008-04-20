@@ -62,7 +62,7 @@ class WaxForm {
    
    public function is_valid() {
      foreach($this->elements as $el) {
-       if($el->error_messages) return false;
+       if($el->errors) return false;
      }
      return true;
    }
