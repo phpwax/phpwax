@@ -55,11 +55,11 @@ class WaxWidget {
   
   public function render() {
     $out ="";
-    if($this->error_messages) $this->class.=" error_field";
+    if($this->errors) $this->class.=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->id, $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
-    if($this->error_messages) {
-      foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $error);
+    if($this->errors) {
+      foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
     return $out;
   }
@@ -81,7 +81,7 @@ class WaxWidget {
   }
   
   public function is_valid() {
-    if(count($this->error_messages)>0) return false;
+    if(count($this->errors)>0) return false;
     return true;
   }
   

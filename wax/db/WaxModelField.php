@@ -47,6 +47,7 @@ class WaxModelField {
     if(!$this->table) $this->table = $this->model->table;
     if(!$this->col_name) $this->col_name = $this->field;
     if($this->label===true) $this->label = Inflections::humanize($this->field);
+    $this->errors = $this->model->errors[$field];
     $this->setup();
     $this->map_choices();
   }
