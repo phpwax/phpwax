@@ -64,6 +64,7 @@ class WaxWidget {
       if($value =="value") return $this->bound_data->get();
       //error_log($this->name." :: $value  ::  ".print_r(get_object_vars($this->bound_data),1) );
       if(array_key_exists($value, get_object_vars($this->bound_data))) return $this->bound_data->{$value};
+      return false;
     }
   }
 
