@@ -63,7 +63,7 @@ class WaxWidget {
       if($value =="id") return $this->bound_data->table."_{$this->bound_data->field}";
       if($value =="value") return $this->bound_data->get();
       error_log($this->name." :: $value");
-      return false;
+      if(in_array($value, get_object_vars($this->bound_data))) return $this->bound_data->{$value};
     }
   }
 
