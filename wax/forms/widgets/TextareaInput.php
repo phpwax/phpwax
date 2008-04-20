@@ -8,12 +8,11 @@
  **/
 class TextareaInput extends WaxWidget {
 
+  public $allowable_attributes = array(
+    "name", "value", "disabled", "readonly", "id", "class", "accesskey", "tabindex", "rows", "cols"
+  );
 
   public $class = "input_field textarea_field";  
-  public $value = false;
-  public $blank = true;
-  public $label = true;
-  public $help_text = false;
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<textarea %s>%s</textarea>';
   
@@ -25,6 +24,10 @@ class TextareaInput extends WaxWidget {
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->value);
     return $out;
+  }
+  
+  public function tag_content() {
+    return $this->value;
   }
 
 
