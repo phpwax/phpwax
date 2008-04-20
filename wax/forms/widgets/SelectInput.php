@@ -18,7 +18,6 @@ class SelectInput extends WaxWidget {
 
   
   public function tag_content() {
-    print_r($this); exit;
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     foreach($this->choices as $value=>$option) {
