@@ -13,9 +13,8 @@ class SelectInput extends WaxWidget {
   public $template = '<select %s>%s</select>';
   
   
-  public function render() {
-    $this->tag_content = $this->make_choices();
-    return parent::render();
+  public function tag_content() {
+    return $this->make_choices();
   }
   
   public function make_choices() {
