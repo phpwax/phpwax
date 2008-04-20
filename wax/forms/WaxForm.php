@@ -41,7 +41,7 @@ class WaxForm {
   public function render($el_divider = false) {
     $output .="";
     foreach($this->elements as $el) {
-      $output.= $el->render();
+      if($el->editable) $output.= $el->render();
       if($el_divider) $ouput.=$el_divider;
     }
     if($this->submit) {
