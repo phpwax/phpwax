@@ -41,7 +41,6 @@ class WaxForm {
   public function render($el_divider = false) {
     $output .="";
     foreach($this->elements as $el) {
-      echo "Starting ".$el->field."<br />";
       if($el->editable) $output.= $el->render();
       if($el_divider) $ouput.=$el_divider;
     }
