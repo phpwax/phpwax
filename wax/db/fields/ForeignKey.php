@@ -16,13 +16,13 @@ class ForeignKey extends WaxModelField {
   
   public function setup() {
     if(!$this->table) $this->table = $this->field;
-    if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
     if($this->identifier) {
       $link = new $this->model_name;
       $this->choices[""]="Select";
       foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     }
+    $this->col_name = $this->model_name."_".$link->primary_key;
   }
 
   public function validate() {
