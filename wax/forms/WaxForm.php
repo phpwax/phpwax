@@ -66,6 +66,10 @@ class WaxForm {
      }
      return true;
    }
+   
+   public function __get($name) {
+     if(array_key_exists($name, $this->elements)) return $this->elements[$name];
+   } 
 
   
 

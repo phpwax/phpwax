@@ -24,6 +24,7 @@ class WaxModel {
   public $order = false;
   public $limit = false;
   public $offset = "0";
+  public $sql = false;
   public $errors = array();
   public $persistent = true;
 
@@ -198,6 +199,10 @@ class WaxModel {
 	public function group($group_by){
 		$this->group_by = $group_by;
 		return $this;
+	}
+	public function sql($query) {
+	  $this->sql = $query;
+	  return $this;
 	}
 	
 	//take the page number, number to show per page, return paginated record set..
