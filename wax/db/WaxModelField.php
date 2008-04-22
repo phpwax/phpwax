@@ -66,7 +66,7 @@ class WaxModelField {
   public function save() {}
   
   public function output() {
-    return $this->model->row[$this->field];
+    return $this->get();
   }
   
   public function map_choices() {
@@ -90,7 +90,7 @@ class WaxModelField {
  	}
  	
  	public function __get($value) {
- 	  if($value =="value") return $this->get();
+ 	  if($value =="value") return $this->output();
  	  if($value =="name") return $this->table."[".$this->col_name."]";
     if($value =="id") return $this->table."_{$this->col_name}";
  	}
