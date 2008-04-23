@@ -69,7 +69,11 @@ class WaxForm {
    
    public function __get($name) {
      if(array_key_exists($name, $this->elements)) return $this->elements[$name];
-   } 
+   }
+   
+   public function __set($name, $value) {
+     if(class_exists($value)) $this->elements[$name] = new $value;
+   }
 
   
 

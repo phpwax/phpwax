@@ -18,6 +18,7 @@ class WaxWidget {
   public $error_template = '<span class="error_message">%s</span>';
   public $bound_data = false;
   
+  
   public function __construct($name, $data=false) {
     if($data) $this->bound_data = $data;
   }
@@ -60,6 +61,7 @@ class WaxWidget {
     if($this->bound_data instanceof WaxModelField) {
       return $this->bound_data->{$value};
     }
+    if(is_array($this->bound_data)) return $this->bound_data[$value];
   }
 
 
