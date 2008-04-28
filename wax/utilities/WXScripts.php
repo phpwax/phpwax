@@ -25,7 +25,7 @@ class WXScripts {
   }
   
   protected function app_setup() {
-    if(!defined("ENV")) define("ENV", "development");
+    //if(!defined("ENV")) define("ENV", "development");
     Autoloader::run_application(ENV, false);
   }
   
@@ -206,6 +206,7 @@ class WXScripts {
   }
   
   public function syncdb($dir=false) {
+    if($dir[1] && ($dir[1]=="test" || $dir[1] == "production")) define("ENV", $dir[1]);
     $this->app_setup();
     if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
     else Autoloader::include_dir(MODEL_DIR, true);
