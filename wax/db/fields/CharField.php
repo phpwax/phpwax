@@ -25,7 +25,7 @@ class CharField extends WaxModelField {
       $model_name = get_class($this->model);
       $model = new $model_name();
       //checks if the id in the database is the same as the id of the current row (will also pass if there's no entry in the database)
-      if($model->filter(array($this->field => $model->{$this->field}))->first()->id != $this->model->id){
+      if($res = $model->filter(array($this->field => $model->{$this->model->field}))->first()->id && $res->id != $this->model->id){
         $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
       }
     }
