@@ -90,6 +90,7 @@ class TestWaxModelField extends WXTestCase {
 			//check that you can change the unique value of a model
       $model1->set_attributes($this->get_fixture("user2"));
 			$model1 = $model1->save();
+			$this->assertFalse(count($model2->errors));
     }
     
     public function test_foreign_key() {
