@@ -20,15 +20,14 @@ class CharField extends WaxModelField {
  	  $this->valid_unique();
   }
 
-  protected function valid_unique() {
-    if($this->unique){
-      $model_name = get_class($this->model);
-      $model = new $model_name();
-      //checks if the id in the database is the same as the id of the current row (will also pass if there's no entry in the database)
-      if($res = $model->filter(array($this->field => $model->{$this->model->field}))->first()->id && $res->id != $this->model->id){
-        $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
-      }
-    }
+	protected function valid_unique() {
+		if($this->unique){
+			$current_value = $this->model->{$this->col_name};
+			$primary = $this->model->primary_key;
+			//find anything that matches this column value, make sure primay key is not this one
+			$present = $this->model->filter("`".$this->col_name."`='".$current_value."'")->filter("`".$primary."` <> '".$this->model->$primary."'")->all();			
+			if($present->count() > 0) $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));	
+		}
   }
 
 }

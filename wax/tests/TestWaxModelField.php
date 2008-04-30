@@ -5,6 +5,13 @@ class ExampleFile extends WaxModel {
     $this->define("filename", "FileField", array("maxlength"=>255));
   }
 }
+class ExampleUnique extends WaxModel {
+  public function setup() {
+    $this->define("username", "CharField", array("maxlength"=>40, "unique" => true));
+    $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
+    $this->define("email", "CharField", array("maxlength"=>255));
+  }
+}
 class ExampleFileField extends WaxModel {
   
   public function setup() {
@@ -69,10 +76,20 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function test_validate_unique() {
-      $this->model->define("username", "CharField", array("unique" => true));
-      $model1 = $this->model->create($this->get_fixture("user1"));
-      $model2 = $this->model->set_attributes($this->get_fixture("user1"));
-      $this->assertFalse($model2->validate());
+			$model1 = new ExampleUnique();
+			$model1->syncdb();
+			$model1->delete();
+			//check that duplicates are found and not saved
+      $model1->set_attributes($this->get_fixture("user1"));
+			$model1 = $model1->save();
+			$this->assertFalse(count($model1->errors));
+			$model2 = new ExampleUnique();
+      $model2->set_attributes($this->get_fixture("user1"));
+			$model2 = $model2->save();
+			$this->assertFalse(count($model2->errors));
+			//check that you can change the unique value of a model
+      $model1->set_attributes($this->get_fixture("user2"));
+			$model1 = $model1->save();
     }
     
     public function test_foreign_key() {
