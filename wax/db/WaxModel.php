@@ -308,6 +308,20 @@ class WaxModel {
   }
 
 
+  /**
+   * Maintains Backward compatibility 
+   *
+   * @param array $options 
+   * @return WaxRecordset
+   */
+  
+  public function find_all($options=array()) {
+    if($options["conditions"]) $this->filter($options["conditions"]);
+    if($options["limit"]) $this->limit=$options["limit"];
+    if($options["order"]) $this->order = $options["order"];
+    return $this->all();
+  }
+
 
  	public function __call( $func, $args ) {
  	  return array();
