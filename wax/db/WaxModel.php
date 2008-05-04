@@ -319,6 +319,7 @@ class WaxModel {
     if($options["conditions"]) $this->filter($options["conditions"]);
     if($options["limit"]) $this->limit=$options["limit"];
     if($options["order"]) $this->order = $options["order"];
+    if($options["page"] && $options["per_page"]) return $this->page($options["page"], $options["per_page"]);
     return $this->all();
   }
 
@@ -340,23 +341,17 @@ class WaxModel {
 		$func = WXInflections::underscore($func);
 	  $finder = explode("by", $func);
 		$what=explode("and", $finder[1]);
-		foreach($what as $key=>$val) {
-		  $what[$key]=rtrim(ltrim($val, "_"), "_");
-		}
+		foreach($what as $key=>$val) $what[$key]=rtrim(ltrim($val, "_"), "_");
+
     if( $args ) {
-      if(count($what)==2) {
-        $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
-			}else{
-			  $this->filter(array($what[0]=>$args[0]));
-			}
+      if(count($what)==2) $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
+			else $this->filter(array($what[0]=>$args[0]));
+
 			if(is_array($args[1])) $params = $args[1];
 			elseif(is_array($args[2])) $params = $args[2];
 			
-			if($finder[0]=="find_all_") {
-        return $this->find_all($params);
-      } else {
-        return $this->find($params);
-      }
+			if($finder[0]=="find_all_") return $this->find_all($params);
+      else return $this->find($params);
     }
 	}
 
