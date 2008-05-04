@@ -92,6 +92,7 @@ abstract class WXControllerBase
 	
 	protected function param($param) {
 	  //if($param=="id") return $this->route_array[0];
+	  return Request::get($param);
 	  if(isset($this->route_array[$param])) return addslashes($this->route_array[$param]);
 	  if(isset($_GET[$param])) return addslashes($_GET[$param]);
 	  return false;
