@@ -322,6 +322,20 @@ class WaxModel {
     return $this->all();
   }
 
+  /**
+   * Maintains Backward compatibility 
+   *
+   * @param array $options 
+   * @return WaxModel
+   */
+  
+  public function find($options=array()) {
+    if($options["conditions"]) $this->filter($options["conditions"]);
+    if($options["limit"]) $this->limit=$options["limit"];
+    if($options["order"]) $this->order = $options["order"];
+    return $this->first();
+  }
+
 
  	public function __call( $func, $args ) {
  	  return array();
