@@ -204,7 +204,7 @@ abstract class WXControllerBase
   public function execute_request() {
 	  $this->controller = WaxUrl::get("controller");    
 	  $this->action = WaxUrl::get("action");
-	  $this->route_array = $_GET;
+	  $this->route_array = explode("/", $_GET["route"]);
 	  if(strpos($this->action, ".")) {
 	    $this->use_format = substr(strstr($this->action, "."),1);
 	    $this->action = substr($this->action,0,strpos($this->action,"."));
