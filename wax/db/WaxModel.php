@@ -335,14 +335,34 @@ class WaxModel {
     if($options["order"]) $this->order = $options["order"];
     return $this->first();
   }
+  
+  public function dynamic_finders($func, $args) {
+		$func = WXInflections::underscore($func);
+	  $finder = explode("by", $func);
+		$what=explode("and", $finder[1]);
+		foreach($what as $key=>$val) {
+		  $what[$key]=rtrim(ltrim($val, "_"), "_");
+		}
+    if( $args ) {
+      if(count($what)==2) {
+        $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
+			}else{
+			  $this->filter(array($what[0]=>$args[0]));
+			}
+			if(is_array($args[1])) $params = $args[1];
+			elseif(is_array($args[2])) $params = $args[2];
+			
+			if($finder[0]=="find_all_") {
+        return $this->find_all($params);
+      } else {
+        return $this->find($params);
+      }
+    }
+	}
 
 
  	public function __call( $func, $args ) {
- 	  return array();
- 	  $function = explode("_", $func);
- 		if(array_key_exists($function[1], $this->has_many_throughs) && count($function)==2) {
- 			return $this->has_many_methods($function[0], $function[1], $args);
- 		} else return $this->dynamic_finders($func, $args);
+ 	  return $this->dynamic_finders($func, $args);
   }
    
   public function __clone() {
