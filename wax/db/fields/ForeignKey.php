@@ -17,8 +17,8 @@ class ForeignKey extends WaxModelField {
   public function setup() {
     if(!$this->table) $this->table = $this->field;
     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
+    $link = new $this->model_name;
     if($this->identifier) {
-      $link = new $this->model_name;
       $this->choices[""]="Select";
       foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     }
