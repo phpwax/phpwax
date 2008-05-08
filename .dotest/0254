@@ -1,0 +1,272 @@
+From af8dc8c75a525ca4aff0448476d3f41d98f5fdb8 Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Wed, 9 Apr 2008 14:41:10 +0100
+Subject: order function
+
+---
+ wax/db/WaxModel.php                          |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
+ mode change 100755 => 100644 skel/app/config/environment.php
+ mode change 100755 => 100644 skel/app/controller/PageController.php
+ mode change 100755 => 100644 skel/app/view/layouts/application.html
+ mode change 100755 => 100644 skel/app/view/page/index.html
+ mode change 100755 => 100644 skel/capfile
+ mode change 100755 => 100644 skel/public/.htaccess
+ mode change 100755 => 100644 skel/public/index.php
+ mode change 100755 => 100644 skel/public/stylesheets/core.css
+ mode change 100755 => 100644 skel/script/syncdb
+ mode change 100755 => 100644 system/phpwax
+ mode change 100644 => 100755 wax/AutoLoader.php
+ mode change 100644 => 100755 wax/WXApplication.php
+ mode change 100644 => 100755 wax/WXDBAuthenticate.php
+ mode change 100644 => 100755 wax/WXForm.php
+ mode change 100644 => 100755 wax/WXSearch.php
+ mode change 100755 => 100644 wax/db/WaxDbAdapter.php
+ mode change 100755 => 100644 wax/db/WaxModel.php
+ mode change 100755 => 100644 wax/db/WaxModelAssociation.php
+ mode change 100755 => 100644 wax/db/WaxModelField.php
+ mode change 100755 => 100644 wax/db/WaxModelJoin.php
+ mode change 100755 => 100644 wax/db/WaxMysqlAdapter.php
+ mode change 100755 => 100644 wax/db/WaxPaginatedRecordset.php
+ mode change 100755 => 100644 wax/db/WaxRecordset.php
+ mode change 100755 => 100644 wax/db/deprecated/WXMigrate.php
+ mode change 100755 => 100644 wax/db/deprecated/WXTreeRecord.php
+ mode change 100755 => 100644 wax/db/deprecated/WXValidations.php
+ mode change 100755 => 100644 wax/db/fields/AutoField.php
+ mode change 100755 => 100644 wax/db/fields/BooleanField.php
+ mode change 100755 => 100644 wax/db/fields/CharField.php
+ mode change 100755 => 100644 wax/db/fields/DateTimeField.php
+ mode change 100755 => 100644 wax/db/fields/EmailField.php
+ mode change 100755 => 100644 wax/db/fields/FileField.php
+ mode change 100755 => 100644 wax/db/fields/ForeignKey.php
+ mode change 100755 => 100644 wax/db/fields/HasManyField.php
+ mode change 100755 => 100644 wax/db/fields/IntegerField.php
+ mode change 100755 => 100644 wax/db/fields/ManyToManyField.php
+ mode change 100755 => 100644 wax/db/fields/TextField.php
+ mode change 100755 => 100644 wax/dispatch/WaxUrl.php
+ mode change 100755 => 100644 wax/exceptions/WXRoutingException.php
+ mode change 100755 => 100644 wax/filter/WaxFilter.php
+ mode change 100755 => 100644 wax/helpers/AssetTagHelper.php
+ mode change 100755 => 100644 wax/helpers/FormHelper.php
+ mode change 100755 => 100644 wax/helpers/FormOptionsHelper.php
+ mode change 100755 => 100644 wax/helpers/FormTagHelper.php
+ mode change 100755 => 100644 wax/helpers/UrlHelper.php
+ mode change 100755 => 100644 wax/testing/WXTestCase.php
+ mode change 100755 => 100644 wax/tests/TestWXDBAuthenticate.php
+ mode change 100755 => 100644 wax/tests/TestWXEmail.php
+ mode change 100755 => 100644 wax/tests/TestWXInflections.php
+ mode change 100755 => 100644 wax/tests/TestWXTreeRecord.php
+ mode change 100755 => 100644 wax/tests/TestWaxModel.php
+ mode change 100755 => 100644 wax/tests/TestWaxModelField.php
+ mode change 100755 => 100644 wax/tests/TestWaxUrl.php
+ mode change 100755 => 100644 wax/utilities/Config.php
+ mode change 100755 => 100644 wax/utilities/Inflections.php
+ mode change 100755 => 100644 wax/utilities/WaxLog.php
+ mode change 100755 => 100644 wax/utilities/deprecated/WXConfiguration.php
+ mode change 100755 => 100644 wax/utilities/deprecated/WXInflections.php
+
+diff --git a/skel/app/config/environment.php b/skel/app/config/environment.php
+old mode 100755
+new mode 100644
+diff --git a/skel/app/controller/PageController.php b/skel/app/controller/PageController.php
+old mode 100755
+new mode 100644
+diff --git a/skel/app/view/layouts/application.html b/skel/app/view/layouts/application.html
+old mode 100755
+new mode 100644
+diff --git a/skel/app/view/page/index.html b/skel/app/view/page/index.html
+old mode 100755
+new mode 100644
+diff --git a/skel/capfile b/skel/capfile
+old mode 100755
+new mode 100644
+diff --git a/skel/public/.htaccess b/skel/public/.htaccess
+old mode 100755
+new mode 100644
+diff --git a/skel/public/index.php b/skel/public/index.php
+old mode 100755
+new mode 100644
+diff --git a/skel/public/stylesheets/core.css b/skel/public/stylesheets/core.css
+old mode 100755
+new mode 100644
+diff --git a/skel/script/syncdb b/skel/script/syncdb
+old mode 100755
+new mode 100644
+diff --git a/system/phpwax b/system/phpwax
+old mode 100755
+new mode 100644
+diff --git a/wax/AutoLoader.php b/wax/AutoLoader.php
+old mode 100644
+new mode 100755
+diff --git a/wax/WXApplication.php b/wax/WXApplication.php
+old mode 100644
+new mode 100755
+diff --git a/wax/WXDBAuthenticate.php b/wax/WXDBAuthenticate.php
+old mode 100644
+new mode 100755
+diff --git a/wax/WXForm.php b/wax/WXForm.php
+old mode 100644
+new mode 100755
+diff --git a/wax/WXSearch.php b/wax/WXSearch.php
+old mode 100644
+new mode 100755
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+old mode 100755
+new mode 100644
+index 50f8932f3347e28c146df67f88f0e67e5f413eb6..e47cd9a3a57e74443926977dc1d44b0f19b7111f
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -158,7 +158,10 @@ class WaxModel {
+     return $res;
+   }
+ 
+- 
++ 	public function order($order_by){
++		$this->order = $order_by;
++		return $this;
++	}
+   public function update( $id_list = array() ) {
+     $this->before_update();
+     $res = $this->db->update($this);
+@@ -197,11 +200,6 @@ class WaxModel {
+  	  return new WaxRecordset($this, $res);
+  	}
+  	
+-	public function order($order_by){
+-		$this->order = $order_by;
+-		return $this;
+-	}
+-
+  	/**
+    * Select and return single row data
+    * @return WaxModel Object
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxModelJoin.php b/wax/db/WaxModelJoin.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxMysqlAdapter.php b/wax/db/WaxMysqlAdapter.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxPaginatedRecordset.php b/wax/db/WaxPaginatedRecordset.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/WaxRecordset.php b/wax/db/WaxRecordset.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/deprecated/WXMigrate.php b/wax/db/deprecated/WXMigrate.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/deprecated/WXTreeRecord.php b/wax/db/deprecated/WXTreeRecord.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/deprecated/WXValidations.php b/wax/db/deprecated/WXValidations.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/AutoField.php b/wax/db/fields/AutoField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/BooleanField.php b/wax/db/fields/BooleanField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/CharField.php b/wax/db/fields/CharField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/EmailField.php b/wax/db/fields/EmailField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/FileField.php b/wax/db/fields/FileField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/HasManyField.php b/wax/db/fields/HasManyField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/IntegerField.php b/wax/db/fields/IntegerField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/db/fields/TextField.php b/wax/db/fields/TextField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+old mode 100755
+new mode 100644
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+old mode 100755
+new mode 100644
+diff --git a/wax/filter/WaxFilter.php b/wax/filter/WaxFilter.php
+old mode 100755
+new mode 100644
+diff --git a/wax/helpers/AssetTagHelper.php b/wax/helpers/AssetTagHelper.php
+old mode 100755
+new mode 100644
+diff --git a/wax/helpers/FormHelper.php b/wax/helpers/FormHelper.php
+old mode 100755
+new mode 100644
+diff --git a/wax/helpers/FormOptionsHelper.php b/wax/helpers/FormOptionsHelper.php
+old mode 100755
+new mode 100644
+diff --git a/wax/helpers/FormTagHelper.php b/wax/helpers/FormTagHelper.php
+old mode 100755
+new mode 100644
+diff --git a/wax/helpers/UrlHelper.php b/wax/helpers/UrlHelper.php
+old mode 100755
+new mode 100644
+diff --git a/wax/testing/WXTestCase.php b/wax/testing/WXTestCase.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWXDBAuthenticate.php b/wax/tests/TestWXDBAuthenticate.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWXEmail.php b/wax/tests/TestWXEmail.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWXInflections.php b/wax/tests/TestWXInflections.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWXTreeRecord.php b/wax/tests/TestWXTreeRecord.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWaxModel.php b/wax/tests/TestWaxModel.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+old mode 100755
+new mode 100644
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+old mode 100755
+new mode 100644
+diff --git a/wax/utilities/Config.php b/wax/utilities/Config.php
+old mode 100755
+new mode 100644
+diff --git a/wax/utilities/Inflections.php b/wax/utilities/Inflections.php
+old mode 100755
+new mode 100644
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+old mode 100755
+new mode 100644
+diff --git a/wax/utilities/deprecated/WXConfiguration.php b/wax/utilities/deprecated/WXConfiguration.php
+old mode 100755
+new mode 100644
+diff --git a/wax/utilities/deprecated/WXInflections.php b/wax/utilities/deprecated/WXInflections.php
+old mode 100755
+new mode 100644
+-- 
+1.5.4
+
+

@@ -1,0 +1,42 @@
+From 949779c595af61ccdb2ce22dd90639865a0412b4 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Mon, 14 Apr 2008 22:54:14 +0100
+Subject: Added raw query functionality to WaxModel
+
+---
+ wax/db/WaxDbAdapter.php     |    2 +-
+ wax/utilities/WXScripts.php |    2 --
+ 2 files changed, 1 insertions(+), 3 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index cf5986d6b3ecfb1d9db387e4d21117fe3cf5fe96..e326101af049e99a2bfb0557e5fd7465d89fa9cc 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -208,7 +208,7 @@ abstract class WaxDbAdapter {
+   
+   public function query($query) {
+     $stmt = $this->db->prepare($sql);
+-    if($res = $this->exec($stmt)) return $res->fetchAll(PDO::FETCH_ASSOC);
++    if($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     return false;
+   }
+   
+diff --git a/wax/utilities/WXScripts.php b/wax/utilities/WXScripts.php
+index 4595007f66d1c68b835e1425d63986b0c3a9aae8..fbe4e843d67cb8fc0bd2e24ce2972d71fb01ef91 100755
+--- a/wax/utilities/WXScripts.php
++++ b/wax/utilities/WXScripts.php
+@@ -209,10 +209,8 @@ class WXScripts {
+     $this->app_setup();
+     if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
+     else Autoloader::include_dir(MODEL_DIR, true);
+-    
+     foreach(get_declared_classes() as $class) {
+       if(is_subclass_of($class, "WaxModel")) {
+-        $this->add_output("Loading model $class");
+         $class_obj = new $class;
+         $output = $class_obj->syncdb();
+         $this->add_output($output);
+-- 
+1.5.4
+
+

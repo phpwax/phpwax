@@ -1,0 +1,28 @@
+From 4d14b89970203cf58f43e01f2c74943716d36165 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 13:53:17 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/db/WaxModelAssociation.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 9bdeba8ddb3470cc600e943bc176be8682e070fb..63de12a21a84aa13d8b72d290d038068559b7953 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -23,9 +23,8 @@ class WaxModelAssociation extends WaxRecordset {
+   
+   
+   public function __call($method, $args) {
+-    error_log($method);
+     error_log($args);
+-    return $this->model->get_col($this->owner_field)->$method($args);
++    return call_user_func(array($this->model->get_col($this->owner_field), $method), $args);
+   }
+ 
+   
+-- 
+1.5.4
+
+

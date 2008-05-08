@@ -1,0 +1,52 @@
+From c0147e132d4199fe31f74a5d3904f3d85fcf08bc Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 14:14:59 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/db/WaxModelField.php          |    2 +-
+ wax/db/fields/BooleanField.php    |    1 -
+ wax/forms/widgets/SelectInput.php |    1 -
+ 3 files changed, 1 insertions(+), 3 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 32a83546e5b95e7a25568157986ae2ffa44f08c8..f838ce6d2269722bef4faa37383d204cd4039b96 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -19,7 +19,7 @@ class WaxModelField {
+   public $maxlength = false;
+   public $minlength = false;
+   public $choices = false;
+-  public $text_choices = true; // Store choices as text in database
++  public $text_choices = false; // Store choices as text in database
+   public $editable = true; // Only editable options will be displayed in forms
+   public $blank = true;
+   public $label = true; // Set to false to never show labels
+diff --git a/wax/db/fields/BooleanField.php b/wax/db/fields/BooleanField.php
+index d728967c00175066408c4f22cc08bcc998e13bdd..9f119fb969cc0f08caf67b73d0a93811766c2ce2 100644
+--- a/wax/db/fields/BooleanField.php
++++ b/wax/db/fields/BooleanField.php
+@@ -10,7 +10,6 @@ class BooleanField extends WaxModelField {
+   public $null = false;
+   public $default = 0;
+   public $maxlength = false;
+-  public $text_choices = false;
+   public $choices = array(0 => "No", 1 => "Yes");
+   public $widget = "SelectInput";
+   
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 77e7dad51eeea8b2684837c0735bb3652fa32496..2172aa84d4abe8e147f383818cbb803fb807fe33 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -18,7 +18,6 @@ class SelectInput extends WaxWidget {
+ 
+   
+   public function tag_content() {
+-    print_r($this->choices); exit;
+     $output = "";
+     $choice = '<option value="%s"%s>%s</option>';
+     foreach($this->choices as $value=>$option) {
+-- 
+1.5.4
+
+

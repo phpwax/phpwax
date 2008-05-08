@@ -1,0 +1,97 @@
+From 4306b8551471d4fa8299c694d6db399d896e5826 Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Wed, 9 Apr 2008 17:10:59 +0100
+Subject: WaxAssociation defers to WaxModelField which defers to WaxModel to mirror the behaviour in a WaxRecordSet
+
+---
+ wax/db/fields/HasManyField.php    |    9 ++++++++-
+ wax/db/fields/ManyToManyField.php |   12 +++++++++++-
+ wax/tests/TestWaxModelField.php   |    9 +++++++--
+ 3 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/wax/db/fields/HasManyField.php b/wax/db/fields/HasManyField.php
+index 2154e4ff2c57b2b0fc54b726e9767ce81cb0133a..9f629d163d97f343a036cfcbf8d388fba527bc3b 100644
+--- a/wax/db/fields/HasManyField.php
++++ b/wax/db/fields/HasManyField.php
+@@ -25,7 +25,6 @@ class HasManyField extends WaxModelField {
+   
+   public function get() {
+     $model = new $this->model_name();
+-    //return $model->filter(array($this->join_field=>$this->model->primval))->all();
+     return new WaxModelAssociation($model->filter(array($this->join_field=>$this->model->primval) ) , $this->model, $this->field);
+   }
+   
+@@ -65,4 +64,12 @@ class HasManyField extends WaxModelField {
+     $output .= parent::before_sync();
+     return $output;
+   }
++  
++  public function __call($method, $args) {
++    $model = new $this->model_name();
++    $model->filter(array($this->join_field=>$this->model->primval));
++
++    return call_user_func_array(array($model, $method), $args);
++  }
++
+ } 
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index 3314f524cc58ff2c7ccbfb509f074e34f47ec168..84fe5b8bb89a5272454002587db76456e0e21d47 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -40,7 +40,7 @@ class ManyToManyField extends WaxModelField {
+     $links = new $this->hasmany_model;
+     if(!$vals->count()) return new WaxRecordset($this->model);
+     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
+-    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->model, $this->field);
++    return new WaxModelAssociation($links->filter("(".join(" OR ", $filters).")"), $this->model, $this->field);
+   }
+   
+   public function set($value) {
+@@ -92,4 +92,14 @@ class ManyToManyField extends WaxModelField {
+     return $model->table."_".$model->primary_key;
+   }
+ 
++  public function __call($method, $args) {
++    $vals = $this->join_model->all();
++    $links = new $this->hasmany_model;
++    if(!$vals->count()) return new WaxRecordset($this->model);
++    foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
++    $links->filter("(".join(" OR ", $filters).")");
++
++    return call_user_func_array(array($links, $method), $args);
++  }
++
+ } 
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 598b3df845af65150f6419589619d71936423a32..c177c8ab6ac7e8ed96595e94bebe42c2f51e0a6e 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -93,10 +93,12 @@ class TestWaxModelField extends WXTestCase {
+       $editor->examples = $model;
+       $editor->examples = $model2;
+       $this->assertEqual($editor->examples->count(), 2);
++      $this->assertEqual($editor->examples->filter(array("email" => "test1@test.com"))->all()->count(), 1);
++      $model3 = $this->model->create($this->get_fixture("user3"));
++      $this->assertEqual($editor->examples->filter(array("email" => "test3@test.com"))->all()->count(), 0);
+       $editor->examples->unlink($this->model->all());
+       $this->assertEqual($editor->examples->count(), 0);
+-      $model2 = $this->model->create($this->get_fixture("user3"));
+-      $editor->examples = $model2;
++      $editor->examples = $model3;
+       $this->assertEqual($editor->examples->count(), 1);
+     }
+     
+@@ -111,6 +113,9 @@ class TestWaxModelField extends WXTestCase {
+       $this->assertIsA($model->properties[0], "ExampleProperty");
+       $this->assertIsA($model->properties[0]->examples[0], "Example");
+       $this->assertEqual($model->properties->count(), 2);
++      $this->assertEqual($model->properties->filter(array("name" => "Property 1"))->all()->count(), 1);
++      $prop3 = $props->create(array("name"=>"Property 3"));
++      $this->assertEqual($model->properties->filter(array("name" => "Property 3"))->all()->count(), 0);
+       $model->properties->unlink($prop1);
+       $this->assertEqual($model->properties->count(), 1);
+       $model->properties = $prop1;
+-- 
+1.5.4
+
+

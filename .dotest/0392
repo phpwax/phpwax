@@ -1,0 +1,26 @@
+From d1cd5a2ec5fab50328fe53e3b885760bcf1f96ec Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 11 Apr 2008 12:37:58 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/helpers/FormOptionsHelper.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/helpers/FormOptionsHelper.php b/wax/helpers/FormOptionsHelper.php
+index 0f71dc1110777e490bafc0b6a8c8ba015b641d59..242c377a6e44c892f27dacae5cf3c8a0694b2dea 100644
+--- a/wax/helpers/FormOptionsHelper.php
++++ b/wax/helpers/FormOptionsHelper.php
+@@ -201,7 +201,7 @@ class FormOptionsHelper extends FormHelper {
+       $datetime_markup = $this->make_date_select($shared_id)."&nbsp;&nbsp;&nbsp;";
+       $datetime_markup .= $this->make_time_select($shared_id);
+     }
+-    $output .= javascript_tag("function {$shared_id}_set_date() { 
++    $output .= content_tag("script","function {$shared_id}_set_date() { 
+       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + 
+       '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value
+       + ' ' + document.getElementById('{$shared_id}_hour').value + ':' + document.getElementById('{$shared_id}_minute').value+':00';
+-- 
+1.5.4
+
+

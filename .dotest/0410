@@ -1,0 +1,25 @@
+From 699d0520c08a09f5a452159821b97711eac28c71 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Mon, 14 Apr 2008 16:47:34 +0100
+Subject: Added multiple directory support for sync_db script
+
+---
+ wax/utilities/WXScripts.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/utilities/WXScripts.php b/wax/utilities/WXScripts.php
+index 07baf2ccc36bf615269554de23487b169ad4012a..1cfce6dc39710cb3660cc0a06049aa89a24d1716 100755
+--- a/wax/utilities/WXScripts.php
++++ b/wax/utilities/WXScripts.php
+@@ -155,6 +155,7 @@ class WXScripts {
+     if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
+     $this->app_setup();
+     $syncdir = PLUGIN_DIR.$dir."lib/model";
++    $this->add_output("Running sync from ".$syncdir);
+     $this->syncdb($syncdir);
+     $this->add_output("Plugin database has been synchronised");
+   }
+-- 
+1.5.4
+
+

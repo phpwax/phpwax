@@ -1,0 +1,40 @@
+From f4e840dc4e9513a079157419b1ec360321305ff1 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 12:02:18 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/db/WaxModel.php                  |    3 +--
+ wax/db/deprecated/WXActiveRecord.php |    1 +
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index d548d95c9d92d4d99c1ddaba82b92c647eea4f29..0aab46887ae206cf0cbd1214fc0a9b85eec44be3 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -33,8 +33,7 @@ class WaxModel {
+    *                          or constraints (if array) but param['pdo'] is PDO instance
+    */
+  	function __construct($params=null) {
+- 		$this->db = new self::$adapter(self::$db_settings);
+- 		if(! $this->db ) {
++ 		if(!$this->db = new self::$adapter(self::$db_settings)) {
+     	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+     }
+  		$class_name =  get_class($this) ;
+diff --git a/wax/db/deprecated/WXActiveRecord.php b/wax/db/deprecated/WXActiveRecord.php
+index 423fa025e59d8071364afdc206119b3362cbd17c..655c5341614966f604914dd729a643e7c66e410e 100755
+--- a/wax/db/deprecated/WXActiveRecord.php
++++ b/wax/db/deprecated/WXActiveRecord.php
+@@ -87,6 +87,7 @@ class WXActiveRecord extends WXValidations implements Iterator
+ 		
+   		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+   		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
++  		print_r($pdo); exit;
+   		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+       	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+       }
+-- 
+1.5.4
+
+

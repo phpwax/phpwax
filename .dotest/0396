@@ -1,0 +1,26 @@
+From bd36ece744b8e5088a8f6d2194ef9e313d5e8957 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sat, 12 Apr 2008 11:29:19 +0100
+Subject: Clean up of Config class and rewrite of tests
+
+---
+ wax/utilities/Config.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/utilities/Config.php b/wax/utilities/Config.php
+index 48fd2885da18cea74b4f54ae6de8814618f0abb1..55c5547c1714edb4edcc51eecbdd218fe1ec2afd 100644
+--- a/wax/utilities/Config.php
++++ b/wax/utilities/Config.php
+@@ -31,7 +31,7 @@ class Config
+ 	  if(self::$initialised) return true;
+ 		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
+ 	  self::$app_yaml_file = $initial_config;
+-	  self::$config_array = self::$load_yaml(self::$app_yaml_file);
++	  self::$config_array = self::load_yaml(self::$app_yaml_file);
+ 	  self::$initialised=true;
+ 	}
+ 	
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 9b036bf645625287b9b235d8ed66a3dcd0006911 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 3 Apr 2008 16:45:23 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/db/WaxModelAssociation.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 58041b9f4472d45fea0a0b889e17ec4437c9748f..e8443e62a6aacf4a8caa4d73528e551cc2350144 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -10,7 +10,7 @@
+ class WaxModelAssociation extends WaxRecordset {
+ 
+   public function __construct($model) {
+-    print_r($model);
++    print_r($model->all());
+     parent::__construct($model, $model->all()->rowset);
+   } 
+   
+-- 
+1.5.4
+
+

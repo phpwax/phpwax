@@ -1,0 +1,33 @@
+From f7157a8479018e7febe0deed361c8b810a7fc124 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 15 Apr 2008 14:58:50 +0100
+Subject: Bug fix for url helper
+
+---
+ wax/helpers/UrlHelper.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/helpers/UrlHelper.php b/wax/helpers/UrlHelper.php
+index 37ee2eb463e421d09402bc0d8b3cb98d6ba062e3..df6b9a89625501895055b2e24fa243b94f614f01 100644
+--- a/wax/helpers/UrlHelper.php
++++ b/wax/helpers/UrlHelper.php
+@@ -151,13 +151,13 @@ class UrlHelper extends WXHelpers {
+     $url = array();
+     $extra_params = array();
+     
+-		if(array_key_exists("controller", $options)) {
++		if(is_array($options) && array_key_exists("controller", $options)) {
+ 		  $url[] = $options["controller"];
+ 		  unset($options["controller"]);
+     } else $url[] = WaxUrl::get("controller");
+       
+     //  If controller found, get action from $options
+-   	if(array_key_exists("action", $options)) {
++   	if(is_array($options) && array_key_exists("action", $options)) {
+     	$url[] = $options["action"];
+ 			unset($options["action"]);
+     } else $url[]= WaxUrl::get("action");
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 984f78fb4582de1f6740ad291104126b9a1b67e4 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 01:16:32 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/db/WaxDbAdapter.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index dc9b36fab0fa79a83d24071903accb80329c5538..3ec5da6ead05dc58efd64e2008d7505047e87d3a 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -189,7 +189,7 @@ abstract class WaxDbAdapter {
+ 			$pdo_statement->execute($bindings);
+ 		} catch(PDOException $e) {
+ 			$err = $pdo_statement->errorInfo();
+-			WaxLog("sql", $pdo_statement);
++			WaxLog::add("sql", $pdo_statement);
+       throw new WXActiveRecordException( "{$err[2]}:{$sql}", "Error Preparing Database Query" );
+ 		}
+ 		return $pdo_statement;
+-- 
+1.5.4
+
+

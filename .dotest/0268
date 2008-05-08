@@ -1,0 +1,26 @@
+From 30843b1d54a8d3c61a83800382c24dd80ee44fd5 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 23:03:05 +0100
+Subject: Fix to WaxUrl bug
+
+---
+ wax/dispatch/WaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index f9a7fbbe02ae01557fd61b05f78066f1945e2038..f27a42b653add8074dd991056df38eeeff2645b3 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -79,7 +79,7 @@ class WaxUrl {
+       $left = str_replace("/", "\/", $left);  
+       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+-        echo $left." : ".$right;
++        echo $left." : ".$right."\n";
+         $mappings = split("/", $map[0]);
+         array_shift($matches);
+         while(count($mappings)) {
+-- 
+1.5.4
+
+

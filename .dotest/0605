@@ -1,0 +1,28 @@
+From 5979e40b8959a4e771a4ff96863f614461c36d33 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 13:47:55 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/forms/WaxWidget.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index a052a6b3b54d976c5f86be7a6eff8f1687e9e001..2faeb9ee6f892e4bd1e115fa69789cb00dcbc0b7 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -62,8 +62,8 @@ class WaxWidget {
+       if($value =="name") return $this->bound_data->table."[{$this->bound_data->field}]";
+       if($value =="id") return $this->bound_data->table."_{$this->bound_data->field}";
+       if($value =="value") return $this->bound_data->get();
+-      error_log($this->name." :: $value  ::  ".print_r(get_object_vars($this->bound_data),1) );
+-      if(in_array($value, get_object_vars($this->bound_data))) return $this->bound_data->{$value};
++      //error_log($this->name." :: $value  ::  ".print_r(get_object_vars($this->bound_data),1) );
++      if(array_key_exists($value, get_object_vars($this->bound_data))) return $this->bound_data->{$value};
+     }
+   }
+ 
+-- 
+1.5.4
+
+

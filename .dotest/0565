@@ -1,0 +1,26 @@
+From f8a182603ea5b986fef203ca30843594332493f2 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sat, 19 Apr 2008 21:03:03 +0100
+Subject: Fix to bad class name call
+
+---
+ wax/forms/WaxWidget.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 4218394b6d4cff124131b28e2fafd74162045746..79f06af4f0d8f52079ca7ba324b8431f9d587879 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -71,7 +71,7 @@ class WaxWidget {
+   public function make_attributes() {
+     $res = "";
+     foreach($this->allowable_attributes as $name=>$value) {
+-      if(isset($this->$name)) $res.=sprintf('%s="%s" ', $name, $value);
++      if(isset($this->{$name})) $res.=sprintf('%s="%s" ', $name, $value);
+     }
+     return $res;
+   }
+-- 
+1.5.4
+
+

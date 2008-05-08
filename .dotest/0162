@@ -1,0 +1,29 @@
+From f2df5488b6f88806ac31ef2c7fc4f70d538fac6e Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 14:37:57 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/db/WaxModelAssociation.php |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 0319aba5341a2849987cdac67886818a42efa4c9..5de79df4bcabd9e02da3c59937a565edb2d9f3ec 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -20,6 +20,11 @@ class WaxModelAssociation extends WaxRecordset {
+     $this->owner_field = $owner_field;
+   } 
+   
++  public function offsetGet($offset) {
++     $obj = clone $this-target_>model;
++     $obj->set_attributes($this->rowset[$offset]);
++     return $obj;
++   }
+   
+   
+   public function __call($method, $args) {
+-- 
+1.5.4
+
+

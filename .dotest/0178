@@ -1,0 +1,32 @@
+From 059cc0a10bf2d56af2bc1294efe22ec2a0ef4520 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 17:19:42 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 384547a13a9e8a9a87bf9097f65789cfcb7de0d5..61464b7611ef16c39948f8e7913db42b6d2e16d3 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -120,10 +120,10 @@ class WaxUrl {
+     *  @return boolean      If file exists true
+     */
+ 	protected function route_controller() {
+-	  $route = $_GET["route"];
+-	  while(count(split("/", $route))) {
+-	    if(self::is_controller($route)) $controller = $route;
+-	    $route = substr($route, 0, strrpos("/", $route));
++	  $route = split("/", $_GET["route"]);
++	  while(count($route) ) {
++	    if(self::is_controller(join("/",$route))) $controller = $route;
++	    array_pop($route);
+ 	  }
+ 	  error_log("Reduced to ".$controller);
+ 	  if($controller) {
+-- 
+1.5.4
+
+

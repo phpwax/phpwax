@@ -1,0 +1,25 @@
+From cfb8d90c1c303481679ca6c1a3a92ee7b04e8c2f Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 21:29:57 +0100
+Subject: Fix to error display for select input
+
+---
+ wax/db/fields/DateTimeField.php |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index f299118dcebc62c5d6c5e2f032c266f8a07f6549..64eb9d1cde7d0ad98a731b449bb10727b9db1211 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -32,7 +32,6 @@ class DateTimeField extends WaxModelField {
+   }
+   
+   public function save() {
+-    mktime()
+     $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
+   }
+   
+-- 
+1.5.4
+
+

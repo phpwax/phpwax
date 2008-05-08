@@ -1,0 +1,43 @@
+From 11a594d38c0906689d0325fb530dd01f184a407c Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Sat, 5 Apr 2008 10:17:09 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |   15 ++++++++++-----
+ 1 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 7ae3b287ef1c5a98c3d5e3630d08e7bcd8f5d316..f513561b1a54f899d0a9161918423d2692f56e83 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -71,15 +71,20 @@ class WaxUrl {
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
++      $mappings = $map[0];     
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
+-      $left = str_replace("/", "\/", $left);
+-      echo "/".$left."/". "  :  ".$right;
+-      
++      $left = str_replace("/", "\/", $left);      
+       if($left===$right) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+-        print_r($matches);
++        array_shift($matches);
++        while($mappings) {
++          if(substr($mappings[0],0,1)==":") {
++            $mapped_route[substr($mappings[0],1)]=$matches[0];
++          }
++          array_shift($matches); array_shift($mappings);
++        }
+       }
+-      echo $left." : ".$right."\n";
++      if($mapped_route) {print_r($mapped_route); return true;}
+     }
+   }
+   
+-- 
+1.5.4
+
+

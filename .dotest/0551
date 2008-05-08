@@ -1,0 +1,50 @@
+From dfa16674c2f93fafa520edc1fe5c18e3623a9012 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 23:34:25 +0100
+Subject: Added auto foreign key population to choices
+
+---
+ wax/db/WaxModelField.php |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 14d806009ea6be0b1e3b700c2c00af458cdf11df..675955d61d56d45774a43f943ac3f926210bc0eb 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -18,6 +18,7 @@ class WaxModelField {
+   public $maxlength = false;
+   public $minlength = false;
+   public $choices = false;
++  public $text_choices = true; // Store choices as text in database
+   public $editable = true; // Only editable options will be displayed in forms
+   public $blank = true;
+   public $label = true; // Set to false to never show labels
+@@ -45,6 +46,7 @@ class WaxModelField {
+     if(!$this->col_name) $this->col_name = $this->field;
+     if($this->label===true) $this->label = Inflections::humanize($this->field);
+     $this->setup();
++    $this->map_choices();
+   }
+   
+   public function get() {
+@@ -64,6 +66,16 @@ class WaxModelField {
+     return $this->model->row[$this->field];
+   }
+   
++  public function map_choices() {
++    if($this->text_choices) {
++      $choices = $this->choices;
++      $this->choices = array();
++      foreach($choices as $key=>$choice) {
++        if(is_numeric($key)) $this->choices[$choice]=$choice;
++      }
++    }
++  }
++  
+   protected function add_error($field, $message) {
+  	  $this->errors[]=$message;
+  	}
+-- 
+1.5.4
+
+

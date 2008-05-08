@@ -1,0 +1,26 @@
+From c683367fc86b9837b46ec247da4691b136785351 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Fri, 18 Apr 2008 02:27:41 +0100
+Subject: Changed Boolean Field Labels
+
+---
+ wax/db/fields/BooleanField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/BooleanField.php b/wax/db/fields/BooleanField.php
+index 280b50ebe68bed30ec61f85916c0d04ae5602399..9f119fb969cc0f08caf67b73d0a93811766c2ce2 100644
+--- a/wax/db/fields/BooleanField.php
++++ b/wax/db/fields/BooleanField.php
+@@ -10,7 +10,7 @@ class BooleanField extends WaxModelField {
+   public $null = false;
+   public $default = 0;
+   public $maxlength = false;
+-  public $choices = array(0 => "false", 1 => "true");
++  public $choices = array(0 => "No", 1 => "Yes");
+   public $widget = "SelectInput";
+   
+   public function setup() {
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 115ce01468062416b0ed9517f703acbd7ef76fbf Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Thu, 17 Apr 2008 10:41:42 +0100
+Subject: DateTimeField validates with no time specified
+
+---
+ wax/db/fields/DateTimeField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index 6ecf6eb74ce51470fea1303d6ddb94998c8eb89a..0011102da88b244a53f8b5d74fb3f66a5dbe9d36 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -14,7 +14,7 @@ class DateTimeField extends WaxModelField {
+   public function validate() {
+     $this->valid_length();
+  	  $this->valid_required();
+-    $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
++    $this->valid_format("datetime", '/^([0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}|[0-9-]{4}-[0-9]{2}-[0-9]{2})$/');
+   }
+ 
+ } 
+-- 
+1.5.4
+
+

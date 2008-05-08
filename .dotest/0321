@@ -1,0 +1,28 @@
+From 642f97fa87241623cc49403267c2f88f9d5c94b9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 14:36:45 +0100
+Subject: Wrapper request object
+
+---
+ wax/tests/TestRequest.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/tests/TestRequest.php b/wax/tests/TestRequest.php
+index ef01232a8fd016d2fd4393187f5778c570b9df53..ca379d65ae1e7472c24a0f4b8dacdd9884522725 100644
+--- a/wax/tests/TestRequest.php
++++ b/wax/tests/TestRequest.php
+@@ -8,8 +8,8 @@ class TestRequest extends WXTestCase {
+     public function tearDown() {}
+     
+     public function test_basic_get() {
+-      $_GET["test"]="<SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>";
+-      $this->assertNotEqual(Request::get("test"), Request::raw("test"));
++      $_GET["test"]="hello";
++      $this->assertEqual(Request::get("test"), "hello");
+     }
+    
+ }
+-- 
+1.5.4
+
+

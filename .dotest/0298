@@ -1,0 +1,26 @@
+From d03d614be215babd90bea5cacb1948ced0d9d121 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 13:02:25 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/exceptions/WaxDbException.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/exceptions/WaxDbException.php b/wax/exceptions/WaxDbException.php
+index 6f72614e0fcf954238047b2d19d443f7d69e5571..e2ca6f7e862327ab5c3f5f1bc1df355c20b789e7 100644
+--- a/wax/exceptions/WaxDbException.php
++++ b/wax/exceptions/WaxDbException.php
+@@ -10,7 +10,7 @@ class WaxDbException extends WXException {
+   
+ 	function __construct( $message, $code, $db_settings = array() ) {
+ 	  $this->help .= "<br />".var_export($db_settings);
+-  	return parent::__construct( $message, $code);
++  	parent::__construct( $message, $code);
+   }
+ }
+ 
+-- 
+1.5.4
+
+

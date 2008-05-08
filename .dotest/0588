@@ -1,0 +1,27 @@
+From 754d15120fd317cd560bb82093c599098dc24fb0 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 13:30:28 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/db/WaxModelField.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 41cd27081df7d1c9bab50ab6be1f6a678cb49e42..ed3a95b366ddeda51a3a544b514af08097fd78b6 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -86,8 +86,7 @@ class WaxModelField {
+  	
+  	public function __get($name) {
+     if($name=="value") {
+-      if($val = $this->get()) return $val;
+-      else return ""; 
++      return "1"; 
+     }
+     return false;
+  	}
+-- 
+1.5.4
+
+

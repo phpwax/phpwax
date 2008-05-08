@@ -1,0 +1,28 @@
+From c911acdfe43daff9cec94b2af030d276f2a82153 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 16:46:07 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/tests/TestWaxUrl.php |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 07bd681781fe9d528ef8bb6d45be9104dd30caaa..d830300dbb48579e8ae7917a47ff1e5ab08ede69 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -6,7 +6,9 @@ class TestWaxUrl extends WXTestCase {
+     }
+     
+     public function tearDown() {
+-     
++      error_log("-------------")
++      print_r($_GET);
++      error_log("-------------")
+     }
+     
+     public function test_basic_map() {
+-- 
+1.5.4
+
+

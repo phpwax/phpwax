@@ -1,0 +1,58 @@
+From 5fc79bf375a8b3b2048d6961b4d8c270e78da173 Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Mon, 7 Apr 2008 12:29:39 +0100
+Subject: moved ext check to validations
+
+---
+ wax/db/fields/FileField.php |   19 ++++++++++---------
+ 1 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/wax/db/fields/FileField.php b/wax/db/fields/FileField.php
+index 829b301daf18b3d91178d113f0cde5fcbc377875..4aa1fc4c40907f45b70ada0511056f7ee908414f 100644
+--- a/wax/db/fields/FileField.php
++++ b/wax/db/fields/FileField.php
+@@ -34,7 +34,16 @@ class FileField extends WaxModelField {
+ 
+   public function validate() {
+  	  $this->valid_required();
++		$file = $_FILES[$this->model->table];
++		
+   }
++	public function valid_extension(){
++		$this->valid_extension();
++		$name= $file['name'][$this->col_name];
++		$ext = strtolower(substr($name, strrpos($name, ".") ));
++		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
++
++	}
+ 	/**** overides *****/
+ 	//before run the sync function, add the extra_db_fields
+ 	public function before_sync() {}  
+@@ -51,6 +60,7 @@ class FileField extends WaxModelField {
+ 			if($path) {
+ 				$this->model->$column = $path;
+ 				parent::save();
++				return true;
+ 			}
+ 		} else $this->add_error($this->col_name, " no file present");
+ 		
+@@ -78,15 +88,6 @@ class FileField extends WaxModelField {
+ 	private function save_file($file){
+ 		$up_tmp_name = $file['tmp_name'][$this->col_name];
+ 		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
+-		//check file extention is allowed
+-		$ext = strtolower(substr($file_destination, strrpos($file_destination, ".") ));
+-		echo "ext:$ext\n";
+-		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ){ 
+-			echo ":".$this->field.":\n";
+-			$this->add_error($this->field, sprintf($this->messages["format"], $ext));
+-			echo "error added\n";
+-			return false;
+-		}
+ 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
+ 		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
+ 		else return false;
+-- 
+1.5.4
+
+

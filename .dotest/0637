@@ -1,0 +1,44 @@
+From ce551442accd402547f86a1279fd87356fd735cf Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 15:23:24 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/forms/widgets/TextareaInput.php |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/wax/forms/widgets/TextareaInput.php b/wax/forms/widgets/TextareaInput.php
+index b505d79682e5709de26e531f3c6f4be9e2108b1e..b0974228995237f2301fadfa015296cadd604124 100644
+--- a/wax/forms/widgets/TextareaInput.php
++++ b/wax/forms/widgets/TextareaInput.php
+@@ -8,12 +8,11 @@
+  **/
+ class TextareaInput extends WaxWidget {
+ 
++  public $allowable_attributes = array(
++    "name", "value", "disabled", "readonly", "id", "class", "accesskey", "tabindex", "rows", "cols"
++  );
+ 
+   public $class = "input_field textarea_field";  
+-  public $value = false;
+-  public $blank = true;
+-  public $label = true;
+-  public $help_text = false;
+   public $label_template = '<label for="%s">%s</label>';
+   public $template = '<textarea %s>%s</textarea>';
+   
+@@ -26,6 +25,10 @@ class TextareaInput extends WaxWidget {
+     $out .= sprintf($this->template, $this->make_attributes(), $this->value);
+     return $out;
+   }
++  
++  public function tag_content() {
++    return $this->value;
++  }
+ 
+ 
+ 
+-- 
+1.5.4
+
+

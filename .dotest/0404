@@ -1,0 +1,26 @@
+From 2966aeee2fe6274a206d7aad377ae93d5a3fa2c0 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 13 Apr 2008 12:46:50 +0100
+Subject: Clean up of Config class and rewrite of tests
+
+---
+ wax/tests/TestRequest.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestRequest.php b/wax/tests/TestRequest.php
+index 7c61e0454fa00fc0be7820e3aa5cc0fa538c1bce..f685c67d34563085a5a3141883ca12dd6dc5ce88 100644
+--- a/wax/tests/TestRequest.php
++++ b/wax/tests/TestRequest.php
+@@ -18,7 +18,7 @@ class TestRequest extends WXTestCase {
+       $this->assertEqual(Request::get("test"), "hello");
+       $this->assertEqual(Request::post("test2"), "hello");
+       $this->assertEqual(Request::param("test"), "hello");
+-       $this->assertEqual(Request::param("test2"), "hello");
++      $this->assertEqual(Request::param("test2"), "hello");
+     }
+    
+ }
+-- 
+1.5.4
+
+

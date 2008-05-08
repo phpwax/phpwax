@@ -1,0 +1,41 @@
+From f8b6f62c3ad786723094b89ff97a663fa543d7fc Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 3 Apr 2008 16:36:10 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/db/WaxModelAssociation.php    |    1 +
+ wax/db/fields/ManyToManyField.php |    4 +---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 9461a7822810f954216086849aa3b3866c89c224..58041b9f4472d45fea0a0b889e17ec4437c9748f 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -10,6 +10,7 @@
+ class WaxModelAssociation extends WaxRecordset {
+ 
+   public function __construct($model) {
++    print_r($model);
+     parent::__construct($model, $model->all()->rowset);
+   } 
+   
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index cef306fa88f4f9c3c34d39ac995c97a16781c53d..2f3184cea08a7046ddca0a92431220cf1f6389aa 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -39,9 +39,7 @@ class ManyToManyField extends WaxModelField {
+     $vals = $this->join_model->all();
+     $links = new $this->hasmany_model;
+     foreach($vals as $val) $links->filter(array($links->primary_key=> $val->{$val->right_field}));
+-    $assoc = new WaxModelAssociation($links);
+-    print_r($assoc); exit;
+-    return true;
++    return = new WaxModelAssociation($links);
+   }
+   
+   public function set($value) {
+-- 
+1.5.4
+
+

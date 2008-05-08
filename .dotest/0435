@@ -1,0 +1,25 @@
+From b1581a64efe349d9ce23a701c67099268eaf3730 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 15 Apr 2008 17:09:11 +0100
+Subject: Fix to catch all url parameters
+
+---
+ wax/dispatch/WaxUrl.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 282876da1c031a5685bcf3e8b8dc4a56954438ee..0c837e759c72ef498e36d643c7d0ccc118b1ab5a 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -25,6 +25,7 @@ class WaxUrl {
+    * @var array
+    **/
+   static public $mappings = array(
++    array(":action/:id/:params*"),
+     array(":action/:id"),
+     array(":action")
+   );
+-- 
+1.5.4
+
+

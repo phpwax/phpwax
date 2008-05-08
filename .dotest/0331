@@ -1,0 +1,26 @@
+From e250b2954da5384ec3d47212eaf45d417d8fa393 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 16:22:24 +0100
+Subject: Wrapper request object
+
+---
+ wax/tests/TestWaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 25f101f1ea7dc13af88a6b0131b29d13cfd42818..aefaa96b430db56f5ae421083111e7d616273548 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -2,7 +2,7 @@
+ 
+ class TestWaxUrl extends WXTestCase {
+     public function setUp() {
+-      WaxUrl::$mappings = false;
++
+     }
+     
+     public function tearDown() {
+-- 
+1.5.4
+
+

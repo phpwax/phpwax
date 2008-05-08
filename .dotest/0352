@@ -1,0 +1,40 @@
+From 24861726d0cf5bab12ab771e9317e9d32f08d2b4 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 18:47:02 +0100
+Subject: Request wrapper tests
+
+---
+ wax/tests/TestRequest.php |    2 +-
+ wax/utilities/Request.php |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/tests/TestRequest.php b/wax/tests/TestRequest.php
+index cf854a89fbfe8a081ab2d8a73cfc06fe0ee68496..4bcab0ee0ecb16954d45597a1a24e852efd6e3d2 100644
+--- a/wax/tests/TestRequest.php
++++ b/wax/tests/TestRequest.php
+@@ -2,7 +2,7 @@
+ 
+ class TestRequest extends WXTestCase {
+     public function setUp() {
+-      WaxUrl::$params=false;
++      WaxUrl::$params=array();
+     }
+     
+     public function tearDown() {
+diff --git a/wax/utilities/Request.php b/wax/utilities/Request.php
+index aa8c1c683cb87caf2e556537843d948af81e9ccc..4e6de9a92dddf341b4fedb7512318742061a9458 100644
+--- a/wax/utilities/Request.php
++++ b/wax/utilities/Request.php
+@@ -9,7 +9,7 @@
+  */
+ class Request {
+ 		
+-	static $params = false;
++	static $params = array();
+ 	
+ 	public function filter($name, $raw) {
+ 	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH|FILTER_FLAG_ENCODE_LOW);
+-- 
+1.5.4
+
+

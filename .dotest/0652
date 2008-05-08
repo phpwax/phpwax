@@ -1,0 +1,484 @@
+From 019eeec4ad9ab41e91a38024fceae7da198d75c9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 8 May 2008 11:15:37 +0100
+Subject: Cleanup of authentication
+
+---
+ wax/WXDBAuthenticate.php                 |  123 ------------------------------
+ wax/WXForm.php                           |   69 -----------------
+ wax/auth/WaxAuthDb.php                   |  123 ++++++++++++++++++++++++++++++
+ wax/auth/deprecated/WXDBAuthenticate.php |   45 +++++++++++
+ wax/forms/deprecated/WXForm.php          |   69 +++++++++++++++++
+ 5 files changed, 237 insertions(+), 192 deletions(-)
+ delete mode 100755 wax/WXDBAuthenticate.php
+ delete mode 100755 wax/WXForm.php
+ create mode 100644 wax/auth/WaxAuthDb.php
+ create mode 100644 wax/auth/deprecated/WXDBAuthenticate.php
+ create mode 100644 wax/forms/deprecated/WXForm.php
+
+diff --git a/wax/WXDBAuthenticate.php b/wax/WXDBAuthenticate.php
+deleted file mode 100755
+index e3f1b7013e6b3a411818d6ddbfaaf0f9bb1f3922..0000000000000000000000000000000000000000
+--- a/wax/WXDBAuthenticate.php
++++ /dev/null
+@@ -1,123 +0,0 @@
+-<?php
+-/**
+- * 	@package PHP-Wax
+- */
+-
+-/**
+-	*	An class to handle database authentication.
+-	* Can be extended to check access via a flat file or any other method.
+- 	* @package PHP-Wax
+-  */
+-class WXDBAuthenticate
+-{
+-
+-
+-  /**
+-	 *	Stores the current user id.
+-	 *  Used as a test to see if a user is logged in.
+-	 *	@access protected
+-	 *	@var int
+-	 */
+- 	public $user_field = "username";
+- 	public $password_field = "password";  
+-  protected $session_key = "loggedin_user";
+- 	protected $user_id=null;
+-  protected $user_object=null;
+-	protected $db_table = "user";
+-  protected $encrypt=false;
+-  
+-	function __construct($options=array()) {
+-	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+-	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+-	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
+-	  $this->setup_user();
+-	}
+-	
+-	/**
+-	 *	Sees if a loggedin_user is set in the session.
+-	 *	@access public
+-	 *	@return bool
+-	 */ 
+-  public function check_logged_in() { 
+-		if($this->user_id) {
+-		  return true;
+-		}
+-		return false;
+-  }
+-  
+-  public function is_logged_in() {
+-    return $this->check_logged_in();
+-  }
+-  
+-  public function get_user() {
+-    return $this->user_object;
+-  }
+-
+-  
+-  protected function encrypt($password) {
+-    return md5($password);
+-  }
+-
+-	/**
+-	 *	Logs out a user by unsetting loggedin_user variable in the session.
+-	 *	@static
+-	 *	@access public
+-	 *	@return bool
+-	 */
+-  public function logout() {
+-		$this->user_id = null;
+-		$this->user_object=null;
+-		return true;
+-  }
+-
+-	/**
+-	 *	Makes a random password of specified length.
+-	 *	@access protected
+-	 *	@return string
+-	 *	@param int $length
+-	 */	
+-	protected function makeRandomPassword($length) { 
+-	 	$salt = "zqrstuvwxypnmkjhgfehc56789ab43210ZYXWVHJKLMNPRSTUGFEDCBA"; 
+-		srand((double)microtime()*1000000); 
+-  	for($i = 0;$i < $length;$i++) { 
+-  	  $num = rand() % 59; 
+-  		$tmp = substr($salt, $num, 1); 
+-  		$pass = $pass . $tmp; 
+-  	} 
+-	  return $pass; 
+-	}
+-
+-  public function setup_user() {
+-    if($id = Session::get($this->session_key)) {
+-      $object = WXInflections::camelize($this->db_table, true);
+-      $result = new $object($id);
+-      if($result) {
+-        $this->user_object = $result;
+-        $this->user_id = $result->id;
+-      }
+-    }
+-  }
+-
+-  public function verify($username, $password) {
+-    $object = WXInflections::camelize($this->db_table, true);
+-    $user = new $object;
+-    if($this->encrypt) $password = $this->encrypt($password);
+-    $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
+-    if($result) {
+-      $this->user_object = $result;
+-      $this->user_id = $result->id;
+-      return true;
+-    }
+-    return false;
+-  }
+-  
+-  function __destruct() {
+-    if($this->user_id) {
+-      Session::set($this->session_key, $this->user_id);
+-    } else {
+-      Session::unset_var($this->session_key);
+-    }
+-  }
+-	
+-}
+-?>
+\ No newline at end of file
+diff --git a/wax/WXForm.php b/wax/WXForm.php
+deleted file mode 100755
+index 6a4941b6469f093ef21c7d0b132734ed54475a2a..0000000000000000000000000000000000000000
+--- a/wax/WXForm.php
++++ /dev/null
+@@ -1,69 +0,0 @@
+-<?php
+-require_once "WXValidations.php";
+-
+-/*
+- * @package PHP-Wax
+- *
+- * This class allows you to validate without persisting to the database.
+- * You can optionally persist to session storage. 
+- */
+-class WXForm extends WXValidations {
+-  
+-  protected $row = array();
+-  protected $persist = false;
+-  protected $form_name = "";
+-  public $table;
+-  
+-  public function __construct($persist=false) {
+-    if($persist) $this->persist = true;
+-    $this->form_name = "wx_form_".WXInflections::underscore(get_class($this));
+-    $this->table = WXInflections::underscore(get_class($this));
+-    if($vals = Session::get($this->form_name)) $this->row = $vals;
+-  }
+-  
+-  public function is_posted() {
+-		if(is_array($_POST[$this->table])) {
+-			return true;
+-		} else {
+-			return false;
+-		}
+-	}
+-	public function handle_post($attributes=null) {
+-	  if($this->is_posted()) {
+-	    if(!$attributes) $attributes = $_POST[$this->table];
+-	    return $this->update_attributes($attributes);
+-	  }
+-	  return false;
+-	}
+-	
+-	public function update_attributes($vals) {
+-	  foreach($vals as $k=>$v) $this->row[$k]=$v;
+-	}
+-	
+-  public function save($skip=false) {
+-    if($this->is_posted()) {
+-      if(!$skip) $this->handle_post();
+-      $this->validations();
+-		  if(!$this->validate()) return false;
+-		  if($this->persist) Session::set($this->form_name, $this->row);
+-		  return true;
+-	  }
+-	  return false;
+-  }
+-  
+-  public function validations() {}
+-  
+-  public function __get( $name ) {
+-    if( array_key_exists( $name, $this->row ) ) {
+-    	return $this->row[$name];
+-    }
+-  }
+-  
+-  public function __set($name, $value) {
+-    $this->row[$name] = $value;
+-  }
+-  
+-  /* Overridden as unique doesn't apply to non database validation*/
+-  public function valid_unique() {}
+-  
+-}
+\ No newline at end of file
+diff --git a/wax/auth/WaxAuthDb.php b/wax/auth/WaxAuthDb.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..e8a53860c981f071475c5f3e03ac554804d57a1b
+--- /dev/null
++++ b/wax/auth/WaxAuthDb.php
+@@ -0,0 +1,123 @@
++<?php
++/**
++ * 	@package PHP-Wax
++ */
++
++/**
++	*	An class to handle database authentication.
++	* Can be extended to check access via a flat file or any other method.
++ 	* @package PHP-Wax
++  */
++class WaxAuthDb
++{
++
++
++  /**
++	 *	Stores the current user id.
++	 *  Used as a test to see if a user is logged in.
++	 *	@access protected
++	 *	@var int
++	 */
++ 	public $user_field = "username";
++ 	public $password_field = "password";  
++  protected $session_key = "loggedin_user";
++ 	protected $user_id=null;
++  protected $user_object=null;
++	protected $db_table = "user";
++  protected $encrypt=false;
++  
++	function __construct($options=array()) {
++	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
++	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
++	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
++	  $this->setup_user();
++	}
++	
++	/**
++	 *	Sees if a loggedin_user is set in the session.
++	 *	@access public
++	 *	@return bool
++	 */ 
++  public function check_logged_in() { 
++		if($this->user_id) {
++		  return true;
++		}
++		return false;
++  }
++  
++  public function is_logged_in() {
++    return $this->check_logged_in();
++  }
++  
++  public function get_user() {
++    return $this->user_object;
++  }
++
++  
++  protected function encrypt($password) {
++    return md5($password);
++  }
++
++	/**
++	 *	Logs out a user by unsetting loggedin_user variable in the session.
++	 *	@static
++	 *	@access public
++	 *	@return bool
++	 */
++  public function logout() {
++		$this->user_id = null;
++		$this->user_object=null;
++		return true;
++  }
++
++	/**
++	 *	Makes a random password of specified length.
++	 *	@access protected
++	 *	@return string
++	 *	@param int $length
++	 */	
++	protected function makeRandomPassword($length) { 
++	 	$salt = "zqrstuvwxypnmkjhgfehc56789ab43210ZYXWVHJKLMNPRSTUGFEDCBA"; 
++		srand((double)microtime()*1000000); 
++  	for($i = 0;$i < $length;$i++) { 
++  	  $num = rand() % 59; 
++  		$tmp = substr($salt, $num, 1); 
++  		$pass = $pass . $tmp; 
++  	} 
++	  return $pass; 
++	}
++
++  public function setup_user() {
++    if($id = Session::get($this->session_key)) {
++      $object = WXInflections::camelize($this->db_table, true);
++      $result = new $object($id);
++      if($result) {
++        $this->user_object = $result;
++        $this->user_id = $result->id;
++      }
++    }
++  }
++
++  public function verify($username, $password) {
++    $object = WXInflections::camelize($this->db_table, true);
++    $user = new $object;
++    if($this->encrypt) $password = $this->encrypt($password);
++    $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
++    if($result) {
++      $this->user_object = $result;
++      $this->user_id = $result->id;
++      return true;
++    }
++    return false;
++  }
++  
++  function __destruct() {
++    if($this->user_id) {
++      Session::set($this->session_key, $this->user_id);
++    } else {
++      Session::unset_var($this->session_key);
++    }
++  }
++	
++}
++?>
+\ No newline at end of file
+diff --git a/wax/auth/deprecated/WXDBAuthenticate.php b/wax/auth/deprecated/WXDBAuthenticate.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..26455f56df213df8de8a65deb286d9f031775daa
+--- /dev/null
++++ b/wax/auth/deprecated/WXDBAuthenticate.php
+@@ -0,0 +1,45 @@
++<?php
++/**
++ * 	@package PHP-Wax
++ */
++
++/**
++	*	An class to handle database authentication.
++	* Can be extended to check access via a flat file or any other method.
++ 	* @package PHP-Wax
++  */
++class WXDBAuthenticate extends WaxAuthDb {
++	
++	/**
++	 *	Sees if a loggedin_user is set in the session.
++	 *	@access public
++	 *	@return bool
++	 */ 
++
++  public function setup_user() {
++    if($id = Session::get($this->session_key)) {
++      $object = WXInflections::camelize($this->db_table, true);
++      $user = new $object;
++      $result = $user->find($id);
++      if($result) {
++        $this->user_object = $result;
++        $this->user_id = $result->id;
++      }
++    }
++  }
++
++  public function verify($username, $password) {
++    $object = WXInflections::camelize($this->db_table, true);
++    $user = new $object;
++    $method = "find_by_".$this->user_field."_and_".$this->password_field;
++    if($this->encrypt) $password = $this->encrypt($password);
++    $result = $user->$method($username, $password);
++    if($result) {
++      $this->user_object = $result;
++      $this->user_id = $result->id;
++      return true;
++    }
++    return false;
++  }
++	
++}
+diff --git a/wax/forms/deprecated/WXForm.php b/wax/forms/deprecated/WXForm.php
+new file mode 100644
+index 0000000000000000000000000000000000000000..6a4941b6469f093ef21c7d0b132734ed54475a2a
+--- /dev/null
++++ b/wax/forms/deprecated/WXForm.php
+@@ -0,0 +1,69 @@
++<?php
++require_once "WXValidations.php";
++
++/*
++ * @package PHP-Wax
++ *
++ * This class allows you to validate without persisting to the database.
++ * You can optionally persist to session storage. 
++ */
++class WXForm extends WXValidations {
++  
++  protected $row = array();
++  protected $persist = false;
++  protected $form_name = "";
++  public $table;
++  
++  public function __construct($persist=false) {
++    if($persist) $this->persist = true;
++    $this->form_name = "wx_form_".WXInflections::underscore(get_class($this));
++    $this->table = WXInflections::underscore(get_class($this));
++    if($vals = Session::get($this->form_name)) $this->row = $vals;
++  }
++  
++  public function is_posted() {
++		if(is_array($_POST[$this->table])) {
++			return true;
++		} else {
++			return false;
++		}
++	}
++	public function handle_post($attributes=null) {
++	  if($this->is_posted()) {
++	    if(!$attributes) $attributes = $_POST[$this->table];
++	    return $this->update_attributes($attributes);
++	  }
++	  return false;
++	}
++	
++	public function update_attributes($vals) {
++	  foreach($vals as $k=>$v) $this->row[$k]=$v;
++	}
++	
++  public function save($skip=false) {
++    if($this->is_posted()) {
++      if(!$skip) $this->handle_post();
++      $this->validations();
++		  if(!$this->validate()) return false;
++		  if($this->persist) Session::set($this->form_name, $this->row);
++		  return true;
++	  }
++	  return false;
++  }
++  
++  public function validations() {}
++  
++  public function __get( $name ) {
++    if( array_key_exists( $name, $this->row ) ) {
++    	return $this->row[$name];
++    }
++  }
++  
++  public function __set($name, $value) {
++    $this->row[$name] = $value;
++  }
++  
++  /* Overridden as unique doesn't apply to non database validation*/
++  public function valid_unique() {}
++  
++}
+\ No newline at end of file
+-- 
+1.5.4
+

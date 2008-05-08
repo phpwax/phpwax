@@ -1,0 +1,63 @@
+From 22324abb7bbdaef68b1d3998f91ae225acadf2b0 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Fri, 4 Apr 2008 00:48:10 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/db/WaxModelAssociation.php    |   17 +++++++++++------
+ wax/db/fields/ManyToManyField.php |    2 +-
+ 2 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 8248759833f19196ffa1f0671e4b82785a822a79..2b3e081ba4e3a50469ebd9f2c8f18f1d4417bf9e 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -8,19 +8,24 @@
+  **/
+ 
+ class WaxModelAssociation extends WaxRecordset {
++  
++  public $field;
++  public $target_model;
++  public $join_model;
+ 
+-  public function __construct($model, $field) {
+-    parent::__construct($model, $model->all()->rowset);
++  public function __construct($target, $join_model) {
++    parent::__construct($target, $target->all()->rowset);
+     $this->field = $field;
+-    print_r($this);
+   } 
+   
+   public function unlink($model) {
+-    $this->model->{$this->field}->unlink($model);
+-    return $this->model;
++    if($model instanceof WaxModel) {
++      $id = $model->primval;
++      $this->join_model->filter(array($this->target_model->table.$this->target_model->primary_key => $id))->delete();
++    }
++    return $this;
+   }
+   
+ 
+   
+-  
+ }
+\ No newline at end of file
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index eb9df04fa389613ffa88b1efbfb8ab00187e7505..3a764fa4fc3afc85776c54c96e82bdaf18eb4be2 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -39,7 +39,7 @@ class ManyToManyField extends WaxModelField {
+     $vals = $this->join_model->all();
+     $links = new $this->hasmany_model;
+     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
+-    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->field);
++    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->join_model);
+   }
+   
+   public function set($value) {
+-- 
+1.5.4
+
+

@@ -1,0 +1,28 @@
+From 72cfff3860076d5836db7afbae7be54e0649072f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 12:41:44 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/template/builtin/trace.html |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/wax/template/builtin/trace.html b/wax/template/builtin/trace.html
+index 1ef3391c93fb92e5b28d140f2f17cd18b6a2fd8c..facb6e556fab3b657ad8d0fbe12ea5b575bd7797 100644
+--- a/wax/template/builtin/trace.html
++++ b/wax/template/builtin/trace.html
+@@ -37,6 +37,10 @@ Line:     <?=$e->getLine()?>
+         </code>
+       </pre>
+     </div>
++    <div id="help">
++      <h2>Further Information</h2>
++      <?=$help?>
++    </div>
+     <div id="environment">
+       <h2>HTTP Request, cookie and server information</h2>
+       <p><a href='#' onclick='document.getElementById(\"info\").style.display=\"block\"'>View</a></p>
+-- 
+1.5.4
+
+

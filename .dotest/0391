@@ -1,0 +1,26 @@
+From 04decc34ecd51c209d121bb326e2cb9f2ceac0a5 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 11 Apr 2008 12:36:39 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/helpers/FormOptionsHelper.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/helpers/FormOptionsHelper.php b/wax/helpers/FormOptionsHelper.php
+index 181d5082f0fb48e5e147065280ee629302f4ac20..0f71dc1110777e490bafc0b6a8c8ba015b641d59 100644
+--- a/wax/helpers/FormOptionsHelper.php
++++ b/wax/helpers/FormOptionsHelper.php
+@@ -154,7 +154,7 @@ class FormOptionsHelper extends FormHelper {
+     } else {
+       $date_markup = $this->make_date_select($shared_id);
+     }
+-    $output .= javascript_tag("function {$shared_id}_set_date() { 
++    $output .= content_tag("script", "function {$shared_id}_set_date() { 
+       document.getElementById('$shared_id').value = document.getElementById('{$shared_id}_year').value + '-' + document.getElementById('{$shared_id}_month').value + '-' + document.getElementById('{$shared_id}_day').value;
+     }");
+     if($with_label) $output .= $this->make_label($with_label);
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From e4db158f5814767c40082cf0c17b2ecfe1b63e48 Mon Sep 17 00:00:00 2001
+From: charles <charles@oneblackbear.com>
+Date: Fri, 11 Apr 2008 10:53:00 +0100
+Subject: changes: updated paginate_links function to allow new WaxPaginatedRecordset
+
+---
+ wax/helpers/WXHelpers.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/helpers/WXHelpers.php b/wax/helpers/WXHelpers.php
+index 67e944c70a4a8be670bf3630cee34557104c1b6a..ed10ea4ad09baf0a72610285115ac0d5302b8630 100755
+--- a/wax/helpers/WXHelpers.php
++++ b/wax/helpers/WXHelpers.php
+@@ -276,7 +276,7 @@ class WXHelpers {
+ 	}
+ 	
+ 	public function paginate_links($recordset, $window = "1", $prev_content="&laquo;", $next_content="&raquo;", $param="page", $prev_content_disabled="&laquo;", $next_content_disabled="&raquo;") {
+-    if(!$recordset instanceof WXPaginatedRecordset) return false;
++    if(!$recordset instanceof WXPaginatedRecordset && !$recordset instanceof WaxPaginatedRecordset) return false;
+ 		if($recordset->total_pages <=1) return false;
+     $content = "";
+     $page = 1; $links = array();
+-- 
+1.5.4
+
+

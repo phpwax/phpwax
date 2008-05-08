@@ -8,7 +8,7 @@
 	* Can be extended to check access via a flat file or any other method.
  	* @package PHP-Wax
   */
-class WXDBAuthenticate
+class WaxAuthDb
 {
 
 

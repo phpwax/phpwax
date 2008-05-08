@@ -1,0 +1,28 @@
+From 845d6e6c9e7f7f53c46d76a59ab864b5664e8eb7 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 22:19:04 +0100
+Subject: Added current timestamp to datetimefield
+
+---
+ wax/db/fields/DateTimeField.php |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index 14cfc2aa1d1425e1420a85762196c0541bc36129..8303275742e431bca40bca45c1cbcce46a3a5d32 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -20,6 +20,10 @@ class DateTimeField extends WaxModelField {
+     $this->valid_format("datetime", '/^[0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}$/');
+   }
+   
++  public function setup() {
++    if(!$this->default) $this->default = date($this->save_format);
++  }
++  
+   public function output() {
+     return date($this->output_format, strtotime($this->get()));
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,25 @@
+From 6055f4821988031ed0862136293cd3cd671f3080 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 12:49:29 +0100
+Subject: Fix to 404 status rendering
+
+---
+ wax/WXControllerBase.php |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 7337b40aabe0d9a9fcedd1b88e6f19e080de6b4f..0d986674cda572cccc6085471a5c3efcaa9045f9 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -221,7 +221,6 @@ abstract class WXControllerBase
+ 		  } else {  	    
+ 		    $class=get_class($this);
+ 			  throw new WXRoutingException("No Public Action Defined for - ".$this->action." in controller {$class}.", "Missing Action");
+-			  exit;
+   		}
+ 		} else {
+ 		  $this->{$this->action}();
+-- 
+1.5.4
+
+

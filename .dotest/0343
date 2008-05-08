@@ -1,0 +1,26 @@
+From b1a58fd4a233888667e6f137efba1c2f308a6dd2 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 18:21:38 +0100
+Subject: Request wrapper tests
+
+---
+ wax/utilities/Request.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/utilities/Request.php b/wax/utilities/Request.php
+index fc4cfc99d026723224b01e200cd1b5b31433b34b..5deacbb43d0a96a192eb283c65871ab4f822b551 100644
+--- a/wax/utilities/Request.php
++++ b/wax/utilities/Request.php
+@@ -12,7 +12,7 @@ class Request {
+ 	static $params = false;
+ 	
+ 	public function filter($name, $raw) {
+-	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_SPECIAL_CHARS);
++	  if(!$raw) $val = filter_var(self::$params[$name], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_HIGH);
+     else      $val = filter_var(self::$params[$name], FILTER_UNSAFE_RAW);
+ 	  return $val;
+ 	}
+-- 
+1.5.4
+
+

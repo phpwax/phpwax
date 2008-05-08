@@ -1,0 +1,42 @@
+From fe3b17f11ff1fa8e410269b167da255f298c7c18 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 19:44:54 +0100
+Subject: Added new widgets
+
+---
+ wax/forms/WaxForm.php |   15 +++++++--------
+ 1 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/wax/forms/WaxForm.php b/wax/forms/WaxForm.php
+index 2b7577c2afb0cad2f6ae2d02d7731016591c4a6a..f607a17b0b18f351f35c5c6a60ffcbc914b918b8 100644
+--- a/wax/forms/WaxForm.php
++++ b/wax/forms/WaxForm.php
+@@ -9,17 +9,16 @@ class WaxForm {
+     
+   
+   //Validation & Format Options
+-  public $name = "";
+-  public $id = "";
+-  public $action = "";
+-  public $method="post";
+-  public $encoding = "";
+-  public $attributes = array();
++  public $attributes = array(
++    "name"=>"",
++    "id"="",
++    "action"=>"",
++    "method"=>"post",
++    "encoding"=>""
++  );
+   public $submit = true;
+   public $submit_text = "Submit";
+-  
+   public $template = '<form %s>%s</form>';
+-  
+   public $elements = array();
+   
+   
+-- 
+1.5.4
+
+

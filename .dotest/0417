@@ -1,0 +1,28 @@
+From 7b1dc879802c4422fd52d0a3db80cd5a8961cf86 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Mon, 14 Apr 2008 22:51:03 +0100
+Subject: Added raw query functionality to WaxModel
+
+---
+ wax/db/WaxDbAdapter.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 68ca562e8ba8558ae8a3179649a381fc81c84c9c..cf5986d6b3ecfb1d9db387e4d21117fe3cf5fe96 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -208,8 +208,8 @@ abstract class WaxDbAdapter {
+   
+   public function query($query) {
+     $stmt = $this->db->prepare($sql);
+-    $res = $this->exec($stmt);
+-    return $res->fetchAll(PDO::FETCH_ASSOC);
++    if($res = $this->exec($stmt)) return $res->fetchAll(PDO::FETCH_ASSOC);
++    return false;
+   }
+   
+   public function quote($string) {
+-- 
+1.5.4
+
+

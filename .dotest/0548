@@ -1,0 +1,35 @@
+From 2de77ff3dd20c69cbb804b73e023012bf5751a81 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 23:18:00 +0100
+Subject: First phase development started
+
+---
+ wax/db/fields/ForeignKey.php |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index 0d98ff0069f51ce9eb9aa3f2d56277dc4f7690cb..d6b6d5a2d797f5aaff9d7b7e25122455897cdad5 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -11,12 +11,17 @@ class ForeignKey extends WaxModelField {
+   public $model_name = false;
+   public $widget = "SelectInput";
+   public $choices = array();
++  public $identifier = false;
+   
+   
+   public function setup() {
+     if(!$this->table) $this->table = $this->field;
+     if($this->col_name == $this->field) $this->col_name = $this->table."_".$this->model->primary_key;
+     if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
++    if($identifier) {
++      $link = new $this->model_name;
++      foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
++    }
+   }
+ 
+   public function validate() {
+-- 
+1.5.4
+
+

@@ -1,0 +1,56 @@
+From 8c59f67fe6e8afe79347b91ae8469ea4e49472cc Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 4 May 2008 12:29:27 +0100
+Subject: Added pagination to BC
+
+---
+ wax/db/WaxModel.php |   21 ++++++++-------------
+ 1 files changed, 8 insertions(+), 13 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index fff681c3f7200b8c83288d546fb4cde500554b6c..098d3a125dfd309fa933b660be411ee313ad9832 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -319,6 +319,7 @@ class WaxModel {
+     if($options["conditions"]) $this->filter($options["conditions"]);
+     if($options["limit"]) $this->limit=$options["limit"];
+     if($options["order"]) $this->order = $options["order"];
++    if($options["page"] && $options["per_page"]) return $this->page($options["page"], $options["per_page"]);
+     return $this->all();
+   }
+ 
+@@ -340,23 +341,17 @@ class WaxModel {
+ 		$func = WXInflections::underscore($func);
+ 	  $finder = explode("by", $func);
+ 		$what=explode("and", $finder[1]);
+-		foreach($what as $key=>$val) {
+-		  $what[$key]=rtrim(ltrim($val, "_"), "_");
+-		}
++		foreach($what as $key=>$val) $what[$key]=rtrim(ltrim($val, "_"), "_");
++
+     if( $args ) {
+-      if(count($what)==2) {
+-        $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
+-			}else{
+-			  $this->filter(array($what[0]=>$args[0]));
+-			}
++      if(count($what)==2) $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
++			else $this->filter(array($what[0]=>$args[0]));
++
+ 			if(is_array($args[1])) $params = $args[1];
+ 			elseif(is_array($args[2])) $params = $args[2];
+ 			
+-			if($finder[0]=="find_all_") {
+-        return $this->find_all($params);
+-      } else {
+-        return $this->find($params);
+-      }
++			if($finder[0]=="find_all_") return $this->find_all($params);
++      else return $this->find($params);
+     }
+ 	}
+ 
+-- 
+1.5.4
+
+

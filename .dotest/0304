@@ -1,0 +1,26 @@
+From 2c0710ef03c6c918257e37b59d99f5c4fc3534ad Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 13:13:57 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/exceptions/WaxDbException.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/exceptions/WaxDbException.php b/wax/exceptions/WaxDbException.php
+index 9d867299947a410f5141c6d6d90f9dfd7646fa29..38c9940e13ce4012c39d059300bb3f1e6cb54198 100644
+--- a/wax/exceptions/WaxDbException.php
++++ b/wax/exceptions/WaxDbException.php
+@@ -11,7 +11,7 @@ class WaxDbException extends WXException {
+ 	function __construct( $message, $code, $db_settings = array() ) {
+ 	  if(!$db_settings) $this->help .= "You have no database configured";
+ 	  else $this->help .= "<br /><pre>".print_r($db_settings, 1)."</pre>";
+-	  $this->help .= "Check that these settings are correctly configured and try again";
++	  $this->help .= "<br />Check that these settings are correctly configured and try again";
+   	parent::__construct( $message, $code);
+   }
+ }
+-- 
+1.5.4
+
+

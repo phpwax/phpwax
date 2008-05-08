@@ -1,0 +1,28 @@
+From 9aa97371c5a53f8f192808d31d0cfae3c9a9c24a Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Tue, 8 Apr 2008 22:15:11 +0100
+Subject: Final tests for WaxUrl
+
+---
+ wax/tests/TestWaxUrl.php |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 6ed8f8b4002fef6da7161aca6665f1c2ea992cc4..5807d2adcc630723abc0cd139494093dc09bf787 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -56,6 +56,10 @@ class TestWaxUrl extends WXTestCase {
+     public function test_defaults() {
+       $_GET["route"]="contact";
+       $this->assertEqual(WaxUrl::get("controller"), "page");
++      $this->assertEqual(WaxUrl::get("action"), "contact");
++      $_GET["route"]="page";
++      $this->assertEqual(WaxUrl::get("controller"), "page");
++      $this->assertEqual(WaxUrl::get("action"), "index");
+     }
+     
+    
+-- 
+1.5.4
+
+

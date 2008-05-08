@@ -1,0 +1,26 @@
+From c64a686ccbb025eabc99a4245e659a3fc6bcd6cf Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 23:20:21 +0100
+Subject: Fix to WaxUrl bug
+
+---
+ wax/tests/TestWaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 78bd26ca8e3a8f9e8511717766ee7de7594fd268..e7b13517325ec67ff65300504e729113b9b92db8 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -39,7 +39,7 @@ class TestWaxUrl extends WXTestCase {
+       $_GET["route"]="page/tech/5";
+       WaxUrl::map("page/:category/:id", array("controller"=>"blog", "action"=>"page"));
+       $this->assertEqual(WaxUrl::get("controller"), "blog");
+-      $this->assertEqual(WaxUrl::get("action"), "show");
++      $this->assertEqual(WaxUrl::get("action"), "page");
+       $this->assertEqual(WaxUrl::get("category"), "tech");
+       $this->assertEqual(WaxUrl::get("id"), "5");
+     }
+-- 
+1.5.4
+
+

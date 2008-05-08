@@ -1,0 +1,30 @@
+From e243aa823bb452b55f55ab29ec388bef95fded6f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 03:11:56 +0100
+Subject: Cleaned up database logging
+
+---
+ wax/utilities/WaxLog.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index ad9bcb653190c862173809e59187b9700cb130cc..959c8b64d091f2d9809d2b66f11998aa2da15ffa 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -30,10 +30,10 @@ class WaxLog {
+   public function output() {
+     $output = "";
+     foreach(self::$logs as $log) {
+-      $output .= "[".key($log)."] ".(string) $log."\n";
++      $output .= "[".key($log)."] ". $log;
+     }
+     self::flush();
+-    error_log($output);
++    error_log(var_export($output));
+     return $output;
+   }
+   
+-- 
+1.5.4
+
+

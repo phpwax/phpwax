@@ -1,0 +1,26 @@
+From eccf43683614027c6705dfeee2828afeda163614 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 3 Apr 2008 16:36:35 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/db/fields/ManyToManyField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index 2f3184cea08a7046ddca0a92431220cf1f6389aa..f4a138cf173534477fbddf5e3bd920fac62296fa 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -39,7 +39,7 @@ class ManyToManyField extends WaxModelField {
+     $vals = $this->join_model->all();
+     $links = new $this->hasmany_model;
+     foreach($vals as $val) $links->filter(array($links->primary_key=> $val->{$val->right_field}));
+-    return = new WaxModelAssociation($links);
++    return new WaxModelAssociation($links);
+   }
+   
+   public function set($value) {
+-- 
+1.5.4
+
+

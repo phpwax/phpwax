@@ -1,0 +1,35 @@
+From 666dc8293f232272fb196ab9c89bb483b6ba6999 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 12:41:45 +0100
+Subject: Added more extensibility to SelectInput
+
+---
+ wax/forms/widgets/SelectInput.php |   11 ++---------
+ 1 files changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index ab5b79cfd0d9f928e19836f26664ba037075872d..568fce0b6bac9bf4edd99cf8a54468b3a1fed3f8 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -14,15 +14,8 @@ class SelectInput extends WaxWidget {
+   
+   
+   public function render() {
+-    unset($this->attributes["value"]);
+-    $out ="";
+-    if($this->error_messages) $this->attributes["class"].=" error_field";
+-    if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+-    $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
+-    if($this->error_messages) {
+-      foreach($this->error_messages as $error) $out .= sprintf($this->error_template, $error);
+-    }
+-    return $out;
++    $this->tag_content = $this->make_choices();
++    parent::render();
+   }
+   
+   public function make_choices() {
+-- 
+1.5.4
+
+

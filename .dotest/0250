@@ -1,0 +1,35 @@
+From 496067395a5eac9d355f4454768ebe1559eb2d14 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 13:23:04 +0100
+Subject: Sync_db swallows errors
+
+---
+ wax/db/WaxDbAdapter.php |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 75653576a916d57634f0470ada5400c946cf66c9..01674ba68ff592932fc2a5244acc44288ca88b6a 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -171,7 +171,7 @@ abstract class WaxDbAdapter {
+     $sql = "ALTER TABLE `$model->table` ADD ";
+     $sql.= $this->column_sql($field, $model);
+     $stmt = $this->db->prepare($sql);
+-    $this->exec($stmt, $swallow_errors);
++    $this->exec($stmt, array(), $swallow_errors);
+     return "Added column {$field->col_name} to {$model->table}";
+   }
+   
+@@ -180,7 +180,7 @@ abstract class WaxDbAdapter {
+     $sql = "ALTER TABLE `$model->table` MODIFY ";
+     $sql.= $this->column_sql($field, $model);
+     $stmt = $this->db->prepare($sql);
+-    $this->exec($stmt, $swallow_errors);
++    $this->exec($stmt, array(), $swallow_errors);
+     return "Updated column {$field->field} in {$model->table}";
+   }
+   
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 42f025e960a29873c8311e1595f58b9034174301 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Fri, 11 Apr 2008 02:16:44 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/db/WaxPaginatedRecordset.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxPaginatedRecordset.php b/wax/db/WaxPaginatedRecordset.php
+index 5356cb41d85603074475d9b7090d43b7012d1647..c7ecebad84a32ce8945bd9c615eab6b80b55c6cc 100644
+--- a/wax/db/WaxPaginatedRecordset.php
++++ b/wax/db/WaxPaginatedRecordset.php
+@@ -18,7 +18,7 @@ class WaxPaginatedRecordset extends WaxRecordset {
+ 		$this->per_page = $per_page;
+ 		//setup model 
+     $this->model = $model;	
+-		$this->model->offset = ($page * $per_page)-$per_page;
++		$this->model->offset = (($page-1) * $per_page);
+ 		$this->model->limit = $per_page;
+ 		//paginate the model
+ 		$rowset = $this->paginate($model);
+-- 
+1.5.4
+
+

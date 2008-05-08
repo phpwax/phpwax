@@ -1,0 +1,55 @@
+From d010db8fc569b4d12780daaa430b8fc1935e3623 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 16:01:36 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php  |    6 +++++-
+ wax/tests/TestWaxUrl.php |    7 +++++++
+ 2 files changed, 12 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index af4e255bdedb0141448cbfe7690d0a2858d8a34d..3d5c2147ca41b9a0ccbb2f6b49ddd26e71df93a4 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -72,13 +72,17 @@ class WaxUrl {
+       $left = $map[0];
+       $right = $_GET["route"];
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
++      $left = preg_replace("/:([A-Za-z0-9\-]*\*)/", "([A-Za-z0-9\-\*]*)", $left);
+       $left = str_replace("/", "\/", $left);      
+       if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+         $mappings = split("/", $map[0]);
+         array_shift($matches);
+         while(count($mappings)) {
+-          if(substr($mappings[0],0,1)==":") {
++          if(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
++            $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
++          }
++          elseif(substr($mappings[0],0,1)==":") {
+             $mapped_route[substr($mappings[0],1)]=$matches[0];
+             array_shift($matches); 
+           }
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 35bb60e34d4f85479ffc2546d398723720c6aa5f..0277f58b22a26c029989e72e738117c1351af457 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -32,6 +32,13 @@ class TestWaxUrl extends WXTestCase {
+       $this->assertEqual(WaxUrl::get("category"), "tech");
+     }
+     
++    public function test_wildcard_map() {
++      $_GET["route"]="tags/tech/humour/pics";
++      WaxUrl::map("article/:tags*", array("controller"=>"blog", "action"=>"tags"));
++      $this->assertTrue(is_array(WaxUrl::get("tags")) );
++      $this->assertEqual(count(WaxUrl::get("tags")), 3);
++    }
++    
+    
+ }
+ 
+-- 
+1.5.4
+
+

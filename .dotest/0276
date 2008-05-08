@@ -1,0 +1,72 @@
+From 7cb2a99d8d15d1b18a942f1b0cd0c667ee287ff2 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Thu, 10 Apr 2008 01:55:33 +0100
+Subject: Fixed redirect loop in error handling
+
+---
+ wax/WXApplication.php                |   12 +-----------
+ wax/db/deprecated/WXActiveRecord.php |   17 ++++++++++++++++-
+ 2 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/wax/WXApplication.php b/wax/WXApplication.php
+index 08b85efad5990fbcaeb31564e03bfb62ac1460d1..5f8ef0f0e109b51d6d90c77e6f62a7e16683aec2 100755
+--- a/wax/WXApplication.php
++++ b/wax/WXApplication.php
+@@ -73,17 +73,7 @@ class WXApplication {
+       if(!$db['port']) $db['port']="3306";
+       
+     /****** Deprecated support for WXActiveRecord only around for one more version *****/
+-      if(isset($db['socket']) && strlen($db['socket'])>2) {
+-  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
+-  		} else {
+-  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+-  		}
+-  		
+-  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
+-  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+-  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
+-      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
+-      }  
++      WXActiveRecord::$pdo_settings = $db; 
+     /**********************************************************/
+       
+       WaxModel::load_adapter($db);
+diff --git a/wax/db/deprecated/WXActiveRecord.php b/wax/db/deprecated/WXActiveRecord.php
+index 032ef73d2052f126dd386d3db061829194e74867..9950a3a3e9ebf63f39845857155afacd1d5ad60d 100755
+--- a/wax/db/deprecated/WXActiveRecord.php
++++ b/wax/db/deprecated/WXActiveRecord.php
+@@ -15,6 +15,7 @@
+ class WXActiveRecord extends WXValidations implements Iterator
+ {
+ 	protected static $default_pdo = null;
++	protected static $pdo_settings = null;
+ 	protected static $column_cache = null;
+ 	protected $pdo = null;
+   public $table = null;
+@@ -36,7 +37,21 @@ class WXActiveRecord extends WXValidations implements Iterator
+   *                          or constraints (if array) but param['pdo'] is PDO instance
+   */
+ 	function __construct($param=null) {
+-		$this->pdo = self::$default_pdo;
++	  $db = self::$pdo_settings;
++	  if(!self::getDefaultPDO()) {
++		  if(isset($db['socket']) && strlen($db['socket'])>2) {
++  			$dsn="{$db['dbtype']}:unix_socket={$db['socket']};dbname={$db['database']}"; 
++  		} else {
++  			$dsn="{$db['dbtype']}:host={$db['host']};port={$db['port']};dbname={$db['database']}";
++  		}
++		
++  		$pdo = new PDO( $dsn, $db['username'] , $db['password'] );
++  		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
++  		if(! WXActiveRecord::setDefaultPDO($pdo) ) {
++      	throw new WXException("Cannot Initialise DB", "Database Configuration Error");
++      }
++    } else $this->pdo = self::getDefaultPDO();
++      
+ 		$class_name =  get_class($this) ;
+ 		
+ 		if( $class_name != 'WXActiveRecord' ) {
+-- 
+1.5.4
+
+

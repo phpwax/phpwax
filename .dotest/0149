@@ -1,0 +1,26 @@
+From 7287d6ff548738616a226d738c554ba43978293f Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 13:40:11 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/db/fields/ManyToManyField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index 2fc7d018b0430ef137039ddcc954b19ac028ae54..660f2dfcc370ae2c47dccb788b237e71f83f91f1 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -40,7 +40,7 @@ class ManyToManyField extends WaxModelField {
+     $links = new $this->hasmany_model;
+     if(!$vals->count()) return new WaxRecordset($this->model);
+     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
+-    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->join_model, $this->join_model->field);
++    return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->join_model, $this->model->field);
+   }
+   
+   public function set($value) {
+-- 
+1.5.4
+
+

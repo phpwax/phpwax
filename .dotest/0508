@@ -1,0 +1,26 @@
+From 8be2b3f211feadbf847508d9c6954e0b38c8bdb6 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 00:31:38 +0100
+Subject: fix to bug in sql spacing
+
+---
+ wax/db/WaxDbAdapter.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index 72220c8cd96eabbbffba2759946f37484d2ee59e..d7bbb2155f1b4455cbed7e125d8470f7c3ddcfb0 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -85,7 +85,7 @@ abstract class WaxDbAdapter {
+     else $sql.= "*";
+     $sql.= " FROM `{$model->table}`";
+     if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
+-    if($model->order) $sql.= "ORDER BY {$model->order}";
++    if($model->order) $sql.= " ORDER BY {$model->order}";
+     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
+     $stmt = $this->db->prepare($sql);
+ 		//altered to include extra mysql found rows data
+-- 
+1.5.4
+
+

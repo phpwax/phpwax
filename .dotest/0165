@@ -1,0 +1,104 @@
+From 76bb76046d8a295fe40ead6b28f37e159392115c Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 16:41:27 +0100
+Subject: Tests on WaxModelField
+
+---
+ wax/dispatch/WaxUrl.php  |   38 ++++++++++++++++++++------------------
+ wax/tests/TestWaxUrl.php |    6 ++++++
+ 2 files changed, 26 insertions(+), 18 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 088d4e92582daf2c10ce959ca615980a31677c30..74eeee3c10630272c375d08a64fadce2f7edf501 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -25,15 +25,13 @@ class WaxUrl {
+    * @var array
+    **/
+   static public $mappings = array(
+-    array("", array("controller"=>"page")),
+-    array(":controller/:action/:id"),
+-    array(":controller/:action"),
+-    array(":controller")
++    array(":action/:id"),
++    array(":action")
+   );
+   
+   static public $default_controller = "page";
+   static public $default_action = "index";
+-
++  static public $available_controllers = false;
+ 
+ 
+   
+@@ -71,6 +69,7 @@ class WaxUrl {
+    **/
+ 
+   static public function perform_mappings($pattern) {
++    self::route_controller;
+     foreach(self::$mappings as $map) {
+       $left = $map[0];
+       $right = $_GET["route"];
+@@ -115,25 +114,28 @@ class WaxUrl {
+     return $_GET[$val];
+   }
+   
++  
+   /**
+     *  Checks whether a file exists for the named controller
+     *  @return boolean      If file exists true
+     */
+-	protected function check_controller() {
+-	  $controller = self::get("controller");
+-		if(strpos($controller, "/")) {
+-			$path = substr($controller, 0, strpos($controller, "/")+1);
+-			$class = slashcamelize($controller, true)."Controller";
+-			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
+-		}
+-		$class = ucfirst($controller)."Controller";
+-		$default = ucfirst(self::$default_controller."Controller");
+-		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
+-		if(is_file(CONTROLLER_DIR.$default.".php")) { return $default;
++	protected function route_controller() {
++	  $route = $_GET["route"];
++	  while($route) {
++	    if(self::is_controller($route)) $controller = $route;
++	    $route = substr($route, 0, strrpos("/", $route));
+ 	  }
+-		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
++	  if($controller) $_GET["controller"]=$controller;
++	  if(self::$default_controller) $controller = self::$default_controller;
++	  $_GET["route"]=str_replace($controller, "", $_GET["route"]);
+ 	}
+-  
++	
++	protected function is_controller($test) {
++	  if(is_readable(CONTROLLER_DIR.Inflections::slashcamelize($test)."Controller.php")) return true;
++	  return false;
++	}
++	
++
+   	
+ }
+ 
+diff --git a/wax/tests/TestWaxUrl.php b/wax/tests/TestWaxUrl.php
+index 882536368db5f799cff6d3949547e4e866e68e76..c1c09ad608cfcbf01713a80fe3b97b020954034d 100644
+--- a/wax/tests/TestWaxUrl.php
++++ b/wax/tests/TestWaxUrl.php
+@@ -44,6 +44,12 @@ class TestWaxUrl extends WXTestCase {
+       $this->assertEqual(count(WaxUrl::get("tags")), 3);
+     }
+     
++    public function test_nested_controller() {
++      $_GET["route"]="admin/content";
++      WaxUrl::map("admin/:controller/:action");
++      
++    }
++    
+     public function test_formats() {
+       $_GET["route"]="sitemap.xml";
+     }
+-- 
+1.5.4
+
+

@@ -1,0 +1,25 @@
+From 893ef8154dfc1c591d17668eae1078a349e16d46 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 22:25:06 +0100
+Subject: Added current timestamp to datetimefield
+
+---
+ wax/db/fields/ForeignKey.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/fields/ForeignKey.php b/wax/db/fields/ForeignKey.php
+index 959403463ac1d339634c5ab62d05572ebe122f67..a0fbf8e2ab691dd2a133ec61b2ca762ebcc377a4 100644
+--- a/wax/db/fields/ForeignKey.php
++++ b/wax/db/fields/ForeignKey.php
+@@ -9,6 +9,7 @@ class ForeignKey extends WaxModelField {
+   
+   public $maxlength = "11";
+   public $model_name = false;
++  public $widget = "SelectInput";
+   
+   
+   public function setup() {
+-- 
+1.5.4
+
+

@@ -1,0 +1,25 @@
+From f784374aa7bb5c86ce05de5ef67465932566b5a9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Wed, 9 Apr 2008 00:58:57 +0100
+Subject: Moved ControllerBase to use new route mapping
+
+---
+ wax/WXControllerBase.php |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 945c34a4a156c2882f0b8518c23ca26c16a34aba..c4b9de77de74821a01fbb7bd4a3b528b564010c4 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -202,7 +202,6 @@ abstract class WXControllerBase
+ 	 *	@access protected
+  	 */
+   public function execute_request() {
+-	  $route = new WXRoute;
+ 	  $this->route_array = $_GET;
+ 	  $this->controller = WaxUrl::get("controller");    
+ 	  $this->action = WaxUrl::get("action");
+-- 
+1.5.4
+
+

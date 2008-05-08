@@ -1,0 +1,25 @@
+From 1f33adbc367eb9501b08d19bf81dc63c1d305bcf Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 4 Apr 2008 09:38:28 +0100
+Subject: Final touches to ManyToMany model tests : fingers crossed
+
+---
+ wax/db/fields/ManyToManyField.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/db/fields/ManyToManyField.php b/wax/db/fields/ManyToManyField.php
+index 3a764fa4fc3afc85776c54c96e82bdaf18eb4be2..8a52923b2ae97acc405d7013dfdc7d84f0860310 100644
+--- a/wax/db/fields/ManyToManyField.php
++++ b/wax/db/fields/ManyToManyField.php
+@@ -38,6 +38,7 @@ class ManyToManyField extends WaxModelField {
+   public function get() {
+     $vals = $this->join_model->all();
+     $links = new $this->hasmany_model;
++    if(!$vals->count()) return new WaxRecordset($this->model);
+     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
+     return new WaxModelAssociation($links->filter(join(" OR ", $filters)), $this->join_model);
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,27 @@
+From bf722b4114082146b0628aa7f506ea5131d59d29 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Sun, 6 Apr 2008 15:37:45 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index 5bc66226b8fb4f0c8081b7accfae5e93980a69d3..2529b043be4abb8a4d2a86a89158e4836ff5a33a 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -73,8 +73,8 @@ class WaxUrl {
+       $right = $_GET["route"];
+       $left = preg_replace("/:([A-Za-z0-9\-]*)/", "([A-Za-z0-9\-]*)", $left);
+       $left = str_replace("/", "\/", $left);      
+-      if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       echo $left."  :  ".$right;
++      if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
+       elseif(preg_match("/".$left."/", $right, $matches)) {
+         $mappings = split("/", $map[0]);
+         print_r($matches);
+-- 
+1.5.4
+
+

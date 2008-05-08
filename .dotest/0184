@@ -1,0 +1,27 @@
+From b9cdc2e53f57d91bac7b91ba711853087e3855e1 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 17:35:55 +0100
+Subject: Work on new WaxUrl
+
+---
+ wax/dispatch/WaxUrl.php |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index daf2f570a75205d189c7a89c2b30208909a32148..353041341ef3f5b2f903c7e30197b18f4ae0b340 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -138,8 +138,7 @@ class WaxUrl {
+ 	  if(strpos($test, "/")) {
+ 			$path = substr($test, 0, strpos($test, "/")+1);
+ 		}
+-	  error_log("Looking for ".CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php");
+-	  if(is_file(CONTROLLER_DIR.Inflections::slashcamelize($test, true)."Controller.php")) return true;
++	  if(is_file(CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php")) return true;
+ 	  return false;
+ 	}
+ 	
+-- 
+1.5.4
+
+

@@ -1,0 +1,34 @@
+From fbaa62a69f8078d84c28edce1892e70dfa8a7739 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Fri, 11 Apr 2008 12:06:38 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/helpers/UrlHelper.php |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/helpers/UrlHelper.php b/wax/helpers/UrlHelper.php
+index 273949f6c7e3c74ca51a72532fdeaace132caa3e..c332b67edb734a75c3bcf4ecca59a404577df731 100644
+--- a/wax/helpers/UrlHelper.php
++++ b/wax/helpers/UrlHelper.php
+@@ -33,6 +33,7 @@ class UrlHelper extends WXHelpers {
+      *  @uses convert_confirm_option_to_javascript()
+      *  @uses url_for()
+      */
++    /*
+     public function link_to($name, $options = array(), $html_options = array()) {
+         $html_options =
+             $this->convert_confirm_option_to_javascript($html_options);
+@@ -61,7 +62,7 @@ class UrlHelper extends WXHelpers {
+             $html = $this->content_tag("a", $name, $html_options);
+         }
+         return $html;
+-    }
++    } */
+ 
+     /**
+      *  @todo Document this method
+-- 
+1.5.4
+
+

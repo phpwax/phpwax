@@ -1,0 +1,71 @@
+From 14ebc330a7f0c0974d1bd721acd0933336ebf18b Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Tue, 8 Apr 2008 12:11:40 +0100
+Subject: WaxUrl Changes
+
+---
+ wax/dispatch/WaxUrl.php |   28 ++++++++++++++++++++++++----
+ 1 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/wax/dispatch/WaxUrl.php b/wax/dispatch/WaxUrl.php
+index c018864ddb9b38249a60e5db7cfe9dafaf3ca4e7..61cc90eb189c430bbf1e146815d0e6e27c31f2dd 100644
+--- a/wax/dispatch/WaxUrl.php
++++ b/wax/dispatch/WaxUrl.php
+@@ -24,12 +24,15 @@ class WaxUrl {
+    *
+    * @var array
+    **/
+-  static $mappings = array(
++  static public $mappings = array(
+     array("", array("controller"=>"page")),
+     array(":controller/:action/:id"),
+     array(":controller/:action"),
+     array(":controller")
+   );
++  
++  static public $default_controller = "page";
++  static public $default_action = "index";
+ 
+ 
+ 
+@@ -102,9 +105,6 @@ class WaxUrl {
+     
+   }
+   
+-  
+-  
+-  
+   /**
+    * get function
+    *
+@@ -114,6 +114,26 @@ class WaxUrl {
+     self::perform_mappings();
+     return $_GET[$val];
+   }
++  
++  /**
++    *  Checks whether a file exists for the named controller
++    *  @return boolean      If file exists true
++    */
++	protected function check_controller() {
++	  $controller = self::get("controller");
++		if(strpos($controller, "/")) {
++			$path = substr($controller, 0, strpos($controller, "/")+1);
++			$class = slashcamelize($controller, true)."Controller";
++			if(is_file(CONTROLLER_DIR.$path.$class.".php")) return $class;
++		}
++		$class = ucfirst($controller)."Controller";
++		$default = ucfirst(self::$default_controller."Controller");
++		if(is_file(CONTROLLER_DIR.$class.".php")) return $class;
++		if(is_file(CONTROLLER_DIR.$default.".php")) { return $default;
++	  }
++		throw new WXException("Missing Controller - ".$class, "Controller Not Found");
++	}
++  
+   	
+ }
+ 
+-- 
+1.5.4
+
+

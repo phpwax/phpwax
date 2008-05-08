@@ -1,0 +1,40 @@
+From d2a6c0b88d5a815bfe7c1f89f4b43015bcc44212 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sat, 19 Apr 2008 15:59:10 +0100
+Subject: Fix to bad class name call
+
+---
+ wax/forms/WaxWidget.php         |    2 +-
+ wax/forms/widgets/TextInput.php |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 9fd028f79136620cff7f574a79df1aa2ae8aef27..4218394b6d4cff124131b28e2fafd74162045746 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -71,7 +71,7 @@ class WaxWidget {
+   public function make_attributes() {
+     $res = "";
+     foreach($this->allowable_attributes as $name=>$value) {
+-      if($this->$name) $res.=sprintf('%s="%s" ', $name, $value);
++      if(isset($this->$name)) $res.=sprintf('%s="%s" ', $name, $value);
+     }
+     return $res;
+   }
+diff --git a/wax/forms/widgets/TextInput.php b/wax/forms/widgets/TextInput.php
+index 20ffcf83aa6661c2ea6db675972cc1f39ec214e9..0dde2c8c826b9b015ace54f5e60815846448d371 100644
+--- a/wax/forms/widgets/TextInput.php
++++ b/wax/forms/widgets/TextInput.php
+@@ -12,7 +12,7 @@ class TextInput extends WaxWidget {
+   public $class = "input_field text_field";
+   
+   public $label_template = '<label for="%s">%s</label>';
+-  public $template = '<input %s />%s';
++  public $template = '<input %s />';
+   
+ 
+ 
+-- 
+1.5.4
+
+

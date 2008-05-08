@@ -1,0 +1,44 @@
+From b45f2d10538ee0656d045dc92d78974e31c49282 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 13:10:04 +0100
+Subject: Fix to 404 status rendering
+
+---
+ wax/WXControllerBase.php              |    6 +-----
+ wax/exceptions/WXRoutingException.php |    2 +-
+ 2 files changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/wax/WXControllerBase.php b/wax/WXControllerBase.php
+index 7cfc14203006d3da2f3112586442f0517b094970..6f6b0ec2b192331804d230f3ce518a5df3f94d10 100644
+--- a/wax/WXControllerBase.php
++++ b/wax/WXControllerBase.php
+@@ -238,11 +238,7 @@ abstract class WXControllerBase
+ 		else return false;
+ 	}
+ 	
+-	/**
+-	 * Default  Error handling page
+-	 * Can be overridden if required
+-	 **/
+-	public function error_404(){}
++
+ }
+ 
+ ?>
+diff --git a/wax/exceptions/WXRoutingException.php b/wax/exceptions/WXRoutingException.php
+index 6b92511e2d254d9e91407e96549788e23e750866..8f6ab6e3a1cac24f1a6ab38e5502d502ed0397b8 100644
+--- a/wax/exceptions/WXRoutingException.php
++++ b/wax/exceptions/WXRoutingException.php
+@@ -6,7 +6,7 @@
+  **/
+ class WXRoutingException extends WXException
+ {
+-  static $redirect_on_error="error-404";
++  static $redirect_on_error=false;
+   static $double_redirect = false;
+   
+ 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
+-- 
+1.5.4
+
+

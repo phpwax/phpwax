@@ -1,0 +1,26 @@
+From df08feed46aefc1d8690888d4c33aca6836aa68e Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 13:01:37 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/forms/WaxWidget.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 1cebd08c39ae6b174b1bb9057b71f3fcaa0d617d..1d644a4bae401827a7f6f05d90262b44923b129c 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -71,7 +71,7 @@ class WaxWidget {
+   public function make_attributes() {
+     $res = "";
+     foreach($this->allowable_attributes as $name) {
+-      if(isset($this->{$name})) $res.=sprintf('%s="%s" ', $name, $this->{$name});
++      $res.=sprintf('%s="%s" ', $name, $this->{$name});
+     }
+     return $res;
+   }
+-- 
+1.5.4
+
+

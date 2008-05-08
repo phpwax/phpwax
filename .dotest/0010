@@ -1,0 +1,33 @@
+From 5384461ed96b44d365bface6857c031827df44c9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 3 Apr 2008 17:12:06 +0100
+Subject: Created ManyToMany functionality
+
+---
+ wax/tests/TestWaxModelField.php |    9 ++++-----
+ 1 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 6d1201dfea62995832cc4637ea58b75dd2df6a5b..d74c1d22e454c8e8001c151fe96c58cd29088732 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -74,11 +74,10 @@ class TestWaxModelField extends WXTestCase {
+       $prop2 = $props->create(array("name"=>"Property 2"));
+       $model->properties = $props->all();
+       $test = $model->properties;
+-      $this->dump($model->properties);
+-      //$this->assertIsA($model->properties, "WaxModelAssociation");
+-      //$this->assertEqual($model->properties->count(), 2);
+-      //$model->properties->unlink($prop1);
+-      //$this->assertEqual($model->properties->count(), 1);
++      $this->assertIsA($model->properties, "WaxModelAssociation");
++      $this->assertEqual($model->properties->count(), 2);
++      $model->properties->unlink($prop1);
++      $this->assertEqual($model->properties->count(), 1);
+     }
+ 
+     
+-- 
+1.5.4
+
+

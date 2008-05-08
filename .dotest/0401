@@ -1,0 +1,64 @@
+From 3ebcd30c6cbd008b863b3993b5c557efcc49607c Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Sat, 12 Apr 2008 22:55:55 +0100
+Subject: Clean up of Config class and rewrite of tests
+
+---
+ wax/db/WaxModel.php      |    4 ++++
+ wax/tests/TestConfig.php |    7 ++++++-
+ wax/utilities/WaxLog.php |    2 +-
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index bf8a642aa8b67a0c859876452e3b77d618d46ea3..84c08da5b857f895b0bed0382d7f7df8720b747d 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -193,6 +193,10 @@ class WaxModel {
+     return $res;
+   }
+   
++  public function exec($statement) {
++    return $this->db->exec($statement);
++  }
++  
+   /**
+    * Create function
+    *
+diff --git a/wax/tests/TestConfig.php b/wax/tests/TestConfig.php
+index 3a73d020966eb51d1d290f15bba8ffb9dd056197..cfddc38c73208ce78c5e8bc3e560426517413dcc 100755
+--- a/wax/tests/TestConfig.php
++++ b/wax/tests/TestConfig.php
+@@ -18,10 +18,15 @@ class TestConfig extends WXTestCase
+   	  $this->assertEqual(Config::get('myconf'), "myval");
+   	}
+ 
+-    public function test_get($value) { 
++    public function test_get() { 
+   	  $config = Config::get('all');
+   	  $this->assertTrue(is_array($config));
+   	}
++  	
++  	public function test_return_false() { 
++  	  $config = Config::get('rubbish');
++  	  $this->assertFalse($config);
++  	}
+ 
+   	public function test_set_environment($env) {
+   	  Config::set_environment('test');
+diff --git a/wax/utilities/WaxLog.php b/wax/utilities/WaxLog.php
+index ec7bd8e893401d833e47672818474e53e054fecd..24290fb51a4cba248d9cc4ab55692fe4fff5f8f5 100644
+--- a/wax/utilities/WaxLog.php
++++ b/wax/utilities/WaxLog.php
+@@ -20,7 +20,7 @@ class WaxLog {
+   }
+   
+   static public function log($type, $output) {
+-    if(defined("DEBUG_".strtoupper($type))) {
++    if(Config::get("debug_".$type)) {
+       error_log("[$type] $output");
+     }
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 44fc78593aadf0a897e8562cde8bb3f1aa8f2df5 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 19:54:44 +0100
+Subject: Encoding for form widget
+
+---
+ wax/forms/WaxWidget.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index 273f10a4b79142027cc67ce763e36a6953018d6c..d6db2c57d57e32b2e6f53b6107917f6dd0a87d6f 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -21,7 +21,7 @@ class WaxWidget {
+   
+   public function __construct($name, WaxModel $model=null) {
+     if($model) {
+-      $this->attribute("name", "[$model->table]$name");
++      $this->attribute("name", "$model->table[$name]");
+       $this->attribute("id", "{$model->table}_{$name}");
+       $this->value = $model->output_val($name);
+       $this->attribute("value", $this->value);
+-- 
+1.5.4
+
+

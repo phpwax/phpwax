@@ -1,0 +1,25 @@
+From 5d86402c734d633d294706e746a13a4f4b90e079 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 13:15:15 +0100
+Subject: Cleaned up default exception handling
+
+---
+ wax/template/builtin/trace.html |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/template/builtin/trace.html b/wax/template/builtin/trace.html
+index d4ef792834894c648526608d230e60d80aa6b0ff..d12d6c81d6b668d2c5d34c1d48e386992baa8109 100644
+--- a/wax/template/builtin/trace.html
++++ b/wax/template/builtin/trace.html
+@@ -13,6 +13,7 @@
+     h3 { margin:1em 0 .5em 0; }
+     h4 { margin:0 0 .5em 0; font-weight: normal; }
+     ul { margin-left: 2em; margin-top: 1em; }
++    p { margin:10px 0;}
+     #summary { background: #000000; color:white; }
+     #summary h2, #environment h2 { font-weight: normal; color: #e1e1e1; }
+     #instructions { background:#f6f6f6; }
+-- 
+1.5.4
+
+

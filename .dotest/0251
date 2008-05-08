@@ -1,0 +1,63 @@
+From b4c2c0fc68b936817f1a5dfda3124f049c523848 Mon Sep 17 00:00:00 2001
+From: Sheldon Els <sheldon@oneblackbear.com>
+Date: Wed, 9 Apr 2008 14:13:43 +0100
+Subject: change on association to have a join_model and not overwrite it's recordset model
+
+---
+ wax/db/WaxModelAssociation.php  |   20 ++++++--------------
+ wax/tests/TestWaxModelField.php |    1 +
+ 2 files changed, 7 insertions(+), 14 deletions(-)
+
+diff --git a/wax/db/WaxModelAssociation.php b/wax/db/WaxModelAssociation.php
+index 09696df7c5d0f2898f33b2ca90834a53b030d780..1314f3fc4eb2a9c9779a65b144a3150a89b339d6 100644
+--- a/wax/db/WaxModelAssociation.php
++++ b/wax/db/WaxModelAssociation.php
+@@ -9,26 +9,18 @@
+ 
+ class WaxModelAssociation extends WaxRecordset {
+   
+-  public $target_model;
+-  public $model;
++  public $join_model;
+   public $owner_field;
+ 
+   public function __construct($target, $join_model, $owner_field=false) {
+-    parent::__construct($target, $target->all()->rowset);
+-    $this->target_model = $target;
+-    $this->model = $join_model;
++    $this->rowset = $target->all()->rowset;
++    $this->model = $target;
++    $this->join_model = $join_model;
+     $this->owner_field = $owner_field;
+-  } 
+-  
+-  public function offsetGet($offset) {
+-     $obj = clone $this->target_model;
+-     $obj->set_attributes($this->rowset[$offset]);
+-     return $obj;
+-   }
+-  
++  }
+   
+   public function __call($method, $args) {
+-    return call_user_func_array(array($this->model->get_col($this->owner_field), $method), $args);
++    return call_user_func_array(array($this->join_model->get_col($this->owner_field), $method), $args);
+   }
+ 
+   
+diff --git a/wax/tests/TestWaxModelField.php b/wax/tests/TestWaxModelField.php
+index 02dcb56c92a6676bd9874b882465e715da14e73a..598b3df845af65150f6419589619d71936423a32 100644
+--- a/wax/tests/TestWaxModelField.php
++++ b/wax/tests/TestWaxModelField.php
+@@ -109,6 +109,7 @@ class TestWaxModelField extends WXTestCase {
+       $test = $model->properties;
+       $this->assertIsA($model->properties, "WaxModelAssociation");
+       $this->assertIsA($model->properties[0], "ExampleProperty");
++      $this->assertIsA($model->properties[0]->examples[0], "Example");
+       $this->assertEqual($model->properties->count(), 2);
+       $model->properties->unlink($prop1);
+       $this->assertEqual($model->properties->count(), 1);
+-- 
+1.5.4
+
+

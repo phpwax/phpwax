@@ -1,0 +1,38 @@
+From a95ddf819303d8e951477744e445a17fdd3ba7d9 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 12:39:53 +0100
+Subject: Added error sniffing to widgets
+
+---
+ wax/db/WaxModelField.php |    1 +
+ wax/forms/WaxWidget.php  |    1 -
+ 2 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index aeb7a075a1e3c00b4b5f55a622289ed556ae3004..14d806009ea6be0b1e3b700c2c00af458cdf11df 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -43,6 +43,7 @@ class WaxModelField {
+     foreach($options as $option=>$val) $this->{$option} = $val;
+     if(!$this->field) $this->field = $column;
+     if(!$this->col_name) $this->col_name = $this->field;
++    if($this->label===true) $this->label = Inflections::humanize($this->field);
+     $this->setup();
+   }
+   
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index ede42e3cf14434fac9d444889e7fb072163200e2..bdf25f948f65298138b06caad025209ef054c343 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -33,7 +33,6 @@ class WaxWidget {
+       $this->choices = $model_field->choices;
+       $this->label = $model_field->label;
+       $this->help_text = $model_field->help_text;
+-      if($this->label===true) $this->label = Inflections::humanize($name);
+       if($er = $model->errors[$name]) $this->error_messages = (array)$er;
+     }
+   }
+-- 
+1.5.4
+
+

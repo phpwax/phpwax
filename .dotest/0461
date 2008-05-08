@@ -1,0 +1,43 @@
+From 58b5dbee292fcbdd9c23b80e55f1152e2b3854be Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:30:16 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index f2e2ec9d26b90e51d2b16f8f34026336a9f32555..86090521f02690ec28d19a22ae3bf65226643823 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -9,7 +9,6 @@
+ class WaxWidget {
+ 
+ 
+-  public $model_field;
+   public $attributes = array();
+   public $value = false;
+   public $choices = false;
+@@ -25,11 +24,12 @@ class WaxWidget {
+       $this->attribute("name", "[$model->table]$name");
+       $this->attribute("id", "{$model->table}_{$name}");
+       $this->value = $model->{$name};
+-      $this->model_field = $model->get_col($name);
+-      $this->blank = $this->model_field->blank;
+-      $this->choices = $this->model_field->choices;
+-      $this->label = $this->model_field->label;
+-      $this->help_text = $this->model_field->help_text;
++      $field = $model->columns->[$name];
++      $model_field = new $field[1]($name, $model, $field[2]);
++      $this->blank = $model_field->blank;
++      $this->choices = $model_field->choices;
++      $this->label = $model_field->label;
++      $this->help_text = $model_field->help_text;
+       if(!$label) $this->label = Inflections::humanize($name);
+     }
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 37c0a2f37c142ce472b80cfe262c7e13fb34ed4d Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 14:45:26 +0100
+Subject: Fix to default datetime
+
+---
+ wax/db/fields/DateTimeField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/DateTimeField.php b/wax/db/fields/DateTimeField.php
+index 90915a1c586dd72e71982a72188b2e22103e5477..73f77472c380faac206c5f1bea895d5e56370199 100644
+--- a/wax/db/fields/DateTimeField.php
++++ b/wax/db/fields/DateTimeField.php
+@@ -21,7 +21,7 @@ class DateTimeField extends WaxModelField {
+   }
+   
+   public function setup() {
+-    if(!mktime($this->model->row[$this->field]) && $this->default=="now") {
++    if($this->model->row[$this->field]==0 && $this->default=="now") {
+       $this->model->row[$this->field]  = date($this->save_format);
+     }
+   }
+-- 
+1.5.4
+
+

@@ -1,0 +1,54 @@
+From 7900ec463fc3ce9fd6a0ea668d8b1be54ab412bc Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Fri, 11 Apr 2008 01:01:36 +0100
+Subject: Work on tests for paginated recordset
+
+---
+ wax/db/WaxModel.php                  |    2 +-
+ wax/db/WaxPaginatedRecordset.php     |    2 +-
+ wax/tests/TestPaginatedRecordset.php |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/wax/db/WaxModel.php b/wax/db/WaxModel.php
+index 12266baeb2cf2696ce97e3860ccc65326fb3b87c..e9eaa5f9c278e570934cd33396b567327f901cc5 100644
+--- a/wax/db/WaxModel.php
++++ b/wax/db/WaxModel.php
+@@ -170,7 +170,7 @@ class WaxModel {
+ 	}
+ 	
+ 	//take the page number, number to show per page, return paginated record set..
+-	public function page($page_number, $per_page=10){
++	public function page($page_number="1", $per_page=10){
+ 		return new WaxPaginatedRecordset($this, $page_number, $per_page);
+ 	}
+ 	
+diff --git a/wax/db/WaxPaginatedRecordset.php b/wax/db/WaxPaginatedRecordset.php
+index 950b866cc2c45b0b772a6b6ec62919f6e86933f1..5356cb41d85603074475d9b7090d43b7012d1647 100644
+--- a/wax/db/WaxPaginatedRecordset.php
++++ b/wax/db/WaxPaginatedRecordset.php
+@@ -18,7 +18,7 @@ class WaxPaginatedRecordset extends WaxRecordset {
+ 		$this->per_page = $per_page;
+ 		//setup model 
+     $this->model = $model;	
+-		$this->model->offset = ($page * $per_page);
++		$this->model->offset = ($page * $per_page)-$per_page;
+ 		$this->model->limit = $per_page;
+ 		//paginate the model
+ 		$rowset = $this->paginate($model);
+diff --git a/wax/tests/TestPaginatedRecordset.php b/wax/tests/TestPaginatedRecordset.php
+index 441ecf166a1bd1ff82d594a6b1f59cf22b7fd16a..7402c3d8ecceee660b5ffc0b14c6ba1aa8632075 100644
+--- a/wax/tests/TestPaginatedRecordset.php
++++ b/wax/tests/TestPaginatedRecordset.php
+@@ -30,7 +30,7 @@ class TestPaginatedRecordset extends WXTestCase {
+     
+     public function test_simple_page() {
+       $this->assertEqual($this->model->all()->count(), 45);
+-      $this->assertEqual($this->model->page(1)->count(), 10);
++      $this->assertEqual($this->model->page()->count(), 10);
+       
+     }
+     
+-- 
+1.5.4
+
+

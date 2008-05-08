@@ -1,0 +1,34 @@
+From adf8a2e1dcdc935ae9b5c79334fa6b9bf8a82e83 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:13:41 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/widgets/SelectInput.php |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 0bcdae2123aa010925d7d6babe65eda8940769b9..064344a74cdf8aa4f0373edabf0303ea107ea166 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -23,7 +23,7 @@ class SelectInput extends WaxWidget {
+   public function render() {
+     $out ="";
+     if($this->show_label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+-    $out .= sprintf($this->template, $this->make_attributes());
++    $out .= sprintf($this->template, $this->make_attributes(), $this->make_choices());
+     return $out;
+   }
+   
+@@ -50,6 +50,7 @@ class SelectInput extends WaxWidget {
+       }
+       
+     }
++    return $output;
+   }
+   
+ 
+-- 
+1.5.4
+
+

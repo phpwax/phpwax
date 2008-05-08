@@ -1,0 +1,26 @@
+From 2df03e84491363c1a1ff1855eb6d4f76ca7ccc6b Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.home>
+Date: Thu, 10 Apr 2008 01:56:02 +0100
+Subject: Fixed redirect loop in error handling
+
+---
+ wax/db/deprecated/WXActiveRecord.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/deprecated/WXActiveRecord.php b/wax/db/deprecated/WXActiveRecord.php
+index 9950a3a3e9ebf63f39845857155afacd1d5ad60d..61e4210ac5a02af2c5e76edabb0a2a5607cd4184 100755
+--- a/wax/db/deprecated/WXActiveRecord.php
++++ b/wax/db/deprecated/WXActiveRecord.php
+@@ -15,7 +15,7 @@
+ class WXActiveRecord extends WXValidations implements Iterator
+ {
+ 	protected static $default_pdo = null;
+-	protected static $pdo_settings = null;
++	public static $pdo_settings = null;
+ 	protected static $column_cache = null;
+ 	protected $pdo = null;
+   public $table = null;
+-- 
+1.5.4
+
+

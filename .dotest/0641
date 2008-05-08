@@ -1,0 +1,86 @@
+From 5f1fdd7a68b59fae2e524d43f2f35d4af06d9897 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 29 Apr 2008 00:06:28 +0100
+Subject: Fix to unique validation
+
+---
+ wax/AutoLoader.php          |    2 +-
+ wax/WXApplication.php       |    4 +++-
+ wax/db/fields/CharField.php |    3 +--
+ wax/utilities/WXScripts.php |    3 ++-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/wax/AutoLoader.php b/wax/AutoLoader.php
+index 51cb25d22ea450baff503e6c13a227e8a610e68e..43772acd6b74bb977aac4611fe1ab08cc626fecf 100755
+--- a/wax/AutoLoader.php
++++ b/wax/AutoLoader.php
+@@ -183,7 +183,7 @@ class AutoLoader
+ 	 *	@access public
+ 	 */	
+ 	static public function run_application($environment="development", $full_app=true) {
+-	  if(!defined('ENV')) define('ENV', $environment);	
++	  //if(!defined('ENV')) define('ENV', $environment);	
+ 		$app=new WXApplication($full_app);
+ 	}
+ 
+diff --git a/wax/WXApplication.php b/wax/WXApplication.php
+index 5f8ef0f0e109b51d6d90c77e6f62a7e16683aec2..8cf2e836e9668bfd507ff7e47d99aa1a9b60c95c 100755
+--- a/wax/WXApplication.php
++++ b/wax/WXApplication.php
+@@ -40,13 +40,15 @@ class WXApplication {
+    */
+ 	private function setup_environment() {
+ 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
++	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
+ 		if(defined('ENV')) {
+ 		  WXConfiguration::set_environment(ENV);
+ 		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
+ 		  WXConfiguration::set_environment('development');
+ 		} elseif($addr) {
+ 		  WXConfiguration::set_environment('production');
+-		}
++		} else WXConfiguration::set_environment('development');
++		
+ 		
+ 		/*  Looks for an environment specific file inside app/config */
+ 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
+diff --git a/wax/db/fields/CharField.php b/wax/db/fields/CharField.php
+index 50cbfb25a187f988fd9084e7118a8155781e895e..0d97499c6ecc85c945059789816326275f5aa337 100644
+--- a/wax/db/fields/CharField.php
++++ b/wax/db/fields/CharField.php
+@@ -24,9 +24,8 @@ class CharField extends WaxModelField {
+     if($this->unique){
+       $model_name = get_class($this->model);
+       $model = new $model_name();
+-    
+       //checks if the id in the database is the same as the id of the current row (will also pass if there's no entry in the database)
+-      if($model->filter(array($this->field => $this->model->{$this->field}))->first()->id != $this->model->id){
++      if($model->filter(array($this->field => $model->{$this->field}))->first()->id != $this->model->id){
+         $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
+       }
+     }
+diff --git a/wax/utilities/WXScripts.php b/wax/utilities/WXScripts.php
+index fbe4e843d67cb8fc0bd2e24ce2972d71fb01ef91..f619c83f6a804c26700a668131d7569a5f10c183 100755
+--- a/wax/utilities/WXScripts.php
++++ b/wax/utilities/WXScripts.php
+@@ -25,7 +25,7 @@ class WXScripts {
+   }
+   
+   protected function app_setup() {
+-    if(!defined("ENV")) define("ENV", "development");
++    //if(!defined("ENV")) define("ENV", "development");
+     Autoloader::run_application(ENV, false);
+   }
+   
+@@ -206,6 +206,7 @@ class WXScripts {
+   }
+   
+   public function syncdb($dir=false) {
++    if($dir[1] && ($dir[1]=="test" || $dir[1] == "production")) define("ENV", $dir[1]);
+     $this->app_setup();
+     if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
+     else Autoloader::include_dir(MODEL_DIR, true);
+-- 
+1.5.4
+
+

@@ -1,0 +1,26 @@
+From 55a08cb197949b42837031a4d89895357af77aaf Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Tue, 29 Apr 2008 00:47:51 +0100
+Subject: Fix to unique validation
+
+---
+ wax/db/fields/CharField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/fields/CharField.php b/wax/db/fields/CharField.php
+index 0d97499c6ecc85c945059789816326275f5aa337..6382da742bd8f9276d9ac416c4223cc1a7c6f4b1 100644
+--- a/wax/db/fields/CharField.php
++++ b/wax/db/fields/CharField.php
+@@ -25,7 +25,7 @@ class CharField extends WaxModelField {
+       $model_name = get_class($this->model);
+       $model = new $model_name();
+       //checks if the id in the database is the same as the id of the current row (will also pass if there's no entry in the database)
+-      if($model->filter(array($this->field => $model->{$this->field}))->first()->id != $this->model->id){
++      if($res = $model->filter(array($this->field => $model->{$this->model->field}))->first()->id && $res->id != $this->model->id){
+         $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
+       }
+     }
+-- 
+1.5.4
+
+

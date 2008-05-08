@@ -1,0 +1,26 @@
+From 6bbb950933270b786acdff3d2db3db62e860a3a4 Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Thu, 10 Apr 2008 14:42:49 +0100
+Subject: Wrapper request object
+
+---
+ wax/utilities/Request.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/utilities/Request.php b/wax/utilities/Request.php
+index c4e7b2bd45ab187dff6d555914444d6e14294825..2f4abc52381f96b77532faa63e2e66d445ed1f77 100644
+--- a/wax/utilities/Request.php
++++ b/wax/utilities/Request.php
+@@ -13,7 +13,7 @@ class Request {
+ 	
+ 	public function filter($name, $raw) {
+ 	  if(!$raw) $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_SANITIZE_SPECIAL_CHARS);
+-    else if($val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW));
++    else      $val = filter_input(INPUT_GET | INPUT_POST, $name, FILTER_UNSAFE_RAW);
+ 	  return $val;
+ 	}
+ 	
+-- 
+1.5.4
+
+

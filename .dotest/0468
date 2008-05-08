@@ -1,0 +1,52 @@
+From 79d2613df9e2b77b5610b7b7660fba744b384129 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Wed, 16 Apr 2008 09:37:37 +0100
+Subject: Work on widget output
+
+---
+ wax/forms/WaxWidget.php           |    1 -
+ wax/forms/widgets/SelectInput.php |   15 ++++++---------
+ 2 files changed, 6 insertions(+), 10 deletions(-)
+
+diff --git a/wax/forms/WaxWidget.php b/wax/forms/WaxWidget.php
+index a05cc1e0747d1084382952670c745ef9dda6627a..e9b55977971b7c7c7b5dc75b2f742058f9d74bbf 100644
+--- a/wax/forms/WaxWidget.php
++++ b/wax/forms/WaxWidget.php
+@@ -26,7 +26,6 @@ class WaxWidget {
+       $this->value = $model->{$name};
+       $field = $model->columns[$name];
+       $model_field = new $field[0]($name, $model, $field[1]);
+-      $this->options = $field[1];
+       $this->blank = $model_field->blank;
+       $this->choices = $model_field->choices;
+       $this->label = $model_field->label;
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 064344a74cdf8aa4f0373edabf0303ea107ea166..c1cb87254f64f09c5a9dd47615374bd11858b00f 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -40,15 +40,12 @@ class SelectInput extends WaxWidget {
+   }
+   
+   public function make_choices() {
+-    if($this->choices) {
+-      $output = "";
+-      $choice = '<option value="%s"%s>%s</option>';
+-      foreach($this->choices as $option=>$value) {
+-        $sel = "";
+-        if($this->name == $option && $this->value==$value) $sel = 'selected="selected"';
+-        $ouput .= sprintf($choice, $value, $sel, $option);
+-      }
+-      
++    $output = "";
++    $choice = '<option value="%s"%s>%s</option>';
++    foreach($this->choices as $option=>$value) {
++      $sel = "";
++      if($this->name == $option && $this->value==$value) $sel = 'selected="selected"';
++      $ouput .= sprintf($choice, $value, $sel, $option);
+     }
+     return $output;
+   }
+-- 
+1.5.4
+
+

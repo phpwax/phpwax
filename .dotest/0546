@@ -1,0 +1,25 @@
+From 3075f808b13155a434655822de8af8ab20995c48 Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Thu, 17 Apr 2008 21:41:57 +0100
+Subject: Fix to error display for select input
+
+---
+ wax/forms/widgets/SelectInput.php |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/wax/forms/widgets/SelectInput.php b/wax/forms/widgets/SelectInput.php
+index 43328cd0f33ba5279f08394331c90722b98afa5c..e6ae71d5a8e0aec46b33132cc5df5d47ad059adc 100644
+--- a/wax/forms/widgets/SelectInput.php
++++ b/wax/forms/widgets/SelectInput.php
+@@ -19,6 +19,7 @@ class SelectInput extends WaxWidget {
+   
+   
+   public function render() {
++    unset($this->attributes["value"]);
+     $out ="";
+     if($this->error_messages) $this->attributes["class"].=" error_field";
+     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
+-- 
+1.5.4
+
+

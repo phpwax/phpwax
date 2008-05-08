@@ -1,0 +1,55 @@
+From 07a1f775197d3dbf05de464d56e29e5f27790b7a Mon Sep 17 00:00:00 2001
+From: Ross Riley <rossriley@Macintosh.local>
+Date: Wed, 9 Apr 2008 13:16:57 +0100
+Subject: Sync_db swallows errors
+
+---
+ wax/db/WaxDbAdapter.php |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/wax/db/WaxDbAdapter.php b/wax/db/WaxDbAdapter.php
+index f75453437ec15d0255f66eceb272ab4f1fc4330b..75653576a916d57634f0470ada5400c946cf66c9 100644
+--- a/wax/db/WaxDbAdapter.php
++++ b/wax/db/WaxDbAdapter.php
+@@ -116,9 +116,9 @@ abstract class WaxDbAdapter {
+       }
+       if($col_exists==false){
+         $output .= $model_field->before_sync();
+-        $output .= $this->add_column($model_field, $model)."\n";
++        $output .= $this->add_column($model_field, $model, true)."\n";
+       }
+-      if($col_changed) $output .= $this->alter_column($model_field, $model)." ".$col_changed."\n";
++      if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed."\n";
+     }
+     $output .= "Table {$model->table} is now synchronised";
+     return $output;
+@@ -166,21 +166,21 @@ abstract class WaxDbAdapter {
+     return $sql;
+   }
+   
+-  public function add_column(WaxModelField $field, WaxModel $model) {
++  public function add_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
+     if(!$field->col_name) return true;
+     $sql = "ALTER TABLE `$model->table` ADD ";
+     $sql.= $this->column_sql($field, $model);
+     $stmt = $this->db->prepare($sql);
+-    $this->exec($stmt);
++    $this->exec($stmt, $swallow_errors);
+     return "Added column {$field->col_name} to {$model->table}";
+   }
+   
+-  public function alter_column(WaxModelField $field, WaxModel $model) {
++  public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
+     if(!$field->col_name) return true;
+     $sql = "ALTER TABLE `$model->table` MODIFY ";
+     $sql.= $this->column_sql($field, $model);
+     $stmt = $this->db->prepare($sql);
+-    $this->exec($stmt);
++    $this->exec($stmt, $swallow_errors);
+     return "Updated column {$field->field} in {$model->table}";
+   }
+   
+-- 
+1.5.4
+
+

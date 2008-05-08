@@ -1,0 +1,26 @@
+From 811ee68f312d2d20a5e17c787bf6943af4d7280a Mon Sep 17 00:00:00 2001
+From: Ross Riley <ross@oneblackbear.com>
+Date: Sun, 20 Apr 2008 15:19:18 +0100
+Subject: Work on linking widget directly to model
+
+---
+ wax/db/WaxModelField.php |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/wax/db/WaxModelField.php b/wax/db/WaxModelField.php
+index 3699a8d3964ab88aa8f80447c266ebac2e6a59fd..2c7ee51350866d6de5d7c85437c3e017f095fa25 100644
+--- a/wax/db/WaxModelField.php
++++ b/wax/db/WaxModelField.php
+@@ -27,7 +27,7 @@ class WaxModelField {
+   public $widget="TextInput";
+   protected $model = false;
+   
+-  public $errors = false;
++  public $errors = array();
+   
+   public $messages = array(
+     "short"=>       "%s needs to be at least %d characters",
+-- 
+1.5.4
+
+
