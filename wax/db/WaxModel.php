@@ -104,6 +104,14 @@ class WaxModel {
  	  if(count($this->errors)) return false;
  	  return true;
  	}
+ 	
+ 	public function get_errors() {
+ 	  return $this->errors;
+ 	}
+
+ 	public function stealth_get_errors() {
+ 	  return $this->errors;
+ 	}
 
   public function get_col($name) {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
