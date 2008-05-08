@@ -24,9 +24,12 @@ class CharField extends WaxModelField {
 		if($this->unique){
 			$current_value = $this->model->{$this->col_name};
 			$primary = $this->model->primary_key;
+			//clone model to not mess with filters
+			$model_name = get_class($this->model);
+			$model = new $model_name;
 			//find anything that matches this column value, make sure primay key is not this one
-			$present = $this->model->filter("`".$this->col_name."`='".$current_value."'")->filter("`".$primary."` <> '".$this->model->$primary."'")->all();			
-			if($present->count() > 0) $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));	
+			$present = $model->filter("`".$this->col_name."`='".$current_value."'")->filter("`".$primary."` <> '".$this->model->$primary."'")->all();
+			if($present->count() > 0) $this->add_error($this->field, sprintf($this->messages["unique"], $this->label));
 		}
   }
 
