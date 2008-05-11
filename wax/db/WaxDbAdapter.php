@@ -58,7 +58,6 @@ abstract class WaxDbAdapter {
     $stmt = $this->exec($stmt, $model->row);
     $new = array($model->primary_key => $this->db->lastInsertId());
     $class_name =  get_class($model) ;
- 		
     return new $class_name($this->db->lastInsertId());
 	}
   
@@ -72,7 +71,8 @@ abstract class WaxDbAdapter {
   
   public function delete(WaxModel $model) {
     $sql .= "DELETE FROM `{$model->table}`";
-    if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
+    if($model->id) $sql .= "WHERE {$model->primary_key}={$model->id}";
+    elseif(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
     if($model->order) $sql.= "ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";    
     $stmt = $this->db->prepare($sql);
