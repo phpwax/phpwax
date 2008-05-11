@@ -103,7 +103,7 @@ class WaxAuthDb
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
     $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
-    if($result) {
+    if($result->id) {
       $this->user_object = $result;
       $this->user_id = $result->id;
       return true;
