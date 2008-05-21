@@ -82,6 +82,13 @@ class ManyToManyField extends WaxModelField {
     return $this->join_model;
   }
   
+	//clean up the joins
+	public function delete(){
+		//delete join tables!
+		$data = $this->model->{$this->field};
+		if($data) $this->unlink($data);
+	}
+	
   public function save() {
     return true;
   }

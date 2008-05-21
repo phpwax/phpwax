@@ -64,7 +64,7 @@ class WaxModelField {
   public function setup() {}
   public function validate() {}
   public function save() {}
-  
+  public function delete(){}  
   public function output() {
     return $this->get();
   }
