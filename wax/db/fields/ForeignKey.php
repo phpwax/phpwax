@@ -22,7 +22,8 @@ class ForeignKey extends WaxModelField {
       $this->choices[""]="Select";
       foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     }
-    if(!$this->col_name) $this->col_name = Inflections::underscore($this->model_name)."_".$link->primary_key;
+    // Overrides naming of field to model_id if col_name is not explicitly set
+    if($this->col_name == $this->field) $this->col_name = Inflections::underscore($this->model_name)."_".$link->primary_key;
   }
 
   public function validate() {
