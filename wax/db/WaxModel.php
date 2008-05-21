@@ -191,6 +191,8 @@ class WaxModel {
      */
  	public function delete() {
  	  $this->before_delete();
+		//before we delete this, check fields - clean up joins by delegating to field
+		foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();
  	  $res = $this->db->delete($this);
     $this->after_delete();
     return $res;
