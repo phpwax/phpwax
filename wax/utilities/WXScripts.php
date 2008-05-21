@@ -310,6 +310,58 @@ class WXScripts {
       $this->add_output("...successfully ran command but method returned false.");
     }
   }
+
+
+	public function port($argv){
+		$this->app_setup();
+		if(isset($argv[1])) {
+      define("ENV", $argv[1]);
+      unset($argv[1]);
+    }else define("ENV", "development");
+		/* users */
+		echo "converting cms_user...\n";
+		$cms_user = new CmsUser();
+		$oldusers = $cms_user->find_all();
+		if(count($oldusers)){
+			echo "  ".count($oldusers)." users found... moving to wildfire_user..\n";
+			foreach($oldusers as $olduser){
+				$user = new WildfireUser();
+				$data = array('username'=>$olduser->username, 'firstname'=>$olduser->firstname, 'surname'=>$olduser->surname, 
+											'email'=>$olduser->email,	'password'=>$olduser->password, 'usergroup'=>$olduser->usergroup);
+				$user->update_attributes($data);
+				echo '  converted: '.$data['username'].' ('.$data['usergroup'].")\n";
+			}
+			echo "  all users converted..\n\n";
+		}else echo "  no users found\n\n";
+		/* convert sections - err, maybe later; tree structures */
+		
+		/* convert content*/
+		echo "converting cms_content...\n";
+		$old = new CmsContent();
+		$oldcontents = $old->find_all();
+		if(count($oldcontents)>0){
+			echo "  ".count($oldcontents). " content found... moving to wildfire_content..\n";
+			foreach($oldcontents as $oldcontent){
+				$content = new WildfireContent();
+				$data = array(
+								'title'=>$oldcontent->title,'excerpt'=>$oldcontent->excerpt, 'content'=>$oldcontent->content,'status'=>$oldcontent->status,
+								'published'=>$oldcontent->published, 'expires'=>$oldcontent->expires, 'date_modified'=>$oldcontent->date_modified, 
+								'date_created'=>$oldcontent->date_created,'sort'=>$oldcontent->sort,'pageviews'=>$oldcontent->pageviews, 'url'=>$oldcontent->url,
+								'cms_section_id'=>$oldcontent->cms_section_id,'oldid'=>$oldcontent->id
+								);
+				//find the author
+				$oldauthor = new CmsUser($oldcontent->author_id);
+				$author = new WildfireUser();
+				$author = $author->filter(array('username'=>$oldauthor->username, 'password'=>$oldauthor->password) )->first();
+				$content = $content->update_attributes($data);
+				$content->author = $author;
+				echo "   converted: ".$data['title']. '('.$data['published'].")\n";
+			}
+			echo "  all content converted\n\n";
+		}else echo "  no content found..\n\n";
+			
+	}
+
   
   protected function get_response($question, $positive="y", $options=false) {
     if(!$options) $options = "[y/n] ";
