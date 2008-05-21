@@ -324,6 +324,7 @@ class WaxModel {
    */
   
   public function find_all($options=array()) {
+		$this->clear();
     if($options["conditions"]) $this->filter($options["conditions"]);
     if($options["limit"]) $this->limit=$options["limit"];
     if($options["order"]) $this->order = $options["order"];
@@ -339,6 +340,7 @@ class WaxModel {
    */
   
   public function find($options=array()) {
+		$this->clear();
     if($options["conditions"]) $this->filter($options["conditions"]);
     if($options["limit"]) $this->limit=$options["limit"];
     if($options["order"]) $this->order = $options["order"];
