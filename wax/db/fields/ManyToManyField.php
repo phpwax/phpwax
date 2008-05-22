@@ -65,7 +65,6 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function unlink($model) {
-    
     $links = new $this->model_name;
     
     if($model instanceof WaxModel) {
@@ -86,7 +85,7 @@ class ManyToManyField extends WaxModelField {
 	public function delete(){
 		//delete join tables!
 		$data = $this->model->{$this->field};
-		if($data) $this->unlink($data);
+		if($data->count()) $this->unlink($data);
 	}
 	
   public function save() {
