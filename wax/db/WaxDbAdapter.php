@@ -80,8 +80,8 @@ abstract class WaxDbAdapter {
   }
   
   public function select(WaxModel $model) {
-    if($this->sql) {
-      $sql = $this->sql;
+    if($model->sql) {
+      $sql = $model->sql;
     } else {
       $sql .= "SELECT ";
       if(count($this->columns)) $sql.= join(",", $this->columns) ;
