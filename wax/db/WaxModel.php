@@ -353,7 +353,9 @@ class WaxModel {
   }
   
   public function find_by_sql($sql) {
-    return $this->sql($sql)->all();
+    $this->sql = $sql;
+    $res = $this->db->select($this);
+    return new WaxRecordset($this, $res); 	  
   }
   
   public function dynamic_finders($func, $args) {
