@@ -355,6 +355,7 @@ class WaxModel {
   public function find_by_sql($sql) {
     $this->sql = $sql;
     $res = $this->db->select($this);
+    print_r($res); exit;
     return new WaxRecordset($this, $res); 	  
   }
   
