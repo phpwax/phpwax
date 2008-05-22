@@ -72,7 +72,7 @@ class TestWaxModel extends WXTestCase {
       $res = $this->model->create($this->get_fixture("user1"));
       $res = $this->model->filter(array("username"=>"test1"))->all()->delete();
       $res = $this->model->filter(array("username"=>"test1"))->first();
-      $this->assertFalse($res->count(), "0");
+      $this->assertFalse($res);
     }
     
     public function test_multiple_delete() {
