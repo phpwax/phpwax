@@ -349,6 +349,10 @@ class WaxModel {
     return $this->first();
   }
   
+  public function find_by_sql($sql) {
+    return $this->sql($sql)->all();
+  }
+  
   public function dynamic_finders($func, $args) {
 		$func = WXInflections::underscore($func);
 	  $finder = explode("by", $func);
