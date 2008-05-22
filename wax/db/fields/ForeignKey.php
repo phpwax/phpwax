@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PrimaryKey class
+ * ForeignKey class
  *
  * @package PHP-Wax
  **/
