@@ -21,20 +21,22 @@ class WaxTreeModel extends WaxModel {
   
   public function root() {
     $root = clone $this;
-    $root_return = $root->clear()->filter("$this->primary_key = ".$this->get_col($this->parent_column)->col_name)->first();
+    $root_return = $root->clear()->filter($this->get_col($this->parent_column)->col_name . " = $this->primary_key")->first();
     
     //legacy support code
     if(!$root_return){
-      $root_return = $root->clear()->filter(array($this->parent_column => "0"))->first();
+      $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first();
     }
     
     return $root_return;
   }
   
   public function save() {
-    if(!$this->{$this->parent_column})
-      $this->{$this->parent_column} = $this->root();
-    return parent::save();
+    $return_val = parent::save();
+    if(!$return_val->{$return_val->parent_column}){
+      $return_val->{$return_val->parent_column} = $return_val->root();
+    }
+    return $return_val;
   }
   
   public function syncdb() {
@@ -61,6 +63,22 @@ class WaxTreeModel extends WaxModel {
     return $res;
   }
 
+  public function array_to_root() {
+    $root = $this->root();
+    $parent = $this;
+    while($parent->primval != $root->primval){
+      $array_to_root[] = $parent;
+      $parent = $parent->{$this->parent_column};
+    }
+    $array_to_root[] = $root;
+    return $array_to_root;
+  }
+  
+  public function get_level() {
+    $array_to_root = $this->array_to_root();
+    return count($array_to_root) - 1;
+  }
+
   //not needed with the HasManyField implementation -- leaving code in case it's too slow
   /*public function parent() {
     $parent = clone $this;
@@ -72,20 +90,5 @@ class WaxTreeModel extends WaxModel {
     return $children->clear()->filter($this->parent_column => $this->primval)->all();
   }*/
   
-  //will debug later
-  /*public function array_to_root() {
-    $array_to_root[] = $this;
-    $parent = $this->{$this->parent_column};
-    while($parent->{$this->parent_column} != $parent){
-      $array_to_root[] = $parent;
-      $parent = $parent->{$this->parent_column};
-    }
-    return $array_to_root;
-  }
-  
-  public function get_level() {
-    $array_to_root = $this->array_to_root();
-    return count($array_to_root) - 1;
-  }*/
 }
 ?>
