@@ -94,6 +94,7 @@ class WaxModel {
     $this->order = false;
     $this->limit = false;
     $this->offset = "0";
+    $this->sql = false;
     $this->errors = array();
     return $this;
  	}
