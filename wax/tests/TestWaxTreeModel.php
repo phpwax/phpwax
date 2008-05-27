@@ -12,7 +12,7 @@ class TestWaxTreeModel extends WXTestCase {
     }
     
     public function tearDown() {
-      $this->model->clear()->delete();
+      $this->model->db->drop_table($this->model->table);
     }
     
     public function test_parent() {
