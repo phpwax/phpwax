@@ -84,7 +84,6 @@ class WaxModel {
  	}
  	
  	public function clear() {
- 	  $this->columns = array();
     $this->filters = array();
     $this->order = false;
     $this->limit = false;
