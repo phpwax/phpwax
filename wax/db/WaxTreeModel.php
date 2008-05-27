@@ -15,13 +15,20 @@ class WaxTreeModel extends WaxModel {
  	  parent::__construct($params);
  	  if(!$this->parent_column) $this->parent_column = "parent";
  	  if(!$this->children_column) $this->children_column = "children";
-    $this->define($this->parent_column, "ForeignKey", array("blank" => false, "col_name" => $this->parent_column."_".$this->primary_key));
+    $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key));
     $this->define($this->children_column, "HasManyField", array("model_name" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key));
   }
   
   public function root() {
     $root = clone $this;
-    return $root->clear()->filter(array("$this->primary_key = ".$this->get_col($this->parent_column)->col_name))->first();
+    $root_return = $root->clear()->filter("$this->primary_key = ".$this->get_col($this->parent_column)->col_name)->first();
+    
+    //legacy support code
+    if(!$root_return){
+      $root_return = $root->clear()->filter(array($this->parent_column => "0"))->first();
+    }
+    
+    return $root_return;
   }
   
   public function save() {
