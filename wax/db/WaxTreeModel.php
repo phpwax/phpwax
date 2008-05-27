@@ -21,7 +21,7 @@ class WaxTreeModel extends WaxModel {
   
   public function root() {
     $root = clone $this;
-    return $root->clear()->filter(array($this->primary_key => $this->parent_column))->first();
+    return $root->clear()->filter(array("$this->primary_key = ".$this->get_col($this->parent_column)->col_name))->first();
   }
   
   public function save() {
