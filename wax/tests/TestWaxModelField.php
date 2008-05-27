@@ -26,22 +26,23 @@ class TestWaxModelField extends WXTestCase {
       $this->model_editor = new ExampleEditor();
       $this->model_file = new ExampleFile();
 			$this->model_file_field = new ExampleFileField();
+      $this->model_property = new ExampleProperty();
       $this->model->syncdb();
       $this->model_owner->syncdb();
       $this->model_editor->syncdb();
       $this->model_file->syncdb();
       $this->model_file_field->syncdb();
-      $model3 = new ExampleProperty;
-      $model3->syncdb();
+      $this->model_property->syncdb();
     }
     
     public function tearDown() {
-      $model1 = new Example;
-      $model1->delete();
-      $model2 = new ExampleOwner;
-      $model2->delete();
-      $model3 = new ExampleProperty;
-      $model3->delete();
+      $this->model->db->drop_table($this->model->table);
+      $this->model_owner->db->drop_table($this->model_owner->table);
+      $this->model_editor->db->drop_table($this->model_editor->table);
+      $this->model_file->db->drop_table($this->model_file->table);
+      $this->model_file_field->db->drop_table($this->model_file_field->table);
+      $this->model_property->db->drop_table($this->model_property->table);
+      $this->model_property->db->drop_table("example_example_property");
     }
     
     public function get_fixture($type) {
@@ -91,6 +92,8 @@ class TestWaxModelField extends WXTestCase {
       $model1->set_attributes($this->get_fixture("user2"));
 			$model1 = $model1->save();
 			$this->assertFalse(count($model2->errors));
+			//cleanup after the syncdb
+			$model1->db->drop_table($model1->table);
     }
     
     public function test_foreign_key() {

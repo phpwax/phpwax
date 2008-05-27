@@ -56,9 +56,13 @@ abstract class WaxDbAdapter {
     $stmt = $this->db->prepare("INSERT into `{$model->table}` (".join(",", array_keys($model->row)).") 
       VALUES (".join(",", array_keys($this->bindings($model->row))).")");
     $stmt = $this->exec($stmt, $model->row);
+    
+    //changed back to an old method temporarily
     $new = array($model->primary_key => $this->db->lastInsertId());
-    $class_name =  get_class($model) ;
-    return new $class_name($this->db->lastInsertId());
+    return $model->clear()->filter($new)->first();
+    
+    //$class_name = get_class($model);
+    //return new $class_name($this->db->lastInsertId());
 	}
   
   public function update(WaxModel $model) {
@@ -165,9 +169,9 @@ abstract class WaxDbAdapter {
   
   public function drop_table($table_name) {
     $sql = "DROP TABLE IF EXISTS `$table_name`";
-    $this->db->prepare($sql);
+    $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
-    $this->output( "...removed table $table_name"."\n" );
+    return "...removed table $table_name"."\n";
   }
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
