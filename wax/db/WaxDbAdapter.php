@@ -165,9 +165,9 @@ abstract class WaxDbAdapter {
   
   public function drop_table($table_name) {
     $sql = "DROP TABLE IF EXISTS `$table_name`";
-    $this->db->prepare($sql);
+    $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
-    $this->output( "...removed table $table_name"."\n" );
+    return "...removed table $table_name"."\n";
   }
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
