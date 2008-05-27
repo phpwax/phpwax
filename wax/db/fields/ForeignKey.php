@@ -31,9 +31,12 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    $class= $this->model_name;
+    $class = $this->model_name;
     $model = new $class($this->model->{$this->col_name});
-    return $model;
+    if($model->primval)
+      return $model;
+    else
+      return false;
   }
   
   public function set($value) {
