@@ -8,22 +8,20 @@
 class ForeignKey extends WaxModelField {
   
   public $maxlength = "11";
-  public $model_name = false;
+  public $target_model = false;
   public $widget = "SelectInput";
   public $choices = array();
   public $identifier = false;
   
-  
   public function setup() {
-    if(!$this->table) $this->table = $this->field;
-    if(!$this->model_name) $this->model_name = Inflections::camelize($this->table);
-    $link = new $this->model_name;
+    if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
+    $link = new $this->target_model;
     if($this->identifier) {
       $this->choices[""]="Select";
       foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     }
     // Overrides naming of field to model_id if col_name is not explicitly set
-    if($this->col_name == $this->field) $this->col_name = Inflections::underscore($this->model_name)."_".$link->primary_key;
+    if($this->col_name == $this->field) $this->col_name = Inflections::underscore($this->target_model)."_".$link->primary_key;
   }
 
   public function validate() {
@@ -31,7 +29,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    $class = $this->model_name;
+    $class = $this->target_model;
     $model = new $class($this->model->{$this->col_name});
     if($model->primval)
       return $model;
