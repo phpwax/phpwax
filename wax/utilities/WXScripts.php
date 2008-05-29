@@ -295,11 +295,11 @@ class WXScripts {
     if(!isset($argv[1]) || !isset($argv[2])) {
       exit("[ERROR] You must supply at least two values, a model and a method"."\n");
     }    
-    $model_name = ucfirst(WXActiveRecord::camelize($argv[1]));
+    $model_name = Inflections::camelize($argv[1]);
     if(!class_exists($model_name) || !$model = new $model_name) {
       exit("[ERROR] Cannot find class name $model_name"."\n");
     }
-    $commands = array($argv[1], $argv[2]);
+    $commands = array($model_name, $argv[2]);
     array_shift($argv);
     array_shift($argv);
     array_shift($argv);
