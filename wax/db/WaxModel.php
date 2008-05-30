@@ -49,13 +49,13 @@ class WaxModel {
  		  $this->clear();
  		}
  		
+ 		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
+ 		$this->setup();
  		// If a scope is passed into the constructor run a method called scope_[scope]().
  		if($params && is_string($params)) {
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) $this->$method;
 	  }
- 		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
- 		$this->setup();
  	}
  	
  	static public function load_adapter($db_settings) {
@@ -83,6 +83,20 @@ class WaxModel {
     return $this;
  	}
  	
+ 	/**
+ 	 * Scope function... allows a named scope function to be called which configures a view of the model
+ 	 *
+ 	 * @param string $scope 
+ 	 * @return $this
+ 	 */
+ 	
+ 	public function scope($scope) {
+ 	  $method = "scope_".$scope;
+    if(method_exists($this, $method)) $this->$method;
+    return $this;
+ 	}
+ 	
+ 	
  	public function clear() {
     $this->filters = array();
     $this->order = false;
@@ -92,6 +106,7 @@ class WaxModel {
     $this->errors = array();
     return $this;
  	}
+ 	
  	
  	public function validate() {
  	  foreach($this->columns as $column=>$setup) {
