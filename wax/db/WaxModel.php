@@ -195,6 +195,10 @@ class WaxModel {
 		$this->order = $order_by;
 		return $this;
 	}
+	public function offset($offset){
+		$this->offset = $offset;
+		return $this;
+	}
 	public function limit($limit){
 		$this->limit = $limit;
 		return $this;
