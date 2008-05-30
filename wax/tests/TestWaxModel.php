@@ -5,7 +5,7 @@ class Example extends WaxModel {
     $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
     $this->define("email", "EmailField", array("blank"=>false));
     $this->define("example_owner", "ForeignKey", array("null"=>true));
-    $this->define("properties", "ManyToManyField", array("model_name"=>"ExampleProperty"));
+    $this->define("properties", "ManyToManyField", array("target_model"=>"ExampleProperty"));
   }
 }
 
@@ -13,21 +13,21 @@ class ExampleOwner extends WaxModel {
   
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "HasManyField", array("model_name"=>"Example"));
+    $this->define("examples", "HasManyField", array("target_model"=>"Example"));
   }
 }
 
 class ExampleEditor extends WaxModel {
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "HasManyField", array("model_name"=>"Example"));
+    $this->define("examples", "HasManyField", array("target_model"=>"Example"));
   }
 }
 
 class ExampleProperty extends WaxModel {
   public function setup() {
     $this->define("name", "CharField", array("maxlength"=>40));
-    $this->define("examples", "ManyToManyField", array("model_name"=>"Example"));
+    $this->define("examples", "ManyToManyField", array("target_model"=>"Example"));
   } 
 }
 

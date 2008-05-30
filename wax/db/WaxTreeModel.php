@@ -15,8 +15,8 @@ class WaxTreeModel extends WaxModel {
  	  parent::__construct($params);
  	  if(!$this->parent_column) $this->parent_column = "parent";
  	  if(!$this->children_column) $this->children_column = "children";
-    $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key));
-    $this->define($this->children_column, "HasManyField", array("model_name" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key));
+    $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key, "target_model" => get_class($this)));
+    $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key));
   }
   
   public function root() {

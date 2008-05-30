@@ -8,13 +8,13 @@
 class ManyToManyField extends WaxModelField {
   
   public $maxlength = "11";
-  public $model_name = false; //model on the other side of the many to many
+  public $target_model = false; //model on the other side of the many to many
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
   
   public function setup() {
     $this->col_name = false;
-    if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
-    $j = new $this->model_name;
+    if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
+    $j = new $this->target_model;
     if(strnatcmp($this->model->table, $j->table) <0) {
       $left = $this->model;
       $right = $j;
@@ -26,7 +26,6 @@ class ManyToManyField extends WaxModelField {
     $join->init($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
-    $this->model_name = get_class($j);
   }
 
   public function validate() {
@@ -35,7 +34,7 @@ class ManyToManyField extends WaxModelField {
   
   public function get() {
     $vals = $this->join_model->all();
-    $links = new $this->model_name;
+    $links = new $this->target_model;
     if(!$vals->count()) return new WaxRecordset($this->model, array());
     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
     return new WaxModelAssociation($links->filter("(".join(" OR ", $filters).")"), $this->model, $this->field);
@@ -65,7 +64,7 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function unlink($model) {
-    $links = new $this->model_name;
+    $links = new $this->target_model;
     
     if($model instanceof WaxModel) {
       $id = $model->primval;
@@ -98,7 +97,7 @@ class ManyToManyField extends WaxModelField {
 
   public function __call($method, $args) {
     $vals = $this->join_model->all();
-    $links = new $this->model_name;
+    $links = new $this->target_model;
     if(!$vals->count()) return new WaxRecordset($this->model);
     foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
     $links->filter("(".join(" OR ", $filters).")");

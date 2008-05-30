@@ -8,7 +8,7 @@
 class HasManyField extends WaxModelField {
   
   public $maxlength = "11";
-  public $model_name = false;
+  public $target_model = false;
   public $join_field = false;
   public $editable = false;
   
@@ -16,7 +16,7 @@ class HasManyField extends WaxModelField {
   public function setup() {
     $this->col_name = false;
     $class_name = get_class($this->model);
-    if(!$this->model_name) $this->model_name = Inflections::camelize($this->field, true);
+    if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
     if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_".$this->model->primary_key;
   }
 
@@ -25,12 +25,12 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    $model = new $this->model_name();
+    $model = new $this->target_model();
     return new WaxModelAssociation($model->filter(array($this->join_field=>$this->model->primval) ) , $this->model, $this->field);
   }
   
   public function set($value) {
-    if($value instanceof $this->model_name){
+    if($value instanceof $this->target_model){
       $value->{$this->join_field} = $this->model->primval();
       $value->save();
     }
@@ -43,7 +43,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function unlink($value) {
-    if($value instanceof $this->model_name){
+    if($value instanceof $this->target_model){
       $value->{$this->join_field} = 0;
       $value->save();
     }
@@ -60,16 +60,17 @@ class HasManyField extends WaxModelField {
   }
 
   public function before_sync() {
-    if($this->model_name != get_class($this->model)){
-      //define a foreign key in the target model and recursively sync that model
-      $output .= WaxModel::model_setup($this->model_name, $this->join_field, "ForeignKey", array("col_name" => $this->join_field, "table" => $this->model->table));
-      $output .= parent::before_sync();
-      return $output;
+    if($this->target_model != get_class($this->model)){
+      //define a foreign key in the target model and sync that model
+      $target_model = get_class($this->model);
+   	  $link = new $this->target_model;
+   	  $link->define($this->join_field, "ForeignKey", array("col_name" => $this->join_field, "target_model" => $target_model));
+   	  return $link->syncdb();
     }
   }
   
   public function __call($method, $args) {
-    $model = new $this->model_name();
+    $model = new $this->target_model();
     $model->filter(array($this->join_field=>$this->model->primval));
 
     return call_user_func_array(array($model, $method), $args);
