@@ -78,7 +78,7 @@ abstract class WaxDbAdapter {
     if($model->id) $sql .= "WHERE {$model->primary_key}={$model->id}";
     elseif(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters);    
     if($model->order) $sql.= "ORDER BY {$model->order}";
-    if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";    
+    if($model->limit) $sql.= " LIMIT {$model->limit}";    
     $stmt = $this->db->prepare($sql);
     return $this->exec($stmt);
   }
