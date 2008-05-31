@@ -396,6 +396,7 @@ class WXEmail
             $result .= $this->HeaderLine("Return-Path", trim($this->sender));
         
         // To be created automatically by mail()
+        print_r($this); exit;
         if(self::$email_intercept) {
           print_r($this->to);
           $this->to = array();
