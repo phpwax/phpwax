@@ -42,6 +42,7 @@ class WXApplication {
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
 		if(defined('ENV')) {
+		  die(ENV);
 		  WXConfiguration::set_environment(ENV);
 		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
 		  WXConfiguration::set_environment('development');
