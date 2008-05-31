@@ -229,7 +229,7 @@ class WXEmail
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
-				throw new WXEmailException("Couldn't Send Email");
+				throw new WXEmailException("Couldn't Send Email", $header.$body);
 			}
     }
 
