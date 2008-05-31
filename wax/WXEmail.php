@@ -392,8 +392,9 @@ class WXEmail
         if($intercept = Config::get("email_intercept")) {
           foreach($this->to as $to) $tos .= "'".$to[0]."' ";
           $this->to = array();
-          $this->add_to_address($intercept, "Intercepted Email to $tos ");
+          $this->add_to_address($intercept);
           $result .= $this->AddrAppend("To", $this->to);
+          $result .=  $this->HeaderLine("Intercepted Email"," original sent to $tos");
         } elseif(is_array($this->to) && count($this->to) > 0)
           $result .= $this->AddrAppend("To", $this->to);
         else $result .= $this->HeaderLine("To", $this->to);
