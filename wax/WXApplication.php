@@ -42,15 +42,15 @@ class WXApplication {
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
 		if(defined('ENV')) {
-		  die(ENV);
 		  WXConfiguration::set_environment(ENV);
 		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
 		  WXConfiguration::set_environment('development');
+		  define("ENV", "development");
 		} elseif($addr) {
 		  WXConfiguration::set_environment('production');
+		  define("ENV", "production");
 		} else WXConfiguration::set_environment('development');
-		
-		
+			  
 		/*  Looks for an environment specific file inside app/config */
 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
   }
