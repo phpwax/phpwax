@@ -140,7 +140,6 @@ class AutoLoader
 	}
 	
 	static public function detect_environments() {
-	  if(!is_array(WXConfiguration::get("environments"))) return false;
 	  if($_SERVER['HOSTNAME']) $addr = gethostbyname($_SERVER['HOSTNAME']);
 	  elseif($_SERVER['SERVER_ADDR']) $addr = $_SERVER['SERVER_ADDR'];
 	  if($envs= WXConfiguration::get("environments")) {
