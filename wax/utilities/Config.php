@@ -100,6 +100,7 @@ class Config
 	  if(is_array($env)) {
 	    return self::set($env);
 	  }
+	  
 	  return false;
 	}
 	
