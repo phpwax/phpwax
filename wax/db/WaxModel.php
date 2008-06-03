@@ -290,7 +290,7 @@ class WaxModel {
  	  $row = clone $this;
  	  $res = $this->db->select($row);
  	  if($res[0]) {
- 	    error_log(print_r($res[0], 1));
+ 	    print_r($res[0]);
  	    $row->set_attributes($res[0]);
  	  } else
  	    $row = false;
