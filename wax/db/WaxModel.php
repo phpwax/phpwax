@@ -289,9 +289,10 @@ class WaxModel {
  	  $this->limit = "1";
  	  $row = clone $this;
  	  $res = $this->db->select($row);
- 	  if($res[0])
+ 	  if($res[0]) {
+ 	    error_log(print_r($res[0], 1))
  	    $row->set_attributes($res[0]);
- 	  else
+ 	  } else
  	    $row = false;
  	  return $row;
  	}
