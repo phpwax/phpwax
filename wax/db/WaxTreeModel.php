@@ -97,7 +97,7 @@ class WaxTreeModel extends WaxModel {
   
   public function get_level() {
 		if($this->level) return $this->level;
-		if(!$this->tree) $this->array_to_root();
+		if(!$this->tree) $this->path_to_root();
     $this->level = count($this->tree) - 1;
 		return $this->level;
   }
