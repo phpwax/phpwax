@@ -10,4 +10,4 @@ Config::set("log_error", true);
 
 
 /**** Force all emails to be delivered to one email address */
-//WXEmail::$email_intercept = "you@yourdomain.com";
+//Config::set("email_intercept", "you@yourdomain.com");
