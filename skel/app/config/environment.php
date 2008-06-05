@@ -10,7 +10,7 @@
  */
 
 /* You can change the version number to run on older versions of the framework  */
-define('WAX_VERSION', '0.7.5'); // This is set to your install path as created above.
+define('WAX_VERSION', '0.8'); // This is set to your install path as created above.
 
 /* You normally wouldn't change this line, unless you want to have the PEAR package somewhere unusual */
 define('WAX_PATH', PEAR_INSTALL_DIR); 
