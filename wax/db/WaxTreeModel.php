@@ -28,7 +28,7 @@ class WaxTreeModel extends WaxModel {
   public function save() {
     $return_val = parent::save();
     if(!$return_val->{$return_val->parent_column}){
-      $return_val->{$return_val->parent_column} = $return_val->root();
+      $return_val->{$return_val->parent_column} = $return_val->get_root();
     }
     return $return_val;
   }
@@ -62,17 +62,16 @@ class WaxTreeModel extends WaxModel {
 		if($this->root_node) return $this->root_node;
     $root = clone $this;
     $root_return = $root->clear()->filter($this->get_col($this->parent_column)->col_name . " = $this->primary_key")->first();
-    //legacy support code
-    if(!$root_return) $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first();    
+    if(!$root_return) $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first(); //legacy support code
     $this->root_node = $root_return;
 		return $this->root_node;
   }
 	
-	public function generate_tree($data = false){
+	public function generate_tree(WaxTreeModel $data = null){
 		if(!$data) $data = array($this->get_root());
 
 		foreach($data as $node){
-			$model_name = Inflections::camelize($this->table, true);
+			$model_name = get_class($this);
 			$children = $node->{$this->children_column};
 			$this->tree_array[] = new $model_name($node->{$this->primary_key});
 			if($children && $children->count())	$this->generate_tree($children);
@@ -85,8 +84,8 @@ class WaxTreeModel extends WaxModel {
     if($this->id){
 			$parent = $this;
     	while($parent->primval != $this->root_node->primval){
-				$model_name = Inflections::camelize($this->table, true);
-      	$array_to_root[] = new $model_name($parent->{$this->primary_key});
+				$model_name = get_class($this);
+      	$array_to_root[] = new $model_name($parent->primval);
       	$parent = $parent->{$this->parent_column};
     	}
 		}	
@@ -97,8 +96,8 @@ class WaxTreeModel extends WaxModel {
   
   public function get_level() {
 		if($this->level) return $this->level;
-		if(!$this->tree) $this->path_to_root();
-    $this->level = count($this->tree) - 1;
+		if(!$this->root_path) $this->path_to_root();
+    $this->level = count($this->root_path) - 1;
 		return $this->level;
   }
 
