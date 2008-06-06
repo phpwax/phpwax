@@ -64,7 +64,6 @@ class FileField extends WaxModelField {
 			$column = $this->col_name;
 			$path = $this->save_file($_FILES[$this->model->table]);
 			if($path) $this->model->$column = $path;
-			unset($_FILES[$this->model->table]['name'][$this->col_name]);				
 			unset($_FILES[$this->model->table]['size'][$this->col_name]);				
 		} 
 		
