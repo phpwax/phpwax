@@ -41,9 +41,10 @@ class FileField extends WaxModelField {
 	public function valid_extension(){
 		$file = $_FILES[$this->model->table];
 		$name= $file['name'][$this->col_name];
-		$ext = strtolower(substr($name, strrpos($name, ".") ));
-		if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
-
+		if(strlen($name)){
+			$ext = strtolower(substr($name, strrpos($name, ".") ));
+			if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
+		}
 	}
 	/**** overides *****/
 
