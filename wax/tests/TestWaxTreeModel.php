@@ -54,7 +54,7 @@ class TestWaxTreeModel extends WXTestCase {
       $this->assertEqual($res4->get_level(), 3);
       $this->assertEqual($res4->parent->get_level(), 2);
       $this->assertEqual($res4->parent->parent->get_level(), 1);
-      $this->assertEqual($res4->root()->get_level(), 0);
+      $this->assertEqual($res4->get_root()->get_level(), 0);
     }
 }
 
