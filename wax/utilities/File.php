@@ -108,8 +108,8 @@ class File {
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), true);
 		foreach ( $iter as $file ) {
 			if($iter->hasChildren() && !strstr($iter->getPath()."/".$file, "/.")) {
-				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file);
-				$row['path']=$iter->getPath().'/'.$file;
+				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());
+				$row['path']=$iter->getPath().'/'.$file->getFilename();
 				$rows[]=$row; unset($row);
 			} 
 		}
