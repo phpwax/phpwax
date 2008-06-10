@@ -32,7 +32,8 @@ abstract class WaxDbAdapter {
       'PasswordField'=>     'varchar',
       'SlugField'=>         'varchar',
       'TextField'=>         'longtext',
-      'TimeField'=>         'time'
+      'TimeField'=>         'time',
+			'FloatField'=>				'float'
   );
   public $total_without_limits = false;
   

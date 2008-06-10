@@ -108,7 +108,17 @@ class WaxModelField {
       $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
-  
+  protected function valid_float(){
+		$lengths = explode(",", $this->maxlength);
+		$values = explode(".", $this->model->{$this->field});
+		if(strlen($values[0]) > $lengths[0]){
+			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
+		}
+		if($values[1] && $lengths[1] && strlen($values[1]) > $lengths[1]){
+			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
+		}
+	}
+
   protected function valid_format($name, $pattern) {
     if(!preg_match($pattern, $this->model->{$this->field})) {
       $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
