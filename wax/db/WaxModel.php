@@ -249,6 +249,7 @@ class WaxModel {
   public function insert() {
     $this->before_insert();
     $res = $this->db->insert($this);
+    $this->{$this->primary_key} = $res->primval;
     $res->after_insert();
     return $res;
   }
