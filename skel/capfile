@@ -1,3 +1,6 @@
+load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+
+
 # This defines a deployment "recipe" that you can feed to capistrano
 # (http://manuals.rubyonrails.com/read/book/17). It allows you to automate
 # (among other things) the deployment of your application.
@@ -10,18 +13,20 @@
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
 
-set :application, "appname"
-set :repository, "svn://yourrepo.com/home/svn/#{application}"
-
-
-role :web, "appname"
+set :application, "app_name"
 set :user, "user"
+set :password, 'password'
+
+role :web, "ldc.oneblackbear.com"
 
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
+default_run_options[:pty] = true
+set :repository,  "git@github.com:oneblackbear/#{application}.git"
+set :scm_user, "user"
+set :scm_password, 'password'
 set :deploy_to, "."
-
 
 
 # =============================================================================
@@ -32,12 +37,37 @@ set :deploy_to, "."
 # narrow the set of servers to a subset of a role by specifying options, which
 # must match the options given for the servers to select (like :primary => true)
 
-desc "This will deploy the app"
-task :deploy do
-  run "svn export #{repository} #{deploy_to} --force"
-end
+namespace :deploy do  
 
-desc "Updates the database on the remote server"
-task :migrate do
-  run "script/syncdb"
+  desc <<-DESC
+      First setup of cache for deploying
+    DESC
+  task :setup_cache do
+    set :user, scm_user
+    set :password, scm_password
+    run "git clone --depth 1 #{repository} #{application}"
+    run "chmod -R 0777 ./*"
+  end
+  
+  desc <<-DESC
+      For subsequent runs this runs a git pull only getting changed files
+    DESC
+  task :update_cache do
+    set :user, scm_user
+    set :password, scm_password
+    begin
+      run "cd ./#{application}"
+    rescue
+      setup_cache
+    end
+    run "cd ./#{application} && git pull"
+    run "chmod -R 0777 ./*"
+  end
+  
+  desc "Copies the newly updated git clone to the live directory"
+  task :default do
+    run "cp -Rf /home/#{scm_user}/#{application}/* #{deploy_to}"
+  end
+  
+  
 end
