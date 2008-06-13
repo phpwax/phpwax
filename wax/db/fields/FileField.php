@@ -60,13 +60,14 @@ class FileField extends WaxModelField {
 	//save function needs to handle the post upload of a single file
 	public function save() {
 		//file is present and has a valid size
-		if(isset($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
+		if(is_string($_FILES[$this->model->table]['name'][$this->col_name]) && ($_FILES[$this->model->table]['size'][$this->col_name] > 0) ){
 			//save file to hdd & change col_name value to new_path
 			$column = $this->col_name;
-			$path = $this->save_file($_FILES[$this->model->table]);
+			$path = $this->save_file($_FILES[$this->model->table]['tmp_name'][$this->col_name], $_FILES[$this->model->table]['name'][$this->col_name]);
 			if($path) $this->model->$column = $path;
+			//prevent resaves for things like join models
 			unset($_FILES[$this->model->table]['size'][$this->col_name]);				
-		} 
+		}
 		
 	}
 	
@@ -87,9 +88,8 @@ class FileField extends WaxModelField {
 		} else return false;
 	}
 	
-	private function save_file($file){
-		$up_tmp_name = $file['tmp_name'][$this->col_name];
-		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file['name'][$this->col_name]);
+	public function save_file($up_tmp_name, $file){
+		$file_destination = WAX_ROOT.$this->file_root.File::safe_file_save(WAX_ROOT.$this->file_root,$file);
 		//if(move_uploaded_file($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		if(rename($up_tmp_name, $file_destination) ) chmod($file_destination, 0777);
 		else return false;
