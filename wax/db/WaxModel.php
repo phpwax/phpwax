@@ -195,7 +195,7 @@ class WaxModel {
  	    if($this->primval) $res = $this->update();
  	    else $res = $this->insert();
  		}
- 		$this->after_save();
+ 		$res->after_save();
  		return $res;
   }
 
@@ -242,14 +242,14 @@ class WaxModel {
   public function update( $id_list = array() ) {
     $this->before_update();
     $res = $this->db->update($this);
-    $this->after_update();
+    $res->after_update();
     return $res;
   }
 
   public function insert() {
     $this->before_insert();
     $res = $this->db->insert($this);
-    $this->after_insert();
+    $res->after_insert();
     return $res;
   }
   
