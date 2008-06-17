@@ -130,7 +130,9 @@ abstract class WaxDbAdapter {
       $stmt = $this->db->prepare($sql);
       $this->exec($stmt, array(), true);
     }
-
+    echo $text."<br />";
+    $text = $this->db->quote($text);
+    die($text);
     // Run the query adding the weighting supplied in the columns array
     $sql = "SELECT * ,( ";
     foreach($columns as $name=>$weighting) {
