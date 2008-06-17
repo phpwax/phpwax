@@ -67,7 +67,7 @@ class WaxTreeModel extends WaxModel {
 		return $this->root_node;
   }
 	
-	public function generate_tree(WaxTreeModel $data = null){
+	public function generate_tree($data = null){
 		if(!$data) $data = array($this->get_root());
 
 		foreach($data as $node){
