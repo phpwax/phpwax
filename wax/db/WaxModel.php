@@ -21,6 +21,7 @@ class WaxModel {
   public $columns = array();
   public $filters = array();
 	public $group_by = false;
+	public $having = false;
   public $order = false;
   public $limit = false;
   public $offset = "0";
@@ -81,6 +82,21 @@ class WaxModel {
       }
     }
     return $this;
+ 	}
+ 	
+ 	
+ 	/**
+ 	 * Search Function, hands over to the DB to perform natural language searching.
+ 	 * Takes an array of columns which can each have a weighting value
+ 	 *
+ 	 * @param string $text 
+ 	 * @param array $columns 
+ 	 * @return WaxRecordset Object
+ 	 */
+ 	
+ 	public function search($text, $columns = array()) {
+ 	  $res = $this->db->search($this, $text, $columns);
+    return $res->all();
  	}
  	
  	/**

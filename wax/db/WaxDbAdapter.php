@@ -11,6 +11,7 @@ abstract class WaxDbAdapter {
   protected $filters = array();
   protected $offset = "0";
   protected $limit = false;
+  protected $having = false;
   protected $db;
   protected $date = false;
 	protected $timestamp = false;
@@ -95,7 +96,8 @@ abstract class WaxDbAdapter {
       else $sql.= "*";
       $sql.= " FROM `{$model->table}`";
       if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
-    	if($model->group_by) $sql .= " GROUP BY {$model->group_by}";   
+    	if($model->group_by) $sql .= " GROUP BY {$model->group_by}"; 
+    	if($model->having) $sql .=" HAVING {$model->having}";  
       if($model->order) $sql.= " ORDER BY {$model->order}";
       if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     }
@@ -109,6 +111,37 @@ abstract class WaxDbAdapter {
 			$this->total_without_limits = $found[0]['FOUND_ROWS()'];
 			return $res;
 		} elseif($this->exec($stmt)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+  
+  /**
+   * Fultext search on columns
+   *
+   * @param string $text 
+   * @param array $columns 
+   * @return $this
+   */
+  
+  public function search(WaxModel $model, $text, $columns=array()) {
+    // First up try to add the fulltext index. Do nothing if errors
+    $cols = array_keys($columns);
+    $index_name = implode("_", $cols); 
+    try {
+      $sql = "ALTER TABLE `".$this->table."` ADD FULLTEXT ".$index_name." (".implode(",", $cols).");";
+      die($sql);
+      $this->exec($sql);
+    } catch(Exception $e) { }
+    
+    // Run the query adding the weighting supplied in the columns array
+    $sql = "SELECT * ,( ";
+    foreach($columns as $name=>$weighting) {
+      $sql.="($weighting * (MATCH($name) AGAINST ('$text')) ) +";
+    }
+    $sql = rtrim($sql, "+");
+    $sql .= " AS relevance FROM ".$this->table." WHERE MATCH(".implode(",", $cols)." AGAINST '$text' IN BOOLEAN MODE)";
+    $model->sql = $sql;
+    $model->having = "relevance > 0";
+    $model->order = "relevance DESC";
+    return $model;
   }
   
   
