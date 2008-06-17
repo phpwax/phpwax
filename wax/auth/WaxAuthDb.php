@@ -29,6 +29,8 @@ class WaxAuthDb
 	function __construct($options=array()) {
 	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+	  if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
+	  if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
 	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
 	  $this->setup_user();
 	}
