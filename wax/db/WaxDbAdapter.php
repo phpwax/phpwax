@@ -130,16 +130,14 @@ abstract class WaxDbAdapter {
       $stmt = $this->db->prepare($sql);
       $this->exec($stmt, array(), true);
     }
-    echo $text."<br />";
     $text = $this->db->quote($text);
-    die($text);
     // Run the query adding the weighting supplied in the columns array
     $sql = "SELECT * ,( ";
     foreach($columns as $name=>$weighting) {
-      $sql.="($weighting * (MATCH($name) AGAINST ('$text')) ) +";
+      $sql.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
     }
     $sql = rtrim($sql, "+");
-    $sql .= ") AS relevance FROM ".$model->table." WHERE MATCH(".implode(",", $cols).") AGAINST ('$text' IN BOOLEAN MODE)";
+    $sql .= ") AS relevance FROM ".$model->table." WHERE MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)";
 
     $model->sql = $sql;
     $model->having = "relevance > 0";
