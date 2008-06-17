@@ -127,8 +127,8 @@ abstract class WaxDbAdapter {
     $index_name = implode("_", $cols); 
     try {
       $sql = "ALTER TABLE `".$model->table."` ADD FULLTEXT ".$index_name." (".implode(",", $cols).");";
-      die($sql);
-      $this->exec($sql);
+      $stmt = $this->db->prepare($sql);
+      $this->exec($stmt);
     } catch(Exception $e) { }
     
     // Run the query adding the weighting supplied in the columns array
