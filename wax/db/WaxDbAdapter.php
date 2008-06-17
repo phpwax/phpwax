@@ -124,7 +124,12 @@ abstract class WaxDbAdapter {
   public function search(WaxModel $model, $text, $columns=array()) {
     // First up try to add the fulltext index. Do nothing if errors
     $cols = array_keys($columns);
-    $index_name = implode("_", $cols); 
+    $index_name = implode("_", $cols);
+    foreach($cols as $col) {
+      $sql = "ALTER TABLE `".$model->table."` ADD FULLTEXT ".$col." ($col);";
+      $stmt = $this->db->prepare($sql);
+      $this->exec($stmt, array(), true);
+    }
     $sql = "ALTER TABLE `".$model->table."` ADD FULLTEXT ".$index_name." (".implode(",", $cols).");";
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt, array(), true);
