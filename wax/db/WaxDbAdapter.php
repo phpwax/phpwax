@@ -126,7 +126,7 @@ abstract class WaxDbAdapter {
     $cols = array_keys($columns);
     $index_name = implode("_", $cols); 
     try {
-      $sql = "ALTER TABLE `".$this->table."` ADD FULLTEXT ".$index_name." (".implode(",", $cols).");";
+      $sql = "ALTER TABLE `".$model->table."` ADD FULLTEXT ".$index_name." (".implode(",", $cols).");";
       die($sql);
       $this->exec($sql);
     } catch(Exception $e) { }
