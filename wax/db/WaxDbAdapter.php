@@ -135,7 +135,7 @@ abstract class WaxDbAdapter {
       $sql.="($weighting * (MATCH($name) AGAINST ('$text')) ) +";
     }
     $sql = rtrim($sql, "+");
-    $sql .= " AS relevance FROM ".$model->table." WHERE MATCH(".implode(",", $cols).") AGAINST ('$text' IN BOOLEAN MODE)";
+    $sql .= ") AS relevance FROM ".$model->table." WHERE MATCH(".implode(",", $cols).") AGAINST ('$text' IN BOOLEAN MODE)";
     die($sql);
     $model->sql = $sql;
     $model->having = "relevance > 0";
