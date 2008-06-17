@@ -25,14 +25,6 @@ class WaxTreeModel extends WaxModel {
   }
   
   
-  public function save() {
-    $return_val = parent::save();
-    if(!$return_val->{$return_val->parent_column}){
-      $return_val->{$return_val->parent_column} = $return_val->get_root();
-    }
-    return $return_val;
-  }
-  
   public function syncdb() {
     $res = parent::syncdb();
     if(!$this->root()){
