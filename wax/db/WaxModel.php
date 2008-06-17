@@ -96,7 +96,7 @@ class WaxModel {
  	
  	public function search($text, $columns = array()) {
  	  $res = $this->db->search($this, $text, $columns);
-    return $res->all();
+    return $res;
  	}
  	
  	/**
