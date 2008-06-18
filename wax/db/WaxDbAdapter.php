@@ -133,12 +133,12 @@ abstract class WaxDbAdapter {
     }
     $text = $this->db->quote($text);
     // Run the query adding the weighting supplied in the columns array
-    $model->columns = " * ,(";
+    $model->select_columns = " * ,(";
     foreach($columns as $name=>$weighting) {
-      $model->columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
+      $model->select_columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
     }
-    $model->columns = rtrim($this->columns, "+");
-    $model->columns .= ") AS relevance ";
+    $model->select_columns = rtrim($model->select_columns, "+");
+    $model->select_columns .= ") AS relevance ";
     $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
     $model->having = "relevance > 0";
     $model->order = "relevance DESC";
