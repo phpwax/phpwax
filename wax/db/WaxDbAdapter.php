@@ -142,6 +142,8 @@ abstract class WaxDbAdapter {
     $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
     $model->having = "relevance > 0";
     $model->order = "relevance DESC";
+    // Add an arbitrary limit to force found_rows to run
+    if(!$model->limit) $model->limit(1000);
     return $model;
   }
   
