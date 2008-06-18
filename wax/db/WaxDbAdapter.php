@@ -90,7 +90,7 @@ abstract class WaxDbAdapter {
       $sql = $model->sql;
     } else {
       $sql .= "SELECT ";
-      if(count($model->select_columns)) $sql.= join(",", $model->select_columns);
+      if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
       elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
   		//mysql extra - if limit then record the number of rows found without limits
   		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
