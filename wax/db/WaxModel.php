@@ -19,6 +19,7 @@ class WaxModel {
   public $primary_options = array();
   public $row = array();
   public $columns = array();
+  public $select_columns = false;
   public $filters = array();
 	public $group_by = false;
 	public $having = false;
