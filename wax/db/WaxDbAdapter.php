@@ -90,7 +90,8 @@ abstract class WaxDbAdapter {
       $sql = $model->sql;
     } else {
       $sql .= "SELECT ";
-      if(count($this->columns)) $sql.= join(",", $this->columns) ;
+      if(count($this->columns)) $sql.= join(",", $this->columns);
+      elseif(is_string($this->columns)) $sql.=$this->columns;
   		//mysql extra - if limit then record the number of rows found without limits
   		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
       else $sql.= "*";
@@ -132,14 +133,13 @@ abstract class WaxDbAdapter {
     }
     $text = $this->db->quote($text);
     // Run the query adding the weighting supplied in the columns array
-    $sql = "SELECT * ,( ";
+    $model->columns = " * ,(";
     foreach($columns as $name=>$weighting) {
-      $sql.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
+      $model->columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
     }
-    $sql = rtrim($sql, "+");
-    $sql .= ") AS relevance FROM ".$model->table." WHERE MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)";
-
-    $model->sql = $sql;
+    $model->columns = rtrim($this->columns, "+");
+    $model->columns .= ") AS relevance ";
+    $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
     $model->having = "relevance > 0";
     $model->order = "relevance DESC";
     return $model;
