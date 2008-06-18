@@ -133,7 +133,7 @@ abstract class WaxDbAdapter {
     }
     $text = $this->db->quote($text);
     // Run the query adding the weighting supplied in the columns array
-    $model->select_columns = " * ,(";
+    $model->select_columns = "SQL_CALC_FOUND_ROWS * ,(";
     foreach($columns as $name=>$weighting) {
       $model->select_columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
     }
