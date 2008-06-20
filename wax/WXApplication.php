@@ -53,7 +53,7 @@ class WXApplication {
 			  
 		/*  Looks for an environment specific file inside app/config */
 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
-		WaxLog::log("info", "Detected environment $addr and loaded".ENV);
+		WaxLog::log("info", "Detected environment $addr and loaded ".ENV);
 	  
   }
   
