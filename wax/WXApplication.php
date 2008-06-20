@@ -41,6 +41,7 @@ class WXApplication {
 	private function setup_environment() {
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
+	  error_log("Detected environment $addr");
 	  WaxLog::log("info", "Detected environment $addr");
 		if(defined('ENV')) {
 		  WXConfiguration::set_environment(ENV);
