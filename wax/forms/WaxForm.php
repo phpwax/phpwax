@@ -5,7 +5,7 @@
  *
  * @package PHP-Wax
  **/
-class WaxForm {
+class WaxForm implements Iterator {
     
   
   //Validation & Format Options
@@ -73,6 +73,30 @@ class WaxForm {
    
    public function __set($name, $value) {
      if(class_exists($value)) $this->elements[$name] = new $value;
+   }
+   
+   
+   /* Iterator functions */
+   
+   public function current() {
+     return current($this->elements);
+   }
+
+   public function key() {
+     return key($this->elements);
+   }
+
+   public function next() {
+     return next($this->elements);
+   }
+
+
+   public function rewind() {
+     reset($this->elements);
+   }
+
+   public function valid() {
+     return $this->current() !== false;
    }
 
   
