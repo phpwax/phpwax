@@ -67,6 +67,10 @@ class WaxForm implements Iterator {
      return true;
    }
    
+   public function render_with($content) {
+     return sprintf($this->template, $this->make_attributes(), $content);
+   }
+   
    public function __get($name) {
      if(array_key_exists($name, $this->elements)) return $this->elements[$name];
    }
