@@ -166,7 +166,7 @@ class WaxModel {
   
   static public function set_cache($model, $field, $id, $value) {
     self::$object_cache[$model][$field][$id]=$value->row;
-    print_r(self::$object_cache); exit;
+    var_dump(self::$object_cache); exit;
   }
   
   /**
