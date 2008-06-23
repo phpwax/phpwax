@@ -32,6 +32,7 @@ class WaxModel {
   public $identifier = false;
   static public $object_cache = array();
 
+	public $is_paginated = false;
 	
   /**
    *  constructor
@@ -283,6 +284,7 @@ class WaxModel {
 	
 	//take the page number, number to show per page, return paginated record set..
 	public function page($page_number="1", $per_page=10){
+		$this->is_paginated = true;
 		return new WaxPaginatedRecordset($this, $page_number, $per_page);
 	}
 	
