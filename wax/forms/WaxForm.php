@@ -96,7 +96,7 @@ class WaxForm implements Iterator {
    }
 
    public function valid() {
-     return $this->current() && $cur->editable;
+     return $this->current() && $this->current()->editable;
    }
 
   
