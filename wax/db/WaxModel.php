@@ -30,6 +30,7 @@ class WaxModel {
   public $errors = array();
   public $persistent = true;
   public $identifier = false;
+  static public $object_cache = array();
 
 	
   /**
