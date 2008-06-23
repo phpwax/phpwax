@@ -46,7 +46,6 @@ class WaxModel {
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
  		}
- 		$this->set_identifier();
  		if($params && is_numeric($params)) {
  		  $res = $this->filter(array($this->primary_key => $params))->first();
  		  $this->row=$res->row;
@@ -55,6 +54,7 @@ class WaxModel {
  		
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
+ 		$this->set_identifier();
  		// If a scope is passed into the constructor run a method called scope_[scope]().
  		if($params && is_string($params)) {
  		  $method = "scope_".$params;
