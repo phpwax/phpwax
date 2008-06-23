@@ -93,7 +93,7 @@ abstract class WaxDbAdapter {
       if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
       elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
   		//mysql extra - if limit then record the number of rows found without limits
-  		elseif($model->limit > 0) $sql .= "SQL_CALC_FOUND_ROWS *";
+  		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
       else $sql.= "*";
       $sql.= " FROM `{$model->table}`";
       if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
@@ -104,7 +104,7 @@ abstract class WaxDbAdapter {
     }
     $stmt = $this->db->prepare($sql);
 		//altered to include extra mysql found rows data
-		if($model->limit >0 && $this->exec($stmt)){
+		if($model->is_paginated && $this->exec($stmt)){
 			$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			$extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
 			$this->exec($extrastmt);
