@@ -45,6 +45,7 @@ class ManyToManyField extends WaxModelField {
         $built_choices[$choice->primval]=$choice->{$label_field};
       }
     }
+    $this->choices = $built_choices;
   }
 
   public function validate() {
