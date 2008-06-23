@@ -21,6 +21,7 @@ class SelectInput extends WaxWidget {
   public function tag_content() {
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
+    if(!$this->choices) $this->choices = $this->get_choices();
     foreach($this->choices as $value=>$option) {
       $sel = "";
       if($this->value==$value) $sel = ' selected="selected"';
