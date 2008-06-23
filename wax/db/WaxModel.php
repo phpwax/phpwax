@@ -152,10 +152,10 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
-  static public function get_cache($name, $id, $class) {
-    $data = self::$object_cache[$name][$id];
+  static public function get_cache($model, $field, $id) {
+    $data = self::$object_cache[$model][$field][$id];
     if($data) {
-      $row = new $class;
+      $row = new $model;
       $row->set_attributes($data);
       print_r($row); exit;
       return $row;
@@ -163,9 +163,8 @@ class WaxModel {
     return false;
   }
   
-  static public function set_cache($name, $id, $value) {
-    self::$object_cache[$name][$id]=$value->row;
-    print_r($this); exit;
+  static public function set_cache($model, $field, $id, $value) {
+    self::$object_cache[$model][$field][$id]=$value->row;
   }
   
   /**
