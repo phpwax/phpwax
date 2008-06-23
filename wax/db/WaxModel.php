@@ -153,7 +153,7 @@ class WaxModel {
   }
   
   public function get_cache($name, $id) {
-    if(self::$object_cache[$name][$id]) return self::$object_cache[$name][$id];
+    if($res = self::$object_cache[$name][$id]) return $res;
     return false;
   }
   
