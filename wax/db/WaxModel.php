@@ -155,6 +155,7 @@ class WaxModel {
   static public function get_cache($model, $field, $id) {
     $data = self::$object_cache[$model][$field][$id];
     if($data) {
+      print_r($data); exit;
       $row = new $model;
       $row->set_attributes($data);
       print_r($row); exit;
