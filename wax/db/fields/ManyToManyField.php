@@ -10,7 +10,7 @@ class ManyToManyField extends WaxModelField {
   public $maxlength = "11";
   public $target_model = false; //model on the other side of the many to many
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
-  public $widget = "MultipleSelectInput"
+  public $widget = "MultipleSelectInput";
   
   public function setup() {
     $this->col_name = false;
