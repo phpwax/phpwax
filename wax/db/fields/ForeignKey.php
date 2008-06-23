@@ -34,7 +34,7 @@ class ForeignKey extends WaxModelField {
     if($cache = call_user_func(array($this_class, "get_cache"), array($this->field,$this->model->{$this->col_name} ) )) return $cache;
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
-      call_user_func(array($this_class, "get_cache"), array($this->field, $this->model->{$this->col_name}, $model));
+      call_user_func_array(array($this_class, "get_cache"), array($this->field, $this->model->{$this->col_name}, $model));
       return $model;
     } else return false;
   }
