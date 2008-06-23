@@ -153,6 +153,7 @@ class WaxModel {
   }
   
   static public function get_cache($name, $id) {
+    die($name."::".$id);
     $data = self::$object_cache[$name][$id];
     if($data) {
       print_r($data); exit;
