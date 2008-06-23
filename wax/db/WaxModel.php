@@ -153,14 +153,17 @@ class WaxModel {
   }
   
   public function get_cache($name, $id) {
-    if($res = self::$object_cache) {
-      print_r($res); exit;
+    $data = self::$object_cache[$name][$id];
+    if($data) {
+      $row = clone $this;
+      $row->set_attributes($data);
+      return $row;
     }
     return false;
   }
   
   public function set_cache($name, $id, $value) {
-    self::$object_cache[$name][$id]=$value;
+    self::$object_cache[$name][$id]=$value->row;
   }
   
   /**
