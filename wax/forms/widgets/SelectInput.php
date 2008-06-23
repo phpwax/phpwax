@@ -10,7 +10,8 @@ class SelectInput extends WaxWidget {
 
   public $allowable_attributes = array(
     "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple"
-  ); 
+  );
+  
   
   public $class = "input_field select_field";
   public $label_template = '<label for="%s">%s</label>';
