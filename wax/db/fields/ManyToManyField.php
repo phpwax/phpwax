@@ -29,6 +29,19 @@ class ManyToManyField extends WaxModelField {
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     $this->choices = $j->all();
   }
+  
+  public function make_choices() {
+    if(is_array($this->choices)) return $this->choices;
+    elseif($this->choices instanceof WaxRecordset) {
+      // Grab the first text field to display
+      foreach($this->model->columns as $col) {
+
+      }
+      foreach($this->choices as $choice) {
+        $built_choices[$choice->primval]=$choice->{$choice}
+      }
+    }
+  }
 
   public function validate() {
     return true;
