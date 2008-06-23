@@ -157,6 +157,7 @@ class WaxModel {
     if($data) {
       $row = clone $this;
       $row->set_attributes($data);
+      print_r($row); exit;
       return $row;
     }
     return false;
