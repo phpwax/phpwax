@@ -154,13 +154,13 @@ class WaxModel {
   
   public function get_cache($name, $id) {
     if($res = self::$object_cache) {
-      print_r($res); exit;
+      print_r(unserialize($res)); exit;
     }
     return false;
   }
   
   public function set_cache($name, $id, $value) {
-    self::$object_cache[$name][$id]=$value;
+    self::$object_cache[$name][$id]=serialize($value);
   }
   
   /**
