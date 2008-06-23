@@ -33,7 +33,7 @@ class ForeignKey extends WaxModelField {
     $this_class = get_class($this->model);
     $args = array($this->field , $this->model->{$this->col_name} );
     $cache = call_user_func_array(array($this_class, "get_cache"), array($this->field,$this->model->{$this->col_name} ) );
-    if($cache) { print_r($cache, 1);exit;}
+    if($cache) { throw new WXException();}
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
       call_user_func_array(array($this_class, "set_cache"), array($this->field, $this->model->{$this->col_name}, $model));
