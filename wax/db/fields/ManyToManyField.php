@@ -28,6 +28,7 @@ class ManyToManyField extends WaxModelField {
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     $this->choices = $j->all();
+    $this->make_choices();
   }
   
   public function make_choices() {
