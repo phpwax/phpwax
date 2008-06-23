@@ -152,7 +152,7 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
-  public function get_cache($name, $id) {
+  static public function get_cache($name, $id) {
     $data = self::$object_cache[$name][$id];
     if($data) {
       print_r($data); exit;
@@ -164,7 +164,7 @@ class WaxModel {
     return false;
   }
   
-  public function set_cache($name, $id, $value) {
+  static public function set_cache($name, $id, $value) {
     self::$object_cache[$name][$id]=$value->row;
     print_r($this); exit;
   }
