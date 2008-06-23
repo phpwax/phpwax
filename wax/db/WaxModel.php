@@ -152,6 +152,15 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
+  public function get_cache($name, $id) {
+    if(self::$object_cache[$name][$id]) return self::$object_cache[$name][$id];
+    return false;
+  }
+  
+  public function set_cache($name, $id, $value) {
+    self::$object_cache[$name][$id]=$value;
+  }
+  
   /**
    * output_val function
    * Gets the output value of a field,

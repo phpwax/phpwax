@@ -31,11 +31,10 @@ class ForeignKey extends WaxModelField {
   public function get() {
     $class = $this->target_model;
     $this_class = get_class($this->model);
-    $cache = call_user_func($object_cache, $this_class);
-    if($res = $cache[$this->field][$this->model->{$this->col_name}]) return $res;
+    if($cache = call_user_func(array($this_class, "get_cache"), array($this->field,$this->model->{$this->col_name} ) )) return $cache;
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
-      $cache[$this->field][$this->model->{$this->col_name}] = $model;
+      call_user_func(array($this_class, "get_cache"), array($this->field, $this->model->{$this->col_name}, $model));
       return $model;
     } else return false;
   }
