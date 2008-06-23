@@ -157,7 +157,6 @@ class WaxModel {
     if($data) {
       $row = new $model;
       $row->set_attributes($data);
-      var_dump($row); exit;
       return $row;
     }
     return false;
