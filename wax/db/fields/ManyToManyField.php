@@ -38,7 +38,7 @@ class ManyToManyField extends WaxModelField {
 
       }
       foreach($this->choices as $choice) {
-        $built_choices[$choice->primval]=$choice->{$choice}
+        $built_choices[$choice->primval]=$choice->{$choice};
       }
     }
   }
