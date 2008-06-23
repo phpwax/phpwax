@@ -79,7 +79,9 @@ class WaxForm implements Iterator {
    /* Iterator functions */
    
    public function current() {
-     return current($this->elements);
+     $cur = current($this->elements);
+     if($cur->editable) return $cur;
+     return $this->next();
    }
 
    public function key() {
