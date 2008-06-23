@@ -79,10 +79,7 @@ class WaxForm implements Iterator {
    /* Iterator functions */
    
    public function current() {
-     $cur = current($this->elements);
-     print_r($cur); exit;
-     if($cur->editable !==false) return $cur;
-     return $this->next();
+     return current($this->elements);
    }
 
    public function key() {
@@ -99,7 +96,9 @@ class WaxForm implements Iterator {
    }
 
    public function valid() {
-     return $this->current() !== false;
+     $cur = $this->current();
+     if($cur && $cur->editable) return true;
+     return false;
    }
 
   
