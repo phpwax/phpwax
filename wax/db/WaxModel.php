@@ -169,8 +169,8 @@ class WaxModel {
     foreach($this->columns as $name=>$col) {
       if($col[0]=="TextField") {
         $label_field = $name;
-        break;
       }
+      if($label_field) break;
     }
     if($label_field) $this->identifier = $label_field;
   }
