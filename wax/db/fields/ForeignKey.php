@@ -32,7 +32,10 @@ class ForeignKey extends WaxModelField {
     $class = $this->target_model;
     $this_class = get_class($this->model);
     $cache = WaxModel::get_cache($this_class, $this->field, $this->model->{$this->col_name});
-    if($cache) return $cache;
+    if($cache) {
+      error_log("Saved query for model $this_class by retrieving ".$this->model->{$this->col_name}." from cache");
+      return $cache;
+    }
     error_log("Failed lookup for model $this_class running query for ".$this->model->{$this->col_name});
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
