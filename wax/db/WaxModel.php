@@ -170,9 +170,11 @@ class WaxModel {
       if($col[0]=="TextField") {
         $label_field = $name;
       }
-      if($label_field) break;
+      if($label_field) {
+        $this->identifier = $label_field;
+        return true;
+      }
     }
-    if($label_field) $this->identifier = $label_field;
   }
 
      /**
