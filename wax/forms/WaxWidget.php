@@ -25,6 +25,7 @@ class WaxWidget {
   
   
   public function render() {
+    if(!$this->editable) return false;
     $out ="";
     if($this->errors) $this->class.=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->id, $this->label); 
