@@ -53,8 +53,7 @@ class WaxTreeModel extends WaxModel {
   public function get_root() {
 		if($this->root_node) return $this->root_node;
     $root = clone $this;
-    $root_return = $root->clear()->filter($this->get_col($this->parent_column)->col_name . " = $this->primary_key")->first();
-    if(!$root_return) $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first(); //legacy support code
+    $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first();
     $this->root_node = $root_return;
 		return $this->root_node;
   }
