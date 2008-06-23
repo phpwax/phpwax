@@ -8,9 +8,9 @@
 class ManyToManyField extends WaxModelField {
   
   public $maxlength = "11";
-  public $editable = false;
   public $target_model = false; //model on the other side of the many to many
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
+  public $widget = "MultipleSelectInput"
   
   public function setup() {
     $this->col_name = false;
@@ -27,6 +27,7 @@ class ManyToManyField extends WaxModelField {
     $join->init($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
+    $this->choices = $this->join_model->all();
   }
 
   public function validate() {
