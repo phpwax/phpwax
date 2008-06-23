@@ -152,12 +152,10 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
-  static public function get_cache($name, $id) {
-    die($name."::".$id);
+  static public function get_cache($name, $id, $class) {
     $data = self::$object_cache[$name][$id];
     if($data) {
-      print_r($data); exit;
-      $row = clone $this;
+      $row = new $class;
       $row->set_attributes($data);
       print_r($row); exit;
       return $row;
