@@ -167,7 +167,7 @@ class WaxModel {
   public function set_identifier() {
     // Grab the first text field to display
     foreach($this->columns as $name=>$col) {
-      if($col[0]=="TextField") {
+      if($col[0]=="CharField") {
         $label_field = $name;
       }
       if($label_field) {
