@@ -34,15 +34,8 @@ class ManyToManyField extends WaxModelField {
   public function make_choices() {
     if(is_array($this->choices)) return $this->choices;
     elseif($this->choices instanceof WaxRecordset) {
-      // Grab the first text field to display
-      foreach($this->model->columns as $name=>$col) {
-        if($col[0]=="TextField") {
-          $label_field = $name;
-          break;
-        }
-      }
       foreach($this->choices as $choice) {
-        $built_choices[$choice->primval]=$choice->{$label_field};
+        $built_choices[$choice->primval]=$choice->{$choice->identifier};
       }
     }
     $this->choices = $built_choices;

@@ -29,6 +29,7 @@ class WaxModel {
   public $sql = false;
   public $errors = array();
   public $persistent = true;
+  public $identifier = false;
 
 	
   /**
@@ -45,6 +46,7 @@ class WaxModel {
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
  		}
+ 		$this->set_identifier();
  		if($params && is_numeric($params)) {
  		  $res = $this->filter(array($this->primary_key => $params))->first();
  		  $this->row=$res->row;
@@ -160,6 +162,17 @@ class WaxModel {
   public function output_val($name) {
     $field = $this->get_col($name);
     return $field->output();
+  }
+  
+  public function set_identifier() {
+    // Grab the first text field to display
+    foreach($this->columns as $name=>$col) {
+      if($col[0]=="TextField") {
+        $label_field = $name;
+        break;
+      }
+    }
+    if($label_field) $this->identifier = $label_field;
   }
 
      /**
