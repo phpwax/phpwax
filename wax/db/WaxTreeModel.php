@@ -26,7 +26,7 @@ class WaxTreeModel extends WaxModel {
    * now with caching! yey!
    */
   public function get_root() {
-  	if($this->root_node = self::get_cache(get_class($this), "root", "node")) return $this->root_node;
+  	if($this->root_node = self::get_cache(get_class($this), "tree", "root")) return $this->root_node;
     if($this->root_node) return $this->root_node;
     $root = clone $this;
     $root_return = $root->clear()->filter($this->parent_column."_".$this->primary_key . " = $this->primary_key")->first();
@@ -35,7 +35,7 @@ class WaxTreeModel extends WaxModel {
     //if no root node was still found, create one - only if noe exists
     if(!$root_return) $this->create_root();    
     $this->root_node = $root_return;
-    self::set_cache(get_class($this), "root", "node", $this->root_node);
+    self::set_cache(get_class($this), "tree", "root", $this->root_node);
     return $this->root_node;
   }
 
