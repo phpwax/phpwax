@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Model with tree handling capabilities
  *
@@ -24,7 +23,6 @@ class WaxTreeModel extends WaxModel {
 
   /**
    * get the root node, the main way to handle a root node is to have the parent set as itself, but supports a parent id of 0
-   *
    * @author Sheldon
    */
   public function get_root() {
