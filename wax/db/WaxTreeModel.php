@@ -3,7 +3,7 @@
  * Model with tree handling capabilities
  *
  * @package PHP-Wax
- * @author Sheldon Els
+ * @author Sheldon Els & charles marshall
  * 
  **/
 class WaxTreeModel extends WaxModel {
@@ -23,27 +23,21 @@ class WaxTreeModel extends WaxModel {
 
   /**
    * get the root node, the main way to handle a root node is to have the parent set as itself, but supports a parent id of 0
-   * @author Sheldon
    */
   public function get_root() {
 		if($this->root_node) return $this->root_node;
     $root = clone $this;
     $root_return = $root->clear()->filter($this->parent_column."_".$this->primary_key . " = $this->primary_key")->first();
-    
     //if no root node was found try find one using the old system of a primary key equal to 0
     if(!$root_return) $root_return = $root->clear()->filter(array($this->parent_column."_".$this->primary_key => "0"))->first();
-    
-    //if no root node was still found, create one
-    $this->create_root();
-    
+    //if no root node was still found, create one - only if noe exists
+		if(!$root_return) $this->create_root();    
     $this->root_node = $root_return;
 		return $this->root_node;
   }
 
   /**
    * creates a root node in the database
-   *
-   * @author Sheldon
    */
   private function create_root(){
     $class_name = get_class($this);
@@ -66,6 +60,10 @@ class WaxTreeModel extends WaxModel {
     $root->{$this->parent_column} = $root; //this is the key to the root node, it has a parent of itself
   }
 
+	/**
+	 * this makes an array based on the path from this object back up to its root
+	 * @return array $path
+	 */	
   public function path_to_root() {
 		if($this->root_path) return $this->root_path;
     if(!$this->root_node->id) $this->get_root();
@@ -81,7 +79,10 @@ class WaxTreeModel extends WaxModel {
     $this->root_path = $array_to_root;
 		return $this->root_path;
   }
-  
+  /**
+   * returns a numeric representation of this objects depth in the tree
+   * @return integer $level
+   */  
   public function get_level() {
 		if($this->level) return $this->level;
 		if(!$this->root_path) $this->path_to_root();
@@ -89,16 +90,5 @@ class WaxTreeModel extends WaxModel {
 		return $this->level;
   }
 
-  //not needed with the HasManyField implementation -- leaving code in case it's too slow
-  /*public function parent() {
-    $parent = clone $this;
-    return $parent->clear()->filter($parent->primary_key => $this->{$this->parent_column})->first();
-  }
-  
-  public function children() {
-    $children = clone $this;
-    return $children->clear()->filter($this->parent_column => $this->primval)->all();
-  }*/
-  
 }
 ?>
