@@ -11,11 +11,9 @@ class WaxTreeModel extends WaxModel {
   public $parent_column;
   public $children_column;
 	public $root_node = false;
-	public $tree_array = false;
 	public $root_path = false;
 	public $level = false;
 	
-  
  	function __construct($params=null) {
  	  parent::__construct($params);
  	  if(!$this->parent_column) $this->parent_column = "parent";
@@ -23,51 +21,52 @@ class WaxTreeModel extends WaxModel {
     $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key, "target_model" => get_class($this)));
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key));
   }
-  
-  
-  public function syncdb() {
-    $res = parent::syncdb();
-    if(!$this->root()){
-      $class_name = get_class($this);
-      $root = new $class_name;
-      foreach($root->columns as $col_name => $column){
-        $col = $root->get_col($col_name);
-        if(!$col->blank){
-          if($col->default){
-            $root->$col_name = $col->default;
-          }else{
-            if($col instanceof CharField || is_subclass_of($col, "CharField"))
-              $root->$col_name ="";
-            else
-              $root->$col_name = 0;
-          }
-        }
-      }
-      $root = $root->save();
-      $root->{$this->parent_column} = $root;
-    }
-    return $res;
-  }
 
-	/** tree generation **/
+  /**
+   * get the root node, the main way to handle a root node is to have the parent set as itself, but supports a parent id of 0
+   *
+   * @author Sheldon
+   */
   public function get_root() {
 		if($this->root_node) return $this->root_node;
     $root = clone $this;
-    $root_return = $root->clear()->filter(array($this->get_col($this->parent_column)->col_name => "0"))->first();
+    $root_return = $root->clear()->filter($this->parent_column."_".$this->primary_key . " = $this->primary_key")->first();
+    
+    //if no root node was found try find one using the old system of a primary key equal to 0
+    if(!$root_return) $root_return = $root->clear()->filter(array($this->parent_column."_".$this->primary_key => "0"))->first();
+    
+    //if no root node was still found, create one
+    $this->create_root();
+    
     $this->root_node = $root_return;
 		return $this->root_node;
   }
-	
-	public function generate_tree($data = null){
-		if(!$data) $data = array($this->get_root());
 
-		foreach($data as $node){
-			$model_name = get_class($this);
-			$children = $node->{$this->children_column};
-			$this->tree_array[] = new $model_name($node->{$this->primary_key});
-			if($children && $children->count())	$this->generate_tree($children);
-		}
-	}
+  /**
+   * creates a root node in the database
+   *
+   * @author Sheldon
+   */
+  private function create_root(){
+    $class_name = get_class($this);
+    $root = new $class_name;
+    //blank out the columns for the new root node
+    foreach($root->columns as $col_name => $column){
+      $col = $root->get_col($col_name);
+      if(!$col->blank){
+        if($col->default){
+          $root->$col_name = $col->default;
+        }else{
+          if($col instanceof CharField || is_subclass_of($col, "CharField"))
+            $root->$col_name = "";
+          else
+            $root->$col_name = 0;
+        }
+      }
+    }
+    $root = $root->save();
+    $root->{$this->parent_column} = $root; //this is the key to the root node, it has a parent of itself
+  }
 
   public function path_to_root() {
 		if($this->root_path) return $this->root_path;
