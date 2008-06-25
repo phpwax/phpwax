@@ -9,14 +9,14 @@
 class WaxTreeModel extends WaxModel {
   public $parent_column;
   public $children_column;
-    public $root_node = false;
-    public $root_path = false;
-    public $level = false;
-    
-     function __construct($params=null) {
-       parent::__construct($params);
-       if(!$this->parent_column) $this->parent_column = "parent";
-       if(!$this->children_column) $this->children_column = "children";
+  public $root_node = false;
+  public $root_path = false;
+  public $level = false;
+  
+  function __construct($params=null) {
+    parent::__construct($params);
+    if(!$this->parent_column) $this->parent_column = "parent";
+    if(!$this->children_column) $this->children_column = "children";
     $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key, "target_model" => get_class($this)));
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key));
   }
@@ -26,17 +26,17 @@ class WaxTreeModel extends WaxModel {
    * now with caching! yey!
    */
   public function get_root() {
-        if($this->root_node = self::get_cache(get_class($this), "root", "node")) return $this->root_node;
-        if($this->root_node) return $this->root_node;
+    if($this->root_node = self::get_cache(get_class($this), "root", "node")) return $this->root_node;
+    if($this->root_node) return $this->root_node;
     $root = clone $this;
     $root_return = $root->clear()->filter($this->parent_column."_".$this->primary_key . " = $this->primary_key")->first();
     //if no root node was found try find one using the old system of a primary key equal to 0
     if(!$root_return) $root_return = $root->clear()->filter(array($this->parent_column."_".$this->primary_key => "0"))->first();
     //if no root node was still found, create one - only if noe exists
-        if(!$root_return) $this->create_root();    
+    if(!$root_return) $this->create_root();    
     $this->root_node = $root_return;
-        self::set_cache(get_class($this), "root", "node", $this->root_node);
-        return $this->root_node;
+    self::set_cache(get_class($this), "root", "node", $this->root_node);
+    return $this->root_node;
   }
 
   /**
