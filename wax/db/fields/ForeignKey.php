@@ -28,13 +28,7 @@ class ForeignKey extends WaxModelField {
     $class = $this->target_model;
     $this_class = get_class($this->model);
     $cache = WaxModel::get_cache($this_class, $this->field, $this->model->{$this->col_name});
-    if($cache) {
-      $id = $this->model->{$this->col_name};
-      error_log("********RETURNING $this_class / $id from cache");
-      return $cache;
-    }
-    $id = $this->model->{$this->col_name};
-    error_log("********Can't Find $this_class / $id in cache");
+    if($cache) return $cache;
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
       WaxModel::set_cache($this_class, $this->field, $this->model->{$this->col_name}, $model);
