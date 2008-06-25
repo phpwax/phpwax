@@ -27,9 +27,6 @@ class ManyToManyField extends WaxModelField {
     $join->init($left, $right);
     $join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
-    if($this->model->identifier) {
-      foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
-    }
   }
 
   public function validate() {
@@ -101,6 +98,14 @@ class ManyToManyField extends WaxModelField {
 
   protected function join_field(WaxModel $model) {
     return $model->table."_".$model->primary_key;
+  }
+
+  public function get_choices() {
+    if($this->model->identifier) {
+      $this->choices[""]="Select";
+      foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+    }
+    return $this->choices;
   }
 
   public function __call($method, $args) {
