@@ -32,7 +32,7 @@ class ExampleProperty extends WaxModel {
 }
 
 class TestWaxModel extends WXTestCase {
-    public function setUp() {
+    public function setup() {
       $this->model = new Example;
       $this->model->syncdb();
     }
