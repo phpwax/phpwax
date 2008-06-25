@@ -33,10 +33,10 @@ class ForeignKey extends WaxModelField {
       error_log("********RETURNING $this_class / $id from cache");
       return $cache;
     }
+    $id = $this->model->{$this->col_name};
+    error_log("********Can't Find $this_class / $id in cache");
     $model = new $class($this->model->{$this->col_name});
     if($model->primval) {
-      $id = $this->model->{$this->col_name};
-      error_log("********SAVING $this_class / $id to cache");
       WaxModel::set_cache($this_class, $this->field, $this->model->{$this->col_name}, $model);
       return $model;
     } else return false;
