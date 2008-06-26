@@ -10,6 +10,7 @@ class WaxTreeModel extends WaxModel {
   public $parent_column;
   public $children_column;
   public $root_path = false;
+  public $level = false;
   
   function __construct($params=null) {
     parent::__construct($params);
@@ -67,10 +68,12 @@ class WaxTreeModel extends WaxModel {
   /**
    * returns a numeric representation of this objects depth in the tree
    * @return integer $level
-   */
-  public function level() {
+   */  
+  public function get_level() {
+    if($this->level) return $this->level;
     if(!$this->root_path) $this->path_to_root();
-    return count($this->root_path) - 1;
+    $this->level = count($this->root_path) - 1;
+    return $this->level;
   }
 
 }

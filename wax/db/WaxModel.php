@@ -31,9 +31,11 @@ class WaxModel {
   public $persistent = true;
   public $identifier = false;
   static public $object_cache = array();
-
 	public $is_paginated = false;
-	
+	//joins
+	public $is_left_joined = false;
+	public $left_join_table_name = false;
+	public $join_conditions = false;
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
@@ -124,6 +126,8 @@ class WaxModel {
     $this->limit = false;
     $this->offset = "0";
     $this->sql = false;
+		$this->is_paginated = false;
+		$this->is_left_joined = false;		
     $this->errors = array();
     return $this;
  	}
@@ -293,6 +297,35 @@ class WaxModel {
 	public function page($page_number="1", $per_page=10){
 		$this->is_paginated = true;
 		return new WaxPaginatedRecordset($this, $page_number, $per_page);
+	}
+	/**
+	 * the left join function activates the flag to let the db adapter know a join will be used
+	 * also takes the table to join to - returns $this so its chainable
+	 * @param string $target (this can be a model name or the wax model itself)
+	 * @return WaxModel $this
+	 * @author charles marshall
+	 */	
+	public function left_join($target){
+		$this->is_left_joined = true;
+		if(is_string) $this->left_join_table_name = $target;
+		elseif($target) $this->left_join_table_name = $target->table;
+		return $this;
+	}
+	/**
+	 * takes the conditions to add to the join syntax in the db adapter 
+	 * @param string $conditions or array $conditions 
+	 * @return WaxModel $this 
+	 */	
+	public function join_condition($conditions){
+		if(is_string($conditions)) $this->join_conditions[]=$conditions;
+	  else{
+	    foreach((array)$conditions as $key=>$condition) {
+	      if(is_array($condition)) $this->join_conditions[]= $key." IN(".join(",",$condition).")";
+	      elseif(!is_numeric($key)) $this->join_conditions[]= $key."=".$this->db->quote($condition);
+				else $this->join_conditions[]= ($condition);
+	    }
+	  }
+	  return $this;
 	}
 	
   public function update( $id_list = array() ) {
