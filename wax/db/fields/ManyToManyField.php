@@ -51,9 +51,8 @@ class ManyToManyField extends WaxModelField {
   private function setup_links($target_model) {
 		if($this->use_join_select){
 			$target_prim_key_def = $target_model->table.".".$target_model->primary_key;
-			$join_field_def = $this->join_model->table.".".$this->join_field($this->model);
-			$conditions = "( $target_prim_key_def = $join_field_def AND ";
-			$conditions.= "$join_field_def = {$this->model->primval} )";
+			$conditions = "( $target_prim_key_def = ".$this->join_model->table.".".$this->join_field($target_model)." AND ";
+			$conditions.= $this->join_model->table.".".$this->join_field($this->model)." = ".$this->model->primval." )";
 			$this->join_model->select_columns = array($target_model->table.".*");
 			return $this->join_model->clear()->left_join($target_model->table)->join_condition($conditions)->filter("$target_prim_key_def > 0");
 		}else{
