@@ -161,7 +161,7 @@ class WaxModel {
     $data = self::$object_cache[$model][$field][$id];
     if($data) {
       if(is_array($data[0])){
-     	  return new WaxRecordset($this, $data);
+     	  return new WaxRecordset(new $model, $data);
       }else{
         $row = new $model;
         $row->set_attributes($data);
