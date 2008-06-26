@@ -34,11 +34,14 @@ class ExampleProperty extends WaxModel {
 class TestWaxModel extends WXTestCase {
     public function setup() {
       $this->model = new Example;
+      $this->prop = new ExampleProperty;
       $this->model->syncdb();
+			$this->prop->syncdb();
     }
     
     public function tearDown() {
       $this->model->db->drop_table($this->model->table);
+			$this->prop->db->drop_table($this->prop->table);
     }
     
     public function get_fixture($type) {
@@ -50,6 +53,11 @@ class TestWaxModel extends WXTestCase {
       return $fixtures[$type];
     }
     
+		public function test_join(){
+			$model = $this->model->first();
+			$res = $model->left_join("example_example_property")->join_condition(array('example_id'=>$model->id))->all();
+		}
+
     public function test_create() {
       $res = $this->model->create($this->get_fixture("user1"));
       $this->assertIsA($res, "WaxModel");
@@ -97,6 +105,7 @@ class TestWaxModel extends WXTestCase {
       $this->assertEqual($res->count(), 1);
       $this->model->clear()->delete();
     }
+		
     
 }
 
