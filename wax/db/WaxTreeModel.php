@@ -3,13 +3,12 @@
  * Model with tree handling capabilities
  *
  * @package PHP-Wax
- * @author Sheldon Els & charles marshall
+ * @author Sheldon Els & Charles Marshall
  * 
  **/
 class WaxTreeModel extends WaxModel {
   public $parent_column;
   public $children_column;
-  public $root_node = false;
   public $root_path = false;
   public $level = false;
   
@@ -22,75 +21,59 @@ class WaxTreeModel extends WaxModel {
   }
 
   /**
-   * get the root node, the main way to handle a root node is to have the parent set as itself, but supports a parent id of 0
+   * get the root nodes
    * now with caching! yey!
+   * @return WaxRecordSet of all the self-parented nodes or nodes with unidentifiable parents
    */
   public function get_root() {
-  	if($this->root_node = self::get_cache(get_class($this), "root", "node")) return $this->root_node;
-    if($this->root_node) return $this->root_node;
+  	if($root_return = self::get_cache(get_class($this), "root", "nodes")) return $root_return;
+
+    /** Methods of finding a root node **/
+    //First method: parent reference same as primary key
+    $filter[] = "{$this->parent_column}_{$this->primary_key} = {$this->primary_key}";
+    //Second method: parent references a non-existant node (including 0)
+    $filter[] = "{$this->parent_column}_{$this->primary_key} NOT IN (SELECT {$this->primary_key} FROM `{$this->table}`)";
+    //Third method: parent references a nothing
+    $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL";
+
     $root = clone $this;
-    $root_return = $root->clear()->filter($this->parent_column."_".$this->primary_key . " = $this->primary_key")->first();
-    //if no root node was found try find one using the old system of a primary key equal to 0
-    if(!$root_return) $root_return = $root->clear()->filter(array($this->parent_column."_".$this->primary_key => "0"))->first();
-    //if no root node was still found, create one - only if noe exists
-    if(!$root_return) $this->create_root();    
-    $this->root_node = $root_return;
-    self::set_cache(get_class($this), "root", "node", $this->root_node);
-    return $this->root_node;
+    $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
+
+    if($root_return){
+      self::set_cache(get_class($this), "root", "nodes", $root_return);
+      return $root_return;
+    }
   }
 
   /**
-   * creates a root node in the database
+   * this makes an array based on the path from this object back up to its root
+   * @return array $path
    */
-  private function create_root(){
-    $class_name = get_class($this);
-    $root = new $class_name;
-    //blank out the columns for the new root node
-      foreach($root->columns as $col_name => $column){
-        $col = $root->get_col($col_name);
-        if(!$col->blank){
-          if($col->default){
-            $root->$col_name = $col->default;
-          }else{
-            if($col instanceof CharField || is_subclass_of($col, "CharField"))
-              $root->$col_name = "";
-            else
-              $root->$col_name = 0;
-          }
-        }
-      }
-    $root = $root->save();
-    $root->{$this->parent_column} = $root; //this is the key to the root node, it has a parent of itself
-  }
-
-    /**
-     * this makes an array based on the path from this object back up to its root
-     * @return array $path
-     */    
   public function path_to_root() {
-        if($this->root_path) return $this->root_path;
-    if(!$this->root_node->id) $this->get_root();
-    if($this->id){
-            $parent = $this;
-        while($parent->primval != $this->root_node->primval){
-                $model_name = get_class($this);
-          $array_to_root[] = new $model_name($parent->primval);
-          $parent = $parent->{$this->parent_column};
-        }
-        }    
-    $array_to_root[] = $this->root_node;
-    $this->root_path = $array_to_root;
-        return $this->root_path;
+    if($this->root_path) return $this->root_path;
+    //get the possible root id's
+    foreach($this->roots as $root){
+      $rootids[] = $root->primval;
+    }
+    $current = $this;
+    if($current->primval && count($root_ids) > 0){ //sanity check, if this passes an infinite loop can't occur
+      while(!in_array($current->primval, $root_ids)){
+        $model_name = get_class($this);
+        $this->root_path[] = new $model_name($current->primval);
+        $current = $current->{$current->parent_column};
+      }
+      return $this->root_path;
+    }
   }
   /**
    * returns a numeric representation of this objects depth in the tree
    * @return integer $level
    */  
   public function get_level() {
-        if($this->level) return $this->level;
-        if(!$this->root_path) $this->path_to_root();
+    if($this->level) return $this->level;
+    if(!$this->root_path) $this->path_to_root();
     $this->level = count($this->root_path) - 1;
-        return $this->level;
+    return $this->level;
   }
 
 }
