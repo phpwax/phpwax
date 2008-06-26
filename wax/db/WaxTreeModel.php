@@ -46,19 +46,19 @@ class WaxTreeModel extends WaxModel {
     $class_name = get_class($this);
     $root = new $class_name;
     //blank out the columns for the new root node
-    foreach($root->columns as $col_name => $column){
-      $col = $root->get_col($col_name);
-      if(!$col->blank){
-        if($col->default){
-          $root->$col_name = $col->default;
-        }else{
-          if($col instanceof CharField || is_subclass_of($col, "CharField"))
-            $root->$col_name = "";
-          else
-            $root->$col_name = 0;
+      foreach($root->columns as $col_name => $column){
+        $col = $root->get_col($col_name);
+        if(!$col->blank){
+          if($col->default){
+            $root->$col_name = $col->default;
+          }else{
+            if($col instanceof CharField || is_subclass_of($col, "CharField"))
+              $root->$col_name = "";
+            else
+              $root->$col_name = 0;
+          }
         }
       }
-    }
     $root = $root->save();
     $root->{$this->parent_column} = $root; //this is the key to the root node, it has a parent of itself
   }
