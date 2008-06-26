@@ -156,15 +156,22 @@ class WaxModel {
   static public function get_cache($model, $field, $id) {
     $data = self::$object_cache[$model][$field][$id];
     if($data) {
-      $row = new $model;
-      $row->set_attributes($data);
-      return $row;
+      if(is_array($data[0])){
+     	  return new WaxRecordset($this, $data);
+      }else{
+        $row = new $model;
+        $row->set_attributes($data);
+        return $row;
+      }
     }
     return false;
   }
   
   static public function set_cache($model, $field, $id, $value) {
-    self::$object_cache[$model][$field][$id]=$value->row;
+    if($value instanceof WaxModel)
+      self::$object_cache[$model][$field][$id]=$value->row;
+    elseif($value instanceof WaxRecordSet)
+      self::$object_cache[$model][$field][$id]=$value->rowset;
   }
   
   /**
