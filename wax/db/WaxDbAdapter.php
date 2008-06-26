@@ -96,7 +96,7 @@ abstract class WaxDbAdapter {
   		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
       else $sql.= "*";
       $sql.= " FROM `{$model->table}`";
-			if($model->is_left_joined) $sql .= " LEFT JOIN ".$model->left_join_table_name ." ON ".join(" AND ", $model->join_conditions);
+			if($model->is_left_joined && count($model->join_conditions)) $sql .= " LEFT JOIN ".$model->left_join_table_name ." ON ".join(" AND ", $model->join_conditions);
       if(count($model->filters)) $sql.= " WHERE ".join(" AND ", $model->filters); 
     	if($model->group_by) $sql .= " GROUP BY {$model->group_by}"; 
     	if($model->having) $sql .=" HAVING {$model->having}";  
