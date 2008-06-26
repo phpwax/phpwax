@@ -12,6 +12,7 @@ class ManyToManyField extends WaxModelField {
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
+	public $use_cache = true;
 
   public function setup() {
     $this->col_name = false;
@@ -34,7 +35,7 @@ class ManyToManyField extends WaxModelField {
     return true;
   }
   /**
-   * right, this is now has 2 behaves, by default 'use_join_select' is on so the following happens:
+   * right, this is now has 2 behaviors, by default 'use_join_select' is on so the following happens:
    *  - uses the new join functionality to link the join table to the target table
    *  - creates a join condition based on the keys on both sides
 	 *  - restricts the selected data to the one side of the join
@@ -49,7 +50,8 @@ class ManyToManyField extends WaxModelField {
    */  
   public function get() {
 		$links = new $this->target_model;
-		if($this->use_join_select){
+		if(!$this->model->primval) return new WaxRecordset($links->filter("1=2"), array());
+		elseif($this->use_join_select){
 			//link the table
 			$conditions = "(".$links->table.".".$links->primary_key."=".$this->join_model->table.".".$this->join_field($links) ." AND ";
 			$conditions.= $this->join_model->table.".".$this->join_field($this->model)."=".$this->model->primval .")";
@@ -65,7 +67,8 @@ class ManyToManyField extends WaxModelField {
       	return new WaxRecordset($links, array());
     	}	
     	foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
-    	return new WaxModelAssociation($links->filter("(".join(" OR ", $filters).")"), $this->model, $this->field);
+			$res = $links->filter("(".join(" OR ", $filters).")");
+    	return new WaxModelAssociation($res, $this->model, $this->field);
 		}
   }
   
