@@ -53,11 +53,6 @@ class TestWaxModel extends WXTestCase {
       return $fixtures[$type];
     }
     
-		public function test_join(){
-			$model = $this->model->first();
-			$res = $model->left_join("example_example_property")->join_condition(array('example_id'=>$model->id))->all();
-		}
-
     public function test_create() {
       $res = $this->model->create($this->get_fixture("user1"));
       $this->assertIsA($res, "WaxModel");
