@@ -56,8 +56,8 @@ class ManyToManyField extends WaxModelField {
 			$conditions = "(".$links->table.".".$links->primary_key."=".$this->join_model->table.".".$this->join_field($links) ." AND ";
 			$conditions.= $this->join_model->table.".".$this->join_field($this->model)."=".$this->model->primval .")";
 			$this->join_model->select_columns = array($links->table.".*");
-			$res = $this->join_model->clear()->left_join($links->table)->join_condition($conditions)->filter($links->table.".".$links->primary_key . " > 0");
-			return new WaxModelAssociation($res, $this->model, $this->field);
+			$res = $this->join_model->clear()->left_join($links->table)->join_condition($conditions)->filter($links->table.".".$links->primary_key . " > 0")->all()->rowset;
+			return new WaxModelAssociation($links, $this->model, $res, $this->field);
 		}else{
 			$vals = $this->join_model->all();
     	$links = new $this->target_model;
@@ -68,7 +68,7 @@ class ManyToManyField extends WaxModelField {
     	}	
     	foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
 			$res = $links->filter("(".join(" OR ", $filters).")");
-    	return new WaxModelAssociation($res, $this->model, $this->field);
+    	return new WaxModelAssociation($links, $this->model, $res->rowset, $this->field);
 		}
   }
   
