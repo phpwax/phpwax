@@ -34,42 +34,46 @@ class ManyToManyField extends WaxModelField {
   public function validate() {
     return true;
   }
+
   /**
    * right, this is now has 2 behaviors, by default 'use_join_select' is on so the following happens:
    *  - uses the new join functionality to link the join table to the target table
    *  - creates a join condition based on the keys on both sides
 	 *  - restricts the selected data to the one side of the join
-	 *  - returns a WaxModelAssociation of the results
+	 *
 	 * However, this can be turned off and used in the old manner (more suited if lots of data; ie moves load from db to application)
 	 *  - finds all records in join table
 	 *  - creates a set of filters based on these results
-	 *  - return the WaxModelAssociation of matching values on the target table
 	 *
 	 * The reason for having two methods is that the join version removes an all call, saving one more db query, but the join sql
 	 * can be slow on large amounts of data, so the other method is here for that purpose.
    */  
-  public function get() {
-		$links = new $this->target_model;
-		if(!$this->model->primval) return new WaxRecordset($links->filter("1=2"), array());
-		elseif($this->use_join_select){
-			//link the table
-			$conditions = "(".$links->table.".".$links->primary_key."=".$this->join_model->table.".".$this->join_field($links) ." AND ";
-			$conditions.= $this->join_model->table.".".$this->join_field($this->model)."=".$this->model->primval .")";
-			$this->join_model->select_columns = array($links->table.".*");
-			$res = $this->join_model->clear()->left_join($links->table)->join_condition($conditions)->filter($links->table.".".$links->primary_key . " > 0")->all()->rowset;
-			return new WaxModelAssociation($links, $this->model, $res, $this->field);
+  private function setup_links($target_model) {
+		if($this->use_join_select){
+			$target_prim_key_def = $target_model->table.".".$target_model->primary_key;
+			$join_field_def = $this->join_model->table.".".$this->join_field($this->model);
+			$conditions = "( $target_prim_key_def = $join_field_def AND ";
+			$conditions.= "$join_field_def = {$this->model->primval} )";
+			$this->join_model->select_columns = array($target_model->table.".*");
+			return $this->join_model->clear()->left_join($target_model->table)->join_condition($conditions)->filter("$target_prim_key_def > 0");
 		}else{
-			$vals = $this->join_model->all();
-    	$links = new $this->target_model;
+  		$vals = $this->join_model->all();
     	if(!$vals->count()){
       	//filter added that never evaluates since we want none of the target model's to return
-      	$links->filter("1 = 2");
-      	return new WaxRecordset($links, array());
+      	$target_model->filter("1 = 2");
+      	return new WaxRecordset($target_model, array());
     	}	
-    	foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
-			$res = $links->filter("(".join(" OR ", $filters).")");
-    	return new WaxModelAssociation($links, $this->model, $res->rowset, $this->field);
+    	foreach($vals as $val) $filters[]= $target_model->primary_key."=".$val->{$this->join_field($target_model)};
+  		return $target_model->filter("(".join(" OR ", $filters).")");
 		}
+  }
+
+  public function get() {
+		$target_model = new $this->target_model;
+		if(!$this->model->primval)
+		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
+		else
+			return new WaxModelAssociation($target_model, $this->model, $this->setup_links($target_model)->all()->rowset, $this->field);
   }
   
   public function set($value) {
@@ -136,13 +140,9 @@ class ManyToManyField extends WaxModelField {
   }
 
   public function __call($method, $args) {
-    $vals = $this->join_model->all();
-    $links = new $this->target_model;
-    if(!$vals->count()) return new WaxRecordset($this->model);
-    foreach($vals as $val) $filters[]= $links->primary_key."=".$val->{$this->join_field($links)};
-    $links->filter("(".join(" OR ", $filters).")");
+    $target_model = new $this->target_model;
 
-    return call_user_func_array(array($links, $method), $args);
+    return call_user_func_array(array($this->setup_links($target_model), $method), $args);
   }
 
 } 
