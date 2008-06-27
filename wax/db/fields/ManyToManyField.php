@@ -71,8 +71,13 @@ class ManyToManyField extends WaxModelField {
 		$target_model = new $this->target_model;
 		if(!$this->model->primval)
 		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
-		else{
-			$found_rows = $this->setup_links($target_model)->all();
+		else{			
+			$cached = WaxModel::get_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
+			if($this->use_cache && $cached) $found_rows = $cached; 
+			else $found_rows = $this->setup_links($target_model)->all();
+			//so we should be using the cache, but its not set, set it
+			if($this->use_cache && !$cached) 
+				WaxModel::set_cache(get_class($this->join_model), get_class($this->model), $this->model->primval, $found_rows);
 			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
 		}
   }
@@ -97,12 +102,14 @@ class ManyToManyField extends WaxModelField {
         }
       }
     }
-    
+    WaxModel::unset_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
   }
   
   public function unlink($model) {
     $links = new $this->target_model;
-    
+
+    WaxModel::unset_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
+
     if($model instanceof WaxModel) {
       $id = $model->primval;
       $this->join_model->filter(array($links->table."_".$links->primary_key => $id))->delete();
@@ -119,6 +126,7 @@ class ManyToManyField extends WaxModelField {
   
 	//clean up the joins
 	public function delete(){
+    WaxModel::unset_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
 		//delete join tables!
 		$data = $this->model->{$this->field};
 		if($data->count()) $this->unlink($data);
