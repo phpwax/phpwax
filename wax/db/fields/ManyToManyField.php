@@ -13,7 +13,11 @@ class ManyToManyField extends WaxModelField {
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
 	public $use_cache = true;
-
+	/**
+	 * the setup function for this field is different, as this is a many to many relationship it takes into 
+	 * account both sides of the relationship, initialises the join table if its missing and preps the 
+	 * filter
+	 */
   public function setup() {
     $this->col_name = false;
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
@@ -66,7 +70,11 @@ class ManyToManyField extends WaxModelField {
   		return $target_model->filter("(".join(" OR ", $filters).")");
 		}
   }
-
+	/**
+	 * Right, this figures out what to return when a join is called (ie $origin_model->many_to_many->field_or_function)
+	 * it also does caching on the resulting join model query (so the waxrecordset from the all is stored)
+	 * @return WaxModelAssociation
+	 */	
   public function get() {
 		$target_model = new $this->target_model;
 		if(!$this->model->primval)
@@ -81,7 +89,13 @@ class ManyToManyField extends WaxModelField {
 			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
 		}
   }
-  
+	/**
+	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
+	 *  - loops each wax model (or element in recordset)
+	 *  - creates a new record on the join table for each
+	 *  - clears the cache (so that any 'gets' are accurate)
+	 * @param mixed $value - waxmodel or waxrecordset
+	 */	
   public function set($value) {
     if($value instanceof WaxModel) {
       if(!$this->join_model->filter(array($this->join_field($value) => $value->primval) )->all()->count() ) {
@@ -104,7 +118,11 @@ class ManyToManyField extends WaxModelField {
     }
     WaxModel::unset_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
   }
-  
+  /**
+   * this unset function removes any link between the origin and target
+   * again the cache is cleared so any 'get' calls return accurate data
+   * @param string $model 
+   */  
   public function unlink($model) {
     $links = new $this->target_model;
 
@@ -124,22 +142,34 @@ class ManyToManyField extends WaxModelField {
     return $this->join_model;
   }
   
-	//clean up the joins
+	/**
+	 * as this is a many to many, the delete doesnt actually delete!
+	 * instead it unlinks the join table & yes, the obligatory cache clearing 
+	 */	
 	public function delete(){
     WaxModel::unset_cache(get_class($this->join_model), get_class($this->model), $this->model->primval);
 		//delete join tables!
 		$data = $this->model->{$this->field};
 		if($data->count()) $this->unlink($data);
 	}
-	
+	/**
+	 * as a save on a many to many doesn't do anything, just return true
+	 */
   public function save() {
     return true;
   }
 
+	/**
+	 * take the model and create a string version of the field to use in the join
+	 * @param string $WaxModel 
+	 */	
   protected function join_field(WaxModel $model) {
     return $model->table."_".$model->primary_key;
   }
-
+	/**
+	 * get the choices for the field
+	 * @return array
+	 */	
   public function get_choices() {
     if($this->model->identifier) {
       $this->choices[""]="Select";
@@ -147,10 +177,14 @@ class ManyToManyField extends WaxModelField {
     }
     return $this->choices;
   }
-
+	/**
+	 * super smart __call method - passes off calls to the target model (deletes etc)
+	 * @param string $method 
+	 * @param string $args 
+	 * @return mixed
+	 */	
   public function __call($method, $args) {
     $target_model = new $this->target_model;
-
     return call_user_func_array(array($this->setup_links($target_model), $method), $args);
   }
 
