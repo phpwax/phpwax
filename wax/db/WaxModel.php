@@ -178,6 +178,9 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value->rowset;
   }
   
+	static public function unset_cache($model, $field, $id, $value){
+		unset(self::$object_cache[$model][$field][$id]);
+	}
   /**
    * output_val function
    * Gets the output value of a field,
