@@ -181,7 +181,7 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value->rowset;
   }
   
-	static public function unset_cache($model, $field, $id, $value){
+	static public function unset_cache($model, $field, $id){
 		unset(self::$object_cache[$model][$field][$id]);
 	}
   /**
