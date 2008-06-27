@@ -47,6 +47,7 @@ class ForeignKey extends WaxModelField {
         return $this->model->save();
       }
     }
+    WaxModel::unset_cache($this_class, $this->field, $this->model->{$this->col_name}, $model);
   }
   
   public function save() {
