@@ -25,7 +25,7 @@ class WaxTreeModel extends WaxModel {
    * now with caching! yey!
    * @return WaxRecordSet of all the self-parented nodes or nodes with unidentifiable parents
    */
-  public function get_root() {
+  public function roots() {
   	if($root_return = self::get_cache(get_class($this), "root", "nodes")) return $root_return;
 
     /** Methods of finding a root node **/
@@ -52,7 +52,7 @@ class WaxTreeModel extends WaxModel {
   public function path_to_root() {
     if($this->root_path) return $this->root_path;
     //get the possible root id's
-    foreach($this->get_root() as $root){
+    foreach($this->roots as $root){
       $rootids[] = $root->primval;
     }
     $current = $this;
