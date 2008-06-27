@@ -25,13 +25,12 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    $class = $this->target_model;
-    $this_class = get_class($this->model);
-    $cache = WaxModel::get_cache($this_class, $this->field, $this->model->{$this->col_name});
+    $class = get_class($this->model);
+    $cache = WaxModel::get_cache($class, $this->field, $this->model->{$this->col_name});
     if($cache) return $cache;
-    $model = new $class($this->model->{$this->col_name});
+    $model = new $this->target_model($this->model->{$this->col_name});
     if($model->primval) {
-      WaxModel::set_cache($this_class, $this->field, $this->model->{$this->col_name}, $model);
+      WaxModel::set_cache($class, $this->field, $this->model->{$this->col_name}, $model);
       return $model;
     } else return false;
   }
@@ -47,7 +46,8 @@ class ForeignKey extends WaxModelField {
         return $this->model->save();
       }
     }
-    WaxModel::unset_cache($this_class, $this->field, $this->model->{$this->col_name}, $model);
+    $class = get_class($this->model);
+    WaxModel::unset_cache($class, $this->field, $this->model->{$this->col_name});
   }
   
   public function save() {
