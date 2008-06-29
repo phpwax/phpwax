@@ -391,7 +391,6 @@ class WaxModel {
  	    $row->set_attributes($res[0]);
  	  else
  	    $row = false;
- 	  $res->closeCursor();    
  	  return $row;
  	}
 
