@@ -63,7 +63,6 @@ class WaxTreeModel extends WaxModel {
       }
       $this->root_path[] = $current; //loop stops on the root node, so add it into the array
       foreach($this->root_path as $path) $paths[]=$path->{$path->primary_key};
-      print_r($paths);
       return $paths;
     }
   }
