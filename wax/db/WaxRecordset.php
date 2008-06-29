@@ -48,6 +48,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   
   public function offsetGet($offset) {
     $model = get_class($this->model);
+    die($model);
     if(is_numeric($this->rowset[$offset])) return new $model($this->rowset[$offset]);
     $obj = clone $this->model;
     $obj->set_attributes($this->rowset[$offset]);
