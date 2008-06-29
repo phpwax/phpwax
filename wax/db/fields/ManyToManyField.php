@@ -76,7 +76,9 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
+    return $this->get_links();
 		$target_model = new $this->target_model;
+		
 		if(!$this->model->primval)
 		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
 		else{			
