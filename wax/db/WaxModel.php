@@ -395,7 +395,6 @@ class WaxModel {
 
  	public function update_attributes($array) {
     foreach($array as $k=>$v) {
-      WaxLog::log("info", "Setting $k as $v");
       $this->$k=$v;
 		}
 		return $this->save();
