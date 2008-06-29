@@ -40,7 +40,7 @@ class WaxTreeModel extends WaxModel {
     $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
     
     if($root_return){
-      WaxModel::set_cache(get_class($root_return), "parent", "rootnodes", $root_return);
+      WaxModel::set_cache(get_class($root), "parent", "rootnodes", $root_return);
       return $root_return;
     }
   }
