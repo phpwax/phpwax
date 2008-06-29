@@ -177,6 +177,12 @@ class ManyToManyField extends WaxModelField {
     }
     return $this->choices;
   }
+  
+  public function get_links() {
+    print_r($this->join_model); exit;
+  }
+  
+  
 	/**
 	 * super smart __call method - passes off calls to the target model (deletes etc)
 	 * @param string $method 
