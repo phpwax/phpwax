@@ -251,6 +251,7 @@ abstract class WaxDbAdapter {
 			WaxLog::log("error", "[DB]". $err[2]);
       if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $sql );
 		}
+		$pdo_statement->$rows->closeCursor();
 		return $pdo_statement;
   }
   
