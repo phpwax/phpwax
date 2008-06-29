@@ -176,6 +176,7 @@ class ManyToManyField extends WaxModelField {
     foreach($this->join_model->rows() as $row) {
       $ids[]=$row[$this->join_model->right_field];
     }
+    if(!count($ids)) return false;
     return new WaxModelAssociation($this->model, $target_model, $ids);
   }
   
