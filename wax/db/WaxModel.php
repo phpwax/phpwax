@@ -346,7 +346,6 @@ class WaxModel {
     $res = $this->db->insert($this);
     $this->{$this->primary_key} = $res->primval;
     $res->after_insert();
-    $res->closeCursor();
     return $res;
   }
   
@@ -375,7 +374,6 @@ class WaxModel {
    */
  	public function all() {
  	  $res = $this->db->select($this);
- 	  $res->closeCursor();
  	  return new WaxRecordset($this, $res);
  	}
  	
