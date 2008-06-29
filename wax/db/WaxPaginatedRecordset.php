@@ -28,8 +28,11 @@ class WaxPaginatedRecordset extends WaxRecordset {
   }
 
 	public function paginate(WaxModel $model){
-		$newmodel = clone $model;
-		return $newmodel->all()->rowset;
+		$rows = $model->rows();
+		foreach($rows as $row) {
+		  $ids[]=$row->{$this->model->primary_key};
+		}
+		return $ids;
 	}
 	
   public function set_count($count) {
