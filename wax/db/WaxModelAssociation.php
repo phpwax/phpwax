@@ -21,7 +21,7 @@ class WaxModelAssociation extends WaxRecordset {
 
   public function __call($method, $args) {
     print_r($this);
-    throw new WXWxception("You causing trouble", "It's bad!");    
+    die($this->owner_field);
     return call_user_func_array(array($this->join_model->get_col($this->owner_field), $method), $args);
   }
   
