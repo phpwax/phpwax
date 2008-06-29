@@ -377,6 +377,10 @@ class WaxModel {
  	  return new WaxRecordset($this, $res);
  	}
  	
+ 	public function rows() {
+ 	  return $this->db->select($this);
+ 	}
+ 	
  	/**
    * Select and return single row data
    * @return WaxModel Object
