@@ -26,7 +26,7 @@ class WaxTreeModel extends WaxModel {
    * @return WaxRecordSet of all the self-parented nodes or nodes with unidentifiable parents
    */
   public function roots() {
-  	if($root_return = self::get_cache(get_class($this), "parent", "rootnodes")) {
+  	if($root_return = WaxModel::get_cache(get_class($this), "parent", "rootnodes")) {
   	  print_r($root_return);
   	  die("OH MY WE HAVE A CACHE");
   	  
@@ -46,7 +46,7 @@ class WaxTreeModel extends WaxModel {
     $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
 
     if($root_return){
-      self::set_cache(get_class($this), "parent", "rootnodes", $root_return);
+      WaxModel::set_cache(get_class($this), "parent", "rootnodes", $root_return);
       return $root_return;
     }
   }
