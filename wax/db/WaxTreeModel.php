@@ -39,9 +39,8 @@ class WaxTreeModel extends WaxModel {
     $root = clone $this;
     $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
     
-    print_r($root_return); exit;
     if($root_return){
-      WaxModel::set_cache(get_class($this), "parent", "rootnodes", $root_return);
+      WaxModel::set_cache(get_class($root_return), "parent", "rootnodes", $root_return);
       return $root_return;
     }
   }
