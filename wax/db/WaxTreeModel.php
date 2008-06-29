@@ -28,7 +28,7 @@ class WaxTreeModel extends WaxModel {
   public function roots() {
   	if($root_return = self::get_cache(get_class($this), "parent", "rootnodes")) {
   	  print_r($root_return);
-  	  die("OH MY WE HAVE A CACHE")
+  	  die("OH MY WE HAVE A CACHE");
   	  
   	  return $root_return;
   	  
