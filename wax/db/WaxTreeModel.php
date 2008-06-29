@@ -55,7 +55,7 @@ class WaxTreeModel extends WaxModel {
     foreach($this->roots() as $root){
       $rootids[] = $root->primval;
     }
-    
+    $current = clone $this;
     if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
       while(!in_array($current->primval, $rootids)){
         $this->root_path[] = $current;
