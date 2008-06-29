@@ -28,10 +28,10 @@ class ForeignKey extends WaxModelField {
     $class = get_class($this->target_model);
     $cache = WaxModel::get_cache($class, $this->field, $this->model->{$this->col_name});
     if($cache) {
-      error_log("Found cache for foreign key for $class with id ".$this->model->{$this->col_name});
       return $cache;
     }
     $model = new $this->target_model($this->model->{$this->col_name});
+    print_r($model); exit;
     if($model->primval) {
       WaxModel::set_cache($class, $this->field, $this->model->{$this->col_name}, $model);
       return $model;
