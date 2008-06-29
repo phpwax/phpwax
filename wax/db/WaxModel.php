@@ -160,10 +160,13 @@ class WaxModel {
   static public function get_cache($model, $field, $id) {
     $data = self::$object_cache[$model][$field][$id];
     if($data) {
+      //find target model to reinstantiate using the field name
+      $model_this = new $model;
+      $target_model = $model_this->get_col($field)->target_model;
       if(is_array($data[0])){
-     	  return new WaxRecordset(new $model, $data);
+     	  return new WaxRecordset(new $target_model, $data);
       }else{
-        $row = new $model;
+        $row = new $target_model;
         $row->set_attributes($data);
         return $row;
       }
@@ -178,7 +181,7 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value->rowset;
   }
   
-	static public function unset_cache($model, $field, $id, $value){
+	static public function unset_cache($model, $field, $id){
 		unset(self::$object_cache[$model][$field][$id]);
 	}
   /**
