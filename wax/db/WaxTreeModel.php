@@ -47,7 +47,7 @@ class WaxTreeModel extends WaxModel {
 
   /**
    * this makes an array based on the path from this object back up to its root
-   * @return array $path
+   * @return array $paths
    */
   public function path_to_root() {
     if($this->root_path) return $this->root_path;
@@ -63,7 +63,6 @@ class WaxTreeModel extends WaxModel {
       }
       $this->root_path[] = $current; //loop stops on the root node, so add it into the array
       foreach($this->root_path as $path) $paths[]=$path->{$path->primary_key};
-      print_r($paths); exit;
       return $paths;
     }
   }
