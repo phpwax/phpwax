@@ -154,7 +154,7 @@ class WaxModel {
  	}
 
   public function get_col($name) {
-    error_log("GETTING COLUMN ".$name);
+    error_log("GETTING COLUMN $name which is type of ".get_class($name) );
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
