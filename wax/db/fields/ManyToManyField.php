@@ -81,10 +81,11 @@ class ManyToManyField extends WaxModelField {
 		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
 		else{			
 			$cached = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval);
-			if($this->use_cache && $cached) $found_rows = $cached; 
+			if($this->use_cache && $cached) {$found_rows = $cached; error_log("Returned ".get_class($this->model)." {$this->field} {$this->model->primval} from cache");} 
 			else $found_rows = $this->setup_links($target_model)->all();
 			//so we should be using the cache, but its not set, set it
 			if($this->use_cache && !$cached) 
+			  error_log("Setting ".get_class($this->model)." {$this->field} {$this->model->primval} in cache");
 				WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval, $found_rows);
 			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
 		}
