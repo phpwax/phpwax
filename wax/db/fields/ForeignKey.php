@@ -25,7 +25,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    $class = get_class($this->model);
+    $class = get_class($this->target_model);
     $cache = WaxModel::get_cache($class, $this->field, $this->model->{$this->col_name});
     if($cache) {
       error_log("Found cache for foreign key for $class with id ".$this->model->{$this->col_name});
