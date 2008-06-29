@@ -25,8 +25,9 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    return $this->get_links();
-    return new WaxModelAssociation($model, $this->model, $model->filter(array($this->join_field=>$this->model->primval))->rows(), $this->field);
+    if(! $this->model->{$this->field} instanceof WaxModelAsociation) {
+      $this->model->{$this->field}=$this->get_links();
+    } else return $this->model->{$this->field};
   }
   
   public function get_links() {

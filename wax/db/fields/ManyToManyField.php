@@ -76,20 +76,9 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-    return $this->get_links();
-		$target_model = new $this->target_model;
-		
-		if(!$this->model->primval)
-		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
-		else{			
-			$cached = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval);
-			if($this->use_cache && $cached) $found_rows = $cached; 
-			else $found_rows = $this->setup_links($target_model)->all();
-			//so we should be using the cache, but its not set, set it
-			if($this->use_cache && !$cached)
-				WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval, $found_rows);
-			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
-		}
+    if(! $this->model->{$this->field} instanceof WaxModelAsociation) {
+      $this->model->{$this->field}=$this->get_links();
+    } else return $this->model->{$this->field};
   }
 	/**
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
