@@ -176,6 +176,7 @@ class WaxModel {
   }
   
   static public function set_cache($model, $field, $id, $value) {
+    error_log("Trying to set $model / $field / $id in cache");
     if($value instanceof WaxModel)
       self::$object_cache[$model][$field][$id]=$value->row;
     elseif($value instanceof WaxRecordSet)
