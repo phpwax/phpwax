@@ -55,13 +55,14 @@ class WaxTreeModel extends WaxModel {
     foreach($this->roots() as $root){
       $rootids[] = $root->primval;
     }
-    print_r($rootids); exit;
+    
     if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
       while(!in_array($current->primval, $rootids)){
         $this->root_path[] = $current;
         $current = $current->{$current->parent_column}; //move up a node
       }
       $this->root_path[] = $current; //loop stops on the root node, so add it into the array
+      print_r($this->root_path); exit;
       return $this->root_path;
     }
   }
