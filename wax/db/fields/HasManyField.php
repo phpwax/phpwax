@@ -33,7 +33,7 @@ class HasManyField extends WaxModelField {
     $model = new $this->target_model();
     $model->filter(array($this->join_field=>$this->model->primval));
     foreach($model->rows() as $row) {
-      $ids[]=$row[$this->join_model->right_field];
+      $ids[]=$row->primval;
     }
     return new WaxModelAssociation($model, $this->model, $ids);
   }
