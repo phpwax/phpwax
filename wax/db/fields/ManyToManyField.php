@@ -31,7 +31,7 @@ class ManyToManyField extends WaxModelField {
     }
     $join = new WaxModelJoin();
     $join->init($left, $right);
-    $join->syncdb();
+    //$join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
   }
 
