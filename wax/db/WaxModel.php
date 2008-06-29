@@ -158,7 +158,7 @@ class WaxModel {
   }
   
   static public function get_cache($model, $field, $id) {
-    error_log("Trying to retrieve $model / $field $id from cache");
+    error_log("Trying to retrieve $model / $field / $id from cache");
     $data = self::$object_cache[$model][$field][$id];
     if($data) {
       //find target model to reinstantiate using the field name
