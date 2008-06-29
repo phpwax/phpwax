@@ -31,7 +31,6 @@ class ForeignKey extends WaxModelField {
       return $cache;
     }
     $model = new $this->target_model($this->model->{$this->col_name});
-    print_r($model); exit;
     if($model->primval) {
       WaxModel::set_cache($class, $this->field, $this->model->{$this->col_name}, $model);
       return $model;
