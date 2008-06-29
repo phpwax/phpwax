@@ -28,13 +28,11 @@ class ForeignKey extends WaxModelField {
     $class = $this->target_model;
     $cache = WaxModel::get_cache($class, $this->field, $this->model->{$this->col_name});
     if($cache) {
-      print_r($cache); exit;
       return $cache;
     }
     $model = new $this->target_model($this->model->{$this->col_name});
     if($model->primval) {
       WaxModel::set_cache($class, $this->field, $this->model->{$this->col_name}, $model);
-      print_r($model); exit;
       return $model;
     } else return false;
   }
