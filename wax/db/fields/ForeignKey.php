@@ -32,6 +32,7 @@ class ForeignKey extends WaxModelField {
     }
     $model = new $this->target_model($this->model->{$this->col_name});
     if($model->primval) {
+      error_log("Setting Foreign Key $model / $field / $id from cache");
       WaxModel::set_cache($class, $this->field, $this->model->{$this->col_name}, $model);
       return $model;
     } else return false;
