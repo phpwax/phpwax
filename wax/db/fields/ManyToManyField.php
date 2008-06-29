@@ -180,7 +180,7 @@ class ManyToManyField extends WaxModelField {
   
   public function get_links() {
     $joins = $this->join_model;
-    $joins->select_columns=$this->right_field;
+    $joins->select_columns=$this->model->right_field;
     print_r($joins->all()); exit;
   }
   
