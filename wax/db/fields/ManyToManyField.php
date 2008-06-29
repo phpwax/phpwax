@@ -76,8 +76,8 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-    if(! $this->model->{$this->field} instanceof WaxModelAsociation) {
-      $this->model->{$this->field}=$this->get_links();
+    if(! $this->model->row[$this->field] instanceof WaxModelAsociation) {
+      $this->model->row[$this->field]=$this->get_links();
     } else return $this->model->{$this->field};
   }
 	/**
