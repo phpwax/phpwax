@@ -32,7 +32,6 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		foreach($rows as $row) {  		
 		  $ids[]=$row[$model->primary_key];
 		}
-		print_r($ids); exit;
 		return $ids;
 	}
 	
