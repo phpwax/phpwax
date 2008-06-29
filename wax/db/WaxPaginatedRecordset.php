@@ -29,6 +29,7 @@ class WaxPaginatedRecordset extends WaxRecordset {
 
 	public function paginate(WaxModel $model){
 		$rows = $model->rows();
+		print_r($rows); exit;
 		foreach($rows as $row) {
 		  $ids[]=$row->{$model->primary_key};
 		}
