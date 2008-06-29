@@ -84,10 +84,10 @@ class ManyToManyField extends WaxModelField {
 			if($this->use_cache && $cached) $found_rows = $cached; 
 			else $found_rows = $this->setup_links($target_model)->all();
 			//so we should be using the cache, but its not set, set it
-			if($this->use_cache && !$cached) 
+			if($this->use_cache && !$cached)
+			 print_r($found_rows); exit;
 				WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval, $found_rows);
-			$return =  new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
-			return $return;
+			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
 		}
   }
 	/**
