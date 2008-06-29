@@ -154,7 +154,7 @@ class WaxModel {
  	}
 
   public function get_col($name) {
-    if(!$this->columns[$name][0]) throw new WXException("Unknown get_col call");
+    if(!$this->columns[$name][0]) throw new WXException("Unknown get_col call", "Serious Error");
     error_log("GETTING COLUMN $name which is type of ".$this->columns[$name][0] );
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
