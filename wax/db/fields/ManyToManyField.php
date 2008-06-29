@@ -87,7 +87,9 @@ class ManyToManyField extends WaxModelField {
 			if($this->use_cache && !$cached) 
 			  error_log("Setting ".get_class($this->model)." {$this->field} {$this->model->primval} in cache");
 				WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval, $found_rows);
-			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
+			$return =  new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
+			error_log("About to return Constructed Recordset");
+			return $return;
 		}
   }
 	/**
