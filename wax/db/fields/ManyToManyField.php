@@ -190,7 +190,7 @@ class ManyToManyField extends WaxModelField {
   public function __call($method, $args) {
     $target_model = new $this->target_model;
     error_log(print_r($this->setup_links($target_model),1));
-    return call_user_func_array(array($this->setup_links($target_model), $method), $args);
+    return call_user_func_array(array($this->get_links(), $method), $args);
   }
 
 } 
