@@ -173,9 +173,14 @@ class ManyToManyField extends WaxModelField {
     $right_field = $target_model->table."_".$target_model->primary_key;
     $this->join_model->select_columns=$right_field;
     $ids = array();
+    
+    if($cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) {
+      return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);      
+    }
     foreach($this->join_model->rows() as $row) {
       $ids[]=$row[$right_field];
     }
+    WaxModel::set_cache(get_class($this->model),$this->field, $this->model->id , $ids);
     return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
   }
   
@@ -187,8 +192,11 @@ class ManyToManyField extends WaxModelField {
 	 * @return mixed
 	 */	
   public function __call($method, $args) {
-    $target_model = new $this->target_model;
-    return call_user_func_array(array($this->setup_links($target_model), $method), $args);
+    $assoc = $this->get_links();
+    $constraints = implode(",", $assoc->rowset);
+    $model = clone $assoc->target_model;
+    $model->filter(array($model->primary_key=>$constraints));
+    return call_user_func_array(array($model, $method), $args);
   }
 
 } 
