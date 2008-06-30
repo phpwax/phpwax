@@ -164,9 +164,9 @@ class WaxModel {
       //find target model to reinstantiate using the field name
       $model_this = new $model;
       if(is_array($data[0])){
-     	  return new WaxRecordset(new $target_model, $data);
+     	  return new WaxRecordset(new $model, $data);
       }else{
-        $row = new $target_model;
+        $row = new $model;
         $row->set_attributes($data);
         return $row;
       }
