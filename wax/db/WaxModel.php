@@ -166,7 +166,6 @@ class WaxModel {
       if(is_array($data[0])){
      	  return new WaxRecordset(new $target_model, $data);
       }else{
-        $target_model = $model_this->get_col($field)->target_model;
         $row = new $target_model;
         $row->set_attributes($data);
         return $row;
@@ -180,7 +179,6 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value->row;
     elseif($value instanceof WaxRecordSet)
       self::$object_cache[$model][$field][$id]=$value->rowset;
-    error_log(print_r(self::$object_cache, 1));
   }
   
 	static public function unset_cache($model, $field, $id){
