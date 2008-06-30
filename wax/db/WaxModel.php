@@ -154,6 +154,7 @@ class WaxModel {
  	}
 
   public function get_col($name) {
+    if(!$this->columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
@@ -162,11 +163,10 @@ class WaxModel {
     if($data) {
       //find target model to reinstantiate using the field name
       $model_this = new $model;
-      $target_model = $model_this->get_col($field)->target_model;
-      if(is_array($data[0])){
-     	  return new WaxRecordset(new $target_model, $data);
+      if(is_array($data[0])) {
+     	  return new WaxRecordset(new $model, $data);
       }else{
-        $row = new $target_model;
+        $row = new $model;
         $row->set_attributes($data);
         return $row;
       }
@@ -377,6 +377,10 @@ class WaxModel {
  	  return new WaxRecordset($this, $res);
  	}
  	
+ 	public function rows() {
+ 	  return $this->db->select($this);
+ 	}
+ 	
  	/**
    * Select and return single row data
    * @return WaxModel Object
@@ -395,7 +399,6 @@ class WaxModel {
 
  	public function update_attributes($array) {
     foreach($array as $k=>$v) {
-      WaxLog::log("info", "Setting $k as $v");
       $this->$k=$v;
 		}
 		return $this->save();

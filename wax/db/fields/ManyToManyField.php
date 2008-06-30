@@ -31,7 +31,7 @@ class ManyToManyField extends WaxModelField {
     }
     $join = new WaxModelJoin();
     $join->init($left, $right);
-    $join->syncdb();
+    //$join->syncdb();
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
   }
 
@@ -76,18 +76,7 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-		$target_model = new $this->target_model;
-		if(!$this->model->primval)
-		  return new WaxRecordset($target_model->filter("1=2"), array()); //add impossible filter to the model, to match the empty rowset
-		else{			
-			$cached = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval);
-			if($this->use_cache && $cached) $found_rows = $cached; 
-			else $found_rows = $this->setup_links($target_model)->all();
-			//so we should be using the cache, but its not set, set it
-			if($this->use_cache && !$cached) 
-				WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval, $found_rows);
-			return new WaxModelAssociation($target_model, $this->model, $found_rows->rowset, $this->field);
-		}
+    return $this->get_links();
   }
 	/**
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
@@ -177,6 +166,20 @@ class ManyToManyField extends WaxModelField {
     }
     return $this->choices;
   }
+  
+  public function get_links() {
+    $target_model = new $this->target_model;
+    $left_field = $this->model->table."_".$this->model->primary_key;
+    $right_field = $target_model->table."_".$target_model->primary_key;
+    $this->join_model->select_columns=$right_field;
+    $ids = array();
+    foreach($this->join_model->rows() as $row) {
+      $ids[]=$row[$right_field];
+    }
+    return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
+  }
+  
+  
 	/**
 	 * super smart __call method - passes off calls to the target model (deletes etc)
 	 * @param string $method 

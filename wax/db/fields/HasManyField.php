@@ -25,8 +25,16 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
+    return $this->get_links();
+  }
+  
+  public function get_links() {
     $model = new $this->target_model();
-    return new WaxModelAssociation($model, $this->model, $model->filter(array($this->join_field=>$this->model->primval))->all()->rowset, $this->field);
+    $model->filter(array($this->join_field=>$this->model->primval));
+    foreach($model->rows() as $row) {
+      $ids[]=$row[$model->primary_key];
+    }
+    return new WaxModelAssociation($this->model,$model, $ids, $this->field);
   }
   
   public function set($value) {

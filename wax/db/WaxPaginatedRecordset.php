@@ -41,8 +41,11 @@ class WaxPaginatedRecordset extends WaxRecordset {
 	 * @return array
 	 */	
 	public function paginate(WaxModel $model){
-		$newmodel = clone $model;
-		return $newmodel->all()->rowset;
+		$rows = $model->rows();
+		foreach($rows as $row) {  		
+		  $ids[]=$row[$model->primary_key];
+		}
+		return $ids;
 	}
 	/**
 	 * use the count value passed in to work out total number of pages

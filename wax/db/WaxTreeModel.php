@@ -26,8 +26,8 @@ class WaxTreeModel extends WaxModel {
    * @return WaxRecordSet of all the self-parented nodes or nodes with unidentifiable parents
    */
   public function roots() {
-  	if($root_return = self::get_cache(get_class($this), "parent", "rootnodes")) return $root_return;
-
+  	if($root_return = WaxModel::get_cache(get_class($this), "parent", "rootnodes")) return $root_return;
+  	  
     /** Methods of finding a root node **/
     //First method: parent reference same as primary key
     $filter[] = "{$this->parent_column}_{$this->primary_key} = {$this->primary_key}";
@@ -38,31 +38,32 @@ class WaxTreeModel extends WaxModel {
 
     $root = clone $this;
     $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
-
+    
     if($root_return){
-      self::set_cache(get_class($this), "parent", "rootnodes", $root_return);
+      WaxModel::set_cache(get_class($root), "parent", "rootnodes", $root_return);
       return $root_return;
     }
   }
 
   /**
    * this makes an array based on the path from this object back up to its root
-   * @return array $path
+   * @return array $paths
    */
   public function path_to_root() {
     if($this->root_path) return $this->root_path;
     //get the possible root id's
-    foreach($this->roots as $root){
+    foreach($this->roots() as $root){
       $rootids[] = $root->primval;
     }
-    $current = $this;
+    $current = clone $this;
     if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
       while(!in_array($current->primval, $rootids)){
         $this->root_path[] = $current;
         $current = $current->{$current->parent_column}; //move up a node
       }
       $this->root_path[] = $current; //loop stops on the root node, so add it into the array
-      return $this->root_path;
+      foreach($this->root_path as $path) $paths[]=$path->{$path->primary_key};
+      return $paths;
     }
   }
   /**

@@ -22,7 +22,14 @@ class WaxModelAssociation extends WaxRecordset {
   }
 
   public function __call($method, $args) {
-    return call_user_func_array(array($this->join_model->get_col($this->owner_field), $method), $args);
+    return call_user_func_array(array($this->join_model, $method), $args);
+  }
+  
+  public function offsetGet($offset) {
+    $model = get_class($this->join_model);
+    if(is_numeric($this->rowset[$offset])) {
+      return new $model($this->rowset[$offset]);
+    }
   }
 
   
