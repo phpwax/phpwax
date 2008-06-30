@@ -76,10 +76,7 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-    if(! $this->model->row[$this->field] instanceof WaxModelAsociation) {
-      $this->model->row[$this->field]=$this->get_links();
-      return $this->model->row[$this->field];
-    } else return $this->model->row[$this->field];
+    return $this->get_links();
   }
 	/**
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:

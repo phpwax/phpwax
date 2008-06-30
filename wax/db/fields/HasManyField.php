@@ -25,10 +25,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    if(! $this->model->row[$this->field] instanceof WaxModelAsociation) {
-      $this->model->row[$this->field]=$this->get_links();
-      return $this->model->row[$this->field];
-    } else return $this->model->row[$this->field];
+    return $this->get_links();
   }
   
   public function get_links() {
