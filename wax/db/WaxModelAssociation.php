@@ -18,18 +18,15 @@ class WaxModelAssociation extends WaxRecordset {
     $this->join_model = $join_model;
     $this->owner_field = $owner_field;
   }
-
-  public function __call($method, $args) {
-    return call_user_func_array(array($this->target_model->get_col($this->owner_field), $method), $args);
-  }
   
   public function offsetGet($offset) {
     $model = get_class($this->join_model);
     if(is_numeric($this->rowset[$offset])) return new $model($this->rowset[$offset]);
-    $obj = clone $this->model;
-    $obj->set_attributes($this->rowset[$offset]);
-    return $obj;
   }
 
+  public function __call($method, $args) {
+    error_log("Looking for ".$this->owner_field." on ".get_class($this->target_model));
+    return call_user_func_array(array($this->target_model->get_col($this->owner_field), $method), $args);
+  }
   
 }
