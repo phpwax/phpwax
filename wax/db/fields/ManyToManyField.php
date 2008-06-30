@@ -13,6 +13,11 @@ class ManyToManyField extends WaxModelField {
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
 	public $use_cache = true;
+	
+	public $load = "lazy"; // One of Lazy, Eager or none
+	
+	
+	
 	/**
 	 * the setup function for this field is different, as this is a many to many relationship it takes into 
 	 * account both sides of the relationship, initialises the join table if its missing and preps the 
@@ -38,46 +43,50 @@ class ManyToManyField extends WaxModelField {
   public function validate() {
     return true;
   }
-
+  
+  
+  
   /**
-   * right, this is now has 2 behaviors, by default 'use_join_select' is on so the following happens:
-   *  - uses the new join functionality to link the join table to the target table
-   *  - creates a join condition based on the keys on both sides
-	 *  - restricts the selected data to the one side of the join
-	 *
-	 * However, this can be turned off and used in the old manner (more suited if lots of data; ie moves load from db to application)
-	 *  - finds all records in join table
-	 *  - creates a set of filters based on these results
-	 *
-	 * The reason for having two methods is that the join version removes an all call, saving one more db query, but the join sql
-	 * can be slow on large amounts of data, so the other method is here for that purpose.
-   */  
-  private function setup_links($target_model) {
-		if($this->use_join_select){
-			$target_prim_key_def = $target_model->table.".".$target_model->primary_key;
-			$conditions = "( $target_prim_key_def = ".$this->join_model->table.".".$this->join_field($target_model)." AND ";
-			$conditions.= $this->join_model->table.".".$this->join_field($this->model)." = ".$this->model->primval." )";
-			$this->join_model->select_columns = array($target_model->table.".*");
-			return $this->join_model->clear()->left_join($target_model->table)->join_condition($conditions)->filter("$target_prim_key_def > 0");
-		}else{
-  		$vals = $this->join_model->all();
-    	if(!$vals->count()){
-      	//filter added that never evaluates since we want none of the target model's to return
-      	$target_model->filter("1 = 2");
-      	return new WaxRecordset($target_model, array());
-    	}	
-    	foreach($vals as $val) $filters[]= $target_model->primary_key."=".$val->{$this->join_field($target_model)};
-  		return $target_model->filter("(".join(" OR ", $filters).")");
-		}
-  }
-	/**
-	 * Right, this figures out what to return when a join is called (ie $origin_model->many_to_many->field_or_function)
-	 * it also does caching on the resulting join model query (so the waxrecordset from the all is stored)
+	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-    return $this->get_links();
+    if($this->load=="eager") return $this->eager_load();
+    return $this->lazy_load();
   }
+
+
+  private function eager_load() {
+    $target = new $this->target_model;
+		$target_prim_key_def = $target->table.".".$target->primary_key;
+		$conditions = "( $target_prim_key_def = ".$this->join_model->table.".".$this->join_field($target)." AND ";
+		$conditions.= $this->join_model->table.".".$this->join_field($this->model)." = ".$this->model->primval." )";
+		$this->join_model->select_columns = array($target->table.".*");
+		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
+		if($cache) return new WaxModelAssociation($this->model, $target, $cache);
+		$vals = $this->join_model->clear()->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
+		 WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
+		return new WaxModelAssociation($this->model, $target, $vals->rowset);
+  }
+  
+  private function lazy_load() {
+    $target_model = new $this->target_model;
+    $left_field = $this->model->table."_".$this->model->primary_key;
+    $right_field = $target_model->table."_".$target_model->primary_key;
+    $this->join_model->select_columns=$right_field;
+    $ids = array();
+    if($this->load =="lazy" && $cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) {
+      return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);      
+    }
+    foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
+    if($this->load =="lazy") {
+      WaxModel::set_cache(get_class($this->model),$this->field, $this->model->id , $ids);
+      return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
+    }
+    return new WaxModelAssociation($this->model, $target_model->filter(array($target_model->primary_key=>$ids)), array(), $this->field);
+  }
+  
+  
 	/**
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
 	 *  - loops each wax model (or element in recordset)
@@ -167,24 +176,6 @@ class ManyToManyField extends WaxModelField {
     return $this->choices;
   }
   
-  public function get_links() {
-    $target_model = new $this->target_model;
-    $left_field = $this->model->table."_".$this->model->primary_key;
-    $right_field = $target_model->table."_".$target_model->primary_key;
-    $this->join_model->select_columns=$right_field;
-    $ids = array();
-    
-    if($cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) {
-      return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);      
-    }
-    foreach($this->join_model->rows() as $row) {
-      $ids[]=$row[$right_field];
-    }
-    WaxModel::set_cache(get_class($this->model),$this->field, $this->model->id , $ids);
-    return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
-  }
-  
-  
 	/**
 	 * super smart __call method - passes off calls to the target model (deletes etc)
 	 * @param string $method 
@@ -192,7 +183,7 @@ class ManyToManyField extends WaxModelField {
 	 * @return mixed
 	 */	
   public function __call($method, $args) {
-    $assoc = $this->get_links();
+    $assoc = $this->get();
     $constraints = implode(",", $assoc->rowset);
     $model = clone $assoc->target_model;
     $model->filter(array($model->primary_key=>$constraints));
