@@ -169,7 +169,7 @@ class ManyToManyField extends WaxModelField {
   
   public function get_links() {
     $target_model = new $this->target_model;
-    $this->join_model->select_columns=$this->join_model->right_field;
+    $this->join_model->select_columns=$this->join_model->left_field;
     foreach($this->join_model->rows() as $row) {
       $ids[]=$row[$this->join_model->left_field];
     }
