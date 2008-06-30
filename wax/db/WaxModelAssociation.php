@@ -26,7 +26,6 @@ class WaxModelAssociation extends WaxRecordset {
   public function offsetGet($offset) {
     $model = get_class($this->join_model);
     if(is_numeric($this->rowset[$offset])) {
-      error_log("Returning new $model with id ".$this->rowset[$offset]);
       return new $model($this->rowset[$offset]);
     }
   }
