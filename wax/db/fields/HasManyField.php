@@ -34,7 +34,7 @@ class HasManyField extends WaxModelField {
     foreach($model->rows() as $row) {
       $ids[]=$row[$model->primary_key];
     }
-    return new WaxModelAssociation($this->model,$model, $ids);
+    return new WaxModelAssociation($this->model,$model, $ids, $this->field);
   }
   
   public function set($value) {
