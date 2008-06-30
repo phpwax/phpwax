@@ -154,6 +154,7 @@ class WaxModel {
  	}
 
   public function get_col($name) {
+    if(!$this->columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
