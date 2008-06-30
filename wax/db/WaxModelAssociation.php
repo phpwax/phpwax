@@ -26,6 +26,7 @@ class WaxModelAssociation extends WaxRecordset {
 
   public function __call($method, $args) {
     error_log("Looking for ".$this->owner_field." on ".get_class($this->model));
+    error_log(print_r($args,1));
     return call_user_func_array(array($this->model->get_col($this->owner_field), $method), $args);
   }
   
