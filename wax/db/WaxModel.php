@@ -158,8 +158,9 @@ class WaxModel {
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
   
-  static public function get_cache($model, $field, $id) {
+  static public function get_cache($model, $field, $id, $transform = true) {
     $data = self::$object_cache[$model][$field][$id];
+    if(!$transform) return $data;
     if($data) {
       //find target model to reinstantiate using the field name
       $model_this = new $model;
@@ -179,6 +180,8 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value->row;
     elseif($value instanceof WaxRecordSet)
       self::$object_cache[$model][$field][$id]=$value->rowset;
+    else
+      self::$object_cache[$model][$field][$id]=$value;
   }
   
 	static public function unset_cache($model, $field, $id){
