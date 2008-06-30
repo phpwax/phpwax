@@ -168,10 +168,11 @@ class ManyToManyField extends WaxModelField {
   }
   
   public function get_links() {
-    $left_field = $this->model->table."_".$this->model->primary_key;
-    $right_field = $this->target_model->table."_".$this->target_model->primary_key;
-    
     $target_model = new $this->target_model;
+    
+    $left_field = $this->model->table."_".$this->model->primary_key;
+    $right_field = $target_model->table."_".$target_model->primary_key;
+    
     $this->join_model->select_columns=$right_field;
     foreach($this->join_model->rows() as $row) {
       $ids[]=$row[$right_field];
