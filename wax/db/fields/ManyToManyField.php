@@ -12,9 +12,8 @@ class ManyToManyField extends WaxModelField {
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
-	public $use_cache = true;
-	
-	public $load = "lazy"; // One of Lazy, Eager or none
+	public $join_table = false;
+	public $eager_loading = false;
 	
 	
 	
@@ -26,18 +25,21 @@ class ManyToManyField extends WaxModelField {
   public function setup() {
     $this->col_name = false;
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
-    $j = new $this->target_model;
-    if(strnatcmp($this->model->table, $j->table) <0) {
-      $left = $this->model;
-      $right = $j;
-    } else {
-      $left = $j;
-      $right = $this->model;
+    if($this->model->primval){
+      $j = new $this->target_model;
+      if(strnatcmp($this->model->table, $j->table) <0) {
+        $left = $this->model;
+        $right = $j;
+      } else {
+        $left = $j;
+        $right = $this->model;
+      }
+      $join = new WaxModelJoin();
+      if($this->join_table) $join->table = $this->join_table;
+      else $join->init($left, $right);
+      $join->syncdb();
+      $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     }
-    $join = new WaxModelJoin();
-    $join->init($left, $right);
-    $join->syncdb();
-    $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
   }
 
   public function validate() {
@@ -51,7 +53,8 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
-    if($this->load=="eager") return $this->eager_load();
+    if(!$this->model->primval) return new WaxModelAssociation($this->model, new $this->target_model, array(), $this->field);
+    if($this->eager_loading) return $this->eager_load();
     return $this->lazy_load();
   }
 
@@ -63,10 +66,10 @@ class ManyToManyField extends WaxModelField {
 		$conditions.= $this->join_model->table.".".$this->join_field($this->model)." = ".$this->model->primval." )";
 		$this->join_model->select_columns = array($target->table.".*");
 		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
-		if($cache) return new WaxModelAssociation($this->model, $target, $cache);
+		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
 		$vals = $this->join_model->clear()->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
 		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
-		return new WaxModelAssociation($this->model, $target, $vals->rowset);
+		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
   
   private function lazy_load() {
@@ -75,15 +78,10 @@ class ManyToManyField extends WaxModelField {
     $right_field = $target_model->table."_".$target_model->primary_key;
     $this->join_model->select_columns=$right_field;
     $ids = array();
-    if($this->load =="lazy" && $cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) {
-      return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);      
-    }
+    if($cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    if($this->load =="lazy") {
-      WaxModel::set_cache(get_class($this->model),$this->field, $this->model->primval , $ids);
-      return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
-    }
-    return new WaxModelAssociation($this->model, $target_model->filter(array($target_model->primary_key=>$ids)), array(), $this->field);
+    WaxModel::set_cache(get_class($this->model),$this->field, $this->model->primval , $ids);
+    return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
   }
   
   
@@ -95,6 +93,10 @@ class ManyToManyField extends WaxModelField {
 	 * @param mixed $value - waxmodel or waxrecordset
 	 */	
   public function set($value) {
+    if(!$this->model->primval){
+      throw new WXException("ManyToMany set before Model Save", "Cannot set ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
+      return;
+    }
     if($value instanceof WaxModel) {
       if(!$this->join_model->filter(array($this->join_field($value) => $value->primval) )->all()->count() ) {
         $new = array($this->join_field($value)=>$value->primval, $this->join_field($this->model) => $this->model->primval);
@@ -122,6 +124,10 @@ class ManyToManyField extends WaxModelField {
    * @param string $model 
    */  
   public function unlink($model) {
+    if(!$this->model->primval){
+      throw new WXException("ManyToMany unlink before Model Save", "Cannot unlink from ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
+      return;
+    }
     $links = new $this->target_model;
 
     WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
@@ -147,7 +153,7 @@ class ManyToManyField extends WaxModelField {
 	public function delete(){
     WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
 		//delete join tables!
-		$data = $this->model->{$this->field};
+		$data = $this->get();
 		if($data->count()) $this->unlink($data);
 	}
 	/**
@@ -184,9 +190,11 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function __call($method, $args) {
     $assoc = $this->get();
-    $constraints = implode(",", $assoc->rowset);
     $model = clone $assoc->target_model;
-    $model->filter(array($model->primary_key=>$constraints));
+    if($assoc->rowset)
+      $model->filter(array($model->primary_key=>$assoc->rowset));
+    else
+      $model->filter("1 = 2");
     return call_user_func_array(array($model, $method), $args);
   }
 
