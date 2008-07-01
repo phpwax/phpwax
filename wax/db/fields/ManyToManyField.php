@@ -65,7 +65,7 @@ class ManyToManyField extends WaxModelField {
 		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
 		if($cache) return new WaxModelAssociation($this->model, $target, $cache);
 		$vals = $this->join_model->clear()->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
-		 WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
+		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset);
   }
   
@@ -80,7 +80,7 @@ class ManyToManyField extends WaxModelField {
     }
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
     if($this->load =="lazy") {
-      WaxModel::set_cache(get_class($this->model),$this->field, $this->model->id , $ids);
+      WaxModel::set_cache(get_class($this->model),$this->field, $this->model->primval , $ids);
       return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
     }
     return new WaxModelAssociation($this->model, $target_model->filter(array($target_model->primary_key=>$ids)), array(), $this->field);
@@ -145,7 +145,7 @@ class ManyToManyField extends WaxModelField {
 	 * instead it unlinks the join table & yes, the obligatory cache clearing 
 	 */	
 	public function delete(){
-    WaxModel::unset_cache(get_class($this->model), get_class($this->target_model), $this->model->primval);
+    WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
 		//delete join tables!
 		$data = $this->model->{$this->field};
 		if($data->count()) $this->unlink($data);
