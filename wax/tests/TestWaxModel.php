@@ -5,7 +5,9 @@ class Example extends WaxModel {
     $this->define("password", "CharField", array("blank"=>false, "maxlength"=>15));
     $this->define("email", "EmailField", array("blank"=>false));
     $this->define("example_owner", "ForeignKey", array("null"=>true));
-    $this->define("properties", "ManyToManyField", array("target_model"=>"ExampleProperty"));
+    $this->define("propertiesNone", "ManyToManyField", array("target_model"=>"ExampleProperty","load"=>"none"));
+    $this->define("properties", "ManyToManyField", array("target_model"=>"ExampleProperty","load"=>"lazy"));
+    //$this->define("propertiesEager", "ManyToManyField", array("target_model"=>"ExampleProperty","load"=>"eager"));
   }
 }
 
