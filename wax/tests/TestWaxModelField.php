@@ -135,22 +135,48 @@ class TestWaxModelField extends WXTestCase {
       $props = new ExampleProperty;
       $prop1 = $props->create(array("name"=>"Property 1"));
       $prop2 = $props->create(array("name"=>"Property 2"));
-      $model->properties = $props->all();
-      $test = $model->properties;
-      $this->assertIsA($model->properties, "WaxModelAssociation");
-      $this->assertIsA($model->properties[0], "ExampleProperty");
-      $this->assertIsA($model->properties[0]->examples[0], "Example");
-      $this->assertEqual($model->properties->count(), 2);
-      $this->assertEqual($model->properties->filter(array("name" => "Property 1"))->all()->count(), 1);
-      $prop3 = $props->create(array("name"=>"Property 3"));
-      $this->assertEqual($model->properties->filter(array("name" => "Property 3"))->all()->count(), 0);
-      $model->properties->unlink($prop1);
-      $this->assertEqual($model->properties->count(), 1);
-      $model->properties = $prop1;
-      $this->assertEqual($model->properties->count(), 2);
-      $model->properties->unlink($props->all());
-      $this->assertEqual($model->properties->count(), 0);
-      $this->assertEqual($model->properties->first(), false);
+      $model->propertiesLazy = $prop1;
+      $model->propertiesEager = $prop2;
+
+      $this->assertIsA($model->propertiesLazy, "WaxModelAssociation");
+      $this->assertIsA($model->propertiesLazy[0], "ExampleProperty");
+      $this->assertIsA($model->propertiesLazy[0]->examples[0], "Example");
+      $this->assertIsA($model->propertiesEager, "WaxModelAssociation");
+      $this->assertIsA($model->propertiesEager[0], "ExampleProperty");
+      $this->assertIsA($model->propertiesEager[0]->examples[0], "Example");
+
+      $this->assertEqual($model->propertiesLazy->count(), 2);
+      $this->assertEqual($model->propertiesEager->count(), 2);
+
+      $this->assertEqual($model->propertiesLazy->filter(array("name" => "Property 2"))->all()->count(), 1);
+      $this->assertEqual($model->propertiesEager->filter(array("name" => "Property 1"))->all()->count(), 1);
+
+      $prop4 = $props->create(array("name"=>"Property 4"));
+
+      $this->assertEqual($model->propertiesLazy->filter(array("name" => "Property 4"))->all()->count(), 0);
+      $this->assertEqual($model->propertiesEager->filter(array("name" => "Property 4"))->all()->count(), 0);
+
+      $model->propertiesLazy->unlink($prop2);
+      $this->assertEqual($model->propertiesLazy->count(), 1);
+      $model->propertiesLazy = $prop2;
+      $this->assertEqual($model->propertiesLazy->count(), 2);
+      
+      $model->propertiesEager->unlink($prop1);
+      $this->assertEqual($model->propertiesEager->count(), 1);
+      $model->propertiesEager = $prop1;
+      $this->assertEqual($model->propertiesEager->count(), 2);
+      
+      $model->propertiesLazy->unlink($props->all());
+      $this->assertEqual($model->propertiesLazy->count(), 0);
+      $this->assertEqual($model->propertiesLazy->first(), false);
+
+      $model->propertiesLazy = $prop1;
+      $model->propertiesEager = $prop2;
+
+      $model->propertiesEager->unlink($props->all());
+      $this->assertEqual($model->propertiesEager->count(), 0);
+      $this->assertEqual($model->propertiesEager->first(), false);
+
     }
 
 
