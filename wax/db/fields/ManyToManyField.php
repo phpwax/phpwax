@@ -25,29 +25,33 @@ class ManyToManyField extends WaxModelField {
   public function setup() {
     $this->col_name = false;
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
-    if($this->model->primval){
-      $j = new $this->target_model;
-      if(strnatcmp($this->model->table, $j->table) <0) {
-        $left = $this->model;
-        $right = $j;
-      } else {
-        $left = $j;
-        $right = $this->model;
-      }
-      $join = new WaxModelJoin();
-      if($this->join_table) $join->table = $this->join_table;
-      else $join->init($left, $right);
-      $join->syncdb();
-      $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
+    if($this->model->primval) $this->setup_join_model();
+  }
+
+  public function setup_join_model() {
+    $j = new $this->target_model;
+    if(strnatcmp($this->model->table, $j->table) <0) {
+      $left = $this->model;
+      $right = $j;
+    } else {
+      $left = $j;
+      $right = $this->model;
     }
+    $join = new WaxModelJoin();
+    if($this->join_table) $join->table = $this->join_table;
+    else $join->init($left, $right);
+    $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
   }
 
   public function validate() {
     return true;
   }
   
-  
-  
+  public function before_sync() {
+    $this->setup_join_model();
+   	return $this->join_model->syncdb();
+  }
+    
   /**
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
