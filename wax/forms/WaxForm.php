@@ -23,8 +23,8 @@ class WaxForm implements Iterator {
   
   
 
-  public function __construct(WaxModel $model = null) {
-    if($model) {
+  public function __construct($model = null) {
+    if($model instanceof WaxModel) {
       foreach($model->columns as $column=>$options) {
         $element = $model->get_col($column);
         $widget_name = $element->widget;
@@ -76,7 +76,7 @@ class WaxForm implements Iterator {
    }
    
    public function __set($name, $value) {
-     if(class_exists($value)) $this->elements[$name] = new $value;
+     if(class_exists($value, false)) $this->elements[$name] = new $value;
    }
    
    

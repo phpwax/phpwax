@@ -27,12 +27,14 @@ class WaxWidget {
   public function render() {
     if(!$this->editable) return false;
     $out ="";
+    $out .= $this->before_tag();
     if($this->errors) $this->class.=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->id, $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->errors) {
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
+    $out .= $this->after_tag();
     return $out;
   }
   
@@ -47,6 +49,10 @@ class WaxWidget {
     }
     return $res;
   }
+  
+  public function before_tag(){}
+  public function after_tag(){}
+  public function get_choices(){ return array();}
   
   public function tag_content() {
     return true;
