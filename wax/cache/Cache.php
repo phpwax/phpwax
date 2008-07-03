@@ -13,11 +13,13 @@ class Cache {
 	public $engine = false;
 	public $label = false;
 	public $writing = false;
+	public $enabled = true;
 	
 	static public $lifetime = "300";
 	
 	
 	public function __construct($label) {
+	  $this->init();
 	  $this->label = $label;
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, self::$lifetime);
@@ -32,11 +34,17 @@ class Cache {
 	}
 	
 	public function valid() {
+	  if(!$this->enabled) return false;
 	  return $this->engine->valid();
 	}
 	
 	public function expire() {
     return $this->engine->expire();
+	}
+	
+	public function init() {
+	  if($en = Config::get("cache") && $en="off") $this->enabled=false;
+	  if($store = Config::get("cache_store")) $this->store=$store;
 	}
 	
   

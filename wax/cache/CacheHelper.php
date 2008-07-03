@@ -16,6 +16,7 @@ class CacheHelper extends WXHelpers {
   public function cache_start($label) {
     global $cache;
     $cache = new Cache($label);
+    if(!$cache->enabled) return true;
     ob_start();
     if($cache->valid()) {
       $cache->reading=true;
@@ -27,6 +28,7 @@ class CacheHelper extends WXHelpers {
   
   public function cache_end() {
     global $cache;
+    if(!$cache->enabled) return true;
     if($cache->reading) {
       $cache->reading = false;
       ob_end_clean();
