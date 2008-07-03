@@ -1,9 +1,11 @@
 <?php
 
 /**
- *  WaxModelAssociation Extends Recordset class
- *  Adds specific methods to associated model sets
- *
+ * WaxModelAssociation Extends Recordset class
+ * Adds specific methods to associated model sets
+ * 
+ * This is only used by the join fields (many to many & has many) in order to delegate calls to 
+ * the right model and insure the correct model type is returned.
  * @package PhpWax
  **/
 

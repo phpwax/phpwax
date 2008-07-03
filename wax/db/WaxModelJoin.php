@@ -1,4 +1,9 @@
 <?php
+/**
+ * The one to one join model
+ *
+ * @package PHP-WAX
+ */
 class WaxModelJoin extends WaxModel {
   
   public $left_field = false;
