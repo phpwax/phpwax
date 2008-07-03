@@ -10,25 +10,25 @@ class WaxModelField {
   // Database Specific Configuration
   public $field = false;          // How this column is referred to
   public $null = true;           // Can column be null
-  public $default = false;        
-  public $primary_key = false;
+  public $default = false;       //default value for the column  
+  public $primary_key = false;  // the primay key field name - der'h
   public $table = false;          // Table name in the storage engine
   public $col_name;               // Actual name in the storage engine
   
   //Validation & Format Options
-  public $maxlength = false;
+  public $maxlength = false; 
   public $minlength = false;
-  public $choices = false;
+  public $choices = false; //for select fields this is an array
   public $text_choices = false; // Store choices as text in database
   public $editable = true; // Only editable options will be displayed in forms
-  public $blank = true;
+  public $blank = true; 
   public $label = true; // Set to false to never show labels
   public $help_text = false;
   public $widget="TextInput";
   protected $model = false;
   
   public $errors = array();
-  
+  //errors messages
   public $messages = array(
     "short"=>       "%s needs to be at least %d characters",
     "long"=>        "%s needs to be shorter than %d characters",

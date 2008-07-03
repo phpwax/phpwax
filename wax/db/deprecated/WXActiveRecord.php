@@ -143,7 +143,7 @@ class WXActiveRecord extends WXValidations implements Iterator
     *  First job is to return the value if it exists in the table
 	  */
     if( array_key_exists( $name, $this->row ) ) {
-    	return $this->row[$name];
+    	return stripslashes($this->row[$name]);
     }
 	  
    /**

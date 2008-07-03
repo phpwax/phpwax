@@ -9,11 +9,19 @@
 
 class WaxPaginatedRecordset extends WaxRecordset {
   
-  public $current_page=1;
-  public $total_pages=false;
-  public $per_page=false;
-  public $count=false;
+  public $current_page=1; //default - page 1 (no zeroes)
+  public $total_pages=false; //total number of pages (without limits)
+  public $per_page=false;  //number records per page
+  public $count=false; 
 
+	/**
+	 * the constructor takes the model and values passes in, assigns values to internal
+	 * vars, sets up the offset and limit on the model and use this->paginate
+	 * calls parent __construct
+	 * @param string $WaxModel 
+	 * @param string $page 
+	 * @param string $per_page 
+	 */	
 	public function __construct(WaxModel $model, $page, $per_page) {
 		$this->per_page = $per_page;
 		$this->current_page = $page;
@@ -26,7 +34,12 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		$this->set_count($model->total_without_limits);
 		parent::__construct($model, $rowset);
   }
-
+	/**
+	 * internal pagination function so it returns only 
+	 * the row, not the entire model
+	 * @param string $WaxModel 
+	 * @return array
+	 */	
 	public function paginate(WaxModel $model){
 		$rows = $model->rows();
 		foreach($rows as $row) {  		
@@ -34,7 +47,10 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		}
 		return $ids;
 	}
-	
+	/**
+	 * use the count value passed in to work out total number of pages
+	 * @param string $count 
+	 */	
   public function set_count($count) {
     $this->count = $count;
     $this->total_pages = ceil($count / $this->per_page);

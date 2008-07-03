@@ -5,12 +5,6 @@
  * @package PhpWax
  **/
 class  WaxMysqlAdapter extends WaxDbAdapter {
-  
   protected $date = 'CURDATE()';
-	protected $timestamp = 'NOW()';
-	
-	
-  
-
-  
+	protected $timestamp = 'NOW()';  
 } // END class 
