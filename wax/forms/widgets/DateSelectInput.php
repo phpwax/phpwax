@@ -20,34 +20,35 @@ class DateSelectInput extends TextInput {
     }
     for($i = 1; $i<=12; $i++) {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
-      $month[$i]=$i;
+      $timestamp = mktime(0, 0, 0, $i, 1, 2005);
+      $month[$i]=date("F", $timestamp);
     }
     for($i = 1900; $i<=2030; $i++) {
       $year[$i]=$i;
     }
     $choice = '<option value="%s"%s>%s</option>';
-    
-    $output='<select id="'.$this->id.'_day" name="'.$this->id.'_day" class="input_field select_field">';
+    $output.='<select id="'.$this->id.'_day" name="'.$this->name.'[day]" class="date_select_day">';
     foreach($day as $k=>$v) {
       $sel = "";
-      if($this->value==$value) $sel = ' selected="selected"';
+      if(date("j",strtotime($this->value))==$k) $sel = ' selected="selected"';
       $output.=sprintf($choice, $k, $sel, $v);
     }
     $output.="</select>";
-    $output='<select id="'.$this->id.'_month" name="'.$this->id.'_month" class="input_field select_field">';
+    $output.='<select id="'.$this->id.'_month" name="'.$this->name.'[month]" class="date_select_month">';
     foreach($month as $k=>$v) {
       $sel = "";
-      if($this->value==$value) $sel = ' selected="selected"';
+      if(date("m",strtotime($this->value))==$k) $sel = ' selected="selected"';
       $output.=sprintf($choice, $k, $sel, $v);
     }
     $output.="</select>";
-    $output='<select id="'.$this->id.'_year" name="'.$this->id.'_year" class="input_field select_field">';
+    $output.='<select id="'.$this->id.'_year" name="'.$this->name.'[year]" class="date_select_year">';
     foreach($year as $k=>$v) {
       $sel = "";
-      if($this->value==$value) $sel = ' selected="selected"';
+      if(date("Y",strtotime($this->value))==$k) $sel = ' selected="selected"';
       $output.=sprintf($choice, $k, $sel, $v);
     }
     $output.="</select>";
+    return $output;
   }
   
   public function after_tag() {

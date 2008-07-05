@@ -8,14 +8,14 @@
  * @author Ross Riley
  */
 
-class CacheHelper extends WXHelpers {
+class WaxCacheHelper extends WXHelpers {
   
   public $cache = false;
   
 
   public function cache_start($label) {
     global $cache;
-    $cache = new Cache($label);
+    $cache = new WaxCache($label);
     if(!$cache->enabled) return true;
     ob_start();
     if($cache->valid()) {
@@ -41,7 +41,7 @@ class CacheHelper extends WXHelpers {
   }
   
   public function cache_valid($label) {
-    $cache = new Cache($label);
+    $cache = new WaxCache($label);
     return $cache->valid();
   }
 

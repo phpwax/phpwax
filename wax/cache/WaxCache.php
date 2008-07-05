@@ -7,7 +7,7 @@
  *	Class for implementing caching of data / objects etc.
  *  @package PHP-Wax
  */
-class Cache {
+class WaxCache {
 		
 	public $store = "File";
 	public $engine = false;

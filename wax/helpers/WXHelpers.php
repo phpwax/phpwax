@@ -335,6 +335,6 @@ Autoloader::include_from_registry('FormTagHelper');
 Autoloader::include_from_registry('FormOptionsHelper');
 Autoloader::include_from_registry('UrlHelper');
 Autoloader::include_from_registry('FormBuilderHelper');
-Autoloader::include_from_registry('CacheHelper');
+Autoloader::include_from_registry('WaxCacheHelper');
 
 ?>

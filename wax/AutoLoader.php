@@ -192,4 +192,3 @@ class AutoLoader
 }
 Autoloader::initialise();
 
-?>
