@@ -21,12 +21,16 @@ class WaxForm implements Iterator {
   public $template = '<form %s>%s</form>';
   public $elements = array();
   public $post_data = false;
+  public $bound_to_model = false;
   
   
 
   public function __construct($model = false, $post_data = false) {
-    $this->post_data=$post_data;
+    if($this->post_data) $this->post_data=$post_data;
+    elseif($_POST) $this->post_data = $_POST;
     if($model instanceof WaxModel) {
+      if($this->post_data) $this->post_data = $this->post_data[$model->table];
+      $this->bound_to_model = $model;
       foreach($model->columns as $column=>$options) {
         $element = $model->get_col($column);
         $widget_name = $element->widget;
@@ -54,8 +58,22 @@ class WaxForm implements Iterator {
     return sprintf($this->template, $this->make_attributes(), $output);
   }
   
-  public function is_posted() {
-    print_r($this->post_data);
+  public function save() {
+    $vals = $this->values();
+    if(!$this->is_valid()) return false;
+    if($this->bound_to_model) return $this->bound_to_model->handle_post($vals);
+    else return $vals;
+  }
+  
+  public function values() {
+    $vals=array();
+    foreach($this->elements as $name=>$el) {
+      if($this->post_data) {
+        if($val = $el->handle_post($this->post_data[$name])) $vals[$name]=$val;
+      }
+    }
+    print_r($vals); exit;
+    return $vals;
   }
   
   public function make_attributes() {

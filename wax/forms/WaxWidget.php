@@ -68,6 +68,10 @@ class WaxWidget {
   
   public function before_tag(){}
   public function after_tag(){}
+  public function handle_post($post_val){
+    $this->value = $post_val;
+    return $this->value;
+  }
   public function get_choices(){ return array();}
   
   public function tag_content() {
