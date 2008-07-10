@@ -54,5 +54,9 @@ class DateSelectInput extends TextInput {
   public function after_tag() {
     return $this->make_select_dropdowns();
   }
+  
+  public function handle_post($val) {
+    return date("Y-m-d H:i:s", strtotime($val["month"]."/".$val["day"]."/".$val["year"]));
+  }
 
 } // END class

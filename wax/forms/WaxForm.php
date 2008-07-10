@@ -68,11 +68,10 @@ class WaxForm implements Iterator {
   public function values() {
     $vals=array();
     foreach($this->elements as $name=>$el) {
-      if($this->post_data) {
+      if($this->post_data[$name]) {
         if($val = $el->handle_post($this->post_data[$name])) $vals[$name]=$val;
       }
     }
-    print_r($vals); exit;
     return $vals;
   }
   

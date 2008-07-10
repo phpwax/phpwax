@@ -425,6 +425,7 @@ class WaxModel {
 
  	public function handle_post($attributes=null) {
  	  if($this->is_posted()) {
+ 	    print_r($attributes); exit;
  	    if(!$attributes) $attributes = $_POST[$this->table];
  	    return $this->update_attributes($attributes);
  	  }
