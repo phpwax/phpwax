@@ -14,20 +14,22 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 # form the root of the application path.
 
 set :application, "app_name"
-set :user,        "user"
+role :web,        "#{application}.com"
+set :user,        "#{application}"
 set :password,    'password'
-set :repository,  "git@github.com:oneblackbear/#{application}.git"
 
 
 # =============================================================================
 # OPTIONAL VARIABLES
 # =============================================================================
 default_run_options[:pty] = true
-
+set :repository,  "git@github.com:oneblackbear/#{application}.git"
 set :branch,      "master"
 set :deploy_to,   "."
 
-
+set :cms_repository,  "git://github.com/phpwax/wildfire.git"
+set :cms_deploy_to,   "./plugins/cms"
+set :cms_branch,      "master"
 
 # =============================================================================
 # TASKS
@@ -62,3 +64,29 @@ namespace :deploy do
   
 end
 
+
+namespace :cms do
+  
+  desc "First setup of git clone after this point runs git pull"
+  task :setup do
+    run "mkdir -p #{cms_deploy_to}"
+    run "cd #{cms_deploy_to} && git init"
+    run "cd #{cms_deploy_to} && git remote add origin #{cms_repository}"
+  end
+  
+  desc "Runs a git pull to update the cms"
+  task :update do
+    begin
+      run "ls #{cms_deploy_to}/.git"
+    rescue
+      setup
+    end
+    run "cd #{cms_deploy_to} && git pull origin #{cms_branch}"
+  end
+  
+  desc "Updates the CMS database"
+  task :syncdb do
+    run "script/plugin syncdb production"
+  end
+  
+end

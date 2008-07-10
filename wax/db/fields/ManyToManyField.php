@@ -166,6 +166,8 @@ class ManyToManyField extends WaxModelField {
   public function save() {
     return true;
   }
+  
+  public function handle_post() {return false;}
 
 	/**
 	 * take the model and create a string version of the field to use in the join
