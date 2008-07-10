@@ -70,9 +70,8 @@ namespace :cms do
   desc "First setup of git clone after this point runs git pull"
   task :setup do
     run "mkdir -p #{cms_deploy_to}"
-    run "cd #{cms_deploy_to}"
-    run "git init"
-    run "git remote add origin #{cms_repository}"
+    run "cd #{cms_deploy_to} && git init"
+    run "cd #{cms_deploy_to} && git remote add origin #{cms_repository}"
   end
   
   desc "Runs a git pull to update the cms"
@@ -82,8 +81,7 @@ namespace :cms do
     rescue
       setup
     end
-    run "cd #{cms_deploy_to}"
-    run "git pull origin #{cms_branch}"
+    run "cd #{cms_deploy_to} && git pull origin #{cms_branch}"
   end
   
   desc "Updates the CMS database"
@@ -92,6 +90,3 @@ namespace :cms do
   end
   
 end
-
-
-
