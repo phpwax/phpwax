@@ -150,6 +150,7 @@ abstract class WaxDbAdapter {
   
   
   public function syncdb(WaxModel $model) {
+    if(in_array(get_class($model), array("WaxModel", "WaxTreeModel"))) return;
     // First check the table for this model exists
     $tables = $this->view_table($model);
     $exists = false;
