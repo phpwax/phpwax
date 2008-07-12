@@ -425,7 +425,6 @@ class WaxModel {
 
  	public function handle_post($attributes=null) {
  	  if($this->is_posted()) {
- 	    print_r($attributes); exit;
  	    if(!$attributes) $attributes = $_POST[$this->table];
  	    return $this->update_attributes($attributes);
  	  }
@@ -510,6 +509,8 @@ class WaxModel {
 	public function total_without_limits(){
 		return $this->db->total_without_limits;
 	}
+	
+
    /**
    	*  These are left deliberately empty in the base class
    	*  

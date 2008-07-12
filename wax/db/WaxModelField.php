@@ -53,7 +53,7 @@ class WaxModelField {
   }
   
   public function get() {
-    return $this->model->row[$this->field];
+    return $this->model->row[$this->col_name];
   }
   
   public function set($value) {
@@ -80,6 +80,7 @@ class WaxModelField {
     }
   }
   
+  
   protected function add_error($field, $message) {
  	  $this->errors[]=$message;
  	}
@@ -91,8 +92,8 @@ class WaxModelField {
  	
  	public function __get($value) {
  	  if($value =="value") return $this->output();
- 	  if($value =="name") return $this->table."[".$this->field."]";
-    if($value =="id") return $this->table."_{$this->field}";
+ 	  if($value =="name") return $this->table."[".$this->col_name."]";
+    if($value =="id") return $this->table."_{$this->col_name}";
  	}
  	
  	

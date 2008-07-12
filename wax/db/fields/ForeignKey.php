@@ -18,6 +18,7 @@ class ForeignKey extends WaxModelField {
     $link = new $this->target_model;
     // Overrides naming of field to model_id if col_name is not explicitly set
     if($this->col_name == $this->field) $this->col_name = Inflections::underscore($this->target_model)."_".$link->primary_key;
+    $this->get_choices();
   }
 
   public function validate() {
@@ -57,10 +58,14 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get_choices() {
-    if($this->model->identifier) {
-      $this->choices[""]="Select";
-      foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->model->identifier};
+    if($this->choices && $this->choices instanceof WaxRecordset) {
+      foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+      $this->choices = $choices;
+      return true;
     }
+    $link = new $this->target_model;
+    $this->choices[""]="Select";
+    foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
     return $this->choices;
   }
   
