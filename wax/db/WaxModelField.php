@@ -25,6 +25,7 @@ class WaxModelField {
   public $label = true; // Set to false to never show labels
   public $help_text = false;
   public $widget="TextInput";
+  public $is_association=false; // Distiguishes between standard field and one that links to other models
   protected $model = false;
   
   public $errors = array();
@@ -92,8 +93,8 @@ class WaxModelField {
  	
  	public function __get($value) {
  	  if($value =="value") return $this->output();
- 	  if($value =="name") return $this->table."[".$this->col_name."]";
-    if($value =="id") return $this->table."_{$this->col_name}";
+ 	  if($value =="name") return $this->table."[".$this->field."]";
+    if($value =="id") return $this->table."_{$this->field}";
  	}
  	
  	

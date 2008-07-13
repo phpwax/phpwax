@@ -60,6 +60,8 @@ class WaxForm implements Iterator {
   
   public function save() {
     $vals = $this->values();
+    print_r($_POST);
+    print_r($vals); exit;
     if(!$this->is_valid()) return false;
     if($this->bound_to_model) return $this->bound_to_model->handle_post($vals);
     else return $vals;
