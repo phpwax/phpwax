@@ -92,8 +92,8 @@ class WaxModelField {
  	
  	public function __get($value) {
  	  if($value =="value") return $this->output();
- 	  if($value =="name") return $this->table."[".$this->col_name."]";
-    if($value =="id") return $this->table."_{$this->col_name}";
+ 	  if($value =="name") return $this->table."[".$this->field."]";
+    if($value =="id") return $this->table."_{$this->field}";
  	}
  	
  	

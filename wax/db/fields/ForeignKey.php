@@ -57,6 +57,10 @@ class ForeignKey extends WaxModelField {
     return true;
   }
   
+  public function handle_post() {
+    print_r($this); exit;
+  }
+  
   public function get_choices() {
     if($this->choices && $this->choices instanceof WaxRecordset) {
       foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
