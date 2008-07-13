@@ -164,10 +164,9 @@ class ManyToManyField extends WaxModelField {
 	 * as a save on a many to many doesn't do anything, just return true
 	 */
   public function save() {
-    return true;
+    return $this->set($this->value);
   }
   
-  public function handle_post() {return false;}
 
 	/**
 	 * take the model and create a string version of the field to use in the join

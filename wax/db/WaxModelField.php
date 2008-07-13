@@ -25,6 +25,7 @@ class WaxModelField {
   public $label = true; // Set to false to never show labels
   public $help_text = false;
   public $widget="TextInput";
+  public $is_association=false; // Distiguishes between standard field and one that links to other models
   protected $model = false;
   
   public $errors = array();
