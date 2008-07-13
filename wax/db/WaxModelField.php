@@ -58,7 +58,7 @@ class WaxModelField {
   }
   
   public function set($value) {
-    $this->model->row[$this->field]=$value;
+    $this->model->row[$this->col_name]=$value;
   }
   
   public function before_sync() {}  

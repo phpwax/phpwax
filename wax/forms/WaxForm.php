@@ -59,22 +59,17 @@ class WaxForm implements Iterator {
   }
   
   public function save() {
-    $vals = $this->values();
-    print_r($_POST);
-    print_r($vals); exit;
     if(!$this->is_valid()) return false;
-    if($this->bound_to_model) return $this->bound_to_model->handle_post($vals);
-    else return $vals;
+    if($this->bound_to_model) return $this->handle_post();
   }
   
-  public function values() {
-    $vals=array();
+  public function handle_post() {
     foreach($this->elements as $name=>$el) {
       if($this->post_data[$name]) {
-        if($val = $el->handle_post($this->post_data[$name])) $vals[$name]=$val;
+        $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
       }
     }
-    return $vals;
+    return $this->bound_to_model->save();
   }
   
   public function make_attributes() {
