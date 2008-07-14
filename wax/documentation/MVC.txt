@@ -1,0 +1,2 @@
+h1. How PHP Wax Uses the Model View Controller Pattern
+
