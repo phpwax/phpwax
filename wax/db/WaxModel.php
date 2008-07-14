@@ -257,12 +257,17 @@ class WaxModel {
   */
  	public function save() {
  	  $this->before_save();
- 	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
+ 	  foreach($this->columns as $col=>$setup) {
+ 	    $field = $this->get_col($col);
+ 	    if(!$field->is_association) $this->get_col($col)->save();
+ 	    else $associations[]=$field;
+ 	  }
  	  if(!$this->validate) return false;
  	  if($this->persistent) {
  	    if($this->primval) $res = $this->update();
  	    else $res = $this->insert();
  		}
+ 		foreach($associations as $assoc) $assoc->save();
  		$res->after_save();
  		return $res;
   }
@@ -509,6 +514,8 @@ class WaxModel {
 	public function total_without_limits(){
 		return $this->db->total_without_limits;
 	}
+	
+
    /**
    	*  These are left deliberately empty in the base class
    	*  

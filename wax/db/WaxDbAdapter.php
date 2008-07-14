@@ -55,7 +55,7 @@ abstract class WaxDbAdapter {
   }
 
   public function insert(WaxModel $model) {
-    $stmt = $this->db->prepare("INSERT into `{$model->table}` (".join(",", array_keys($model->row)).") 
+    $stmt = $this->db->prepare("INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
       VALUES (".join(",", array_keys($this->bindings($model->row))).")");
     $stmt = $this->exec($stmt, $model->row);
     
