@@ -1,0 +1,22 @@
+h1. An Introduction to PHP Wax
+
+h2. A Web Framework for PHP
+
+The more we write and design web applications the more it becomes obvious that the majority share a core set of functionality.
+
+The simple things that you may do day in and day out such as querying a database, creating forms, sending emails and structuring a website layout often involves a great deal of repetitive work.
+
+It's for this reason that a well designed framework can help us to become much more efficient as well as helping to produce software with fewer bugs.
+
+h2. Why PHP Wax?
+
+Many frameworks are designed to be accessible to all competencies of programmers which often results in software that is bloated or unnecessarily abstracted.
+
+First up PHP Wax is designed for developers working in a professional environment with a good knowledge of object oriented programming. If you're more used to procedural style programming then you may want to do a little swotting before you get stuck in.
+
+The second thing to remember is that often, PHP Wax will use some of the more advanced features of the PHP language so you will need to have a fairly up to date version of the language and occasionally the ability to install extra dependencies too.
+
+If all that doesn't scare you off then sit back and start to enjoy programming again.
+
+h2. Your First Application
+

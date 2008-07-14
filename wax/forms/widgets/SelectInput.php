@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Select Input Widget class
  *
