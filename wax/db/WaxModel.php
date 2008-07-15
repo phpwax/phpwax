@@ -257,6 +257,7 @@ class WaxModel {
   */
  	public function save() {
  	  $this->before_save();
+ 	  $associations = array();
  	  foreach($this->columns as $col=>$setup) {
  	    $field = $this->get_col($col);
  	    if(!$field->is_association) $this->get_col($col)->save();
