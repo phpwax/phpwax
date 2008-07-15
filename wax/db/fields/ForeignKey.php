@@ -19,7 +19,6 @@ class ForeignKey extends WaxModelField {
     $link = new $this->target_model;
     // Overrides naming of field to model_id if col_name is not explicitly set
     if($this->col_name == $this->field) $this->col_name = Inflections::underscore($this->target_model)."_".$link->primary_key;
-    $this->get_choices();
   }
 
   public function validate() {
