@@ -16,7 +16,12 @@ class WXRoutingException extends WXException
   	  if(!self::$double_redirect) {
   	    self::$double_redirect = true;
         header("HTTP/1.1 404 Not Found",1, 404);
-        if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {header("Location:".$location); exit;}  
+        if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {
+          $content = file_get_contents(PUBLIC_DIR.ltrim($location, "/"));
+          ob_end_clean();
+          echo $content;
+          exit;
+        }  
         $_GET["route"]=$location;
 				WaxUrl::$params = false;
 				WaxUrl::perform_mappings();
