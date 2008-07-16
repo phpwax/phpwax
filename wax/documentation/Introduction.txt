@@ -33,8 +33,12 @@ If you are working on a system with Git then you can download a zipped version o
 @http://github.com/phpwax/phpwax/zipball/master@
 
 If you download a zipped version you'll need to uncompress it, you'll be left with a folder structure as below:
-<code>
+<pre>
 ./phpwax
   ./wax
   ./skel
-</code>
+</pre>
+
+An application is split into two parts, the framework folder which is called @wax@ and the application folder in this case called @skel@.
+
+When dealing with the framework folder you have two options.

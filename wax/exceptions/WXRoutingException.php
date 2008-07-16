@@ -15,7 +15,8 @@ class WXRoutingException extends WXException
   	  $this->simple_routing_error_log();
   	  if(!self::$double_redirect) {
   	    self::$double_redirect = true;
-        header("HTTP/1.1 404 Not Found",1, 404);  
+        header("HTTP/1.1 404 Not Found",1, 404);
+        if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {header("Location:".$location); exit;}  
         $_GET["route"]=$location;
 				WaxUrl::$params = false;
 				WaxUrl::perform_mappings();
@@ -24,6 +25,7 @@ class WXRoutingException extends WXException
   		  $delegate_controller->execute_request();
   		  exit;
 		  } else {
+		    WaxLog::log("error", "[Routing] Double redirect error");
 		    $code ="Application Error"; 
 		    $message = "A Page not found error was triggered and you have not set up a page to handle it";
 		  }
