@@ -41,4 +41,15 @@ If you download a zipped version you'll need to uncompress it, you'll be left wi
 
 An application is split into two parts, the framework folder which is called @wax@ and the application folder in this case called @skel@.
 
-When dealing with the framework folder you have two options.
+When making our first application we'll use a self contained format which means we'll include the framework folder in the application. Later on we'll see how to install the framework on a server so that multiple applications can share the same codebase.
+
+All we have to do is copy the framework into the application folder and then we're ready to go. Do that using your filesystem or if you're using the command line then get yourself into the phpwax folder and type:
+
+@mv ./wax ./skel/@
+
+It's worth leaving this folder in place as a template which you can use to create more applications from. So to create a brand new application lets copy our @skel@ directory into our _Sites_ directory and give it a name.
+
+@mv ./skel ~/Sites/testapp@
+
+h2. See Your Application In Action
+

@@ -10,7 +10,7 @@
  **/
 class WaxModel {
   
-  static public $adapter;
+  static public $adapter = false;
   static public $db_settings;
   public $db = false;
   public $table = false;
@@ -43,7 +43,7 @@ class WaxModel {
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 		if(!$this->db = new self::$adapter(self::$db_settings)) {
+ 		if(self::$adapter && !$this->db = new self::$adapter(self::$db_settings)) {
     	throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
     }
  		$class_name =  get_class($this) ;
@@ -67,6 +67,7 @@ class WaxModel {
  	}
  	
  	static public function load_adapter($db_settings) {
+ 	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
  	  self::$adapter = $adapter;
  	  self::$db_settings = $db_settings;

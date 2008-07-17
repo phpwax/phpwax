@@ -12,7 +12,7 @@ abstract class WaxDbAdapter {
   protected $offset = "0";
   protected $limit = false;
   protected $having = false;
-  protected $db;
+  public $db;
   protected $date = false;
 	protected $timestamp = false;
 	protected $db_settings;
@@ -45,13 +45,17 @@ abstract class WaxDbAdapter {
     if(!$db_settings['host']) $db['host']="localhost";
     if(!$db_settings['port']) $db['port']="3306";
     
+    $this->db = $this->connect($db_settings);
+		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  }
+  
+  public function connect($db_settings) {
     if(isset($db_settings['socket']) && strlen($db_settings['socket'])>2) {
 			$dsn="{$db_settings['dbtype']}:unix_socket={$db_settings['socket']};dbname={$db_settings['database']}"; 
 		} else {
 			$dsn="{$db_settings['dbtype']}:host={$db_settings['host']};port={$db_settings['port']};dbname={$db_settings['database']}";
 		}
-		$this->db = new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
-		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
   }
 
   public function insert(WaxModel $model) {
