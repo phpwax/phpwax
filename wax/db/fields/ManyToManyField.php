@@ -71,7 +71,7 @@ class ManyToManyField extends WaxModelField {
 		$this->join_model->select_columns = array($target->table.".*");
 		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
 		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
-		$vals = $this->join_model->clear()->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
+		$vals = $this->join_model->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
 		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
@@ -102,7 +102,7 @@ class ManyToManyField extends WaxModelField {
       return;
     }
     if($value instanceof WaxModel) {
-      if(!$this->join_model->filter(array($this->join_field($value) => $value->primval) )->all()->count() ) {
+      if(!($ret = $this->join_model->filter(array($this->join_field($value) => $value->primval) )->first())) {
         $new = array($this->join_field($value)=>$value->primval, $this->join_field($this->model) => $this->model->primval);
         $ret = $this->join_model->create($new);
       }
@@ -185,6 +185,7 @@ class ManyToManyField extends WaxModelField {
         if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params));
       }
       $this->join_model->filter($params);
+  		WaxModel::unset_cache($this->target_model, $this->field, $this->model->primval);
       return $this->get();
     }else return $this->__call("filter", array($params));
   }
