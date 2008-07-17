@@ -104,7 +104,7 @@ class ManyToManyField extends WaxModelField {
     if($value instanceof WaxModel) {
       if(!$this->join_model->filter(array($this->join_field($value) => $value->primval) )->all()->count() ) {
         $new = array($this->join_field($value)=>$value->primval, $this->join_field($this->model) => $this->model->primval);
-        $this->join_model->create($new);
+        $ret = $this->join_model->create($new);
       }
     }
     if($value instanceof WaxRecordset) {
@@ -116,11 +116,14 @@ class ManyToManyField extends WaxModelField {
         $existing = $existing->filter($filter)->all();
         if(!$existing->count()) {
           $new = array($this->join_field($join)=>$join->primval, $this->join_field($this->model) => $this->model->primval);
-          $this->join_model->create($new);
+          $new_join = $this->join_model->create($new);
+          $rowset[] = $new_join->row;
         }
       }
+   	  $ret = new WaxRecordset(new $this->join_model_class, $rowset);
     }
     WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
+    return $ret;
   }
   /**
    * this unset function removes any link between the origin and target
