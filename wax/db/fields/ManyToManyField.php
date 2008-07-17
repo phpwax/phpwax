@@ -167,9 +167,27 @@ class ManyToManyField extends WaxModelField {
 	 * as a save on a many to many doesn't do anything, just return true
 	 */
   public function save() {
-    return $this->set($this->value);
+    return true;
+    //return $this->set($this->value);
   }
   
+  /**
+   * filter on the join_model
+   * IMPORTANT: will only work with array filters, text filters are passed on to the target model as usual
+   * ALSO IMPORTANT: will not work if any of the defined filters are on columns not in the join model, in that case it will also pass on to the target model as usual
+   *
+   * @return WaxModelAssociation
+   */
+  
+  public function filter($params) {
+    if(is_array($params)){
+      foreach($params as $column => $value){
+        if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params));
+      }
+      $this->join_model->filter($params);
+      return $this->get();
+    }else return $this->__call("filter", array($params));
+  }
 
 	/**
 	 * take the model and create a string version of the field to use in the join
