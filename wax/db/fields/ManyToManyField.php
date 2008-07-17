@@ -10,9 +10,9 @@ class ManyToManyField extends WaxModelField {
   public $maxlength = "11";
   public $target_model = false; //model on the other side of the many to many
   public $join_model = false; //instance of WaxModelJoin filtered with this instance's primary key
+  public $join_model_class = "WaxModelJoin";
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
-	public $join_table = false;
 	public $eager_loading = false;
 	
 	
@@ -37,7 +37,7 @@ class ManyToManyField extends WaxModelField {
       $left = $j;
       $right = $this->model;
     }
-    $join = new WaxModelJoin();
+    $join = new $this->join_model_class();
     if($this->join_table) $join->table = $this->join_table;
     else $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
