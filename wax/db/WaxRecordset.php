@@ -42,7 +42,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function offsetExists($offset) {
-    if(count($this->rowset)>=$offset) return true;
+    if($this->rowset[$offset]) return true;
     return false;
   }
   
