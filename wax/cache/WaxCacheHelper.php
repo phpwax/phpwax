@@ -45,4 +45,17 @@ class WaxCacheHelper extends WXHelpers {
     return $cache->valid();
   }
 
+  public function cache_get($label) {
+    $cache = new WaxCache($label);
+    if($cache->valid()) return $cache->get();
+  }
+  
+  public function cache_reset($label) {
+    $cache = new WaxCache($label);
+    if($cache->valid()){
+      $data = $cache->get();
+      return $cache->set($data);
+    }
+  }
+
 }
