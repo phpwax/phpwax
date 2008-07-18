@@ -30,14 +30,16 @@ class WaxCacheFile {
 	  return file_put_contents($this->file(), $value);
 	}
 	
-	public function valid() {
+	public function valid($return = false) {
 	  if(!is_readable($this->file())) return false;
+    if($return) $ret = $this->get();
 	  $stats = stat($this->file());
 	  if(time() > $stats["mtime"] + $this->lifetime) {
 	    $this->expire();
-	    return false;
+	    if(!$return) return false;
 	  }
-	  return true;
+	  if($return) return $ret;
+	  else return true;
 	}
 	
 	public function expire() {
