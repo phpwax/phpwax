@@ -59,7 +59,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function offsetUnset($offset) {
-    array_splice($this->rowset, $offset,1);
+    if(is_array($this->rowset)) array_splice($this->rowset, $offset,1);
   }
   
   public function count() {return count($this->rowset);}
