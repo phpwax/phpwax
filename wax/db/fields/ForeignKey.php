@@ -54,18 +54,20 @@ class ForeignKey extends WaxModelField {
   }
   
   public function save() {
+    return true;
     //return $this->set($this->value);
   }
   
   public function get_choices() {
     if($this->choices && $this->choices instanceof WaxRecordset) {
-      foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+      foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$this->identifier};
       $this->choices = $choices;
       return true;
     }
     $link = new $this->target_model;
     $this->choices[""]="Select";
-    foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+    $test = $link->all();
+    foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     return $this->choices;
   }
   

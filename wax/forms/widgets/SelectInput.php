@@ -29,6 +29,9 @@ class SelectInput extends WaxWidget {
     return $output;
   }
   
+  public function get_choices(){
+    return $this->bound_data->get_choices();
+  }
 
 
 
