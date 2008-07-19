@@ -33,9 +33,9 @@ class WaxCache {
     return $this->engine->set($value);
 	}
 	
-	public function valid() {
+	public function valid($return = false) {
 	  if(!$this->enabled) return false;
-	  return $this->engine->valid();
+	  return $this->engine->valid($return);
 	}
 	
 	public function expire() {

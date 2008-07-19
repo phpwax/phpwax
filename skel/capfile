@@ -62,6 +62,11 @@ namespace :deploy do
     run "script/syncdb production"
   end
   
+  desc "Clears the cache on the remote server"
+  task :clearcache do
+    run "rm -f tmp/cache/*"
+  end
+  
 end
 
 

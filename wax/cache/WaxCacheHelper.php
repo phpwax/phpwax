@@ -40,9 +40,9 @@ class WaxCacheHelper extends WXHelpers {
     ob_end_flush();
   }
   
-  public function cache_valid($label) {
+  public function cache_valid($label, $return = false) {
     $cache = new WaxCache($label);
-    return $cache->valid();
+    return $cache->valid($return);
   }
 
   public function cache_get($label) {
@@ -52,10 +52,8 @@ class WaxCacheHelper extends WXHelpers {
   
   public function cache_reset($label) {
     $cache = new WaxCache($label);
-    if($cache->valid()){
-      $data = $cache->get();
+    if($data = $cache->valid(true))
       return $cache->set($data);
-    }
   }
 
 }
