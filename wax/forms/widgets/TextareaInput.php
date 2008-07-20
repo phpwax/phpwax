@@ -22,7 +22,7 @@ class TextareaInput extends WaxWidget {
     $out ="";
     unset($this->value);
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
-    $out .= sprintf($this->template, $this->make_attributes(), stripslashes($this->value));
+    $out .= sprintf($this->template, $this->make_attributes(), $this->value);
     return $out;
   }
   
