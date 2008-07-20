@@ -56,3 +56,15 @@ h2. See Your Application In Action
 
 We're almost there so it's about time we saw what our application looks like. To do this you'll need to set up your local web server to serve from the public directory. Normally you'd setup a local domain name and then a virtual host within Apache to serve it.
 
+On OS X or Linux you can edit your @/etc/hosts@ file add @127.0.0.1 testapp.local@ and you have a local domain.
+
+Then open up your Apache config file and add something like the following:
+
+<pre>
+<VirtualHost *:80>
+  DocumentRoot "/Users/yourusername/Sites/testapp/public"
+  ServerName testapp.local
+</VirtualHost>
+</pre>
+
+Then all that remains is to open your browser and type: @http://testapp.local@ - Congratulations, you're ready to go.

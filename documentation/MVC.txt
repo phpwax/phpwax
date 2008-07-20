@@ -1,2 +1,31 @@
 h1. How PHP Wax Uses the Model View Controller Pattern
 
+This isn't meant as a complete description of the Model View Controller (MVC) pattern, if it's a new word for you then a bit of research may be in order. However everyone's definition of MVC is a little different so what follows is a basic summary of how PHP Wax uses the pattern to organise an application.
+
+If you have a browse through your newly created application folder you'll see the following structure:
+
+<pre>
+  ./app
+    ./config
+    ./controller
+    ./db
+    ./lib
+    ./model
+    ./view
+  capfile
+  ./plugins
+  ./public
+    ./images
+    ./javascripts
+    ./stylesheets
+  ./script
+  ./tmp
+    ./log
+    ./cache
+</pre>
+
+By way of a brief introduction to this setup here's a brief summary of an application's components.
+
+h2. The app directory
+
+First up, the app directory contains a few subdirectories. The first of these is the config directory. By default this will contain two files, @config.yml@ and @environment.php@. 
