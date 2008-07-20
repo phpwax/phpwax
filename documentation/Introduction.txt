@@ -35,6 +35,7 @@ If you are working on a system with Git then you can download a zipped version o
 If you download a zipped version you'll need to uncompress it, you'll be left with a folder structure as below:
 <pre>
 ./phpwax
+  ./documentation
   ./wax
   ./skel
 </pre>
@@ -52,4 +53,6 @@ It's worth leaving this folder in place as a template which you can use to creat
 @mv ./skel ~/Sites/testapp@
 
 h2. See Your Application In Action
+
+We're almost there so it's about time we saw what our application looks like. To do this you'll need to set up your local web server to serve from the public directory. Normally you'd setup a local domain name and then a virtual host within Apache to serve it.
 
