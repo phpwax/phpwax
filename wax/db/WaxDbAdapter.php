@@ -80,7 +80,7 @@ abstract class WaxDbAdapter {
     elseif(count($model->filters)) {
       $filters = $this->filter_sql($model);
       $sql.=$filters["sql"];
-      $params.=$filters["params"]; 
+      $params =$filters["params"]; 
     }   
     if($model->order) $sql.= "ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->limit}";    
@@ -149,6 +149,7 @@ abstract class WaxDbAdapter {
       case "raw": return "";
       case "!=": return " != ";
       case "~": return " LIKE ";
+      case "in": return " IN";
     }
   }
   
@@ -157,6 +158,7 @@ abstract class WaxDbAdapter {
       case "=": return "?";
       case "!=": return "?";
       case "~": return "%?%";
+      case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
     }
   }
   

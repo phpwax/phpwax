@@ -86,7 +86,9 @@ class WaxModel {
  	  else {
       foreach((array)$filters as $key=>$filter) {
         if(is_array($filter)) {
-          if(!strpos($key, "?")) $this->filters[]= $key." IN(".join(",",$filter).")";
+          if(!strpos($key, "?")) {
+            $this->filters[]= array( "name"=>$key, "operator"=>"in", "value"=>$filter);
+          }
           else $this->filters[] = array("name"=>$key, "operator"=>"raw", "value"=>$filter);
         }
         else $this->filters[]= array("name"=>$key,"operator"=>"=", "value"=>$filter);

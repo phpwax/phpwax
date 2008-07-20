@@ -102,6 +102,16 @@ class TestWaxModel extends WXTestCase {
       $this->assertEqual($res->count(), 1);
       $this->model->clear()->delete();
     }
+    
+    public function test_filter_security() {
+      $this->model->create(array("username"=>"d'oh", "password"=>"password", "email"=>"test@example.com"));
+      $res = $this->model->filter(array("username"=>"d'oh"))->first();
+      $this->assertEqual($res->username, "d'oh");
+      $res2 = $this->model->filter(array("username = ? AND password=?"=>array("d'oh", "password")))->first();
+      $this->assertEqual($res2->username, "d'oh");
+      $res3 = $this->model->filter(array("username"=>array("d'oh")))->first();
+      $this->assertEqual($res3->username, "d'oh");
+    }
 		
     
 }
