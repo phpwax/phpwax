@@ -75,6 +75,7 @@ abstract class WaxDbAdapter {
   }
   
   public function delete(WaxModel $model) {
+    $params = array();
     $sql .= "DELETE FROM `{$model->table}`";
     if($model->id) $sql .= "WHERE {$model->primary_key}={$model->id}";
     elseif(count($model->filters)) {
@@ -82,7 +83,7 @@ abstract class WaxDbAdapter {
       $sql.=$filters["sql"];
       $params =$filters["params"]; 
     }   
-    if($model->order) $sql.= "ORDER BY {$model->order}";
+    if($model->order) $sql.= " ORDER BY {$model->order}";
     if($model->limit) $sql.= " LIMIT {$model->limit}";    
     $stmt = $this->db->prepare($sql);
     return $this->exec($stmt, $params);
@@ -293,8 +294,9 @@ abstract class WaxDbAdapter {
   
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
+      WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
+      if(count($bindings)) WaxLog::log("info", "[DB] Values:".join($bindings,",") );
 			$pdo_statement->execute($bindings);
-      WaxLog::log("info", "[DB] ".$pdo_statement->queryString. "(".join($bindings,",").")");
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
 			WaxLog::log("error", "[DB]". $err[2]);

@@ -148,7 +148,7 @@ class ManyToManyField extends WaxModelField {
         $id = $obj->primval;
         $filter[]= $links->table."_".$links->primary_key."=".  $id;
       }
-      $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
+      if(count($filter)) $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
     }
     return $this->join_model;
   }
