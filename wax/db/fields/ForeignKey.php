@@ -66,7 +66,6 @@ class ForeignKey extends WaxModelField {
     }
     $link = new $this->target_model;
     $this->choices[""]="Select";
-    $test = $link->all();
     foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$this->identifier};
     return $this->choices;
   }
