@@ -63,15 +63,15 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
-
+    return "SQLite cannot alter {$field->col_name} column on {$model->table} table please adjust your schema manually";
   }
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->col_name}`";
     $sql.=" ".$this->data_types[get_class($field)];
-    if($field->null) $sql.=" NULL";
+    if($field->null ===true) $sql.=" NULL";
     else $sql.=" NOT NULL";
-    if($field->default) $sql.= " DEFAULT '{$field->default}'";
+    if($field->default !==false) {$sql.= " DEFAULT '{$field->default}'";}
     if($field->primary) $sql.=" PRIMARY KEY";
     if($field->auto) $sql.= " AUTOINCREMENT";
     return $sql;
@@ -100,7 +100,7 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
       foreach($db_cols as $col) {
         if($col["name"]==$model_field->col_name) {
           $col_exists = true;
-          if($col["dflt_value"] != $model_field->default) $col_changed = "default";
+          if($col["dflt_value"] !== $model_field->default) $col_changed = "default";
           if($col["notnull"] && $model_field->null) $col_changed = "now null";
           if(!$col["notnull"] && !$model_field->null) $col_changed = "now not null";
         }
@@ -109,10 +109,13 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
       if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed."\n";
     }
     $output .= "Table {$model->table} is now synchronised";
-    die();
     return $output;
   }
   
+  
+  public function random() {
+    return "Random()";
+  }
   
 	
 	

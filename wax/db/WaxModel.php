@@ -298,6 +298,17 @@ class WaxModel {
 		$this->order = $order_by;
 		return $this;
 	}
+	
+	public function random($limit) {
+	  $this->order($this->db->random());
+	  $this->limit($limit);
+	  return $this;
+	}
+	
+	public function dates($start, $end) {
+	  
+	}
+	
 	public function offset($offset){
 		$this->offset = $offset;
 		return $this;

@@ -40,7 +40,7 @@ class DateTimeField extends WaxModelField {
   }
   
   public function before_sync() {
-    $this->default = false;
+    $this->default = "0";
   }
 
 } 

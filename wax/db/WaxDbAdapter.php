@@ -115,7 +115,9 @@ abstract class WaxDbAdapter {
       if($model->order) $sql.= " ORDER BY {$model->order}";
       if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     }
-    $stmt = $this->db->prepare($sql);
+    
+    $stmt = $this->prepare($sql);
+    
 		//altered to include extra mysql found rows data
 		if($model->is_paginated && $this->exec($stmt, $params)){
 			$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -125,6 +127,17 @@ abstract class WaxDbAdapter {
 			$this->total_without_limits = $found[0]['FOUND_ROWS()'];
 			return $res;
 		} elseif($this->exec($stmt, $params)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+  
+  public function prepare($sql) {
+    try {
+      $stmt = $this->db->prepare($sql);
+		} catch(PDOException $e) {
+		  $err = $e->getMessage();
+			throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
+      exit;
+		}
+		return $stmt;
   }
   
   public function filter_sql($model) {
@@ -300,7 +313,8 @@ abstract class WaxDbAdapter {
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
 			WaxLog::log("error", "[DB]". $err[2]);
-      if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $sql );
+      if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString );
+      exit;
 		}
 		return $pdo_statement;
   }
@@ -311,6 +325,10 @@ abstract class WaxDbAdapter {
   
   public function quote($string) {
     return $this->db->quote($string);
+  }
+  
+  public function random() {
+    return "RAND()";
   }
   
   protected function bindings($array) {
