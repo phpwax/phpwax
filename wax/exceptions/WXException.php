@@ -23,19 +23,23 @@ class WXException extends Exception
 	public function __construct($message, $heading) {
     parent::__construct($message, $code);
     $this->error_heading = $heading;
-		$this->cli_error_message = $this->cli_format_trace($this);
     $this->error_message = $this->format_trace($this);
-		if(defined('CLI_ENV')) $this->cli_giveup();
+    $this->cli_error_message = $this->format_trace($this, true);
+		if(defined('IN_CLI')) $this->cli_giveup();
 		else $this->handle_error();
   }
   
-	public function format_trace($e) {
-    if(!self::$double_redirect) {
+	public function format_trace($e, $cli=false) {
+	  if(IN_CLI =="true" || $cli) {
+	    $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
+  		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
+  		return $view->parse();
+	  }elseif(!self::$double_redirect) {
       self::$double_redirect=true;
       $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
-	  } else return $this->cli_error_message;
+	  } else return $this->error_message;
 	}
 	
 	
@@ -61,22 +65,10 @@ class WXException extends Exception
 	}
 
 	public function cli_giveup() {
-		echo $this->cli_error_message;
+		echo $this->error_message;
 		exit;
 	}
 	
-	public function cli_format_trace($e) {
-		$trace.= $this->div;
-    $trace.="{$e->error_heading}\n";
-		$trace.= $this->div;
-    $trace.="{$e->getMessage()}\n";
-		$trace.= $this->div;
-    $trace.="{$e->getTraceAsString()}\n";
-		$trace.= $this->div;
-    $trace.="In {$e->getFile()} and on Line: {$e->getLine()}\n";
-		$trace.= $this->div;
-		return $trace;
-	}
 	
 }
 

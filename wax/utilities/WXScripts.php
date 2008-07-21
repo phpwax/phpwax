@@ -20,7 +20,8 @@ class WXScripts {
   
   public function __construct($type, $argv) {
     ob_end_clean();
-    //error_reporting(0);
+    error_reporting(E_PARSE);
+    define("IN_CLI", "true");
     $this->$type($argv);
   }
   
