@@ -198,11 +198,11 @@ class TestWaxModelField extends WXTestCase {
 	  }
 		*/
 	  public function test_duplicate_file_renames() {
-	    $this->file_upload_prep();
+	    $this->file_upload_prep("filename", $this->model_file);
 			$this->model_file->save();
 	   	$first_name = $this->model_file->filename;
 			$model = new ExampleFile;
-	    $this->file_upload_prep();
+	    $this->file_upload_prep("filename", $model);
 			$model->save();
 	   	$second_name = $model->filename;	
 			if($second_name != $first_name) $this->assertTrue(true);

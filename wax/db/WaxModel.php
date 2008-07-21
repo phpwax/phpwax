@@ -85,12 +85,18 @@ class WaxModel {
  	  if(is_string($filters)) $this->filters[]=$filters;
  	  else {
       foreach((array)$filters as $key=>$filter) {
-        if(is_array($filter)) $this->filters[]= $key." IN(".join(",",$filter).")";
-        else $this->filters[]= $key."=".$this->db->quote($filter);
+        if(is_array($filter)) {
+          if(!strpos($key, "?")) {
+            $this->filters[]= array( "name"=>$key, "operator"=>"in", "value"=>$filter);
+          }
+          else $this->filters[] = array("name"=>$key, "operator"=>"raw", "value"=>$filter);
+        }
+        else $this->filters[]= array("name"=>$key,"operator"=>"=", "value"=>$filter);
       }
     }
     return $this;
  	}
+ 	
  	
  	
  	/**
@@ -354,9 +360,9 @@ class WaxModel {
   public function insert() {
     $this->before_insert();
     $res = $this->db->insert($this);
-    $this->{$this->primary_key} = $res->primval;
-    $res->after_insert();
-    return $res;
+    $this->row = $res->row;
+    $this->after_insert();
+    return $this;
   }
   
   public function syncdb() {

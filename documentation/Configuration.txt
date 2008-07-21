@@ -1,0 +1,3 @@
+h1. Configuring Your Application
+
+Configuring your application should be easy and extensible. 

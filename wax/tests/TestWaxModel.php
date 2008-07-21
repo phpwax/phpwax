@@ -76,6 +76,7 @@ class TestWaxModel extends WXTestCase {
       $res = $this->model->create($this->get_fixture("user1"));
       $res = $this->model->filter(array("username"=>"test1"))->all()->delete();
       $res = $this->model->filter(array("username"=>"test1"))->first();
+      $this->dump($res);
       $this->assertFalse($res);
     }
     
@@ -100,6 +101,16 @@ class TestWaxModel extends WXTestCase {
       $res = $this->model->filter(array("password"=>"password"))->all()->filter("username !='altered'")->all();
       $this->assertEqual($res->count(), 1);
       $this->model->clear()->delete();
+    }
+    
+    public function test_filter_security() {
+      $this->model->create(array("username"=>"d'oh", "password"=>"password", "email"=>"test@example.com"));
+      $res = $this->model->filter(array("username"=>"d'oh"))->first();
+      $this->assertEqual($res->username, "d'oh");
+      $res2 = $this->model->filter(array("username = ? AND password=?"=>array("d'oh", "password")))->first();
+      $this->assertEqual($res2->username, "d'oh");
+      $res3 = $this->model->filter(array("username"=>array("d'oh")))->first();
+      $this->assertEqual($res3->username, "d'oh");
     }
 		
     
