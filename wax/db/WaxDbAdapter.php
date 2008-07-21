@@ -105,7 +105,7 @@ abstract class WaxDbAdapter {
         $filters = $this->filter_sql($model);
         $sql.=$filters["sql"];
         $params = $filters["params"];
-      }
+      }else $params = array();
       
       
     	if($model->group_by) $sql .= " GROUP BY {$model->group_by}"; 
