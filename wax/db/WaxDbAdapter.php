@@ -105,12 +105,12 @@ abstract class WaxDbAdapter {
         $filters = $this->filter_sql($model);
         $sql.=$filters["sql"];
         $params = $filters["params"];
-      }
+      } else $params = array();
       
       
     	if($model->group_by) $sql .= " GROUP BY {$model->group_by}"; 
     	if($model->having) $sql .=" HAVING {$model->having}";  
-      if($model->order) $sql.= " ORDER BY {$model->order}";
+      if($model->order) $sql.= " ORDER BY `{$model->order}`";
       if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
     }
     $stmt = $this->db->prepare($sql);
