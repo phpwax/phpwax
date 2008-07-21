@@ -89,6 +89,7 @@ abstract class WaxDbAdapter {
   }
   
   public function select(WaxModel $model) {
+    $params = array();
     if($model->sql) {
       $sql = $model->sql;
     } else {
