@@ -33,6 +33,48 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
 	  return new PDO( $dsn );
   }
   
+  
+  
+  
+  public function random() {
+    return "Random()";
+  }
+  
+  
+  
+  /**
+   * SQL Creation Methods 
+   */
+  public function select_sql($model) {
+    $sql .= "SELECT ";
+    if(is_array($model->select_columns) && count($model->select_columns)) 
+      $sql.= join(",", $model->select_columns);
+    elseif(is_string($model->select_columns)) 
+      $sql.=$model->select_columns;
+ 		else 
+ 		  $sql.= "*";
+ 		   
+    $sql.= " FROM `{$model->table}`";
+    return $sql;
+   }
+   
+   public function row_count_query($model) {
+     if($model->is_paginated) {
+       $extrastmt = $this->db->prepare($this->sql_without_limit);
+ 		   $sth = $this->exec($extrastmt);
+ 		   $found = $sth->fetchAll(PDO::FETCH_COLUMN, 0);
+ 		   $this->total_without_limits = count($found);
+ 	   }
+   }
+  
+  
+  
+  
+  /**
+   * Introspection and structure creation methods
+   *
+   */
+  
   public function view_table(WaxModel $model) {
     $stmt = $this->db->prepare("SELECT name FROM sqlite_master WHERE type = 'table'");
     return $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
@@ -109,14 +151,10 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
       if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed."\n";
     }
     $output .= "Table {$model->table} is now synchronised";
+    $this->db = false;
+    $this->db = $this->connect($this->db_settings);
     return $output;
   }
-  
-  
-  public function random() {
-    return "Random()";
-  }
-  
 	
 	
 } // END class

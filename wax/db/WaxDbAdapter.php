@@ -36,6 +36,15 @@ abstract class WaxDbAdapter {
       'TimeField'=>         'time',
 			'FloatField'=>				'float'
   );
+  
+  public $operators = array(
+    "="=>     " = ",
+    "raw"=>   "",
+    "!="=>    " != ",
+    "~"=>     " LIKE ",
+    "in"=>    " IN"
+  );
+  public $sql_without_limit = false;
   public $total_without_limits = false;
   
   public function __construct($db_settings=array()) {
@@ -58,35 +67,31 @@ abstract class WaxDbAdapter {
     return new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
   }
 
+  
+
+  
   public function insert(WaxModel $model) {
-    $stmt = $this->db->prepare("INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
-      VALUES (".join(",", array_keys($this->bindings($model->row))).")");
-    $stmt = $this->exec($stmt, $model->row);
+    $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
     return $model;
 	}
   
   public function update(WaxModel $model) {
-    $stmt = $this->db->prepare("UPDATE `{$model->table}` SET ".$this->update_values($model->row).
-      " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}");
-    $this->exec($stmt, $model->row);
+    $this->exec($this->prepare($this->update_sql($model)), $model->row);
     $id = $model->primval;
     return $model;
   }
   
   public function delete(WaxModel $model) {
-    $params = array();
-    $sql .= "DELETE FROM `{$model->table}`";
-    if($model->id) $sql .= "WHERE {$model->primary_key}={$model->id}";
-    elseif(count($model->filters)) {
+    $sql = $this->delete_sql($model);
+    if(!$model->primval()) {
       $filters = $this->filter_sql($model);
       $sql.=$filters["sql"];
-      $params =$filters["params"]; 
-    }   
-    if($model->order) $sql.= " ORDER BY {$model->order}";
-    if($model->limit) $sql.= " LIMIT {$model->limit}";    
-    $stmt = $this->db->prepare($sql);
-    return $this->exec($stmt, $params);
+      $params =$filters["params"];
+      $sql.= $this->order($model);
+      $sql.= $this->limit($model);
+    }
+    return $this->exec($this->db->prepare($sql), $params);
   }
   
   public function select(WaxModel $model) {
@@ -94,45 +99,26 @@ abstract class WaxDbAdapter {
     if($model->sql) {
       $sql = $model->sql;
     } else {
-      $sql .= "SELECT ";
-      if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
-      elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
-  		//mysql extra - if limit then record the number of rows found without limits
-  		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
-      else $sql.= "*";
-      $sql.= " FROM `{$model->table}`";
-			if($model->is_left_joined && count($model->join_conditions)) $sql .= " LEFT JOIN ".$model->left_join_table_name ." ON ".join(" AND ", $model->join_conditions);
-      
-      if(count($model->filters)) {
-        $filters = $this->filter_sql($model);
-        $sql.=$filters["sql"];
-        $params = $filters["params"];
-      }
-      
-      
-    	if($model->group_by) $sql .= " GROUP BY {$model->group_by}"; 
-    	if($model->having) $sql .=" HAVING {$model->having}";  
-      if($model->order) $sql.= " ORDER BY {$model->order}";
-      if($model->limit) $sql.= " LIMIT {$model->offset}, {$model->limit}";
+      $sql .=$this->select_sql($model);
+			$sql .=$this->left_join($model);
+      $filters = $this->filter_sql($model);
+      $sql.=$filters["sql"];
+      $params = $filters["params"];
+      $sql.= $this->group($model);
+      $sql.= $this->having($model);
+      $sql.= $this->order($model);
+      $this->sql_without_limit = $sql;
+      $sql.= $this->limit($model);
     }
-    
     $stmt = $this->prepare($sql);
-    
-		//altered to include extra mysql found rows data
-		if($model->is_paginated && $this->exec($stmt, $params)){
-			$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			$extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
-			$this->exec($extrastmt);
-			$found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
-			$this->total_without_limits = $found[0]['FOUND_ROWS()'];
-			return $res;
-		} elseif($this->exec($stmt, $params)) return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $this->exec($stmt, $params);
+    $this->row_count_query($model);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
   public function prepare($sql) {
-    try {
-      $stmt = $this->db->prepare($sql);
-		} catch(PDOException $e) {
+    try { $stmt = $this->db->prepare($sql); } 
+    catch(PDOException $e) {
 		  $err = $e->getMessage();
 			throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
       exit;
@@ -140,41 +126,107 @@ abstract class WaxDbAdapter {
 		return $stmt;
   }
   
+  public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
+    try {
+      WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
+      if(count($bindings)) WaxLog::log("info", "[DB] Values:".join($bindings,",") );
+			$pdo_statement->execute($bindings);
+		} catch(PDOException $e) {
+			$err = $pdo_statement->errorInfo();
+			WaxLog::log("error", "[DB]". $err[2]);
+      if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Executing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
+      exit;
+		}
+		return $pdo_statement;
+  }
+  
+  /**
+   * Raw query method
+   * @param string $sql 
+   */
+  public function query($sql) {
+    return $this->db->query($sql);
+  }
+  
+  /**
+   * Passes to PDO::quote functionality
+   * @param string $string 
+   */
+  public function quote($string) {
+    return $this->db->quote($string);
+  }
+  
+  
+  public function random() {
+    return "RAND()";
+  }
+  
+  
+  /**
+   * Query Specific methods, construct driver specific language
+   */
+	public function insert_sql($model) {
+	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
+             VALUES (".join(",", array_keys($this->bindings($model->row))).")";
+	}
+
+  public function update_sql($model) {
+    return "UPDATE `{$model->table}` SET ".$this->update_values($model->row).
+      " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}";
+  }
+   
+  public function select_sql($model) {
+    $sql .= "SELECT ";
+    if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
+    elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
+		//mysql extra - if limit then record the number of rows found without limits
+		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
+    else $sql.= "*";
+    $sql.= " FROM `{$model->table}`";
+    return $sql;
+  }
+  
+  public function delete_sql($model) {
+    $sql = "DELETE FROM `{$model->table}`";
+    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->id}";
+    return $sql;
+  }
+  
+  public function row_count_query($model) {
+    if($model->is_paginated) {
+      $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
+		  $this->exec($extrastmt);
+		  $found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
+		  $this->total_without_limits = $found[0]['FOUND_ROWS()'];
+	  }
+  }
+  
+  public function left_join($model) {
+		if($model->is_left_joined && count($model->join_conditions)) return " LEFT JOIN ".$model->left_join_table_name ." ON ".join(" AND ", $model->join_conditions);
+  }
+  public function group($model) {if($model->group_by) return " GROUP BY {$model->group_by}"; }
+  public function having($model) {if($model->having) return " HAVING {$model->having}";  }
+  public function order($model) {if($model->order) return " ORDER BY {$model->order}";}
+  public function limit($model) {if($model->limit) return " LIMIT {$model->offset}, {$model->limit}";}
+  
   public function filter_sql($model) {
     $params = array();
-    $sql.= " WHERE "; 
-    foreach($model->filters as $filter) {
-      if(is_array($filter)) {
-        $sql.= $filter["name"].$this->map_operator($filter["operator"]).$this->map_operator_value($filter["operator"], $filter["value"]);
-        if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
-        else $params[]=$filter["value"];
-        $sql .= " AND ";
-      } else {
-        $sql.= $filter." AND ";
+    $sql = "";
+    if(count($model->filters)) {
+      $sql.= " WHERE "; 
+      foreach($model->filters as $filter) {
+        if(is_array($filter)) {
+          $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
+          if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
+          else $params[]=$filter["value"];
+          $sql .= " AND ";
+        } else {
+          $sql.= $filter." AND ";
+        }
       }
     }
     $sql = rtrim($sql, "AND ");
-    
     return array("sql"=>$sql, "params"=>$params);
-  }
-  
-  public function map_operator($operator) {
-    switch($operator) {
-      case "=": return " = ";
-      case "raw": return "";
-      case "!=": return " != ";
-      case "~": return " LIKE ";
-      case "in": return " IN";
-    }
-  }
-  
-  public function map_operator_value($operator, $value) {
-    switch($operator) {
-      case "=": return "?";
-      case "!=": return "?";
-      case "~": return "%?%";
-      case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
-    }
   }
   
   /**
@@ -210,6 +262,14 @@ abstract class WaxDbAdapter {
     return $model;
   }
   
+  
+  
+  
+  
+  /**
+   * Introspection and structure creation methods
+   *
+   */
   
   public function syncdb(WaxModel $model) {
     if(in_array(get_class($model), array("WaxModel", "WaxTreeModel"))) return;
@@ -305,32 +365,15 @@ abstract class WaxDbAdapter {
     return "Updated column {$field->field} in {$model->table}";
   }
   
-  public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
-    try {
-      WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
-      if(count($bindings)) WaxLog::log("info", "[DB] Values:".join($bindings,",") );
-			$pdo_statement->execute($bindings);
-		} catch(PDOException $e) {
-			$err = $pdo_statement->errorInfo();
-			WaxLog::log("error", "[DB]". $err[2]);
-      if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString );
-      exit;
-		}
-		return $pdo_statement;
-  }
   
-  public function query($sql) {
-    return $this->db->query($sql);
-  }
   
-  public function quote($string) {
-    return $this->db->quote($string);
-  }
   
-  public function random() {
-    return "RAND()";
-  }
-  
+
+  /**
+   * Internal helper methods
+   *
+   */
+
   protected function bindings($array) {
 		$params = array();
 		foreach( $array as $key=>$value ) {
@@ -345,6 +388,16 @@ abstract class WaxDbAdapter {
     }
     return join( ', ', $expressions );
   }
+  
+  protected function map_operator_value($operator, $value) {
+    switch($operator) {
+      case "=": return "?";
+      case "!=": return "?";
+      case "~": return "%?%";
+      case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
+    }
+  }
+  
   
   
 
