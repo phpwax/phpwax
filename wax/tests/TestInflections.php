@@ -1,6 +1,6 @@
 <?php
 
-class TestWXInflections extends WXTestCase 
+class TestInflections extends WXTestCase 
 {
     public function setUp() {}
     

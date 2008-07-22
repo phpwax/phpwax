@@ -1,31 +1,23 @@
 <?php
-class TestAuthUser extends WXActiveRecord {}
-
-class TestAuthMigration extends WXMigrate {
-  public function up() {
-    $this->create_column("username");
-    $this->create_column("password");
-    $this->create_column("email");
-    $this->create_table("test_auth_user");
-  }
-  
-  public function down() {
-    $this->drop_table("test_auth_user");
+class TestAuthUser extends WaxModel {
+  public function setup() {
+    $this->define("username", "CharField");
+    $this->define("password", "CharField");
+    $this->define("email", "EmailField");
   }
 }
 
-class TestWXDBAuthenticate extends WXTestCase 
-{
+
+class TestWaxAuthDb extends WXTestCase {
+  
   public function setUp() {
-    $migrate = new TestAuthMigration('quiet');
-    $migrate->up();
     $this->model = new TestAuthUser();
+    $this->model->syncdb();
     $this->model->update_attributes($this->get_fixture("user"));
   }
   
   public function tearDown() {
-    $migrate = new TestAuthMigration('quiet');
-    $migrate->down();
+    $this->model->db->drop_table($this->model->table);
   }
   
   protected function get_fixture($type) {
@@ -37,7 +29,7 @@ class TestWXDBAuthenticate extends WXTestCase
   }
   
   public function test_verify() {
-    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_auth_user"));
+    $auth = new WaxAuthDb(array("encrypt"=>false, "db_table"=>"test_auth_user"));
     $auth->verify("test1", "password");
     $this->assertTrue($auth->is_logged_in());
     $auth->logout();
@@ -45,7 +37,7 @@ class TestWXDBAuthenticate extends WXTestCase
   }
   
   public function test_bad_login_fails() {
-    $auth = new WXDBAuthenticate(array("encrypt"=>false, "db_table"=>"test_auth_user"));
+    $auth = new WaxAuthDb(array("encrypt"=>false, "db_table"=>"test_auth_user"));
     $this->assertFalse($auth->is_logged_in());
     $auth->verify("test1", "badpassword");
     $this->assertFalse($auth->is_logged_in());
@@ -53,17 +45,12 @@ class TestWXDBAuthenticate extends WXTestCase
   
   public function test_encrypted_login() {
     $this->model->update_attributes($this->get_fixture("encrypteduser"));
-    $auth = new WXDBAuthenticate(array("encrypt"=>true, "db_table"=>"test_auth_user"));
+    $auth = new WaxAuthDb(array("encrypt"=>true, "db_table"=>"test_auth_user"));
     $auth->verify("encrypted", "password");
     $this->assertTrue($auth->is_logged_in());
   }
   
 }
 
-
-
-
-
-?>
 
 
