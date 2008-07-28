@@ -100,7 +100,7 @@ class WaxForm implements Iterator {
    }
    
    public function get($name) {
-
+     return $this->$name->handle_post(post($name));
    }
    
    
