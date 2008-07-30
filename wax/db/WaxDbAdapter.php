@@ -64,7 +64,9 @@ abstract class WaxDbAdapter {
 		} else {
 			$dsn="{$db_settings['dbtype']}:host={$db_settings['host']};port={$db_settings['port']};dbname={$db_settings['database']}";
 		}
-    return new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
+    $pdo = new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
+    $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, TRUE);
+		return $pdo;
   }
 
   

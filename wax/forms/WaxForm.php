@@ -99,6 +99,10 @@ class WaxForm implements Iterator {
      if(class_exists($value, false)) $this->elements[$name] = new $value();
    }
    
+   public function get($name) {
+     return $this->$name->handle_post(post($name));
+   }
+   
    
    /* Iterator functions */
    
