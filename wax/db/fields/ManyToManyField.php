@@ -71,7 +71,7 @@ class ManyToManyField extends WaxModelField {
 		$this->join_model->select_columns = array($target->table.".*");
 		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
 		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
-		$vals = $this->join_model->left_join($target->table)->join_condition($conditions)->filter("$target_prim_key_def > 0")->all();
+		$vals = $this->join_model->left_join($target->table)->join_condition($conditions)->all();
 		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
