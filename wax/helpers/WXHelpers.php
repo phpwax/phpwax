@@ -337,5 +337,6 @@ Autoloader::include_from_registry('UrlHelper');
 Autoloader::include_from_registry('FormBuilderHelper');
 Autoloader::include_from_registry('WaxCacheHelper');
 Autoloader::include_from_registry('RequestHelper');
+Autoloader::include_from_registry('WaxPartialHelper');
 
 ?>

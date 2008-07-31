@@ -165,6 +165,7 @@ class AutoLoader
 	  }
 	}
 	
+
 	static public function initialise() {	  
 		self::detect_assets();
 	  self::detect_test_mode();

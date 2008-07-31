@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WXTemplate
+class WaxTemplate
 {
 
 	public $template_paths = array();
@@ -42,7 +42,10 @@ class WXTemplate
 		}
 		return ob_get_clean();
 	}
+	
+	public function add_values($vals_array=array()) {
+	  foreach($vals_array as $var=>$val) $this->{$var}=$val;
+	}
 
 
 }
-?>
