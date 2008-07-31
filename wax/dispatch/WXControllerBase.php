@@ -163,7 +163,9 @@ abstract class WXControllerBase
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-	  if($this->is_public_method($this, $partial."_partial()")) $this->{$partial."_partial()"};
+	  if($this->is_public_method($this, $partial."_partial")) {
+	    $this->{$partial."_partial"}();
+	  }
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
@@ -173,6 +175,7 @@ abstract class WXControllerBase
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
     return $partial->parse();
 	}
+	
 	
 	/**
    *  Returns a single path as a string.
@@ -232,6 +235,7 @@ abstract class WXControllerBase
 		elseif($this->content_for_layout) echo $this->content_for_layout;
 		else echo "";
 	}
+	
 
   public function is_viewable($path){
 		$file_path = VIEW_DIR . $path . ".html";
