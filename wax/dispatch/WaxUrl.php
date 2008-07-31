@@ -140,7 +140,7 @@ class WaxUrl {
 	  }
 	  if($controller) {
 	    self::$params["controller"]=$controller;
-	    self::$params["route"]=preg_replace("/$controller/", "", self::$params["route"], 1);
+	    self::$params["route"]=preg_replace("/" . preg_quote($controller, "/") . "/", "", self::$params["route"], 1);
 	    self::$params["route"]=ltrim(self::$params["route"], "/");
 	  }
 	}
