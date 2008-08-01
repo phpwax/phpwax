@@ -40,7 +40,7 @@ class WaxPartialHelper extends WXHelpers {
       $delegate .="Controller";
       $delegate_controller = new $delegate;
       $delegate_controller->controller = $controller;
-  		$partial = $delegate_controller->render_partial($path);
+  		$partial = $delegate_controller->execute_partial($path);
   	}
     echo $partial;
     ob_end_flush();

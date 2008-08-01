@@ -166,6 +166,10 @@ abstract class WXControllerBase
 	  if($this->is_public_method($this, $partial."_partial")) {
 	    $this->{$partial."_partial"}();
 	  }
+	  return $this->build_partial($path);
+	}
+	
+	public function build_partial($path) {
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
@@ -174,6 +178,20 @@ abstract class WXControllerBase
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
     return $partial->parse();
+	}
+	
+	public function execute_partial($path) {
+	  if(strpos($path, "/")) {
+	    $partial = substr($path, strrpos($path, "/")+1);
+	    $path = substr($path, 0, strrpos($path, "/")+1);
+	    $path = $path.$partial;
+	  } else {
+	    $partial = $path;
+	  }
+	  if($this->is_public_method($this, $partial)) {
+	    $this->{$partial}();
+	  }
+	  return $this->build_partial($path);
 	}
 	
 	
