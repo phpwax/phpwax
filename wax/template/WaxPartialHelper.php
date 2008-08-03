@@ -14,7 +14,7 @@ class WaxPartialHelper extends WXHelpers {
    * 
    *  <?=partial("mypartial", $this);?>
    *
-   * Alternate syntax allows standalone execution that runs the _partial() method
+   * Alternate syntax allows standalone execution that runs the partialname() method
    *  <?=partial("mypartial")?>
    *
    * @param string $path 
