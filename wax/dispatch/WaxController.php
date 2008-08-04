@@ -1,14 +1,12 @@
 <?php
-/**
-	* @package PHP-Wax
-	*/
+
 
 /**
  * @package PHP-Wax
  * Provides basic functionality which controllers inherit.
  */
 
-abstract class WXControllerBase
+class WaxController
 {
 
   protected $route_array=null;
@@ -264,4 +262,3 @@ abstract class WXControllerBase
 
 }
 
-?>

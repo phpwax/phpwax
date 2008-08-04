@@ -1,3 +1,63 @@
 h1. Configuring Your Application
 
-Configuring your application should be easy and extensible. 
+h2. An Introduction to Configuration with Wax
+
+Configuring your application should be easy and extensible. For this reason you'll notice that for setting up PHP Wax applications we've chosen the easy to use and easy to read YAML format.
+
+If you've got your first application at the ready opening up the file @app/config/config.yml@ will give you an example of how to use YAML for configuration.
+
+What you see inside that file is some basic configuration for a standard Wax application. One of the first things you'll need to change if you want to create database driven applications as the database settings.
+
+h2. Working with Multiple Environments
+
+The best thing about using a framework like PHP Wax is that it encourages you to work in a much more efficient manner. When creating web applications you want deploying your application to have as few points of failure as possible. Hence using different environments is a great idea, you can have different settings for your development, testing and production environments which means that when you put an application live everything just works.
+
+h2. The Default Configuration
+
+The pre-set settings in the @app/config/config.yml@ file are primarily used for the database setup. Of course you will need to change these to reflect your specific settings.
+
+h2. Using Your Own Settings
+
+Of course the @app/config/config.yml@ file can be used to store as much additional configuration as you need. Simply add to the bottom of the file. For single settings you can do something like the following:
+<pre>
+google_api_key: ABCDEFGHIJKLMNOP01234567890
+default_postcode: SW1 4AA
+</pre>
+
+Those settings can be retrieved in your application by doing the following:
+<pre>
+Config::get("google_api_key");
+Config::get("default_postcode");
+</pre>
+
+For more complex setups you can use YAML's easy to understand nesting. Take the following as an example:
+
+<pre>
+users:
+  fred:
+    username: fred  
+    password: secret
+    email: fred@exaple.com
+  joe:
+    username: joe  
+    password: secret
+    email: joe@exaple.com
+</pre>
+
+Now we have a very basic user list stored in the configuration. Getting the info back is easy too, to access different levels of config PHP Wax uses a simple path system. So calling the following:
+
+<pre>
+Config::get("users");
+</pre>
+will return an array of users each of which also contains an array of settings. By being more specific you can call either:
+<pre>
+Config::get("users/fred");
+Config::get("users/fred/email");
+</pre>
+which will get you either an array of Fred's settings or in the second instance Fred's email address.
+
+
+
+
+
+

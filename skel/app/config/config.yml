@@ -38,25 +38,3 @@ production:
 
 
 
-# == Automatic deployment config for script/deploy ==
-# Requires destination server, login and path and subversion path to checkout from.
-#
-# Note that this is only for basic deployment, we'd advise using capistrano where available
-# There should be an example capfile in the root of your application.
-
-deploy:
-  server:       example.com
-  server_path:  /
-  user:         appuser
-  svn_path:   
-
-
-#  == Maintenance downtime == 
-#  Use to make the site unavailable to all but one ip
-#  Just comment the lines out to operate the site normally. Note that this will need to be your public ip address.
-#  Redirect gives an address to redirect all requests to.
-#
-#maintenance: 
-#  ip:       123.456.7.8
-#  redirect: holding
-

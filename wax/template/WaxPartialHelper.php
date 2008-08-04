@@ -12,9 +12,9 @@ class WaxPartialHelper extends WXHelpers {
    * Renders a partial from path $path into the current view
    * To inherit an existing view use this method: eg.....
    * 
-   *  <?=partial("_mypartial", $this);?>
+   *  <?=partial("mypartial", $this);?>
    *
-   * Alternate syntax allows standalone execution that runs the _partial() method
+   * Alternate syntax allows standalone execution that runs the partialname() method
    *  <?=partial("mypartial")?>
    *
    * @param string $path 

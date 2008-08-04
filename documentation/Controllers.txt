@@ -1,2 +1,7 @@
 h1. How To Use Controllers
 
+h2. Basic Functionality
+
+Controllers are where the application logic is stored. This may involve fetching information from the database via the _model_ layer and then defining what information is made available to the _view_ layer which is then displayed to the user.
+
+The basic 
