@@ -135,9 +135,8 @@ abstract class WaxDbAdapter {
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
-			WaxLog::log("error", "[DB]". $err[2]);
+			WaxLog::log("error", "[DB] ". $err[2]);
       if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Executing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
-      exit;
 		}
 		return $pdo_statement;
   }
