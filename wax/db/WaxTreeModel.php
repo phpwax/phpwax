@@ -34,15 +34,15 @@ class WaxTreeModel extends WaxModel {
     //Second method: parent references a non-existant node (including 0)
     $filter[] = "{$this->parent_column}_{$this->primary_key} NOT IN (SELECT {$this->primary_key} FROM `{$this->table}`)";
     //Third method: parent references a nothing
-    $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL";
+    $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL OR {$this->parent_column}_{$this->primary_key} = 0";
 
     $root = clone $this;
-    $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->all();
+    $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->order('id')->all();
     
     if($root_return){
       WaxModel::set_cache(get_class($root), "parent", "rootnodes", $root_return);
       return $root_return;
-    }
+    }else return false;
   }
 
   /**
@@ -51,19 +51,22 @@ class WaxTreeModel extends WaxModel {
    */
   public function path_to_root() {
     if($this->root_path) return $this->root_path;
+		$roots = $this->roots();
     //get the possible root id's
-    foreach($this->roots() as $root){
-      $rootids[] = $root->primval;
-    }
+    foreach($roots as $root){
+			$rootids[] = $root->primval();
+		}
+    
     $current = clone $this;
-    if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
-      while(!in_array($current->primval, $rootids)){
+    if($current->primval() && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
+      while(!in_array($current->primval(), $rootids)){
         $this->root_path[] = $current;
         $current = $current->{$current->parent_column}; //move up a node
       }
       $this->root_path[] = $current; //loop stops on the root node, so add it into the array
       return $this->root_path;
     }
+
   }
   /**
    * returns a numeric representation of this objects depth in the tree

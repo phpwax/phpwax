@@ -136,6 +136,8 @@ class WaxModel {
 		$this->is_paginated = false;
 		$this->is_left_joined = false;		
     $this->errors = array();
+		$this->having = false;
+		$this->select_columns = "*";		
     return $this;
  	}
  	
