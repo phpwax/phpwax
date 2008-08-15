@@ -406,4 +406,3 @@ abstract class WaxDbAdapter {
 } // END class 
 
 
-?>
