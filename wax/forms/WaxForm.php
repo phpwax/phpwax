@@ -61,6 +61,7 @@ class WaxForm implements Iterator {
   public function save() {
     if(!$this->is_valid()) return false;
     if($this->bound_to_model) return $this->handle_post();
+    else return $this->post_data;
   }
   
   public function handle_post() {
