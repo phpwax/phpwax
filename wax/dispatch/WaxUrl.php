@@ -101,7 +101,7 @@ class WaxUrl {
         $mapped_route = array_merge($mapped_route, (array) $map[1]);
       }
       // Map against named parameters in options array
-      
+     
       if($mapped_route) {
         foreach($mapped_route as $k=>$val) {
           self::$params[$k]=$val;
@@ -161,14 +161,20 @@ class WaxUrl {
   }
   
   protected function detect_maintenance() {
-	  $maintenance = Config::get("maintenance");
-	  if($maintenance['ip'] && $maintenance['redirect']) {
-	    if($_SERVER['REMOTE_ADDR']==$maintenance['ip']) return false;
-	    if(self::$params["route"] != $maintenance['redirect']) self::$params["route"]=$maintenance['redirect'];
-	    else return false;
-	    return true;
-	  }
-	  return false;
+	  $maintenance = Config::get("maintenance");	
+		$redirect = false;
+		//maintenace is setup
+		if($maintenance['ip'] && $maintenance['redirect']){
+			$redirect = true;
+			//if an exlucsion ip is set the check the remote address - reset the flag
+			if(is_array($maintenance['ip'])){
+				foreach($maintenance['ip'] as $ip){
+					if( preg_match("/".preg_quote($ip)."/i", $_SERVER['REMOTE_ADDR']) ) $redirect = false;
+				} 
+			}elseif(preg_match("/".preg_quote($maintenance['ip'])."/i", $_SERVER['REMOTE_ADDR']) ) $redirect = false;			
+		}
+		if($redirect) throw new MaintenanceException();
+				
 	}
   	
 }
