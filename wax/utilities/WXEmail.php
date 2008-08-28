@@ -390,6 +390,7 @@ class WXEmail
         
         // To be created automatically by mail()
         if($intercept = Config::get("email_intercept")) {
+          print_r($this->to); exit;
           foreach($this->to as $to) $tos .= $to[0]." ";
           $this->to = array();
           $this->add_to_address($intercept);
