@@ -34,12 +34,11 @@ class WXException extends Exception
 	    $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
   		return $view->parse();
-	  }elseif(!self::$double_redirect) {
-      self::$double_redirect=true;
+	  }else {
       $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
-	  } else return $this->error_message;
+	  }
 	}
 	
 	
