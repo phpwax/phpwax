@@ -56,9 +56,9 @@ class File {
 		  $height = floor($y / $ratio);
 	  }
 		if($overwrite) {
-			$command="mogrify $source -coalesce -resize {$width}x{$height}";
+			$command="mogrify $source -coalesce -colorspace RGB -resize {$width}x{$height}";
 		} else {
-			$command="convert $source -coalesce -resize {$width}x{$height}  $destination";
+			$command="convert $source -coalesce -colorspace RGB -resize {$width}x{$height}  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
