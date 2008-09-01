@@ -52,6 +52,12 @@ class WXException extends Exception
       if(!self::$double_redirect) {
   	    self::$double_redirect = true;
         header("HTTP/1.1 500 Application Error",1, 500);  
+        if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {
+          $content = file_get_contents(PUBLIC_DIR.ltrim($location, "/"));
+          ob_end_clean();
+          echo $content;
+          exit;
+        }
         $_GET["route"]=$location;
         $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
   		  $delegate_controller = new $delegate;
