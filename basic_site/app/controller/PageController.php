@@ -54,7 +54,7 @@ class PageController extends ApplicationController {
 		this one is slightly different - a textarea & takes another parameter with html attribute names 
 		(as textarea needs those to be valid markup!)
 		*/
-    $this->form->add_element("message", "TextareaInput", array("cols"=>60, "rows"=>7)); 
+    $this->form->add_element("message", "TextareaInput", array("cols"=>30, "rows"=>7)); 
 		/* 
 		 ok, here is the clever form handling...
 		 - a call to the save function in this case does not save as there is not a model associated with the form, just custom fields

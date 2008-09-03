@@ -267,3 +267,4 @@ form label, form input, form textarea{
 	margin:5px 0;
 }
 form label, form input.submit_field{clear:left;}
+form input.text_field{width:228px;}
