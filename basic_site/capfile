@@ -1,0 +1,97 @@
+load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+
+
+# This defines a deployment "recipe" that you can feed to capistrano
+# (http://manuals.rubyonrails.com/read/book/17). It allows you to automate
+# (among other things) the deployment of your application.
+
+# =============================================================================
+# REQUIRED VARIABLES
+# =============================================================================
+# You must always specify the application and repository for every recipe. The
+# repository must be the git URL of the repository you want this recipe to
+# correspond to. The deploy_to path must be the path on each machine that will
+# form the root of the application path.
+
+set :application, "app_name"
+role :web,        "#{application}.com"
+set :user,        "#{application}"
+set :password,    'password'
+
+
+# =============================================================================
+# OPTIONAL VARIABLES
+# =============================================================================
+default_run_options[:pty] = true
+set :repository,  "git@github.com:oneblackbear/#{application}.git"
+set :branch,      "master"
+set :deploy_to,   "."
+
+set :cms_repository,  "git://github.com/phpwax/wildfire.git"
+set :cms_deploy_to,   "./plugins/cms"
+set :cms_branch,      "master"
+
+# =============================================================================
+# TASKS
+# =============================================================================
+# Define tasks that run on all (or only some) of the machines. You can specify
+# a role (or set of roles) that each task should be executed on. You can also
+# narrow the set of servers to a subset of a role by specifying options, which
+# must match the options given for the servers to select (like :primary => true)
+
+namespace :deploy do  
+
+  desc "First setup of git clone after this point runs git pull"
+  task :setup do
+    run "git init"
+    run "git remote add origin #{repository}"
+  end
+  
+  desc "Runs a git pull to update the application"
+  task :default do
+    begin
+      run "ls #{deploy_to}/.git"
+    rescue
+      setup
+    end
+    run "git pull origin #{branch}"
+  end
+  
+  desc "Updates the database on the remote server"
+  task :syncdb do
+    run "script/syncdb production"
+  end
+  
+  desc "Clears the cache on the remote server"
+  task :clearcache do
+    run "rm -f tmp/cache/*"
+  end
+  
+end
+
+
+namespace :cms do
+  
+  desc "First setup of git clone after this point runs git pull"
+  task :setup do
+    run "mkdir -p #{cms_deploy_to}"
+    run "cd #{cms_deploy_to} && git init"
+    run "cd #{cms_deploy_to} && git remote add origin #{cms_repository}"
+  end
+  
+  desc "Runs a git pull to update the cms"
+  task :update do
+    begin
+      run "ls #{cms_deploy_to}/.git"
+    rescue
+      setup
+    end
+    run "cd #{cms_deploy_to} && git pull origin #{cms_branch}"
+  end
+  
+  desc "Updates the CMS database"
+  task :syncdb do
+    run "script/plugin syncdb production"
+  end
+  
+end
