@@ -9,8 +9,12 @@
  * Then make html templates in the 'view/page' directory.
  *
  * By default it will use the application.html layout (app/view/layouts/) 
+ *
+ * Some terminology : 
+ *   action = public function / public class method
+ *   view = file used to display an action
+ *
  **/
-
 class PageController extends ApplicationController {
 
 	
@@ -76,5 +80,27 @@ class PageController extends ApplicationController {
 	 */	
 	public function thanks(){}
 	
+	/**
+	 * The websites sitemap. This is a little bit smarter then the other actions. Here we introduce the idea of how easy it is to swap
+	 * formats in the phpwax framework.
+	 * 
+	 * The framework checks the url (ie mydomain.com/about-me) for an extension (.html, .xml, .rss, .json etc) and changes the 'format' variable.
+	 * The format variable is used when looking for 'views'. For example mydomain.com/about-me.html looks for a file called about-me.html 
+	 * where as mydomain.com/about-me.xml would look for a file called about-me.xml
+	 *
+	 * This mean you do lovely things like providing all of your content in rss format as well as html
+	 *
+	 * In this example we see how it is used to create both a html and a google xml sitemap in one 'action'
+	 */	
+	public function sitemap(){
+		//if the format is xml (ie the url used was /sitemap.xml) 
+		if($this->use_format == "xml"){
+			//then we turn off the main site layout - as we dont want html being used
+			$this->use_layout = false;
+			//and change the header type to be xml so it renders correctly
+			header("Content-Type: text/xml");
+		}
+		
+	}
 }
 ?>
