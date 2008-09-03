@@ -34,12 +34,11 @@ class WXException extends Exception
 	    $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
   		return $view->parse();
-	  }elseif(!self::$double_redirect) {
-      self::$double_redirect=true;
+	  }else {
       $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
-	  } else return $this->error_message;
+	  }
 	}
 	
 	
@@ -52,6 +51,12 @@ class WXException extends Exception
       if(!self::$double_redirect) {
   	    self::$double_redirect = true;
         header("HTTP/1.1 500 Application Error",1, 500);  
+        if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {
+          $content = file_get_contents(PUBLIC_DIR.ltrim($location, "/"));
+          ob_end_clean();
+          echo $content;
+          exit;
+        }
         $_GET["route"]=$location;
         $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
   		  $delegate_controller = new $delegate;

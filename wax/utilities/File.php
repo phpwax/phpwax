@@ -22,7 +22,9 @@ class File {
 	static function safe_file_save($dir, $file) {
 		$file=preg_replace('/[^\w\.\-_]/', '', $file);
 		while(is_file($dir.$file)) {
-			$file = substr($file,0,strpos($file, "."))."_1.".substr(strrchr($file, "."),1);
+		  $i = 1;
+			$file = substr($file,0,strpos($file, "."))."_$i.".substr(strrchr($file, "."),1);
+			$i++;
 		}
 		return $file;
 	}
@@ -54,9 +56,9 @@ class File {
 		  $height = floor($y / $ratio);
 	  }
 		if($overwrite) {
-			$command="mogrify $source -thumbnail {$width}x{$height}";
+			$command="mogrify $source -coalesce -colorspace RGB -resize {$width}x{$height}";
 		} else {
-			$command="convert $source -thumbnail {$width}x{$height}  $destination";
+			$command="convert $source -coalesce -colorspace RGB -resize {$width}x{$height}  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }

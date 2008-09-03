@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+	terrafirma1.0 by nodethirtythree design
+	http://www.nodethirtythree.com	
+-->
+<!-- MODIFIED FOR PHPWAX EXAMPLE SITE -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Basic Site</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="author" content="nodethirtythree - modified by OneBlackBear" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/core.css" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/styles.css" />
+
+</head>
+<body>
+
+<div id="outer">
+
+	<div id="upbg"></div>
+
+	<div id="inner">
+
+		<div id="header">
+			<h1><span>phpwax</span><sup>Basic Site</sup></h1>
+			<h2>by <a href="http://oneblackbear.com">OneBlackBear</h2>
+		</div>
+	
+		<div id="splash"></div>
+	
+		<div id="menu">
+			<ul>
+				<li class="first"><a href="/">Home</a></li>
+				<li><a href="/about-me">About Me</a></li>
+				<li><a href="/news">News</a></li>
+				<li><a href="/contact-me">Contact</a></li>
+			</ul>
+
+		<div id="date"><?=date("jS, F Y")?></div>
+		</div>
+	
+
+		<div id="primarycontent">
+		
+			<?=$content_for_layout?>
+	
+		</div>
+		
+		
+	
+		<div id="footer">
+		
+			&copy; My Website. All rights reserved. Design by <a href="http://www.nodethirtythree.com/">NodeThirtyThree</a>.
+			Modified by <a href="http://oneblackbear.com" title="one black bear" rel="oneblackbear">OneBlackBear</a>.
+		
+		</div>
+
+	</div>
+
+</div>
+
+</body>
+</html>

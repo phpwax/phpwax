@@ -1,0 +1,14 @@
+#!/bin/sh
+PHP=`which php`
+exec $PHP -C -q -d output_buffering=1 "$0" "$@"
+<?php
+ob_end_clean(); // make output from autofind php code disapear
+require_once dirname(__FILE__).'/../app/config/environment.php';
+$source_location = "svn://php-wax.com/home/phpwax/svn/main/trunk/skel/script";
+$output_dir = WAX_ROOT."script";
+
+$command = "svn export {$source_location} {$output_dir} --force";
+system($command);
+echo "All scripts have been updated to the latest versions.
+";
+?>
