@@ -46,7 +46,21 @@ class PageController extends ApplicationController {
 	 * fields. This also shows you how to send the results via an email
 	 */
 	public function contact_me(){
-		$this->contact_form = new WaxForm();
+		$this->form = new WaxForm(); //we create the form as $this so it can be accessed inside the views
+	  $this->form->add_element("name", "TextInput"); //this adds a field to the form called name, with the type of textinput
+    $this->form->add_element("email", "TextInput"); //this adds the email field
+    $this->form->add_element("telephone", "TextInput"); //telephone field
+		/*
+		this one is slightly different - a textarea & takes another parameter with html attribute names 
+		(as textarea needs those to be valid markup!)
+		*/
+    $this->form->add_element("message", "TextareaInput", array("cols"=>60, "rows"=>7)); 
+		
+    if($data = $this->form->save()) {
+      $email = new Contact;
+      $email->send_contact($data);
+      $this->redirect_to("/thanks");
+	    }
 	}
 	
 	
