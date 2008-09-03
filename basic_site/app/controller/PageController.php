@@ -24,7 +24,7 @@ class PageController extends ApplicationController {
 
 
 	
-	public function contact_us(){}
+	public function contact_me(){}
 	
 	
 }
