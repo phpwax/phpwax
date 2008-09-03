@@ -55,13 +55,23 @@ class PageController extends ApplicationController {
 		(as textarea needs those to be valid markup!)
 		*/
     $this->form->add_element("message", "TextareaInput", array("cols"=>60, "rows"=>7)); 
-		
+		/* 
+		 ok, here is the clever form handling...
+		 - a call to the save function in this case does not save as there is not a model associated with the form, just custom fields
+		 _ the save runs the validation methods for the form and the fields 
+		 - if it validates we create a new Contact model (see app/model/Contact.php for details)
+		 - the data returned from the save is passed in to the send_contact method (this sends the email - again see model for details)
+		 - redirect to a simple thank you page (good practice!)
+		*/
     if($data = $this->form->save()) {
       $email = new Contact;
       $email->send_contact($data);
       $this->redirect_to("/thanks");
-	    }
+	  }
 	}
 	
 	
+	public function thanks(){}
+	
 }
+?>

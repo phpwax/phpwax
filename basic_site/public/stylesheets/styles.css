@@ -260,3 +260,10 @@ ul.linklist li.first{
 }
 
 #footer a{color: #8C8C73;}
+
+/*forms*/
+form label, form input, form textarea{
+	float:left;
+	margin:5px 0;
+}
+form label, form input.submit_field{clear:left;}
