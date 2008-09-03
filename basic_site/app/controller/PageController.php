@@ -99,6 +99,8 @@ class PageController extends ApplicationController {
 			$this->use_layout = false;
 			//and change the header type to be xml so it renders correctly
 			header("Content-Type: text/xml");
+			//and create a variable for the server base
+			$this->base_url = "http://".$_SERVER['HTTP_HOST'];
 		}
 		
 	}
