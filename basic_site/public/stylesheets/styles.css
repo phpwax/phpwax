@@ -11,12 +11,17 @@
 
 body{
 	background: #F9F9F7 url('/images/a1.gif') repeat-x;
-	font-size: 11px;
+	font-size: 85%;
 	font-family: "trebuchet ms", helvetica, sans-serif;
 	color: #8C8C73;
-	line-height: 18px;
+	line-height: 1.3em;
 }
 
+h2{font-size:131%;}
+h4{
+	font-weight:bold;
+	margin-bottom:14px;
+}
 a{
 	color: #FF7800;
 	text-decoration: underline;
@@ -24,7 +29,10 @@ a{
 
 a:hover{text-decoration: none;}
 sup{font-size: 0.5em;}
-p{margin-bottom: 14px;}
+p{
+	margin-bottom: 14px;
+	font-size:93%;
+}
 
 
 img.floatleft{
@@ -83,15 +91,14 @@ ul.linklist li.first{
 
 #header h1{
 	position: absolute;
-	font-size: 23px;
+	font-size: 161.6%;
 	letter-spacing: -1px;
 	top: 30px;
-	height: 92px;
 }
 
 #header h2{
 	position: absolute;
-	font-size: 10px;
+	font-size: 77%;
 	font-weight: normal;
 	color: #FCE2CA;
 	top: 51px;
@@ -129,7 +136,7 @@ ul.linklist li.first{
 	background-color: transparent;
 	background-repeat: repeat-x;
 	padding: 8px 12px 8px 12px;
-	font-size: 12px;
+	font-size: 93%;
 	color: #fff;
 	font-weight: bold;
 }
@@ -147,7 +154,7 @@ ul.linklist li.first{
 	color: #BDBDA2;
 	right: 30px;
 	font-weight: bold;
-	font-size: 12px;
+	font-size: 93%;
 	letter-spacing: -1px;
 }
 
@@ -160,7 +167,7 @@ ul.linklist li.first{
 #secondarycontent h3{
 	position: relative;
 	top: 4px;
-	font-size: 16px;
+	font-size: 123.1%;
 	line-height: 25px;
 	color: #656551;
 	letter-spacing: -1px;
@@ -183,7 +190,7 @@ ul.linklist li.first{
 #primarycontent h3{
 	position: relative;
 	top: 4px;
-	font-size: 18px;
+	font-size: 138.5%;
 	line-height: 25px;
 	color: #656551;
 	letter-spacing: -1px;
@@ -249,6 +256,7 @@ ul.linklist li.first{
 	line-height: 66px;
 	background-image: url('/images/a50.gif');
 	color: #A8A88D;
+	font-size:77%;
 }
 
 #footer a{color: #8C8C73;}
