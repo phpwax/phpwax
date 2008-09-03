@@ -14,13 +14,18 @@
 
 class Contact extends WXEmail {
   
-  public $from = "test@example.com";
-	public $from_name = "Shave Doctor";
-	public $contact_to = "test@example.com";
+  public $from = "test@example.com"; //this variable is the from email address
+	public $from_name = "Example"; //this is the from name of the sender
+	public $contact_to = "test@example.com"; //this is an extra variable used in this model to store who receives the email
 	
 	public function contact($data){
+		/* the to of the email is set to match the extra email above, this is done so we can send other emails to 
+		 other people in other methods inside this class
+		*/
 		$this->to = $this->contact_to;
-		$this->subject = "We Have Contact!";
+		$this->subject = "We Have Contact!"; //the email subject
+		/*this sets of variables on $this object to the values passed in. It will be used inside the contact 
+		 view (ie the email body) and sent*/
     $this->name = $data["name"];
     $this->email = $data["email"];
     $this->telephone = $data["telephone"];
