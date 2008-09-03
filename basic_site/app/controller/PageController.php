@@ -90,6 +90,8 @@ class PageController extends ApplicationController {
 	 *
 	 * This mean you do lovely things like providing all of your content in rss format as well as html
 	 *
+	 * Also means that any logic you want to do, like pulling data from models (see a more advanced site demo), can be done just once
+	 *
 	 * In this example we see how it is used to create both a html and a google xml sitemap in one 'action'
 	 */	
 	public function sitemap(){
