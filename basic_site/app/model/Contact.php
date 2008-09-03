@@ -18,7 +18,7 @@ class Contact extends WXEmail {
 	public $from_name = "Example"; //this is the from name of the sender
 	public $contact_to = "test@example.com"; //this is an extra variable used in this model to store who receives the email
 	
-	public function contact($data){
+	public function contact_form($data){
 		/* the to of the email is set to match the extra email above, this is done so we can send other emails to 
 		 other people in other methods inside this class
 		*/

@@ -65,12 +65,15 @@ class PageController extends ApplicationController {
 		*/
     if($data = $this->form->save()) {
       $email = new Contact;
-      $email->send_contact($data);
+      $email->send_send_contact($data);
       $this->redirect_to("/thanks");
 	  }
 	}
 	
-	
+	/**
+	 * this is a very simple page that just says thanks on it
+	 * used in conjunction with the contact me page
+	 */	
 	public function thanks(){}
 	
 }
