@@ -11,6 +11,24 @@
 			<priority>1</priority>
 		</url>
 		
+		<url>
+			<loc><?=$base_url?>/about-me</loc>
+			<lastmod><?=date("Y-m-d")?></lastmod>
+			<changefreq>weekly</changefreq>
+			<priority>1</priority>
+		</url>
+		<url>
+			<loc><?=$base_url?>/news</loc>
+			<lastmod><?=date("Y-m-d")?></lastmod>
+			<changefreq>weekly</changefreq>
+			<priority>1</priority>
+		</url>
+		<url>
+			<loc><?=$base_url?>/contact-me</loc>
+			<lastmod><?=date("Y-m-d")?></lastmod>
+			<changefreq>weekly</changefreq>
+			<priority>1</priority>
+		</url>						
 		
 	
 	</urlset>
