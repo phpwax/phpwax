@@ -137,7 +137,7 @@ class WaxModel {
 		$this->is_left_joined = false;		
     $this->errors = array();
 		$this->having = false;
-		$this->select_columns = "*";		
+		$this->select_columns = array();		
     return $this;
  	}
  	
