@@ -1,0 +1,114 @@
+/* Use Yahoo reset.css to start all styles with a level playing field */
+@import url("http://yui.yahooapis.com/2.4.1/build/reset-fonts-grids/reset-fonts-grids.css");
+
+
+
+
+/* Basic form styling */
+
+
+/**********************************
+
+Use: form template
+Author: Nick Rigby
+
+***********************************/
+
+form fieldset { margin-bottom: 10px; }
+	
+form legend {
+	padding: 0 2px;
+	font-weight: bold;
+	_margin: 0 -7px; /* IE Win */
+	}
+	
+form label {
+	display: inline-block;
+	line-height: 1.8;
+	vertical-align: top;
+	display: -moz-inline-block;
+	}
+	
+form fieldset ol {
+	margin: 0;
+	padding: 0;
+	}
+	
+form fieldset li {
+	list-style: none;
+	padding: 5px;
+	margin: 0;
+	}
+	
+form fieldset fieldset {
+	border: none;
+	margin: 3px 0 0;
+	}
+	
+form fieldset fieldset legend {
+	padding: 0 0 5px;
+	font-weight: normal;
+	}
+	
+form fieldset fieldset label {
+	display: block;
+	width: auto;
+	}
+
+form em {
+	font-weight: bold;
+	font-style: normal;
+	color: #f00;
+	}
+
+form label { width: 120px; } /* Width of labels */
+form fieldset fieldset label { margin-left: 123px; } /* Width plus 3 (html space) */
+/*\*//*/ form legend { display: inline-block; } /* IE Mac legend fix */
+
+
+/****** Pagination and error Styles **********/
+.pagination {
+  margin:15px 0;
+  padding-bottom:15px;
+}
+.pagination li.pagination_link {
+  float:left;
+  margin-right:4px;
+  padding:3px 0;
+}
+.pagination li.pagination_link a, .pagination span {
+  padding:2px 5px;
+}
+.pagination li.pagination_link a, .pagination span.disabled {
+  border:1px solid #009EE0;
+}
+.user_errors, .user_messages {
+  background:#F299A3;
+  padding:10px 5px;
+  margin:10px 0;
+}
+.user_errors li, .user_messages li {
+  padding:4px 15px;
+  color:#333333;
+  margin:10px 15px;
+  background:url(/images/red_bullet.png) no-repeat left 8px;
+}
+.user_messages {
+  background:#faecba;
+}
+
+/********* END Pagination and errors ****************/
+
+
+/* Nasty clearfix hacks */
+.clearfix {display:inline-block;} 
+/* Hide from IE Mac \*/ 
+.clearfix {display:block;} 
+/* End hide from IE Mac */ 
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
