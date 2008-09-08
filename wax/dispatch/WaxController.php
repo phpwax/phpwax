@@ -253,8 +253,8 @@ class WaxController
 	}
 	
 
-  public function is_viewable($path){
-		$file_path = VIEW_DIR . $path . ".html";
+  public function is_viewable($path, $format="html"){
+		$file_path = VIEW_DIR . $path . ".". $format;
 		if(is_readable($file_path)) return true;
 		else return false;
 	}
