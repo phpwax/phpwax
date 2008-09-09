@@ -39,10 +39,9 @@ class WXApplication {
    *  @return void
    */
 	private function setup_environment() {
-	  $addr = gethostbyname(substr($_SERVER["HOSTNAME"],0,strpos($_SERVER["HOSTNAME"], ":")));	  
+	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
 	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
-	  error_log($addr);
 	  if(!preg_match($regexp, $addr)) $addr = false;
 		if(defined('ENV')) {
 		  WXConfiguration::set_environment(ENV);
