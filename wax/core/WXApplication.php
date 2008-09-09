@@ -40,6 +40,8 @@ class WXApplication {
    */
 	private function setup_environment() {
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
+	  error_log($addr);
+	  
 	  if(!$addr) $addr = gethostbyname($_SERVER["HTTP_HOST"]);
 	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
 	  error_log($addr);
