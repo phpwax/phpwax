@@ -69,7 +69,7 @@ class PageController extends ApplicationController {
 		*/
     if($data = $this->form->save()) {
       $email = new Contact;
-      $email->send_send_contact($data);
+      $email->send_contact_form($data);
       $this->redirect_to("/thanks");
 	  }
 	}
