@@ -174,7 +174,6 @@ class AutoLoader
 	  self::recursive_register(CONTROLLER_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		self::autoregister_plugins();
-		self::detect_environments();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
