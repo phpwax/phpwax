@@ -1,0 +1,18 @@
+Contact Received!
+
+-----------------------------------------------
+
+Name: <?=$name?>
+
+Email: <?=$email?>
+
+Telephone: <?=$telephone?>
+
+Message:
+
+<?=$message?>
+
+
+------------------------------------------------
+
+Don't reply to this address. The email is automated.
