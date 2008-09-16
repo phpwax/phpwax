@@ -439,7 +439,7 @@ class WaxModel {
    	    if($field->is_association){
    	      $swap = $array[$k];
    	      unset($array[$k]);
-   	      array_push($array, $swap);
+   	      $array[$k] = $swap;
         }
       }
     }
