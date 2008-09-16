@@ -83,7 +83,7 @@ class WaxModelField {
   
   
   protected function add_error($field, $message) {
- 	  $this->errors[]=$message;
+    if(!in_array($message, (array)$this->errors)) $this->errors[]=$message;
  	}
  	
  	

@@ -78,7 +78,7 @@ class WaxModel {
  	}
  	
  	public function add_error($field, $message) {
- 	  $this->errors[$field][]=$message;
+ 	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
  	}
  	
  	public function filter($filters) {
