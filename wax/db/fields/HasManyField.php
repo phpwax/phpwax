@@ -11,6 +11,7 @@ class HasManyField extends WaxModelField {
   public $target_model = false;
   public $join_field = false;
   public $editable = false;
+  public $is_association = true;
   
   
   public function setup() {

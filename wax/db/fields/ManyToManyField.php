@@ -14,6 +14,7 @@ class ManyToManyField extends WaxModelField {
   public $widget = "MultipleSelectInput";
   public $use_join_select = true;
 	public $eager_loading = false;
+  public $is_association = true;
 	
 	
 	
