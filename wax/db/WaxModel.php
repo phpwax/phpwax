@@ -427,13 +427,22 @@ class WaxModel {
 
 
  	public function update_attributes($array) {
-    foreach($array as $k=>$v) {
-      $this->$k=$v;
-		}
+ 	  $this->set_attributes($array);
 		return $this->save();
  	}
  	
  	public function set_attributes($array) {
+ 	  //move association fields to the end of the array
+ 	  foreach((array)$array as $k=>$v) {
+ 	    if($this->columns[$k]){
+   	    $field = $this->get_col($k);
+   	    if($field->is_association){
+   	      $swap = $array[$k];
+   	      unset($array[$k]);
+   	      array_push($array, $swap);
+        }
+      }
+    }
 		foreach((array)$array as $k=>$v) {
 		  $this->$k=$v;
 		}
