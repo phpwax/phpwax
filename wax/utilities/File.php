@@ -68,7 +68,8 @@ class File {
 	
 	static function rotate_image($source, $destination, $angle){
 		if(!self::is_image($source)) return false;
-		$command="mogrify $source -coalesce -colorspace RGB -rotate {$angle} $destination";		
+		system("cp $source $destination");
+		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";		
 		system($command);
 		if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
