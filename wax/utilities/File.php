@@ -76,6 +76,16 @@ class File {
 		return true;
 	}
 	
+	static function crop_image($source, $destination, $x, $y, $width, $height){
+		if(!self::is_image($source)) return false;
+		system("cp $source $destination");
+		$command="convert {$source} -crop {$width}x{$height}+{$x}+{$y} $destination";
+		system($command);
+		if(!is_file($destination)) { return false; }
+		chmod($destination, 0777);
+		return true;
+	}
+	
 	static function display_image($image) {
 		if(!self::is_image($image)) return false;
 		$info=getimagesize($image);
