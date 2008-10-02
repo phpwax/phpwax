@@ -80,7 +80,7 @@ class File {
 		if(!self::is_image($source)) return false;
 		system("cp {$source} {$destination}");
 		$command = "convert {$source} -coalesce -colorspace RGB -resize";
-		if($percent) $command.=" {$percent}%"
+		if($percent) $command.=" {$percent}%";
 		elseif($x && $y){
 			$command.= " {$x}x{$y}";
 			if($ignore_ratio) $command.="\!";
