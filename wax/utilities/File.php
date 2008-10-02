@@ -76,10 +76,10 @@ class File {
 		return true;
 	}
 	
-	static function resize_image($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
+	static function resize_image_extra($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
 		if(!self::is_image($source)) return false;
 		system("cp {$source} {$destination}");
-		$command = "convert {$source} -resize";
+		$command = "convert {$source} -coalesce -colorspace RGB -resize";
 		if($percent) $command.=" {$percent}%"
 		elseif($x && $y){
 			$command.= " {$x}x{$y}";
