@@ -76,6 +76,22 @@ class File {
 		return true;
 	}
 	
+	static function resize_image($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
+		if(!self::is_image($source)) return false;
+		system("cp {$source} {$destination}");
+		$command = "convert {$source} -resize";
+		if($percent) $command.=" {$percent}%"
+		elseif($x && $y){
+			$command.= " {$x}x{$y}";
+			if($ignore_ratio) $command.="\!";
+		}
+		$command .= " {$destination}";
+		system($command);
+		if(!is_file($destination)) { return false; }
+		chmod($destination, 0777);
+		return true;
+	}
+	
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
 		system("cp $source $destination");
