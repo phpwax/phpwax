@@ -39,9 +39,7 @@ class File {
 	
 	static function clear_image_cache($image_id){
 		$look_for = CACHE_DIR. $image_id."_*";
-		WaxLog::log('error', '[clearing cache] >'.$looking_for);
 		foreach(glob($look_for) as $filename){
-			WaxLog::log('error', '[cache file found] >'.$filename);
 			@unlink($filename);
 		}
 	}
