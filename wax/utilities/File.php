@@ -102,7 +102,7 @@ class File {
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
 		system("cp $source $destination");
-		$command="convert {$source} -crop {$width}x{$height}+{$x}+{$y} $destination";
+		$command="convert {$source} -crop ".$width."x".$height."+".$x."+".$y." +repage $destination";
 		system($command);
 		if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
