@@ -37,6 +37,12 @@ class File {
 		return false;
 	}
 	
+	static function clear_image_cache($image_id){
+		$look_for = CACHE_DIR. $image_id."_*";
+		foreach(glob($look_for) as $filename){
+			@unlink($filename);
+		}
+	}
 	/**
 	  * @param $source The Original Image File
 	  * @param $destination The New File to write to
@@ -91,6 +97,7 @@ class File {
 		chmod($destination, 0777);
 		return true;
 	}
+	
 	
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
