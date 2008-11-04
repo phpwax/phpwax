@@ -233,7 +233,7 @@ class WaxModel {
       return $field->get();
     }
     elseif(method_exists($this, $name)) return $this->{$name}();
-    elseif(array_key_exists($name, $this->row)) return $this->row[$name];
+    elseif(is_array($this->row) && array_key_exists($name, $this->row)) return $this->row[$name];
   }
 
 
