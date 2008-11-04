@@ -12,6 +12,7 @@ class HasManyField extends WaxModelField {
   public $join_field = false;
   public $editable = false;
   public $is_association = true;
+  public $eager_loading = false;
   
   
   public function setup() {
@@ -26,10 +27,20 @@ class HasManyField extends WaxModelField {
   }
   
   public function get() {
-    return $this->get_links();
+    if($this->eager_loading) return $this->eager_load();
+    return $this->lazy_load();
   }
   
-  public function get_links() {
+  public function eager_load() {
+    $target = new $this->target_model();
+		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
+		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
+    $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
+		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
+		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
+  }
+  
+  public function lazy_load() {
     $model = new $this->target_model();
     $model->filter(array($this->join_field=>$this->model->primval));
     foreach($model->rows() as $row) {
