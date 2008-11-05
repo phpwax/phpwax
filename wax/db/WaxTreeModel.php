@@ -19,6 +19,26 @@ class WaxTreeModel extends WaxModel {
     $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key, "target_model" => get_class($this)));
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key, "eager_loading" => true));
   }
+  
+  public function cache_whole_tree() {
+    $class = get_class($this);
+    $all_nodes = $this->all();
+    //index the rows by their ids, as well as parents and children ids
+    foreach($all_nodes->rowset as $row){
+      if(!$indexed_rowset[$row['id']]['children']) $indexed_rowset[$row['id']]['children'] = array(); //cache empty children arrays too
+      $indexed_rowset[$row['id']]['row'] = $row;
+      $indexed_rowset[$row['id']]['parent_id'] = $row['parent_id'];
+      $indexed_rowset[$row['parent_id']]['children'][] = $row;
+    }
+    foreach($indexed_rowset as $id => $entry){
+      //set parent cache
+      $parent = new $class;
+      $parent->set_attributes($indexed_rowset[$entry['parent_id']]['row']);
+      WaxModel::set_cache($class, $this->parent_column, $id, $parent);
+      //set children cache
+  		WaxModel::set_cache($class, $this->children_column, $id, $entry['children']);
+    }
+  }
 
   /**
    * get the root nodes
