@@ -33,8 +33,8 @@ class HasManyField extends WaxModelField {
   
   public function eager_load() {
     $target = new $this->target_model();
-		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
-		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
+		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval, false);
+		if(is_array($cache)) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
 		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
