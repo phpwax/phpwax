@@ -11,6 +11,7 @@ class WaxTreeModel extends WaxModel {
   public $children_column;
   public $root_path = false;
   public $level = false;
+  public $tree_array = false;
   
   function __construct($params=null) {
     parent::__construct($params);
@@ -39,6 +40,19 @@ class WaxTreeModel extends WaxModel {
   		WaxModel::set_cache($class, $this->children_column, $id, $entry['children']);
     }
   }
+
+	public function tree($nodes = false){
+    if($this->tree_array && !$nodes) return $this->tree_array;
+    if(!$nodes){
+      $this->cache_whole_tree();
+      $nodes = $this->roots;
+    }
+    foreach($nodes as $node){
+      $this->tree_array[] = $node;
+      $this->tree($node->children);
+    }
+    return $this->tree_array;
+	}
 
   /**
    * get the root nodes
