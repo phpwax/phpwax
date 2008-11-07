@@ -64,7 +64,8 @@ class TestWaxUrl extends WXTestCase {
     public function test_formats() {
       $_GET["route"]="sitemap.xml";
       $this->assertEqual(WaxUrl::get("controller"), "page");
-      $this->assertEqual(WaxUrl::get("action"), "sitemap.xml");    
+      $this->assertEqual(WaxUrl::get("action"), "sitemap");    
+      $this->assertEqual(WaxUrl::get("format"), "xml");    
     }
     
     public function test_defaults() {

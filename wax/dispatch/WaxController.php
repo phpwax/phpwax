@@ -225,10 +225,7 @@ class WaxController
 	  $this->controller = WaxUrl::get("controller");    
 	  $this->action = WaxUrl::get("action");
 	  $this->route_array = explode("/", $_GET["route"]);
-	  if(strpos($this->action, ".")) {
-	    $this->use_format = substr(strstr($this->action, "."),1);
-	    $this->action = substr($this->action,0,strpos($this->action,"."));
-	  }
+	  $this->use_format = WaxUrl::get("format");
 	  WaxLog::log("info", "Loading controller {$this->controller} with action {$this->action} from route '{$_GET['route']}'");
 	  $this->controller_global();
 	  $this->run_filters("before");

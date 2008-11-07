@@ -71,6 +71,13 @@ class WaxUrl {
   static public function perform_mappings() {
     if(!self::$params) self::$params = $_GET;
     self::detect_maintenance();
+    
+    //before mappings get the format
+    if(preg_match("/(.*)\.(.*)/", self::$params["route"], $matches)){
+      self::$params["format"] = $matches[2];
+      self::$params["route"] = $matches[1];
+    }
+    
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = self::$params["route"];
