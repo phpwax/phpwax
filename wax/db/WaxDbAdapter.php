@@ -50,9 +50,9 @@ abstract class WaxDbAdapter {
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
-    if(!$db_settings['dbtype']) $db['dbtype']="mysql";
-    if(!$db_settings['host']) $db['host']="localhost";
-    if(!$db_settings['port']) $db['port']="3306";
+    if(!$db_settings['dbtype']) $db_settings['dbtype']="mysql";
+    if(!$db_settings['host']) $db_settings['host']="localhost";
+    if(!$db_settings['port']) $db_settings['port']="3306";
     
     $this->db = $this->connect($db_settings);
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
