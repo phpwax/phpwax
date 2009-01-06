@@ -189,7 +189,7 @@ abstract class WaxDbAdapter {
   
   public function delete_sql($model) {
     $sql = "DELETE FROM `{$model->table}`";
-    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->id}";
+    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->primval()}";
     return $sql;
   }
   
