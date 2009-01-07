@@ -15,7 +15,7 @@ class ManyToManyField extends WaxModelField {
   public $use_join_select = true;
 	public $eager_loading = false;
   public $is_association = true;
-	public $join_table = false;
+	public $join_table = false; //this chap means that you can pass any name for the join table in on define()
 	
 	
 	/**
@@ -39,8 +39,8 @@ class ManyToManyField extends WaxModelField {
       $right = $this->model;
     }
     $join = new $this->join_model_class();
-    if($this->join_table) $join->table = $this->join_table;
-    else $join->init($left, $right);
+    $join->table = $this->join_table;
+    $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
   }
 

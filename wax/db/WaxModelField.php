@@ -43,11 +43,7 @@ class WaxModelField {
 
   public function __construct($column, $model, $options = array()) {
     $this->model = $model;
-		$debug = false;
-    foreach($options as $option=>$val){
-			$this->{$option} = $val;
-			if($option == "join_table") $debug = true;
-		}
+    foreach($options as $option=>$val) $this->{$option} = $val;
     if(!$this->field) $this->field = $column;
     if(!$this->table) $this->table = $this->model->table;
     if(!$this->col_name) $this->col_name = $this->field;
