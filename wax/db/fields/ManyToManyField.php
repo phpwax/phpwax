@@ -15,7 +15,7 @@ class ManyToManyField extends WaxModelField {
   public $use_join_select = true;
 	public $eager_loading = false;
   public $is_association = true;
-	
+	public $join_table = false;
 	
 	
 	/**
