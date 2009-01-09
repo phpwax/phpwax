@@ -59,7 +59,9 @@ class WaxForm implements Iterator {
   }
   
   public function save() {
+		WaxLog::log('error', '[wax form] saving form...');
     if(!$this->is_valid()) return false;
+		WaxLog::log('error', '[wax form] is valid...');
     if($this->bound_to_model) return $this->handle_post();
     else return $this->post_data;
   }
