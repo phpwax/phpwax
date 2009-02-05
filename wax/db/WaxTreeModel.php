@@ -25,6 +25,7 @@ class WaxTreeModel extends WaxModel {
     $class = get_class($this);
     $all_nodes = $this->all();
     //index the rows by their ids, as well as parents and children ids
+    $indexed_rowset = array();
     foreach($all_nodes->rowset as $row){
       if(!$indexed_rowset[$row['id']]['children']) $indexed_rowset[$row['id']]['children'] = array(); //cache empty children arrays too
       $indexed_rowset[$row['id']]['row'] = $row;

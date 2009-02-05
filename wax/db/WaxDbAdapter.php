@@ -50,9 +50,9 @@ abstract class WaxDbAdapter {
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
-    if(!$db_settings['dbtype']) $db['dbtype']="mysql";
-    if(!$db_settings['host']) $db['host']="localhost";
-    if(!$db_settings['port']) $db['port']="3306";
+    if(!$db_settings['dbtype']) $db_settings['dbtype']="mysql";
+    if(!$db_settings['host']) $db_settings['host']="localhost";
+    if(!$db_settings['port']) $db_settings['port']="3306";
     
     $this->db = $this->connect($db_settings);
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -189,7 +189,7 @@ abstract class WaxDbAdapter {
   
   public function delete_sql($model) {
     $sql = "DELETE FROM `{$model->table}`";
-    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->id}";
+    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->primval()}";
     return $sql;
   }
   
@@ -284,8 +284,7 @@ abstract class WaxDbAdapter {
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
-    // Map definitions to database - create or alter if required
-
+    // Map definitions to database - create or alter if required		
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       $output .= $model_field->before_sync();
