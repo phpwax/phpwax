@@ -84,7 +84,7 @@ class WaxUrl {
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = self::$params["route"];
-      if(substr($right,-1)=="/") $right = substr($right, 0,-1);
+      if(substr($right,-1)=="/") $right = substr($right, 0,-1); //take off the first slash if it's there
       $left = preg_replace("/:([A-Za-z0-9\-_]*\*)/", "([A-Za-z0-9.\-/_]*)", $left);
       $left = preg_replace("/:([A-Za-z0-9\-_]*)/", "([A-Za-z0-9.\-_]*)", $left);
       $left = str_replace("/", "\/", $left);  
@@ -98,11 +98,11 @@ class WaxUrl {
         $mappings = split("/", $map[0]);
         array_shift($matches);
         while(count($mappings)) {
-          if($mappings[0]==$matches[0]) {
+          if($mappings[0]==$matches[0]) { // exact text mappings
             array_shift($matches);
-          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") {
+          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") { // *-based variable mappings to allow any number of variables
             $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
-          } elseif(substr($mappings[0],0,1)==":") {
+          } elseif(substr($mappings[0],0,1)==":") { // variable-based mappings
             $mapped_route[substr($mappings[0],1)]=$matches[0];
             array_shift($matches); 
           }
