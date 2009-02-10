@@ -49,7 +49,7 @@ class WaxUrl {
    *  WaxUrl:map("", array("controller"=>"page"))
    *    - Maps an empty url to a default controller - default action will be index but this can also be overwritten
    *
-   *  WaxUrl::map("/tags/:tags*", array("controller"=>"tags", "action"=>"show"))
+   *  WaxUrl::map("tags/:tags*", array("controller"=>"tags", "action"=>"show"))
    *    - Looks for trigger pattern and then returns an array of the named parameter
    *
    *
