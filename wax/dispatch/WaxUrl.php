@@ -78,6 +78,9 @@ class WaxUrl {
       self::$params["route"] = $matches[1];
     }
     
+    //before mappings build a route array
+    self::$params["route_array"] = explode("/", self::$params["route"]);
+    
     foreach(self::$mappings as $map) {
       $left = $map[0];
       $right = self::$params["route"];
