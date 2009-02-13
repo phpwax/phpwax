@@ -66,6 +66,7 @@ abstract class WaxDbAdapter {
 		}
     $pdo = new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
     $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, TRUE);
+		$pdo->exec("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
 		return $pdo;
   }
 
