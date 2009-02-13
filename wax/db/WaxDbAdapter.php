@@ -46,6 +46,9 @@ abstract class WaxDbAdapter {
   );
   public $sql_without_limit = false;
   public $total_without_limits = false;
+	public $default_db_engine = "MyISAM";
+	public $default_db_charset = "utf8";
+	public $default_db_collate = "utf8_unicode_ci";
   
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
@@ -323,7 +326,7 @@ abstract class WaxDbAdapter {
   public function create_table(WaxModel $model) {
     $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (";
     $sql .= $this->column_sql($model->get_col($model->primary_key), $model);
-    $sql.=")";
+    $sql.=") ENGINE=".$this->default_db_engine." DEFAULT CHARSET=".$this->default_db_charset." COLLATE=".$this->default_db_collate;
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
     return "Created table {$model->table}";
