@@ -443,6 +443,7 @@ class WaxModel {
         }
       }
     }
+
 		foreach((array)$array as $k=>$v) {
 		  $this->$k=$v;
 		}

@@ -8,7 +8,6 @@
 class IntegerField extends WaxModelField {
   
   public $maxlength = "11";
-  
   public function setup() {
     
   }
@@ -16,7 +15,7 @@ class IntegerField extends WaxModelField {
   public function validate() {
     $this->valid_length();
  	  $this->valid_required();
-    $this->valid_format("number", "/^[0-9]*$/");
+    $this->valid_format("number", "/^\-?[0-9]*$/");
   }
 
 
