@@ -55,7 +55,7 @@ class WaxWidget {
   }
   
   public function attribute($name, $value) {
-    $this->$name = $value;
+    $this->{$name} = $value;
   }
   
   public function make_attributes() {
@@ -91,7 +91,8 @@ class WaxWidget {
   }
   
   public function __set($name, $value) {
-    if($this->bound_data instanceof WaxModelField) {
+		if(in_array($name, $this->allowable_attributes)) $this->{$name} = $value;
+    elseif($this->bound_data instanceof WaxModelField) {
       $this->bound_data->{$name}=$value;
     } else $this->{$name}=$value;
   }
