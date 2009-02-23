@@ -95,7 +95,7 @@ class WaxAuthDb
       $result = new $object($id);
       if($result) {
         $this->user_object = $result;
-        $this->user_id = $result->id;
+        $this->user_id = $result->primval;
       }
     }
   }
@@ -105,9 +105,9 @@ class WaxAuthDb
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
     $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
-    if($result->id) {
+    if($result->primval) {
       $this->user_object = $result;
-      $this->user_id = $result->id;
+      $this->user_id = $result->primval;
       return true;
     }
     return false;
