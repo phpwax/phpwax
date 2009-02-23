@@ -54,6 +54,10 @@ class WaxTreeModel extends WaxModel {
     }
     return $this->tree_array;
 	}
+	
+	public function all() {
+	  return $this->tree();
+	}
 
   /**
    * get the root nodes
