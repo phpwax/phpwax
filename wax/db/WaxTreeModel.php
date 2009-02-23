@@ -56,7 +56,9 @@ class WaxTreeModel extends WaxModel {
 	}
 	
 	public function all() {
-	  return new WaxRecordset($this->model, $this->tree());
+	  $model = get_class($this);
+	  $model = new $model;
+	  return new WaxRecordset($model, $this->tree());
 	}
 
   /**
