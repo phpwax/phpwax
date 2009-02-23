@@ -45,7 +45,6 @@ class WaxTreeModel extends WaxModel {
 	public function tree($nodes = false){
     if($this->tree_array && !$nodes) return $this->tree_array;
     if(!$nodes){
-      $this->cache_whole_tree();
       $nodes = $this->roots;
     }
     foreach($nodes as $node){
