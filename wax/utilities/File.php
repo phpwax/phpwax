@@ -192,8 +192,8 @@ class File {
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
 			if(!strstr($dir->getPath()."/".$file, "/.") ) {
-				if(self::is_image($dir->getPath()."/".$file)) {
-					$imagearray[]=array("filename"=>$dir->getFilename(), "path"=>base64_encode($dir->getPath()."/".$file));
+				if(self::is_image($file)) {					
+					$imagearray[]=array("filename"=>$dir->getFilename(), "path"=>base64_encode($file));
 				}
 			}			
 		}
