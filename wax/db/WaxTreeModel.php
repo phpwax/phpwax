@@ -45,6 +45,7 @@ class WaxTreeModel extends WaxModel {
 	public function tree($nodes = false){
     if($this->tree_array && !$nodes) return $this->tree_array;
     if(!$nodes){
+      $this->cache_whole_tree();
       $nodes = $this->roots;
     }
     foreach($nodes as $node){
@@ -53,12 +54,7 @@ class WaxTreeModel extends WaxModel {
     }
     return $this->tree_array;
 	}
-	
-	public function all() {
-	  $model = get_class($this);
-	  $model = new $model;
-	  return new WaxRecordset($model, $this->tree());
-	}
+
 
   /**
    * get the root nodes
