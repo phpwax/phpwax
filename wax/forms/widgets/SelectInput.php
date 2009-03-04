@@ -23,7 +23,7 @@ class SelectInput extends WaxWidget {
     if(!$this->choices) $this->choices = $this->get_choices();
     foreach($this->choices as $value=>$option) {
       $sel = "";
-      if((int)$this->value===(int)$value) $sel = ' selected="selected"';
+      if($this->value===$value) $sel = ' selected="selected"';
       $output .= sprintf($choice, $value, $sel, $option);
     }
     return $output;
