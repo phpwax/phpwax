@@ -43,16 +43,43 @@ class WaxTreeModel extends WaxModel {
   }
 
 	public function tree($nodes = false){
-    if($this->tree_array && !$nodes) return $this->tree_array;
-    if(!$nodes){
-      $this->cache_whole_tree();
-      $nodes = $this->roots;
-    }
-    foreach($nodes as $node){
-      $this->tree_array[] = $node;
-      $this->tree($node->children);
-    }
-    return $this->tree_array;
+		$model_class = get_class($this);
+		if($cache_tree = unserialize($this->session_cache_get("section_tree"))) {
+			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
+		}else{
+			$new_tree = $this->build_tree($this->rows() );
+			$this->session_cache_set("section_tree", serialize($new_tree));
+			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
+		}
+	}
+	
+	
+	public function build_tree($list) {
+		$lookup = array();
+		foreach( $list as $item ) {
+			$item['children'] = array();
+			$lookup[$item['id']] = $item;
+		}
+		$tree = array();
+		foreach( $lookup as $id => $foo ){
+			$item = &$lookup[$id];
+			if( $item['parent_id'] == 0 ) $tree[$id] = &$item;
+			elseif( isset( $lookup[$item['parent_id']] ) ) $lookup[$item['parent_id']]['children'][] = &$item;
+			else $tree['_orphans_'][$id] = &$item;
+		}
+		return array_values($tree);
+	}
+
+	protected function session_cache_get($name, $expire="18000") {
+		if(Session::get($name)) {
+			if(Session::get($name."_cache") > time()-$expire) return Session::get($name);
+		}
+		return false;
+	}
+
+	protected function session_cache_set($name, $value) {
+		Session::set($name, $value);
+		Session::set($name."_cache", time());
 	}
 
 
