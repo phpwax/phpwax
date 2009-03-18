@@ -81,7 +81,19 @@ class WaxTreeModel extends WaxModel {
 		Session::set($name, $value);
 		Session::set($name."_cache", time());
 	}
-
+	
+	//clear the cache of the tree
+	public function delete() {
+		parent::delete();
+		Session::unset_var("section_tree_cache");
+		Session::unset_var("section_tree");		
+	}
+	
+	public function save(){
+		Session::unset_var("section_tree_cache");
+		Session::unset_var("section_tree");
+		parent::save();		
+	}
 
   /**
    * get the root nodes
