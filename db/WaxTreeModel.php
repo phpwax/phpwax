@@ -83,16 +83,16 @@ class WaxTreeModel extends WaxModel {
 	}
 	
 	//clear the cache of the tree
-	public function delete() {
-		parent::delete();
+	public function delete() {	
 		Session::unset_var("section_tree_cache");
 		Session::unset_var("section_tree");		
+		return parent::delete();
 	}
 	
 	public function save(){
 		Session::unset_var("section_tree_cache");
 		Session::unset_var("section_tree");
-		parent::save();		
+		return parent::save();		
 	}
 
   /**
