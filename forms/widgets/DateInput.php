@@ -16,7 +16,6 @@ class DateInput extends TextInput {
                       google.load('jquery', '1.3.2');
                       google.load('jqueryui', '1.7.0');
                       $(document).ready(function(){
-                        console.log('loading...');
                       $('input.form_datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
                       });
                     </script>";
