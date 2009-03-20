@@ -25,13 +25,20 @@ class WaxAuthDb
   protected $user_object=null;
 	protected $db_table = "user";
   protected $encrypt=false;
-  
+  protected $salt=false;
+	protected $algorithm = "md5";
+
 	function __construct($options=array()) {
-	  if(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+		if(is_string($options["encrypt"]) || is_numeric($options["encrypt"])){
+			$this->encrypt = true;
+			$this->salt = $options["encrypt"];
+		}elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+		
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
 	  if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
 	  if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
 	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
+		if(isset($options["algorithm"])) $this->algorithm=$options["algorithm"];
 	  $this->setup_user();
 	}
 	
@@ -57,7 +64,8 @@ class WaxAuthDb
 
   
   protected function encrypt($password) {
-    return md5($password);
+    if($this->salt) return hash_hmac($this->algorithm, $password, $this->salt);
+		else hash_hmac($this->algorithm, $password, $this->salt);
   }
 
 	/**
