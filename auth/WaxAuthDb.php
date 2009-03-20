@@ -64,8 +64,8 @@ class WaxAuthDb
 
   
   protected function encrypt($password) {
-    if($this->salt) return hash_hmac($this->algorithm, $password, $this->salt);
-		else hash_hmac($this->algorithm, $password, $this->salt);
+		if($this->algorithm == "md5" && !$this->salt) return md5($password);
+    else return hash_hmac($this->algorithm, $password, $this->salt);
   }
 
 	/**
