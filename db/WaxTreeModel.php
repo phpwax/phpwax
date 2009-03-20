@@ -154,3 +154,4 @@ class WaxTreeModel extends WaxModel {
   }
 
 }
+?>
