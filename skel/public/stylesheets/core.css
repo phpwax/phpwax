@@ -105,7 +105,6 @@ form fieldset fieldset label { margin-left: 123px; } /* Width plus 3 (html space
 
 /********/
 
-
 /* Nasty clearfix hacks */
 .clearfix {display:inline-block;} 
 /* Hide from IE Mac \*/ 

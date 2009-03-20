@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * Date Input Widget class
  *
@@ -14,13 +13,13 @@ class DateInput extends TextInput {
   public $label_template = "<label for='%s'>%s</label>
                     <script src='http://www.google.com/jsapi'  type='text/javascript'></script>
                     <script type='text/javascript'>                      
-                      google.load('jquery', '1.3.2');
-                      google.load('jqueryui', '1.7.0');
+                      google.load('jquery', '1.3');
+                      google.load('jqueryui', '1.7');
                       $(document).ready(function(){
-                        console.log('loading...');
                       $('input.form_datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
                       });
                     </script>";
 
 
 } // END class
+?>
