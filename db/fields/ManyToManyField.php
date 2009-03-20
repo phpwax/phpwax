@@ -227,3 +227,4 @@ class ManyToManyField extends WaxModelField {
   }
 
 } 
+?>
