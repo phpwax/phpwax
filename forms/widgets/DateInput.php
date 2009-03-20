@@ -16,7 +16,7 @@ class DateInput extends TextInput {
                       google.load('jquery', '1.3');
                       google.load('jqueryui', '1.7');
                       $(document).ready(function(){
-                      $('input.form_datepicker').datepicker({ dateFormat: 'yy-mm-dd',changeMonth:true,changeYear:true, yearRange: '2000:2010'});
+                      $('input.form_datepicker').datepicker({ dateFormat: 'yy-mm-dd',changeMonth:true,changeYear:true, yearRange: '1945:2020'});
                       });
                     </script>	";
 
