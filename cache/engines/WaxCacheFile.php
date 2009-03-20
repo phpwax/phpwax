@@ -31,7 +31,7 @@ class WaxCacheFile {
 	}
 	
 	public function valid($return = false) {
-	  if(!is_readable($this->file())) return false;
+	  if(!is_readable($this->file()) ) return false;
     if($return) $ret = $this->get();
 	  $stats = stat($this->file());
 	  if(time() > $stats["mtime"] + $this->lifetime) {
