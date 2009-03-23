@@ -57,35 +57,39 @@ class ManyToManyField extends WaxModelField {
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
-  public function get() {
+  public function get($filters = false) {
+    $target = new $this->target_model;
+    if($filters){
+      $target->filter($filters);
+      $this->eager_loading = true; //forcing eager loading when doing join crossing filters, this means lazy loading does no database joins at all and stays light, as it should be
+    }
     if(!$this->model->primval) return new WaxModelAssociation($this->model, new $this->target_model, array(), $this->field);
-    if($this->eager_loading) return $this->eager_load();
-    return $this->lazy_load();
+    if($this->eager_loading) return $this->eager_load($target);
+    return $this->lazy_load($target);
   }
 
 
-  private function eager_load() {
-    $target = new $this->target_model;
-		$target_prim_key_def = $target->table.".".$target->primary_key;
-		$conditions = "( $target_prim_key_def = ".$this->join_model->table.".".$this->join_field($target)." AND ";
-		$conditions.= $this->join_model->table.".".$this->join_field($this->model)." = ".$this->model->primval." )";
+  private function eager_load($target) {
+		$this->join_model->left_join($target);
+		$this->join_model->join_condition("$target->table.$target->primary_key = ".$this->join_model->table.".".$this->join_field($target));
+		//select columns from the far side of the join, not the join table itself
 		$this->join_model->select_columns = array($target->table.".*");
-		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval,$vals->rowset, false);
+		$cache = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target->filters)),$vals->rowset, false);
 		if($cache) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
-		$vals = $this->join_model->left_join($target->table)->join_condition($conditions)->all();
-		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
+		
+		$vals = $this->join_model->all();
+		WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target->filters)), $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
   
-  private function lazy_load() {
-    $target_model = new $this->target_model;
+  private function lazy_load($target_model) {
     $left_field = $this->model->table."_".$this->model->primary_key;
     $right_field = $target_model->table."_".$target_model->primary_key;
     $this->join_model->select_columns=$right_field;
     $ids = array();
-    if($cache = WaxModel::get_cache(get_class($this->model),$this->field, $this->model->id, false )) return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);
+    if($cache = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target_model->filters)), false )) return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    WaxModel::set_cache(get_class($this->model),$this->field, $this->model->primval , $ids);
+    WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target_model->filters)), $ids);
     return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
   }
   
@@ -123,7 +127,7 @@ class ManyToManyField extends WaxModelField {
       }
    	  $ret = new WaxRecordset(new $this->join_model_class, $rowset);
     }
-    WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
+    WaxModel::unset_cache(get_class($this->model), $this->field);
     return $ret;
   }
   /**
@@ -138,7 +142,7 @@ class ManyToManyField extends WaxModelField {
     }
     $links = new $this->target_model;
 
-    WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
+    WaxModel::unset_cache(get_class($this->model), $this->field);
 
     if($model instanceof WaxModel) {
       $id = $model->primval;
@@ -159,7 +163,7 @@ class ManyToManyField extends WaxModelField {
 	 * instead it unlinks the join table & yes, the obligatory cache clearing 
 	 */	
 	public function delete(){
-    WaxModel::unset_cache(get_class($this->model), $this->field, $this->model->primval);
+    WaxModel::unset_cache(get_class($this->model), $this->field);
 		//delete join tables!
 		$data = $this->get();
 		if($data->count()) $this->unlink($data);
@@ -186,7 +190,7 @@ class ManyToManyField extends WaxModelField {
         if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params));
       }
       $this->join_model->filter($params);
-  		WaxModel::unset_cache($this->target_model, $this->field, $this->model->primval);
+  		WaxModel::unset_cache(get_class($this->model), $this->field);
       return $this->get();
     }else return $this->__call("filter", array($params));
   }
