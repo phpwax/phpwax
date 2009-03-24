@@ -6,6 +6,8 @@
   */
 
 class File {
+  
+  static $compression_quality = "85";
 	
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
@@ -62,9 +64,9 @@ class File {
 		  $height = floor($y / $ratio);
 	  }
 		if($overwrite) {
-			$command="mogrify ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height}";
+			$command="mogrify ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
 		} else {
-			$command="convert ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height}  $destination";
+			$command="convert ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
