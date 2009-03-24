@@ -129,7 +129,17 @@ class FormOptionsHelper extends FormHelper {
 	 * - pads out front of string with the value passed
 	 ***************************/
 	public function options_from_collection($collection, $attribute_value, $attribute_text, $blank=null, $indent=false) {
-    if(is_array($collection) || $collection instanceOf ArrayAccess) {
+		if($collection instanceOf Iterator) {
+      if($blank) $array[0]=$blank;
+      foreach($collection as $object) {
+				if($indent && ($object->get_level()>0) ){
+					$tmp = str_pad("", $object->get_level(), "*", STR_PAD_LEFT);
+					$tmp = str_replace("*", $indent, $tmp);
+				}
+				else $tmp = "";
+        $array[$object->{$attribute_value}] = $tmp . $object->{$attribute_text};            
+      }    
+    }elseif(is_array($collection) || $collection instanceOf ArrayAccess) {
       if($blank) $array[0]=$blank;
       foreach($collection as $object) {
 				if($indent && ($object->get_level()>0) ){

@@ -34,6 +34,7 @@ class WaxModel {
 	public $is_paginated = false;
 	//joins
 	public $is_left_joined = false;
+	public $left_join_target = false;
 	public $left_join_table_name = false;
 	public $join_conditions = false;
   /**
@@ -193,8 +194,9 @@ class WaxModel {
       self::$object_cache[$model][$field][$id]=$value;
   }
   
-	static public function unset_cache($model, $field, $id){
-		unset(self::$object_cache[$model][$field][$id]);
+	static public function unset_cache($model, $field, $id = false){
+		if(!$id) unset(self::$object_cache[$model][$field]);
+		else unset(self::$object_cache[$model][$field][$id]);
 	}
   /**
    * output_val function
@@ -341,9 +343,11 @@ class WaxModel {
 	 * @author charles marshall
 	 */	
 	public function left_join($target){
-		$this->is_left_joined = true;
-		if(is_string) $this->left_join_table_name = $target;
-		elseif($target) $this->left_join_table_name = $target->table;
+		if(is_string($target) || $target instanceof WaxModel){
+		  $this->left_join_table_name = $target->table;
+		  $this->left_join_target = $target;
+  		$this->is_left_joined = true;
+		}
 		return $this;
 	}
 	/**
@@ -352,15 +356,19 @@ class WaxModel {
 	 * @return WaxModel $this 
 	 */	
 	public function join_condition($conditions){
-		if(is_string($conditions)) $this->join_conditions[]=$conditions;
-	  else{
-	    foreach((array)$conditions as $key=>$condition) {
-	      if(is_array($condition)) $this->join_conditions[]= $key." IN(".join(",",$condition).")";
-	      elseif(!is_numeric($key)) $this->join_conditions[]= $key."=".$this->db->quote($condition);
-				else $this->join_conditions[]= ($condition);
-	    }
-	  }
-	  return $this;
+ 	  if(is_string($conditions)) $this->join_conditions[]=$conditions;
+ 	  else {
+      foreach((array)$conditions as $key=>$filter) {
+        if(is_array($filter)) {
+          if(!strpos($key, "?")) {
+            $this->join_conditions[]= array( "name"=>$key, "operator"=>"in", "value"=>$filter);
+          }
+          else $this->join_conditions[] = array("name"=>$key, "operator"=>"raw", "value"=>$filter);
+        }
+        else $this->join_conditions[]= array("name"=>$key,"operator"=>"=", "value"=>$filter);
+      }
+    }
+    return $this;
 	}
 	
   public function update( $id_list = array() ) {
@@ -535,6 +543,10 @@ class WaxModel {
 
 
  	public function __call( $func, $args ) {
+    if(array_key_exists($func, $this->columns)) {
+      $field = $this->get_col($func);
+      return $field->get($args[0]);
+    }
  	  return $this->dynamic_finders($func, $args);
   }
    
