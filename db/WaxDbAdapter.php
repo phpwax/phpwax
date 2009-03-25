@@ -92,6 +92,7 @@ abstract class WaxDbAdapter {
     $sql = $this->delete_sql($model);
     if(!$model->primval()) {
       $filters = $this->filter_sql($model);
+      if($filters["sql"]) $sql.= " WHERE ";
       $sql.=$filters["sql"];
       $params =$filters["params"];
       $sql.= $this->order($model);
@@ -106,10 +107,28 @@ abstract class WaxDbAdapter {
       $sql = $model->sql;
     } else {
       $sql .=$this->select_sql($model);
-			$sql .=$this->left_join($model);
+			
+			$join = $this->left_join($model);
+			$sql .=$join["sql"];
+			$params = $join["params"];
+			
       $filters = $this->filter_sql($model);
+      if($filters["sql"]) $sql.= " WHERE ";
       $sql.=$filters["sql"];
-      $params = $filters["params"];
+      if($params) $params = array_merge($params, $filters["params"]);
+      else $params = $filters["params"];
+      
+			//add filters from the other side of the join
+			if($model->is_left_joined && $model->left_join_target instanceof WaxModel){
+        $join_filters = $this->filter_sql($model->left_join_target);
+        if($join_filters["sql"])
+          if(strpos($sql,"WHERE") === false) $sql.= " WHERE ";
+          else $sql.= " AND ";
+        $sql.=$join_filters["sql"];
+        if($params) $params = array_merge($params, $join_filters["params"]);
+        else $params = $join_filters["params"];
+      }
+			
       $sql.= $this->group($model);
       $sql.= $this->having($model);
       $sql.= $this->order($model);
@@ -207,20 +226,26 @@ abstract class WaxDbAdapter {
   }
   
   public function left_join($model) {
-		if($model->is_left_joined && count($model->join_conditions)) return " LEFT JOIN ".$model->left_join_table_name ." ON ".join(" AND ", $model->join_conditions);
+		if($model->is_left_joined && count($model->join_conditions)){
+		  $conditions = $this->filter_sql($model,"join_conditions");
+		  if($model->left_join_target instanceof WaxModel) $join_table = $model->left_join_target->table;
+		  else $join_table = $model->left_join_target;
+		  $sql = " LEFT JOIN `" . $join_table . "` ON ( " . $conditions["sql"] . " )";
+		  return array("sql"=>$sql, "params"=>$conditions["params"]);
+	  }
   }
   public function group($model) {if($model->group_by) return " GROUP BY {$model->group_by}"; }
   public function having($model) {if($model->having) return " HAVING {$model->having}";  }
   public function order($model) {if($model->order) return " ORDER BY {$model->order}";}
   public function limit($model) {if($model->limit) return " LIMIT {$model->offset}, {$model->limit}";}
   
-  public function filter_sql($model) {
+  public function filter_sql($model, $filter_name = "filters") {
     $params = array();
     $sql = "";
-    if(count($model->filters)) {
-      $sql.= " WHERE "; 
-      foreach($model->filters as $filter) {
+    if(count($model->$filter_name)) {
+      foreach($model->$filter_name as $filter) {
         if(is_array($filter)) {
+          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; //add table name if it's a column
           $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
           if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
           else $params[]=$filter["value"];

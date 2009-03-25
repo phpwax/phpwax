@@ -111,7 +111,6 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
       $this->assertEqual($owner->examples->count(), 2);
-
     }
     
     public function test_has_many_without_foreign_key_definition() {
@@ -130,6 +129,16 @@ class TestWaxModelField extends WXTestCase {
       $this->assertEqual($editor->examples->count(), 1);
     }
     
+    public function test_has_many_with_filters(){
+      $owner = $this->model_owner->create(array("name"=>"Master"));
+      $model = $this->model->create($this->get_fixture("user1"));
+      $model2 = $this->model->create($this->get_fixture("user2"));
+      $model->example_owner = $owner;
+      $model2->example_owner = $owner;
+      $this->assertEqual($owner->examples->count(), 2);
+      $this->assertEqual($owner->examples(array("email" => "test1@test.com"))->count(), 1);
+    }
+    
     public function test_many_many() {
       $model = $this->model->create($this->get_fixture("user1"));
       $props = new ExampleProperty;
@@ -141,6 +150,7 @@ class TestWaxModelField extends WXTestCase {
       $this->assertIsA($model->propertiesLazy, "WaxModelAssociation");
       $this->assertIsA($model->propertiesLazy[0], "ExampleProperty");
       $this->assertIsA($model->propertiesLazy[0]->examples[0], "Example");
+      
       $this->assertIsA($model->propertiesEager, "WaxModelAssociation");
       $this->assertIsA($model->propertiesEager[0], "ExampleProperty");
       $this->assertIsA($model->propertiesEager[0]->examples[0], "Example");
@@ -148,13 +158,8 @@ class TestWaxModelField extends WXTestCase {
       $this->assertEqual($model->propertiesLazy->count(), 2);
       $this->assertEqual($model->propertiesEager->count(), 2);
 
-      $this->assertEqual($model->propertiesLazy->filter(array("name" => "Property 2"))->all()->count(), 1);
-      $this->assertEqual($model->propertiesEager->filter(array("name" => "Property 1"))->all()->count(), 1);
-
-      $prop4 = $props->create(array("name"=>"Property 4"));
-
-      $this->assertEqual($model->propertiesLazy->filter(array("name" => "Property 4"))->all()->count(), 0);
-      $this->assertEqual($model->propertiesEager->filter(array("name" => "Property 4"))->all()->count(), 0);
+      $this->assertEqual($model->propertiesEager(array("name"=>"Property 1"))->count(), 1);
+      $this->assertEqual($model->propertiesLazy(array("name"=>"Property 1"))->count(), 1);
 
       $model->propertiesLazy->unlink($prop2);
       $this->assertEqual($model->propertiesLazy->count(), 1);

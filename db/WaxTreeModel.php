@@ -44,11 +44,11 @@ class WaxTreeModel extends WaxModel {
 
 	public function tree($nodes = false){
 		$model_class = get_class($this);
-		if($cache_tree = unserialize($this->session_cache_get("section_tree"))) {
+		if($cache_tree = unserialize($this->cached_tree_get() ) ) {
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}else{
 			$new_tree = $this->build_tree($this->rows() );
-			$this->session_cache_set("section_tree", serialize($new_tree));
+			$this->cached_tree_set(serialize($new_tree));
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}
 	}
@@ -70,28 +70,27 @@ class WaxTreeModel extends WaxModel {
 		return array_values($tree);
 	}
 
-	protected function session_cache_get($name, $expire="18000") {
-		if(Session::get($name)) {
-			if(Session::get($name."_cache") > time()-$expire) return Session::get($name);
-		}
-		return false;
+	protected function cached_tree_get() {
+		$cache = new WaxCache("section_tree");
+    if($cache->valid()) return $cache->get();
+		else return false;
 	}
 
-	protected function session_cache_set($name, $value) {
-		Session::set($name, $value);
-		Session::set($name."_cache", time());
+	protected function cached_tree_set($value) {
+		$cache = new WaxCache("section_tree");
+		$cache->set($value);
 	}
 	
 	//clear the cache of the tree
 	public function delete() {	
-		Session::unset_var("section_tree_cache");
-		Session::unset_var("section_tree");		
+		$cache = new WaxCache("section_tree");
+		$cache->expire();
 		return parent::delete();
 	}
 	
 	public function save(){
-		Session::unset_var("section_tree_cache");
-		Session::unset_var("section_tree");
+		$cache = new WaxCache("section_tree");
+		$cache->expire();
 		return parent::save();		
 	}
 
@@ -155,3 +154,4 @@ class WaxTreeModel extends WaxModel {
   }
 
 }
+?>

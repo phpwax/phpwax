@@ -26,27 +26,27 @@ class HasManyField extends WaxModelField {
     return true;
   }
   
-  public function get() {
-    if($this->eager_loading) return $this->eager_load();
-    return $this->lazy_load();
+  public function get($filters = false) {
+    $target = new $this->target_model;
+    if($filters) $target->filter($filters);
+    if($this->eager_loading) return $this->eager_load($target);
+    return $this->lazy_load($target);
   }
   
-  public function eager_load() {
-    $target = new $this->target_model();
-		$cache = WaxModel::get_cache($this->target_model, $this->field, $this->model->primval, false);
+  public function eager_load($target) {
+		$cache = WaxModel::get_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, false);
 		if(is_array($cache)) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-		WaxModel::set_cache($this->target_model, $this->field, $this->model->primval, $vals->rowset);
+		WaxModel::set_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, $vals->rowset);
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
   
-  public function lazy_load() {
-    $model = new $this->target_model();
-    $model->filter(array($this->join_field=>$this->model->primval));
-    foreach($model->rows() as $row) {
-      $ids[]=$row[$model->primary_key];
+  public function lazy_load($target) {
+    $target->filter(array($this->join_field=>$this->model->primval));
+    foreach($target->rows() as $row) {
+      $ids[]=$row[$target->primary_key];
     }
-    return new WaxModelAssociation($this->model,$model, $ids, $this->field);
+    return new WaxModelAssociation($this->model, $target, $ids, $this->field);
   }
   
   public function set($value) {

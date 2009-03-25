@@ -43,7 +43,7 @@ class WaxCache {
 	}
 	
 	public function init() {
-	  if($en = Config::get("cache") && $en="off") $this->enabled=false;
+	  if(Config::get("cache") == "off") $this->enabled=false;
 	  if($store = Config::get("cache_store")) $this->store=$store;
 	}
 	
@@ -52,3 +52,4 @@ class WaxCache {
 
 }
 
+?>
