@@ -13,10 +13,10 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
 
-set :application, "avf"
-role :web,        "obb7.oneblackbear.com"
-set :user,        "#{application}-nexus"
-set :password,    'avfnexus185'
+set :application, "app_name"
+role :web,        "#{application}.com"
+set :user,        "#{application}"
+set :password,    'password'
 
 
 # =============================================================================
