@@ -13,10 +13,10 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 # correspond to. The deploy_to path must be the path on each machine that will
 # form the root of the application path.
 
-set :application, "app_name"
-role :web,        "#{application}.com"
-set :user,        "#{application}"
-set :password,    'password'
+set :application, "avf"
+role :web,        "obb7.oneblackbear.com"
+set :user,        "#{application}-nexus"
+set :password,    'avfnexus185'
 
 
 # =============================================================================
@@ -24,12 +24,16 @@ set :password,    'password'
 # =============================================================================
 default_run_options[:pty] = true
 set :repository,  "git@github.com:oneblackbear/#{application}.git"
-set :branch,      "master"
+set :branch,      "waxed"
 set :deploy_to,   "."
 
 set :cms_repository,  "git://github.com/phpwax/wildfire.git"
 set :cms_deploy_to,   "./plugins/cms"
 set :cms_branch,      "master"
+
+set :wax_folder,      "./wax"
+set :wax_repository,  "git://github.com/phpwax/phpwax.git"
+set :wax_branch,      "master"
 
 # =============================================================================
 # TASKS
@@ -94,4 +98,25 @@ namespace :cms do
     run "script/plugin syncdb production"
   end
   
+end
+
+namespace :wax do
+ 
+ desc "setup the framework directory"
+ task :setup do
+   run "mkdir -p #{wax_folder}"
+   run "cd #{wax_folder} && git init"
+   run "cd #{wax_folder} && git remote add origin #{wax_repository}"
+ end
+  
+ desc "Run a wax update"
+ task :update do
+   begin
+     run "ls #{wax_folder}/.git"
+   rescue
+     setup
+   end
+   run "cd #{wax_folder} && git pull origin #{wax_branch}"
+ end
+ 
 end
