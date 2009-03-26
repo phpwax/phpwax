@@ -50,8 +50,12 @@ class WaxController
         header("Location:{$_SERVER['HTTP_REFERER']}"); exit;
         break;
       case is_string($options):
-        if(substr($options,0,1)!="/") $options = UrlHelper::url_for($options);
+        if(substr($options,0,1)!="/"){
+          if(substr($_SERVER['REQUEST_URI'],-1) != "/") $options = "/" . $options;
+          $options = $_SERVER['REQUEST_URI'] . $options;
+        }
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
+        print_r($url); exit;
         header("Location:$url"); exit;
         break;
     }
