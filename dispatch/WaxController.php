@@ -55,7 +55,6 @@ class WaxController
           $options = $_SERVER['REQUEST_URI'] . $options;
         }
         $url = $protocol.$_SERVER['HTTP_HOST'].$options;
-        print_r($url); exit;
         header("Location:$url"); exit;
         break;
     }
