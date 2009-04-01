@@ -143,17 +143,16 @@ class ManyToManyField extends WaxModelField {
     $links = new $this->target_model;
 
     WaxModel::unset_cache(get_class($this->model), $this->field);
-
-    if($model instanceof WaxModel) {
-      $id = $model->primval;
-      $this->join_model->filter(array($links->table."_".$links->primary_key => $id))->delete();
-    }
+    
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) {
         $id = $obj->primval;
         $filter[]= $links->table."_".$links->primary_key."=".  $id;
       }
       if(count($filter)) $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
+    }else{
+      if($model instanceof WaxModel) $model = $model->primval;
+      $this->join_model->filter(array($links->table."_".$links->primary_key => $model))->delete();
     }
     return $this->join_model;
   }
