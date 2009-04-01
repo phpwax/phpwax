@@ -245,7 +245,8 @@ abstract class WaxDbAdapter {
     if(count($model->$filter_name)) {
       foreach($model->$filter_name as $filter) {
         if(is_array($filter)) {
-          $sql.= "`$model->table`.".$filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
+          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; //add table name if it's a column
+          $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
           if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
           else $params[]=$filter["value"];
           $sql .= " AND ";
