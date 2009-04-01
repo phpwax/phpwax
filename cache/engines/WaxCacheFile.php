@@ -44,7 +44,7 @@ class WaxCacheFile {
 	
 	public function expire() {
 	  WaxLog::log("info", "[CACHE] Expiring cache file for ".$this->file());
-	  unlink($this->file());
+	  if(is_readable($this->file())) unlink($this->file());
 	}
 	
 	public function file() {
