@@ -24,7 +24,7 @@ set :password,    'password'
 # =============================================================================
 default_run_options[:pty] = true
 set :repository,  "git@github.com:oneblackbear/#{application}.git"
-set :branch,      "waxed"
+set :branch,      "master"
 set :deploy_to,   "."
 
 set :cms_repository,  "git://github.com/phpwax/wildfire.git"
