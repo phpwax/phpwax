@@ -114,6 +114,8 @@ class WaxController
 	  return false;
   }
   
+
+	
   
   /**
    *  Returns a view as a string.
@@ -123,16 +125,23 @@ class WaxController
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
-    $view = new WXTemplate($this);
+		if(Config::get('page_cache')){
+			$cache = new WaxCache(md5($this->use_view).'.view');
+			if($cache->valid())	return $cache->get();
+		}
+    $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$this->use_view);
     $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$this->use_view);
+		
     ob_end_clean();
-    if($this->use_format) return $view->parse($this->use_format);
-    return $view->parse();
+    if($this->use_format) $content = $view->parse($this->use_format, 'views');
+		else $content = $view->parse('html', 'views');
+		if(Config::get('page_cache')) $cache->set($content);
+		return $content;
   }
   
   /**
@@ -141,12 +150,19 @@ class WaxController
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;
-    $layout = new WXTemplate($this);
+		if(Config::get('page_cache')){
+			$cache = new WaxCache(md5($_SERVER['REQUEST_URI']).'.layout');
+			
+			if($cache->valid())	return $cache->get();
+		}
+    $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
-    ob_end_clean();
-    return $layout->parse();
+		ob_end_clean();
+    $layout = $layout->parse();
+		if(Config::get('page_cache')) $cache->set($layout);
+		return $layout;
   }
   
   
@@ -247,6 +263,7 @@ class WaxController
 		}
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
+		echo $this->render_layout();exit;
 		if($content = $this->render_layout()) echo $content;
 		elseif($this->content_for_layout) echo $this->content_for_layout;
 		else echo "";
