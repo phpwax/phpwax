@@ -125,7 +125,7 @@ class WaxController
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
-		if(Config::get('page_cache')){
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin")){
 			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($this->use_view).'.view');
 			if($cache->valid())	return $cache->get();
 		}
@@ -140,7 +140,7 @@ class WaxController
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
-		if(Config::get('page_cache')) $cache->set($content);
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin")) $cache->set($content);
 		return $content;
   }
   
@@ -150,7 +150,7 @@ class WaxController
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;
-		if(Config::get('page_cache')){
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
 			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.layout');			
 			if($cache->valid())	return $cache->get();
 		}
@@ -160,7 +160,7 @@ class WaxController
     $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
 		ob_end_clean();
     $layout = $layout->parse();
-		if(Config::get('page_cache')) $cache->set($layout);
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ) $cache->set($layout);
 		return $layout;
   }
   
