@@ -38,6 +38,7 @@ class WaxForm implements Iterator {
         $this->elements[$column] = $widget;
       }
     }
+    $this->setup();
   }
   
   public function add_element($name, $field_type, $settings=array()) {
@@ -103,6 +104,8 @@ class WaxForm implements Iterator {
    public function get($name) {
      return $this->$name->handle_post(post($name));
    }
+   
+   public function setup(){}
    
    
    /* Iterator functions */
