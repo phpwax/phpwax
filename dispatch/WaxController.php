@@ -152,6 +152,7 @@ class WaxController
 		if(!$this->use_layout) return false;
 		if(Config::get('page_cache')){
 			$cache = new WaxCache(md5($_SERVER['REQUEST_URI']).'.layout');
+			
 			if($cache->valid())	return $cache->get();
 		}
     $layout = new WaxTemplate($this);
