@@ -151,7 +151,7 @@ class WaxController
   protected function render_layout() {
 		if(!$this->use_layout) return false;
 		if(Config::get('page_cache')){
-			$cache = new WaxCache(md5($_SERVER['REQUEST_URI']).'.layout');
+			$cache = new WaxCache(md5($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']).'.layout');
 			
 			if($cache->valid())	return $cache->get();
 		}
