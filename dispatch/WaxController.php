@@ -126,7 +126,7 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 		if(Config::get('page_cache')){
-			$cache = new WaxCache(md5($this->use_view).'.view');
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($this->use_view).'.view');
 			if($cache->valid())	return $cache->get();
 		}
     $view = new WaxTemplate($this);
@@ -151,8 +151,7 @@ class WaxController
   protected function render_layout() {
 		if(!$this->use_layout) return false;
 		if(Config::get('page_cache')){
-			$cache = new WaxCache(md5($_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']).'.layout');
-			
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.layout');			
 			if($cache->valid())	return $cache->get();
 		}
     $layout = new WaxTemplate($this);
