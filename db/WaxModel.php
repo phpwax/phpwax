@@ -92,7 +92,7 @@ class WaxModel {
           }
           else $this->filters[] = array("name"=>$key, "operator"=>"raw", "value"=>$filter);
         }
-        else $this->filters[]= array("name"=>$key,"operator"=>"=", "value"=>$filter);
+        else $this->filters[$key]= array("name"=>$key,"operator"=>"=", "value"=>$filter);
       }
     }
     return $this;
