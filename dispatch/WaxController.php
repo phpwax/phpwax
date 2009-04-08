@@ -262,7 +262,6 @@ class WaxController
 		}
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
-		echo $this->render_layout();exit;
 		if($content = $this->render_layout()) echo $content;
 		elseif($this->content_for_layout) echo $this->content_for_layout;
 		else echo "";
