@@ -144,16 +144,18 @@ class ManyToManyField extends WaxModelField {
 
     WaxModel::unset_cache(get_class($this->model), $this->field);
 
-    if($model instanceof WaxModel) {
-      $id = $model->primval;
-      $this->join_model->filter(array($links->table."_".$links->primary_key => $id))->delete();
-    }
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) {
-        $id = $obj->primval;
-        $filter[]= $links->table."_".$links->primary_key."=".  $id;
+        if(!$obj->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object");
+				else $filter[$links->table."_".$links->primary_key] = $obj->primval;
       }
       if(count($filter)) $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
+    }else{
+      if($model instanceof WaxModel){
+        if(!$model->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object");
+        else $model = $model->primval;
+      }
+      $this->join_model->filter(array($links->table."_".$links->primary_key => $model))->delete();
     }
     return $this->join_model;
   }
