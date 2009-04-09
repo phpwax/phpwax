@@ -15,7 +15,7 @@ class WaxCache {
 	public $writing = false;
 	public $enabled = true;
 	
-	static public $lifetime = "300";
+	static public $lifetime = 300;
 	
 	
 	public function __construct($label) {

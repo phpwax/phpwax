@@ -126,7 +126,7 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($this->use_view).'.view');
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.view');
 			if($cache->valid())	return $cache->get();
 		}
     $view = new WaxTemplate($this);
