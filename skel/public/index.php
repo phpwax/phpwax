@@ -8,7 +8,10 @@ $mtime = 0; //file modified time
 $cache_file = CACHE_DIR.str_replace("-", "_",$_SERVER['HTTP_HOST']).md5($_SERVER['REQUEST_URI']) .".layout.cache"; //file name that the waxcache would create
 
 if(is_readable($cache_file)) $mtime = filemtime($cache_file);
-if(count($_POST)) $use_cache = false; //so if any data has been posted clear it
+$diff = time() - $mtime;
+if(is_readable($cache_file) && $diff < $cache_time)
+//so if any data has been posted or in the admin area dont use cache
+if(count($_POST) || substr_count($_SERVER['REQUEST_URI'], 'admin')) $use_cache = false;
 
 if($use_cache){	
 	echo file_get_contents($cache_file);
