@@ -126,7 +126,7 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.view');
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET)).'.view');
 			if(count($_POST)) $cache->expire();
 			elseif($cache->valid())	return $cache->get();
 		}
@@ -152,7 +152,7 @@ class WaxController
   protected function render_layout() {
 		if(!$this->use_layout) return false;
 		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.layout');			
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET)).'.layout');			
 			if(count($_POST)) $cache->expire();
 			else if($cache->valid())	return $cache->get();
 		}
