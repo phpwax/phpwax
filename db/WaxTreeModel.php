@@ -23,7 +23,7 @@ class WaxTreeModel extends WaxModel {
   
 	public function tree($nodes = false){
 		$model_class = get_class($this);
-		if($cache_tree = unserialize($this->cached_tree_get() ) ) {
+		if(false) {
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}else{
 			$new_tree = $this->build_tree($this->rows() );
@@ -42,9 +42,8 @@ class WaxTreeModel extends WaxModel {
 		$tree = array();
 		foreach( $lookup as $id => $foo ){
 			$item = &$lookup[$id];
-			if( $item['parent_id'] == 0 ) $tree[$id] = &$item;
-			elseif( isset( $lookup[$item['parent_id']] ) ) $lookup[$item['parent_id']]['children'][] = &$item;
-			else $tree['_orphans_'][$id] = &$item;
+			if( isset( $lookup[$item['parent_id']] ) ) $lookup[$item['parent_id']]['children'][] = &$item;
+			else $tree[$id] = &$item;
 		}
 		return array_values($tree);
 	}
