@@ -5,7 +5,7 @@ define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
 $use_cache = false; //set to false by default
 $cache_time = 3600; //length of time to cache by
 $mtime = 0; //file modified time
-$cache_file = CACHE_DIR.str_replace("-", "_",$_SERVER['HTTP_HOST']).md5($_SERVER['REQUEST_URI']) .".layout.cache"; //file name that the waxcache would create
+$cache_file = CACHE_DIR.str_replace("-", "_",$_SERVER['HTTP_HOST']).md5($_SERVER['REQUEST_URI'].serialize($_GET)) .".layout.cache"; //file name that the waxcache would create
 
 if(is_readable($cache_file)) $mtime = filemtime($cache_file);
 $diff = time() - $mtime;
