@@ -17,12 +17,14 @@ class WaxCacheFile {
     if(!$store) $this->cache_dir = CACHE_DIR;
     $this->label = $label;
     $this->lifetime = $lifetime;
+		if(!is_readable(CACHE_DIR)) chmod(CACHE_DIR, 0777);
   }
 		
 	
 	public function get() {
 	  WaxLog::log("info", "[CACHE] Getting content from cache file for ".$this->label);
-	  return file_get_contents($this->file());
+	  if(is_readable($this->file())) return file_get_contents($this->file());
+		return false;
 	}
 	
 	public function set($value) {
