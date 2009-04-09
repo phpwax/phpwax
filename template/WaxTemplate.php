@@ -63,10 +63,10 @@ class WaxTemplate
 	}
 	
 	public static function add_response_filter($filter_type, $filter_name, $filter){
-		self::$response_filters[$type][$filter_name] = $filter;
+		self::$response_filters[$filter_type][$filter_name] = $filter;
 	}
 	public static function remove_response_filter($filter_type, $filter_name){
-		unset(self::$response_filters[$type][$filter_name]);
+		unset(self::$response_filters[$filter_type][$filter_name]);
 	}
 	
 	public function parse($suffix="html", $parse_as="layout") {
