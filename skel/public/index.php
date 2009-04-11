@@ -12,6 +12,9 @@ $diff = time() - $mtime;
 if(is_readable($cache_file) && $diff < $cache_time)
 //so if any data has been posted or in the admin area dont use cache
 if(count($_POST) || substr_count($_SERVER['REQUEST_URI'], 'admin')) $use_cache = false;
+if(count($_POST)){
+	foreach(glob(CACHE_DIR.str_replace("-", "_",$_SERVER['HTTP_HOST'])."*") as $file) unlink($file);
+}
 
 if($use_cache){	
 	echo file_get_contents($cache_file);
