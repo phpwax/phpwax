@@ -25,8 +25,12 @@ class WaxPartialHelper extends WXHelpers {
   public function partial($path, $extra_vals=array(), $format="html") {
     ob_start();
     if($extra_vals instanceof WaxTemplate) {
+      $old_template_paths = $extra_vals->template_paths;
 		  foreach($extra_vals as $var=>$val) $this->{$var}=$val;
 		  $view= new WXTemplate();
+		  if(count($extra_vals->plugins)>0) {
+		    foreach($old_template_paths as $template) $view->add_path(str_replace($extra_vals->use_view, $path, $template));
+  		}
   		$view->add_path(VIEW_DIR.$path);
       foreach($this as $var=>$val) {
         if(!$view->{$var}) $view->{$var}=$val;
