@@ -14,7 +14,7 @@ class WXRoutingException extends WXException
   	if($location = self::$redirect_on_error) {
 			$this->error_heading = $code;
 	    $this->error_message = $this->format_trace($this);
-			$this->error_site = str_ireplace("www", '', $_SERVER['HTTP_HOST']);
+			$this->error_site = str_ireplace("www.", '', $_SERVER['HTTP_HOST']);
 			$this->error_site = substr($this->error_site, 0, strpos($this->error_site, '.'));
 			$this->error_site_name = ucwords(Inflections::humanize($this->error_site));
   	  $this->simple_routing_error_log();
