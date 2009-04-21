@@ -143,8 +143,9 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($this->use_view).'.view');
-			if($cache->valid())	return $cache->get();
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET)).'.view');
+			if(count($_POST)) $cache->expire();
+			elseif($cache->valid())	return $cache->get();
 		}
     $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
@@ -167,8 +168,9 @@ class WaxController
   protected function render_layout() {
 		if(!$this->use_layout) return false;
 		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI']).'.layout');			
-			if($cache->valid())	return $cache->get();
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET)).'.layout');			
+			if(count($_POST)) $cache->expire();
+			else if($cache->valid())	return $cache->get();
 		}
     $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
@@ -191,14 +193,20 @@ class WaxController
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path."_".$partial;
-	  } else {
+	  }else{
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-	  if($this->is_public_method($this, $partial."_partial")) {
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($path.$_SERVER['REQUEST_URI'].serialize($_GET)).'.partial');				
+		if(count($_POST)) $cache->expire();
+		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
+			$partial= $cache->get();
+		}else if($this->is_public_method($this, $partial."_partial")) {
 	    $this->{$partial."_partial"}();
 	  }
-	  return $this->build_partial($path);
+	  $partial= $this->build_partial($path);		
+		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
+		return $partial;
 	}
 	
 	public function build_partial($path) {
@@ -217,13 +225,17 @@ class WaxController
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path.$partial;
-	  } else {
-	    $partial = $path;
-	  }
-	  if($this->is_public_method($this, $partial)) {
+	  } else $partial = $path;
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($path.$_SERVER['REQUEST_URI'].serialize($_GET)).'.partial');			
+		if(count($_POST)) $cache->expire();
+		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
+			$partial= $cache->get();
+		}else if($this->is_public_method($this, $partial)) {
 	    $this->{$partial}();
 	  }
-	  return $this->build_partial($path);
+	  $partial= $this->build_partial($path);		
+		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
+		return $partial;
 	}
 	
 	
