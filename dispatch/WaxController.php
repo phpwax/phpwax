@@ -126,7 +126,9 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET)).'.view');
+			$sess = $_SESSION[Session::get_hash()];
+			unset($sess['referrer']);
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.view');
 			if(count($_POST)) $cache->expire();
 			elseif($cache->valid())	return $cache->get();
 		}
@@ -183,7 +185,9 @@ class WaxController
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($path.$_SERVER['REQUEST_URI'].serialize($_GET)).'.partial');				
+		$sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
 		if(count($_POST)) $cache->expire();
 		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
 			$partial= $cache->get();
@@ -212,7 +216,9 @@ class WaxController
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path.$partial;
 	  } else $partial = $path;
-		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($path.$_SERVER['REQUEST_URI'].serialize($_GET)).'.partial');			
+		$sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
 		if(count($_POST)) $cache->expire();
 		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
 			$partial= $cache->get();
