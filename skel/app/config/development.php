@@ -11,3 +11,6 @@ Config::set("log_error", true);
 
 /**** Force all emails to be delivered to one email address */
 //Config::set("email_intercept", "you@yourdomain.com");
+
+WXRoutingException::$redirect_on_error = false;
+WXException::$redirect_on_error = false;
