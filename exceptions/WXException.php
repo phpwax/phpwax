@@ -25,7 +25,7 @@ class WXException extends Exception
     parent::__construct($message, $code);
     $this->error_heading = $heading;
     $this->error_message = $this->format_trace($this);
-		$this->error_site = str_ireplace("www", '', $_SERVER['HTTP_HOST']);
+		$this->error_site = str_ireplace("www.", '', $_SERVER['HTTP_HOST']);
 		$this->error_site = substr($this->error_site, 0, strpos($this->error_site, '.'));
 		$this->error_site_name = ucwords(Inflections::humanize($this->error_site));
 		if(defined('IN_CLI')) $this->cli_giveup();
