@@ -6,9 +6,10 @@
  **/
 class WaxTemplate
 {
-	public static $response_filters = array('views'=> array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
-																					'layout'=>array('default'=>array('model'=>'self', 'method'=>'render_layout_response_filter'))
-																				);
+	public static $response_filters = array(
+	    'views'=> array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
+		  'layout'=>array('default'=>array('model'=>'self', 'method'=>'render_layout_response_filter'))
+	  );
 
 	public $template_paths = array();
 	
