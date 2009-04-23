@@ -22,7 +22,7 @@ class WaxCacheLoader {
 			$mtime = filemtime($file);
 			$diff = time() - $mtime;
 			if($diff < self::$life_time) return true; //if within time limit return true
-		}elseif($_POST && self::$clear_on_post) self::expire(); //if post data then clear out the cache
+		}elseif(count($_POST) && self::$clear_on_post) self::expire(); //if post data then clear out the cache
 		return false;
 	}
 
@@ -45,7 +45,7 @@ class WaxCacheLoader {
 			$path = $_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess);
 			self::$cache_file = CACHE_DIR . self::$sub_directory . str_replace("-", "_",$_SERVER['HTTP_HOST']). md5($path) . '.'.self::$cache_type . '.'.self::$file_suffix;
 		}
-		if(self::$cache_file && is_readable(self::$cache_file)) return self::$cache_file;
+		if(is_readable(self::$cache_file)) return self::$cache_file;
 		else return false;
 	}
 }
