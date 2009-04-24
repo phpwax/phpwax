@@ -43,7 +43,7 @@ require_once FRAMEWORK_DIR.'/cache/WaxCacheLoader.php';
 //start session here!
 Session::start();
 if(WaxCacheLoader::valid()){
-	echo WaxCacheLoader::get();
+	echo str_ireplace('</body>', '<!-- loaded from cache --></body>', WaxCacheLoader::get());
 	exit;
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
