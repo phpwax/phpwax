@@ -10,7 +10,7 @@
 class WaxCacheLoader {
 		
 	public static $sub_directory = '';
-	public static $life_time = 600;
+	public static $life_time = 3600;
 	public static $cache_file = false;
 	public static $cache_type = 'layout';
 	public static $file_suffix = 'cache';
