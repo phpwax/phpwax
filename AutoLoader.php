@@ -12,6 +12,7 @@
 if(!defined("APP_DIR")) define('APP_DIR', WAX_ROOT . "app/");
 if(!defined("MODEL_DIR")) define('MODEL_DIR' , WAX_ROOT.'app/model/');
 if(!defined("CONTROLLER_DIR")) define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
+if(!defined("FORMS_DIR")) define('FORMS_DIR', WAX_ROOT.'app/forms/');
 if(!defined("CONFIG_DIR")) define('CONFIG_DIR' , WAX_ROOT.'app/config/');
 if(!defined("VIEW_DIR")) define('VIEW_DIR', WAX_ROOT.'app/view/');
 if(!defined("APP_LIB_DIR")) define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
@@ -172,6 +173,7 @@ class AutoLoader
 	  self::recursive_register(APP_LIB_DIR, "user");
 	  self::recursive_register(MODEL_DIR, "application");
 	  self::recursive_register(CONTROLLER_DIR, "application");
+	  self::recursive_register(FORMS_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
 		self::autoregister_plugins();
 		self::include_from_registry('WXInflections');  // Bit of a hack -- forces the inflector functions to load

@@ -153,5 +153,23 @@ class WaxTreeModel extends WaxModel {
   		WaxModel::set_cache($class, $this->children_column, $id, $entry['children']);
     }
   }
+  public function is_root() {
+    $parent = $this->{$this->parent_column};
+    if(!$parent) return true;
+    return false;
+  }
+
+  
+  public function root() {
+    if($this->is_root()) return $this;
+ 	  $parent = $this->{$this->parent_column};
+ 	  $return = $parent;
+    while($parent && $parent->primval() > 0) {
+      $return = $parent;
+      $parent = $parent->{$this->parent_column}; 
+    }
+    return $return;
+  }
+  
 }
 ?>

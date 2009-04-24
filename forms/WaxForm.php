@@ -89,6 +89,10 @@ class WaxForm implements Iterator {
      return true;
    }
    
+   public function errors() {
+     return $this->bound_to_model->errors;
+   }
+   
    public function start() {
      return rtrim(sprintf($this->template, $this->make_attributes(), ""), "</form>");
    }

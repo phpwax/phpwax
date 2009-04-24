@@ -29,6 +29,11 @@ class WaxModelAssociation extends WaxRecordset {
     $obj->set_attributes($this->rowset[$offset]);
     return $obj;
   }
+  
+  public function __set($setting, $val) {
+    echo $val;
+    die();
+  }
 
   public function __call($method, $args) {
     return call_user_func_array(array($this->model->get_col($this->owner_field), $method), $args);
