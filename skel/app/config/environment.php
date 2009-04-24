@@ -39,6 +39,7 @@ if(is_dir(WAX_ROOT."wax")) {
 
 define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
 require_once FRAMEWORK_DIR.'/utilities/Session.php';
+require_once FRAMEWORK_DIR.'/cache/WaxCacheLoader.php';
 //start session here!
 Session::start();
 if(WaxCacheLoader::valid()){
