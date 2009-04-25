@@ -21,6 +21,7 @@ class WaxController
 	public $shared_plugin=false;
 	public $plugin_share = 'shared';
 	public $filters = array(); 
+	public $plugins = array();
 
 
 	public function __construct() {
@@ -114,25 +115,52 @@ class WaxController
 	  return false;
   }
   
+  /**
+   *  Adds a plugin to the array.
+	 *	@return void
+ 	 */
+  public function add_plugin($plugin) {
+    $this->plugins[]=$plugin;
+  }
+  
+
+	
   
   /**
    *  Returns a view as a string.
 	 *	@return string
  	 */
   protected function render_view() {
+    if($this->use_plugin) {
+      WaxLog::log("info", "[DEPRECATION] use_plugin in controllers is deprecated, use the add_plugin method intead.");
+      $this->plugins[]=$this->use_plugin;
+    }
+    if($this->shared_plugin) {
+      WaxLog::log("info", "[DEPRECATION] shared_plugin in controllers is deprecated, use the add_plugin method intead.");
+      $this->plugins[]=$this->shared_plugin;
+    }
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
-    $view = new WXTemplate($this);
+		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
+			$sess = $_SESSION[Session::get_hash()];
+			unset($sess['referrer']);
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.view');
+			if(count($_POST)) $cache->expire();
+			elseif($cache->valid())	return $cache->get();
+		}
+    $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
-    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$this->use_view);
-    $view->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$this->use_view);
-    $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$this->use_view);
-    $view->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$this->use_view);
+    foreach($this->plugins as $plugin) {
+      $view->add_path(PLUGIN_DIR.$plugin."/view/".get_parent_class($this)."/".$this->use_view);
+      $view->add_path(PLUGIN_DIR.$plugin."/view/".$this->plugin_share."/".$this->use_view);
+    }
     ob_end_clean();
-    if($this->use_format) return $view->parse($this->use_format);
-    return $view->parse();
+    if($this->use_format) $content = $view->parse($this->use_format, 'views');
+		else $content = $view->parse('html', 'views');
+		if(Config::get('view_cache') && !substr_count($this->controller, "admin")) $cache->set($content);
+		return $content;
   }
   
   /**
@@ -141,12 +169,21 @@ class WaxController
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;
-    $layout = new WXTemplate($this);
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
+			$sess = $_SESSION[Session::get_hash()];
+			unset($sess['referrer']);
+			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout');			
+			if(count($_POST)) $cache->expire();
+			else if($cache->valid())	return $cache->get();
+		}
+    $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
-    ob_end_clean();
-    return $layout->parse();
+		ob_end_clean();
+    $layout = $layout->parse();
+		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ) $cache->set($layout);
+		return $layout;
   }
   
   
@@ -160,14 +197,22 @@ class WaxController
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path."_".$partial;
-	  } else {
+	  }else{
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-	  if($this->is_public_method($this, $partial."_partial")) {
+		$sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
+		if(count($_POST)) $cache->expire();
+		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
+			$partial= $cache->get();
+		}else if($this->is_public_method($this, $partial."_partial")) {
 	    $this->{$partial."_partial"}();
 	  }
-	  return $this->build_partial($path);
+	  $partial= $this->build_partial($path);		
+		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
+		return $partial;
 	}
 	
 	public function build_partial($path) {
@@ -186,13 +231,19 @@ class WaxController
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path.$partial;
-	  } else {
-	    $partial = $path;
-	  }
-	  if($this->is_public_method($this, $partial)) {
+	  } else $partial = $path;
+		$sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
+		if(count($_POST)) $cache->expire();
+		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
+			$partial= $cache->get();
+		}else if($this->is_public_method($this, $partial)) {
 	    $this->{$partial}();
 	  }
-	  return $this->build_partial($path);
+	  $partial= $this->build_partial($path);		
+		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
+		return $partial;
 	}
 	
 	

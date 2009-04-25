@@ -19,12 +19,15 @@ class WXException extends Exception
   static $email_subject_on_error="Application error on production server";
 	public $div = "------------------------------------------------------------------------------------------------------\n";
   public $help = "No further information was available";
+  static $replacements = array('error_message'=> '<!-- MESSAGE -->', 'error_heading'=>'<!-- HEADING -->', 'error_site'=>'<!-- SITE -->', 'error_site_name'=> '<!-- SITENAME -->');
 
 	public function __construct($message, $heading) {
     parent::__construct($message, $code);
     $this->error_heading = $heading;
     $this->error_message = $this->format_trace($this);
-    $this->cli_error_message = $this->format_trace($this, true);
+		$this->error_site = str_ireplace("www.", '', $_SERVER['HTTP_HOST']);
+		$this->error_site = substr($this->error_site, 0, strpos($this->error_site, '.'));
+		$this->error_site_name = ucwords(Inflections::humanize($this->error_site));
 		if(defined('IN_CLI')) $this->cli_giveup();
 		else $this->handle_error();
   }
@@ -54,6 +57,7 @@ class WXException extends Exception
         if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {
           $content = file_get_contents(PUBLIC_DIR.ltrim($location, "/"));
           ob_end_clean();
+					foreach(self::$replacements as $value=>$replace) $content = str_ireplace($replace, $this->$value, $content);
           echo $content;
           exit;
         }

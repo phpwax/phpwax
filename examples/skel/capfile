@@ -120,12 +120,3 @@ namespace :wax do
  end
  
 end
-
-namespace :cache do
-  
-  desc "remove cache files etc"
-  task :delete do
-    run "cd ./tmp/cache/ && rm -Rf *.cache"
-  end
-  
-end  

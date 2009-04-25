@@ -70,6 +70,7 @@ class Session {
   }
 
     static function start() {
+			if(!self::$id){
         ini_set('session.name', self::$session_name);
         ini_set('session.cookie_lifetime', self::$session_lifetime);
         ini_set('session.gc_probability', 1);
@@ -92,6 +93,7 @@ class Session {
         session_cache_limiter("must-revalidate");
         session_start();
         self::$id = session_id();
+			}
     }
 
     static function destroy_session() {

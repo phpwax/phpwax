@@ -12,12 +12,18 @@ class WXRoutingException extends WXException
 	function __construct( $message, $code="Page cannot be found", $status = "404" ) {  	
 		
   	if($location = self::$redirect_on_error) {
+			$this->error_heading = $code;
+	    $this->error_message = $this->format_trace($this);
+			$this->error_site = str_ireplace("www.", '', $_SERVER['HTTP_HOST']);
+			$this->error_site = substr($this->error_site, 0, strpos($this->error_site, '.'));
+			$this->error_site_name = ucwords(Inflections::humanize($this->error_site));
   	  $this->simple_routing_error_log();
   	  if(!self::$double_redirect) {
   	    self::$double_redirect = true;
         header("HTTP/1.1 404 Not Found",1, 404);
         if(is_readable(PUBLIC_DIR.ltrim($location, "/")) ) {
           $content = file_get_contents(PUBLIC_DIR.ltrim($location, "/"));
+					foreach(self::$replacements as $value=>$replace) $content = str_ireplace($replace, $this->$value, $content);
           ob_end_clean();
           echo $content;
           exit;

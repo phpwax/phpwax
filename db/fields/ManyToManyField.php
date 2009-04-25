@@ -225,10 +225,8 @@ class ManyToManyField extends WaxModelField {
   public function __call($method, $args) {
     $assoc = $this->get();
     $model = clone $assoc->target_model;
-    if($assoc->rowset)
-      $model->filter(array($model->primary_key=>$assoc->rowset));
-    else
-      $model->filter("1 = 2");
+    if($assoc->rowset) $model->filter(array($model->primary_key=>$assoc->rowset));
+    else $model->filter("1 = 2");
     return call_user_func_array(array($model, $method), $args);
   }
 

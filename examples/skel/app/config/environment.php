@@ -36,16 +36,6 @@ if(is_dir(WAX_ROOT."wax")) {
 	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/releases/latest/wax");
 	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/latest/wax");
 }
-
-define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
-require_once FRAMEWORK_DIR.'/utilities/Session.php';
-require_once FRAMEWORK_DIR.'/cache/WaxCacheLoader.php';
-//start session here!
-Session::start();
-if(WaxCacheLoader::valid()){
-	echo str_ireplace('</body>', '<!-- loaded from cache --></body>', WaxCacheLoader::get());
-	exit;
-}
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
 require_once(FRAMEWORK_DIR."/AutoLoader.php");
 /*********************************************************************************************/
