@@ -311,7 +311,7 @@ class WXHelpers {
     
     
     foreach($links as $link) $content.= $this->content_tag("li", $link, array("class"=>"pagination_link"));
-    return $this->content_tag("ul", $content, array("class"=>"pagination"));
+    return $this->content_tag("ul", $content, array("class"=>"pagination clearfix"));
   }
   
  	public function paginate_url($param, $page) {
