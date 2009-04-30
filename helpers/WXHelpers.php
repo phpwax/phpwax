@@ -209,6 +209,20 @@ class WXHelpers {
     }
 
   public function error_messages_for($object) {
+    if($object instanceof WaxForm) {
+      if($object->bound_to_model) {
+        if($object->bound_to_model->errors) $html = "<ul class='user_errors'>";
+        foreach($object->bound_to_model->errors as $err=>$mess) {
+          $html.="<li>".$mess[0];
+        }
+      } else {
+        foreach($object->elements as $el) {
+          foreach($el->errors as $er) $html.= sprintf($er->error_template, $er);
+        }
+      }
+      $html.="</ul>";
+      return $html;
+    }
     if(strpos($object, "_")) {
       $object = camelize($object, 1);
     }
