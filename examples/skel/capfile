@@ -120,3 +120,17 @@ namespace :wax do
  end
  
 end
+
+namespace :cache do
+ 
+ desc "clear cache"
+ task :clear do
+   begin
+     run "ls tmp/cache"
+   rescue
+     run "pwd"
+   end
+   run "cd tmp/cache && rm -Rf *.cache"
+ end
+ 
+end
