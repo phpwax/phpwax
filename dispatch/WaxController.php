@@ -215,7 +215,7 @@ class WaxController
 		return $partial;
 	}
 	
-	public function build_partial($path) {
+	public function build_partial($path, $format = false) {
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
@@ -223,10 +223,11 @@ class WaxController
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
-    return $partial->parse();
+    if($format) $this->format = $format;
+    return $partial->parse($this->format, "partial");
 	}
 	
-	public function execute_partial($path) {
+	public function execute_partial($path, $format = false) {
 	  if(strpos($path, "/")) {
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
@@ -241,7 +242,7 @@ class WaxController
 		}else if($this->is_public_method($this, $partial)) {
 	    $this->{$partial}();
 	  }
-	  $partial= $this->build_partial($path);		
+	  $partial= $this->build_partial($path, $format);		
 		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
 		return $partial;
 	}
