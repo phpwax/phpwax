@@ -7,8 +7,9 @@
 class WaxTemplate
 {
 	public static $response_filters = array(
-	    'views'=> array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
-		  'layout'=>array('default'=>array('model'=>'self', 'method'=>'render_layout_response_filter'))
+	    'views'=>  array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
+		  'layout'=> array('default'=>array('model'=>'self', 'method'=>'render_layout_response_filter')),
+		  'partial'=>array('default'=>array('model'=>'self', 'method'=>'render_partial_response_filter'))
 	  );
 
 	public $template_paths = array();
@@ -34,7 +35,6 @@ class WaxTemplate
 	 * @author charles marshall
 	 */
 	private static function render_view_response_filter($buffer_string){		
-		ob_end_clean();
 		return $buffer_string;
 	}
 	/**
@@ -45,7 +45,16 @@ class WaxTemplate
 	 * @author charles marshall
 	 */
 	private static function render_layout_response_filter($buffer_string){
-		ob_end_clean();
+		return $buffer_string;
+	}
+	/**
+	 * default static function to give a before hook on rendering a partial
+	 * again design so you can manipulate the content of the buffer to allow transformations of content etc
+	 * @param string $buffer_string 
+	 * @return string
+	 * @author charles marshall
+	 */
+	private static function render_partial_response_filter($buffer_string){
 		return $buffer_string;
 	}
 	/**
@@ -56,9 +65,10 @@ class WaxTemplate
 	 * @author charles marshall
 	 */
 	private function response_filter($type){
-		$return = '';
+		$return = ob_get_contents();
+		ob_end_clean();
 		foreach(self::$response_filters[$type] as $filter){
-			$return .= call_user_func(array($filter['model'], $filter['method']), ob_get_contents());
+			$return = call_user_func(array($filter['model'], $filter['method']), $return);
 		}
 		return $return;
 	}
@@ -92,7 +102,6 @@ class WaxTemplate
 			throw new WXUserException("PHP parse error in $view_file");
 		}
 		return $this->response_filter($parse_as);
-		
 	}
 	
 	public function add_values($vals_array=array()) {
