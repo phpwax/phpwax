@@ -14,7 +14,7 @@ class WaxController
   public $action;
   public $use_layout='application';
   public $use_view="_default";
-  public $use_format=false;
+  public $use_format="html";
   protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
