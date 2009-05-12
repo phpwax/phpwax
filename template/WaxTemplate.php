@@ -73,7 +73,8 @@ class WaxTemplate
 	public function parse($suffix="html", $parse_as="layout") {
 	  ob_start();
 	  switch($suffix) {
-	    case "js": $type="application/x-javascript";break;
+			case "json": $type="text/javascript";break;
+	    case "js": $type="text/javascript";break;
 	    default: $type="text/".$suffix; break;
 	  }
 	  if(!headers_sent())
