@@ -126,11 +126,11 @@ namespace :cache do
  desc "clear cache"
  task :clear do
    begin
-     run "ls tmp/cache"
+     run "ls tmp/cache/*.cache"
    rescue
      run "pwd"
    end
-   run "cd tmp/cache && rm -Rf *.cache"
+   run "rm -Rf tmp/cache/*.cache"
  end
  
 end
