@@ -73,11 +73,12 @@ class WaxTemplate
 	public function parse($suffix="html", $parse_as="layout") {
 	  ob_start();
 	  switch($suffix) {
-	    case "js": $type="javascript";
-	    default: $type=$suffix;
+			case "json": $type="text/javascript";break;
+	    case "js": $type="text/javascript";break;
+	    default: $type="text/".$suffix; break;
 	  }
 	  if(!headers_sent())
-	    header("Content-Type: text/$type; charset=utf-8");
+	    header("Content-Type: $type; charset=utf-8");
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".".$suffix)) {
 				$view_file = $path.".".$suffix;
