@@ -125,6 +125,9 @@ class File {
 		header("Content-Type: " . $mime."\n");
 		header("Content-Length: ".$length."\n");
 		header("Content-disposition: inline; filename=".basename($path)."\n");
+		header('Expires: ' . date('D, d M Y H:i:s',time()+200000) . ' GMT');
+    header("Cache-Control: max-age=200000");
+    header('Pragma:');
 		ob_end_clean();
 		$handle = fopen($path, "r");
 		  while (!feof($handle)) {
