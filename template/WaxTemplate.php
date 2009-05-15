@@ -82,6 +82,7 @@ class WaxTemplate
 	
 	public function parse($suffix="html", $parse_as="layout") {
 	  ob_start();
+	  if(!$suffix) $suffix = "html";
 	  switch($suffix) {
 	    case "js": $type="javascript";
 	    default: $type=$suffix;

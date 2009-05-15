@@ -223,8 +223,8 @@ class WaxController
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
-    if($format) $this->format = $format;
-    return $partial->parse($this->format, "partial");
+    if($format) $this->use_format = $format;
+    return $partial->parse($this->use_format, "partial");
 	}
 	
 	public function execute_partial($path, $format = false) {
