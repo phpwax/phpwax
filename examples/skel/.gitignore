@@ -1,8 +1,0 @@
-wax
-wax/
-plugins/*
-public/files/
-.DS_Store
-tmp/
-!tmp/cache
-!tmp/log
