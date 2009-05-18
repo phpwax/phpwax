@@ -172,7 +172,8 @@ class WaxController
 		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
 			$sess = $_SESSION[Session::get_hash()];
 			unset($sess['referrer']);
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout');			
+			$fname = $_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout';
+			$cache = new WaxCache($fname);			
 			if(count($_POST)) $cache->expire();
 			else if($cache->valid())	return $cache->get();
 		}
