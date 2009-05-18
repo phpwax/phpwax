@@ -29,7 +29,7 @@ class WaxCacheFile {
 	
 	public function set($value) {
 	  WaxLog::log("info", "[CACHE] Writing cache file for ".$this->label);
-	  if(is_writable($this->file())) return file_put_contents($this->file(), $value);
+	  if(is_writable($this->cache_dir)) return file_put_contents($this->file(), $value);
 	  else {
 	    WaxLog::log("error", "[CACHE] Cache files could not be written. Check permissions on '".$this->cache_dir."'");
 	    return false;
