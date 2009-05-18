@@ -492,7 +492,7 @@ class WaxModel {
    * @return Boolean, true if the models match, false if they don't (per column matching)
    */
   public function equals(WaxModel $model){
-	  $comp_cols = array_diff_key($this->cols,array($this->primary_key => false)); //take out ID
+	  $comp_cols = array_diff_key($this->columns,array($this->primary_key => false)); //take out ID
     foreach($comp_cols as $col => $details){
       $col_type = $details[0];
       $ours = $this->$col;
