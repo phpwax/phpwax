@@ -23,7 +23,6 @@ class WaxPartialHelper extends WXHelpers {
    */
   
   public function partial($path, $extra_vals=array(), $format="html") {
-    ob_start();      
 		$controller = WaxUrl::route_controller($path);
 		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($path.$_SERVER['REQUEST_URI'].serialize($_GET)).'.partial');
 		if(count($_POST)) $cache->expire();
@@ -41,18 +40,17 @@ class WaxPartialHelper extends WXHelpers {
         if(!$view->{$var}) $view->{$var}=$val;
       }
   		$view->add_path(VIEW_DIR.$view->controller."/".$path);
-  		$partial = $view->parse($format);
+  		$partial = $view->parse($format, "partial");
 	  } else {
       if(!$controller) $controller = WaxUrl::$default_controller;
       $delegate = Inflections::slashcamelize($controller, true);
       $delegate .="Controller";
       $delegate_controller = new $delegate;
       $delegate_controller->controller = $controller;
-  		$partial = $delegate_controller->execute_partial($path);
+  		$partial = $delegate_controller->execute_partial($path, $format);
   	}
 		if(Config::get('partial_cache') && !substr_count($controller, "admin") ) $cache->set($partial);
-    echo $partial;
-    ob_end_flush();
+    return $partial;
   }
   
   
