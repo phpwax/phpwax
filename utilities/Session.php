@@ -15,7 +15,7 @@ class Session {
 		$user_agent = null;
 
 	public static
-    $id = null,
+    $id = false,
     $session_lifetime = 0,
     $session_max_lifetime= "61",
     $session_name= "wxsession",
