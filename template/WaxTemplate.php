@@ -34,7 +34,7 @@ class WaxTemplate
 	 * @return string
 	 * @author charles marshall
 	 */
-	private static function render_view_response_filter($buffer_string){		
+	private static function render_view_response_filter($buffer_string, $template = false){		
 		return $buffer_string;
 	}
 	/**
@@ -44,7 +44,7 @@ class WaxTemplate
 	 * @return string
 	 * @author charles marshall
 	 */
-	private static function render_layout_response_filter($buffer_string){
+	private static function render_layout_response_filter($buffer_string, $template = false){
 		return $buffer_string;
 	}
 	/**
@@ -54,7 +54,7 @@ class WaxTemplate
 	 * @return string
 	 * @author charles marshall
 	 */
-	private static function render_partial_response_filter($buffer_string){
+	private static function render_partial_response_filter($buffer_string, $template = false){
 		return $buffer_string;
 	}
 	/**
@@ -68,7 +68,7 @@ class WaxTemplate
 		$return = ob_get_contents();
 		ob_end_clean();
 		foreach(self::$response_filters[$type] as $filter){
-			$return = call_user_func(array($filter['model'], $filter['method']), $return);
+			$return = call_user_func(array($filter['model'], $filter['method']), $return, $this);
 		}
 		return $return;
 	}
