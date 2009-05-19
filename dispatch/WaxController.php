@@ -14,7 +14,7 @@ class WaxController
   public $action;
   public $use_layout='application';
   public $use_view="_default";
-  public $use_format=false;
+  public $use_format="html";
   protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
@@ -172,7 +172,8 @@ class WaxController
 		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
 			$sess = $_SESSION[Session::get_hash()];
 			unset($sess['referrer']);
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout');			
+			$fname = $_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout';
+			$cache = new WaxCache($fname);			
 			if(count($_POST)) $cache->expire();
 			else if($cache->valid())	return $cache->get();
 		}
@@ -215,7 +216,7 @@ class WaxController
 		return $partial;
 	}
 	
-	public function build_partial($path) {
+	public function build_partial($path, $format = false) {
 	  $partial = new WXTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
@@ -223,10 +224,11 @@ class WaxController
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".$this->plugin_share."/".$path);
-    return $partial->parse();
+    if($format) $this->use_format = $format;
+    return $partial->parse($this->use_format, "partial");
 	}
 	
-	public function execute_partial($path) {
+	public function execute_partial($path, $format = false) {
 	  if(strpos($path, "/")) {
 	    $partial = substr($path, strrpos($path, "/")+1);
 	    $path = substr($path, 0, strrpos($path, "/")+1);
@@ -241,7 +243,7 @@ class WaxController
 		}else if($this->is_public_method($this, $partial)) {
 	    $this->{$partial}();
 	  }
-	  $partial= $this->build_partial($path);		
+	  $partial= $this->build_partial($path, $format);		
 		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
 		return $partial;
 	}

@@ -484,7 +484,30 @@ class WaxModel {
  	public function primval() {
     return $this->{$this->primary_key};
   }
-
+  
+  /**
+   * comparison function for models
+   *
+   * @param WaxModel $model this is the model to compare this one to
+   * @return Boolean, true if the models match, false if they don't (per column matching)
+   */
+  public function equals(WaxModel $model){
+	  $comp_cols = array_diff_key($this->columns,array($this->primary_key => false)); //take out ID
+    foreach($comp_cols as $col => $details){
+      $col_type = $details[0];
+      $ours = $this->$col;
+      $theirs = $model->$col;
+      if(in_array($col_type, array("HasManyField","ManyToManyField"))){
+        $ours = $ours->rowset;
+        $theirs = $theirs->rowset;
+      }elseif($col_type == "ForeignKey"){
+        $ours = $ours->rowset;
+        $theirs = $theirs->rowset;
+      }
+      if($ours != $theirs) return false;
+    }
+    return true;
+  }
 
   /**
    * Maintains Backward compatibility 
