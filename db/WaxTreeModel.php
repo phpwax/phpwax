@@ -171,5 +171,11 @@ class WaxTreeModel extends WaxModel {
     return $return;
   }
   
+  public function siblings() {
+    $class=get_class($this);
+    $tree = new $class;
+    return $tree->filter(array("parent_id"=>$this->parent_id, $this->primary_key." NOT"=>array($this->primval())))->all();
+  }
+  
 }
 ?>

@@ -89,6 +89,12 @@ class HasManyField extends WaxModelField {
     }
   }
   
+  public function create() {
+    $model = new $this->target_model();
+    $model->{$this->join_field} = $this->model->primval;
+    return $model;
+  }
+  
   public function __call($method, $args) {
     $model = new $this->target_model();
     $model->filter(array($this->join_field=>$this->model->primval));
