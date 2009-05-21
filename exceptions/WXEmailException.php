@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WXEmailException extends WXException {
+class WXEmailException extends WaxException {
   public $help = "<p>The raw email data is detailed below:</p>";
   
 	function __construct( $message, $help = "") {

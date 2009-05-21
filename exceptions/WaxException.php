@@ -1,6 +1,6 @@
 <?php
 
-class WaxException {
+class WaxException extends Exception {
   
   static $redirect_on_error=false;
   static $double_redirect = false;

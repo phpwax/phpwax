@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author Ross Riley & charles marshall
  **/
-class WXRoutingException extends WXException
+class WXRoutingException extends WaxException
 {
   static $redirect_on_error=false;
   static $double_redirect = false;
