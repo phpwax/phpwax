@@ -61,6 +61,7 @@ class Config
 		if($config=="all") return self::$config_array;
 		$config=explode("/", $config);
 		$confarray=self::$config_array;
+		if(!$confarray) return false;
 		foreach($config as $conf) {
 			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
 			else $confarray=false;
