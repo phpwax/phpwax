@@ -21,21 +21,31 @@ class WaxTreeModel extends WaxModel {
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key, "eager_loading" => true));
   }
   
-	public function tree($nodes = false){
+  /**
+   * function to get the tree structure for in-order traversal via a foreach($model->tree() as $node) type use
+   * if the current model is empty it will return the entire tree including all root nodes
+   * if the current model is a particular node it will only return the tree underneath that node
+   *
+   * @return 
+   */
+	public function tree(){
+	  
 		$model_class = get_class($this);
 		if(false) {
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}else{
-			$new_tree = $this->build_tree($this->rows() );
+			$new_tree = $this->build_tree();
 			$this->cached_tree_set(serialize($new_tree));
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}
 	}
 	
 	
-	public function build_tree($list) {
+	public function build_tree() {
 		$lookup = array();
-		foreach( $list as $item ) {
+		$cutoff = $this->primval;
+		$model = clone $this;
+		foreach( $model->clear()->rows() as $item ) {
 			$item['children'] = array();
 			$lookup[$item['id']] = $item;
 		}
@@ -44,7 +54,9 @@ class WaxTreeModel extends WaxModel {
 			$item = &$lookup[$id];
 			if( isset( $lookup[$item['parent_id']] ) ) $lookup[$item['parent_id']]['children'][] = &$item;
 			else $tree[$id] = &$item;
+			if($cutoff == $id) $cutoff = array($id => &$item);
 		}
+		if($cutoff) $tree = $cutoff;
 		return array_values($tree);
 	}
 
