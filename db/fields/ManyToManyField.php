@@ -112,7 +112,10 @@ class ManyToManyField extends WaxModelField {
         $ret = $this->join_model->create($new);
       }
     }
+    if(is_array($value) && !count($value)) $this->delete();
     if($value instanceof WaxRecordset) {
+      /*** Tentatively changing behaviour assigning will now replace, hence the initial delete ***/
+      $this->delete();
       foreach($value as $join) {
         $existing = clone $this->join_model;
         $filter = false;
