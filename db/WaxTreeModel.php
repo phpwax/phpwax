@@ -24,12 +24,12 @@ class WaxTreeModel extends WaxModel {
   /**
    * function to get the tree structure for in-order traversal via a foreach($model->tree() as $node) type use
    * if the current model is empty it will return the entire tree including all root nodes
-   * if the current model is a particular node it will only return the tree underneath that node
+   * if the current model is a particular node (has an id) it will only return the tree underneath that node
+   * if filters are set on the model, it will return only rows which match those filters (BE WARE, THIS CAN HAVE SOME UNUSUAL RESULTS)
    *
    * @return 
    */
 	public function tree(){
-	  
 		$model_class = get_class($this);
 		if(false) {
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
@@ -39,13 +39,12 @@ class WaxTreeModel extends WaxModel {
 			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
 		}
 	}
-	
-	
+  
 	public function build_tree() {
 		$lookup = array();
 		$cutoff = $this->primval;
 		$model = clone $this;
-		foreach( $model->clear()->rows() as $item ) {
+		foreach( $model->rows() as $item ) {
 			$item['children'] = array();
 			$lookup[$item['id']] = $item;
 		}
