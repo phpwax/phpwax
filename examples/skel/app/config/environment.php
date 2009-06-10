@@ -38,6 +38,18 @@ if(is_dir(WAX_ROOT."wax")) {
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
 require_once(FRAMEWORK_DIR."/AutoLoader.php");
+
+define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
+require_once FRAMEWORK_DIR.'/utilities/Session.php';
+
+//start session here!
+/* uncomment for cache
+if($_SERVER['REMOTE_ADDR']) Session::start();
+if($_SERVER['REMOTE_ADDR'] && WaxCacheLoader::valid()){
+	echo WaxCacheLoader::get();
+	exit;
+}
+*/
 /*********************************************************************************************/
 
 
