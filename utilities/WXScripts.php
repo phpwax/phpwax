@@ -108,7 +108,7 @@ class WXScripts {
         $this->plugin_post_setup($argv[2]);
         break;
       case "syncdb":
-        $this->plugin_syncdb($argv[2]);
+        $this->plugin_syncdb($argv[2], $argv[3]);
         break;
     }
   }
@@ -151,7 +151,8 @@ class WXScripts {
     $this->add_output("Plugin database setup completed");
   }
   
-  protected function plugin_syncdb($dir) {
+  protected function plugin_syncdb($dir, $env = false) {
+    if($env && !defined("ENV")) define("ENV", $env);
     if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
     if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
     $this->app_setup();
