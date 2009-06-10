@@ -16,7 +16,7 @@ class ManyToManyField extends WaxModelField {
 	public $eager_loading = false;
   public $is_association = true;
 	public $join_table = false; //this chap means that you can pass any name for the join table in on define()
-	
+	public $join_order = false; //specify order of the returned joined objects
 	
 	/**
 	 * the setup function for this field is different, as this is a many to many relationship it takes into 
@@ -42,6 +42,7 @@ class ManyToManyField extends WaxModelField {
     $join->table = $this->join_table;
     $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
+    if($this->join_order) $this->join_model->order($this->join_order);
   }
 
   public function validate() {
