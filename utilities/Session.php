@@ -70,7 +70,7 @@ class Session {
   }
 
     static function start() {
-			if(!self::$id){
+			if(!self::$id && $_SERVER['REMOTE_ADDR'] != "127.0.0.1"){
         ini_set('session.name', self::$session_name);
         ini_set('session.cookie_lifetime', self::$session_lifetime);
         ini_set('session.gc_probability', 1);
