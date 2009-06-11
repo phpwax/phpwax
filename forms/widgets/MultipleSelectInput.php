@@ -12,6 +12,7 @@ class MultipleSelectInput extends SelectInput {
 
   
   public function tag_content() {
+    if(!$this->choices) $this->choices = $this->get_choices();
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     foreach($this->choices as $value=>$option) {

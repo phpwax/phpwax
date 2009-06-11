@@ -212,10 +212,9 @@ class ManyToManyField extends WaxModelField {
 	 * @return array
 	 */	
   public function get_choices() {
-    if($this->model->identifier) {
-      $this->choices[""]="Select";
-      foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
-    }
+    $j = new $this->target_model;
+    if($this->identifier) $j->identifier = $this->identifier;
+    foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
     return $this->choices;
   }
   

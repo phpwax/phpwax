@@ -98,7 +98,7 @@ class WXGenerator {
   
   public function new_model($args=array()) {
 		$class = WXInflections::camelize($args[0], true);
-    $this->final_output.= $this->start_php_file($class, "WXActiveRecord");
+    $this->final_output.= $this->start_php_file($class, "WaxModel");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) {
 			$this->add_perm_error("app/model/".$class.".php"); 
@@ -111,7 +111,7 @@ class WXGenerator {
   
   public function new_form($args=array()) {
 		$class = WXInflections::camelize($args[0], true);
-    $this->final_output.= $this->start_php_file($class, "WXForm");
+    $this->final_output.= $this->start_php_file($class, "WaxForm");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) {
 			$this->add_perm_error("app/model/".$class.".php"); 
@@ -148,7 +148,7 @@ class WXGenerator {
   
   public function new_email($args=array()) {
 		$class = WXInflections::camelize($args[0], true);
-    $this->final_output.= $this->start_php_file($class, "WXEmail");
+    $this->final_output.= $this->start_php_file($class, "WaxEmail");
     $res = $this->write_to_file(APP_DIR."model/".$class.".php");
 		if(!$res) {
 			$this->add_perm_error("app/model/".$class.".php"); 

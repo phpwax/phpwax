@@ -13,6 +13,7 @@ class HasManyField extends WaxModelField {
   public $editable = false;
   public $is_association = true;
   public $eager_loading = false;
+  public $widget = "MultipleSelectInput";
   
   
   public function setup() {
@@ -94,6 +95,13 @@ class HasManyField extends WaxModelField {
     $new_model = $model->create($attributes);
     $new_model->{$this->join_field} = $this->model->primval;
     return $new_model;
+  }
+  
+  public function get_choices() {
+    $j = new $this->target_model;
+    if($this->identifier) $j->identifier = $this->identifier;
+    foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+    return $this->choices;
   }
   
   public function __call($method, $args) {
