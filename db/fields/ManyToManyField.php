@@ -118,16 +118,8 @@ class ManyToManyField extends WaxModelField {
       /*** Tentatively changing behaviour assigning will now replace, hence the initial delete ***/
       $this->delete();
       foreach($value as $join) {
-        $existing = clone $this->join_model;
-        $filter = false;
-        // Check for an existing association
-        $filter = array($this->join_field($join) => $join->primval);
-        $existing = $existing->filter($filter)->all();
-        if(!$existing->count()) {
-          $new = array($this->join_field($join)=>$join->primval, $this->join_field($this->model) => $this->model->primval);
-          $new_join = $this->join_model->create($new);
-          $rowset[] = $new_join->row;
-        }
+        $new_join = $this->set($join);
+        $rowset[] = $new_join->row;
       }
    	  $ret = new WaxRecordset(new $this->join_model_class, $rowset);
     }
