@@ -42,7 +42,11 @@ abstract class WaxDbAdapter {
     "raw"=>   "",
     "!="=>    " != ",
     "~"=>     " LIKE ",
-    "in"=>    " IN"
+    "in"=>    " IN",
+    "<=" =>   " <= ",
+    ">="=>    " >= ",
+    ">"=>     " > ",
+    "<"=>     " < "
   );
   public $sql_without_limit = false;
   public $total_without_limits = false;
@@ -186,6 +190,12 @@ abstract class WaxDbAdapter {
   }
   
   
+  /* Handles date comparison replaces parameters with db specifics */
+  public function date($query) {
+    $query = preg_replace("//");
+  }
+  
+  
   /**
    * Query Specific methods, construct driver specific language
    */
@@ -245,7 +255,8 @@ abstract class WaxDbAdapter {
     if(count($model->$filter_name)) {
       foreach($model->$filter_name as $filter) {
         if(is_array($filter)) {
-          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; //add table name if it's a column
+          //add table name if it's a column
+          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; 
           $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
           if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
           else $params[]=$filter["value"];
@@ -424,8 +435,11 @@ abstract class WaxDbAdapter {
       case "!=": return "?";
       case "~": return "%?%";
       case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
+      case "raw": return "";
+      default: return "?"; 
     }
   }
+
   
   
   

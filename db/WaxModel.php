@@ -82,9 +82,12 @@ class WaxModel {
  	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
  	}
  	
- 	public function filter($filters) {
- 	  if(is_string($filters)) $this->filters[]=$filters;
- 	  else {
+ 	public function filter($filters, $params=false, $operator="=") {
+ 	  if(is_string($filters)) {
+ 	    if($params) {
+ 	      $this->filters[] = array("name"=>$filters, "operator"=>$operator, "value"=>$params);
+ 	    } else $this->filters[]=$filters;
+    }else {
       foreach((array)$filters as $key=>$filter) {
         if(is_array($filter)) {
           if(!strpos($key, "?")) {

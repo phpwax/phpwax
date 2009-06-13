@@ -6,7 +6,7 @@
  **/
 class  WaxSqliteAdapter extends WaxDbAdapter {
   protected $date = 'CURDATE()';
-	protected $timestamp = 'NOW()'; 
+	protected $timestamp = 'date("now")'; 
 	public $data_types = array(
 	    'AutoField'=>         'INTEGER',
       'BooleanField'=>      'INTEGER',
