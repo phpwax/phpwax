@@ -107,6 +107,7 @@ class WaxValidate {
     if(strlen($value)< 1) $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
   }
   
+  //check that the submit button has a value - but a blank error so no front end error is shown
   protected function valid_submission(){
     if(strlen($this->object->value())< 1) $this->add_error($this->field, sprintf("", $this->label));
   }

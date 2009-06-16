@@ -36,6 +36,9 @@ class WaxWidget{
       $this->editable = true;
       $this->label = Inflections::humanize($name);
     }
+    /**
+     * the validation details
+     */
     $this->validator = new WaxValidate($this, $name);
     if(is_array($data['validate'])){
      foreach($data['validate'] as $type) $this->validator->validate($type, $data);

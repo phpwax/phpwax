@@ -40,7 +40,10 @@ class WaxForm implements Iterator {
     if(!$this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
     
     $this->setup();
-    
+    /**
+     * moved the form submit button to here to allow it to be added to the elements list 
+     * so it can be validated to see if the form has been posted
+     */
     if($this->submit && !$this->bound_to_model) {
       $settings = $this->element_settings('submit');
       $settings['validate'] = "submission";
@@ -51,7 +54,12 @@ class WaxForm implements Iterator {
     }
     
   }
-  
+  /**
+   * new function to return a default array of settings for any
+   * new element added via define / add_element
+   * main purpose is to prefix name attribute and ids with form_prefix 
+   * to make them unique 
+   */
   public function element_settings($name, $settings=array()){
     if(!$settings['post_fields']){
       $settings['post_fields']['model'] = $this->form_prefix;
@@ -70,38 +78,46 @@ class WaxForm implements Iterator {
   }
   /**
    * alias of add element to keep this in sync with how WaxModel setup works..
-   *
    */
   public function define($name, $field_type, $settings=array()){
     $this->add_element($name, $field_type, $settings);
   }
-  
   public function add($name, $field_type, $settings=array()) {$this->add_element($name, $field_type, $settings);}
   
   
   public function render() {
     $output .="";
+    /**
+     * for the forms created with new WaxForm remove the submit from the first item in 
+     * the array and put it on the bottom, otherwise stick it back on top
+     */
+    $first = array_shift($this->elements);
+    if($first instanceof SubmitInput) array_push($this->elements, $first);
+    else array_unshift($this->elements, $first);
     foreach($this->elements as $el) {
       if($el->editable) $output.= $el->render();
-    }    
+    }
+    //only add form tags when setting is on    
     if($this->form_tags) return sprintf($this->template, $this->make_attributes(), $output);
     else return $output;
   }
   
   public function save() {
     if(!is_array($this->post_data)) return false;
-    elseif(!$this->bound_to_model) return $this->is_valid();
-    elseif($this->bound_to_model) return $this->handle_post();
+    elseif(!$this->bound_to_model){
+      if($this->is_valid()) return $this->results();
+      else return false;
+    }elseif($this->bound_to_model) return $this->handle_post();
     else return $this->post_data;
   }
   public function results(){
     if($this->bound_to_model) return $this->bound_to_model;
     else{
       $results = array();
-      foreach($this->elements as $el) {
-        $results[$el->post_fields['attribute']] = $el->value();
+      foreach($this->elements as $el){
+        if(strlen($el->value())) $results[$el->post_fields['attribute']] = $el->value();
       }
-     return $results;
+      return $results;
     }
   }
   
@@ -124,6 +140,7 @@ class WaxForm implements Iterator {
    }
    
    public function is_valid() {
+     //check to see if the form is posted by checking the validity of the submit button
      if($this->submit && !$this->submit->is_valid()) return false;
      foreach($this->elements as $el) {
        if(!$el->is_valid()) $this->validation_errors[] = $el->errors;
