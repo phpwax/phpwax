@@ -108,7 +108,7 @@ class WaxAuthDb
     }
   }
 
-  public function verify($username, $password){
+  public function verify($username, $password) {
     $object = WXInflections::camelize($this->db_table, true);
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
