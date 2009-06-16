@@ -51,8 +51,8 @@ class PageController extends ApplicationController {
 	 */
 	public function contact_me(){
 		$this->form = new WaxForm(); //we create the form as $this so it can be accessed inside the views
-	  $this->form->add_element("name", "TextInput"); //this adds a field to the form called name, with the type of textinput
-    $this->form->add_element("email", "TextInput"); //this adds the email field
+	  $this->form->add_element("name", "TextInput", array('validate'=>'required')); //this adds a field to the form called name, with the type of textinput
+    $this->form->add_element("email", "TextInput", array('validate'=>'email')); //this adds the email field
     $this->form->add_element("telephone", "TextInput"); //telephone field
 		/*
 		this one is slightly different - a textarea & takes another parameter with html attribute names 
@@ -73,6 +73,52 @@ class PageController extends ApplicationController {
       $this->redirect_to("/thanks");
 	  }
 	}
+	
+	/**
+	 * The new method for creating forms allows for simpler controller / front end code. 
+	 * New versions behave in the same fashion as a database model, with a setup call to
+	 * specify fields and config - for this example take a look at /app/model/ContactForm.php
+	 * Do you think 2 lines of code is small enough??
+	 */
+	public function new_contact_form(){
+	  $this->form = new ContactForm;
+	  if($data = $this->form->save()) $this->redirect_to("/thanks/".$data['name']);
+	}
+	/**
+	 * testing multiple forms on the same page with using the same model.
+	 * These behave as individual forms, no overlapping, submits for both 
+	 */
+	 public function multi_contact_form(){
+	   $this->form = new ContactForm;
+	   /**
+	    * we have to over write the form_prefix value while passing in to create a new post namespace to avoid
+	    * conflicts.
+	    */
+	   $this->form2 = new ContactForm(false, false, array('form_prefix'=>'test_form'));
+	   //we only redirect when both forms validate but error on either
+     if($this->form->save() && $this->form2->save()){  
+      $data = $this->form->results();
+      $this->redirect_to("/thanks/".$data['name']);
+	   } 
+     $this->use_view = "new-contact-form";
+	 }
+	 /**
+	  * this shows both forms validating in conjunction; and front end looks like 
+	  * a single form
+	  */
+	 public function multi_contact_form_as_one(){
+	   /**
+	    * to keep it looking like one form we set form tags false as we'll do that on the front end
+	    * and submit false on the first form in order to make sure the validation triggers properly for
+	    * the first model and so only one submit tag is shown 
+	    */
+	   $this->form = new ContactForm(false, false, array('form_tags'=>false, 'submit'=>false));
+	   $this->form2 = new ContactForm(false, false, array('form_prefix'=>'test_form', 'form_tags'=>false));
+     if($this->form->save() & $this->form2->save()){  //note the single & as we want to validate both forms
+      $data = $this->form->results();
+      $this->redirect_to("/thanks/".$data['name']);
+	   } 
+	 }
 	
 	/**
 	 * this is a very simple page that just says thanks on it
@@ -99,8 +145,6 @@ class PageController extends ApplicationController {
 		if($this->use_format == "xml"){
 			//then we turn off the main site layout - as we dont want html being used
 			$this->use_layout = false;
-			//and change the header type to be xml so it renders correctly
-			header("Content-Type: text/xml");
 			//and create a variable for the server base
 			$this->base_url = "http://".$_SERVER['HTTP_HOST'];
 		}

@@ -16,9 +16,8 @@ development:
  db:
   dbtype: none  
   host: localhost
-  database: app_development
+  database: test
   username: root
-  password: secret
 
 test:
   db:

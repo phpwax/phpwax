@@ -53,10 +53,10 @@ require_once(FRAMEWORK_DIR."/AutoLoader.php");
 *  Finally email_on_error accepts an email address and email_subject_on_error a text subject.
 *  If these are set a copy of the error trace will be emailed to the address. */
 
-WXRoutingException::$redirect_on_error = "/404.html"; // Page not found error
+//WXRoutingException::$redirect_on_error = "/404.html"; // Page not found error
 
 // Application Error and an email address and subject to send details to.
-WXException::$redirect_on_error = "/error.html";
+//WXException::$redirect_on_error = "/error.html";
 //WXException::$email_on_error="";
 //WXException::$email_subject_on_error="";
 /*********************************************************************************************/
