@@ -27,6 +27,7 @@ class WaxModelField {
   public $widget="TextInput";
   public $is_association=false; // Distiguishes between standard field and one that links to other models
   protected $model = false;
+  public $validator = "WaxValidate";
   
   public $errors = array();
   //errors messages
@@ -51,6 +52,7 @@ class WaxModelField {
     $this->errors = $this->model->errors[$this->field];
     $this->setup();
     $this->map_choices();
+    $this->validator = new $this->validator($this->model, $this->field, $this->label);
   }
   
   public function get() {

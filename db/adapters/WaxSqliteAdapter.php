@@ -35,13 +35,6 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
   
   
   
-  
-  public function random() {
-    return "Random()";
-  }
-  
-  
-  
   /**
    * SQL Creation Methods 
    */

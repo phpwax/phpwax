@@ -14,7 +14,7 @@ class CharField extends WaxModelField {
     
   }
 
-  public function validate() {
+  public function validate() {    
     $this->valid_length();
  	  $this->valid_required();
  	  $this->valid_unique();

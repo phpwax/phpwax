@@ -162,6 +162,7 @@ class WaxUrl {
 			$path = substr($test, 0, strpos($test, "/")+1);
 		}
 	  if(is_file(CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php")) return true;
+	  if(is_file(FRAMEWORK_DIR."/dispatch/".Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  return false;
 	}
 	

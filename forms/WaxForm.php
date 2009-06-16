@@ -1,7 +1,6 @@
 <?php
 
 /**
- * WaxModelFields class
  *
  * @package PHP-Wax
  **/
@@ -45,6 +44,9 @@ class WaxForm implements Iterator {
     $widget = new $field_type($name, $settings);
     $this->elements[$name] = $widget;
   }
+  
+  public function add($name, $field_type, $settings=array()) {$this->add_element($name, $field_type, $settings);}
+  
   
   public function render() {
     $output .="";
