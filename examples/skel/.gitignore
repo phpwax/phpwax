@@ -1,6 +1,6 @@
 wax
 wax/
-plugins/*
+plugins/cms*
 public/files/
 .DS_Store
 tmp/
