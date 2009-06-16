@@ -47,12 +47,15 @@ class WaxForm implements Iterator {
      * moved the form submit button to here to allow it to be added to the elements list 
      * so it can be validated to see if the form has been posted
      */
-    if($this->submit && !$this->bound_to_model) {
-      $settings = $this->element_settings('submit');
+    if($this->submit && !$this->bound_to_model) {      
+      if($this->form_prefix){
+        $settings = $this->element_settings($name, $settings);    
+        $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";    
+      }else $name = "submit";
+      
       $settings['validate'] = "submission";
-      $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";
       $this->submit = new SubmitInput($name, $settings);
-      $this->submit->attribute("value", 'Submit' );
+      $this->submit->attribute("value", 'Submit');
       $this->elements[$name] = $this->submit;
     }
     

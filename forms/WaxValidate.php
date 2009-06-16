@@ -71,7 +71,8 @@ class WaxValidate {
   /********* Validation Methods ********************/
   
   protected function valid_length() {
-    $value = $this->object->value();
+    
+    $value = $this->object->value();   
     if($this->minlength && strlen($value) < $this->minlength) {
       $this->add_error($this->label, sprintf($this->messages["short"], $this->label, $this->minlength));
     }

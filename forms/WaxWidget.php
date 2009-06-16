@@ -66,9 +66,14 @@ class WaxWidget{
   
   public function value(){
     if($this->bound_data) return $this->bound_data->{$this->name};
-    else{
-      $data = Request::post($this->post_fields['model']);
-      $index = $this->post_fields['attribute'];
+    else{      
+      if(isset($this->post_fields['model'])){
+        $data = Request::post($this->post_fields['model']);
+        $index = $this->post_fields['attribute'];
+      }else{
+        $data = $_POST;
+        $index = $this->name;
+      }
       return $data[$index];
     }
   }
