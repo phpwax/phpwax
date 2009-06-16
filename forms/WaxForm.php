@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ * presumes xhtml 1.0 strict
  * @package PHP-Wax
  **/
 class WaxForm implements Iterator {
@@ -9,15 +9,13 @@ class WaxForm implements Iterator {
   
   //Validation & Format Options
   public $attributes = array(
-    "name"=>"",
     "id"=>"",
     "action"=>"",
-    "method"=>"post",
-    "encoding"=>"multipart/form-data"
+    "method"=>"post"
   );
   public $submit = true;
   public $submit_text = "Submit";
-  public $template = '<form %s>%s</form>';
+  public $template = '<form %s><fieldset>%s</fieldset></form>';
   public $elements = array();
   public $post_data = false;
   public $bound_to_model = false;
@@ -36,7 +34,7 @@ class WaxForm implements Iterator {
         $widget = new $widget_name($column, $element);
         $this->elements[$column] = $widget;
       }
-    }
+    }    
     $this->setup();
   }
   
@@ -94,6 +92,7 @@ class WaxForm implements Iterator {
   
   public function make_attributes() {
      $res = "";
+     if(!$this->attributes['id']) $this->attributes['id'] = Inflections::underscore(get_class($this));
      foreach($this->attributes as $name=>$value) {
        $res.=sprintf('%s="%s" ', $name, $value);
      }
