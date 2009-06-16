@@ -107,6 +107,10 @@ class WaxValidate {
     if(strlen($value)< 1) $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
   }
   
+  protected function valid_submission(){
+    if(strlen($this->object->value())< 1) $this->add_error($this->field, sprintf("", $this->label));
+  }
+  
   protected function valid_match($confirm_field, $confirm_name) {
     $value = $this->object->value();
     if($this->model->{$this->field} != $this->model->{$confirm_field}) {

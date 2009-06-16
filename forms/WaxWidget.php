@@ -20,6 +20,7 @@ class WaxWidget{
   public $bound_data = false;
   public $validator = false;
   public $errors = array();
+  public $auto_value = true; //fetch data from post automatically on render
   
   public function __construct($name, $data=false) {
     if($data instanceof WaxModelField) $this->bound_data = $data;
@@ -71,6 +72,7 @@ class WaxWidget{
   
   public function make_attributes() {
     $res = "";
+    if(!$this->value && $this->auto_value) $this->value = $this->value();
     foreach($this->allowable_attributes as $name) {
       if($this->{$name}) $res.=sprintf('%s="%s" ', $name, $this->{$name});
     }

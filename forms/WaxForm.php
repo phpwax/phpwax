@@ -21,8 +21,9 @@ class WaxForm implements Iterator {
   public $bound_to_model = false;
   public $validation_errors = array();
   public $form_tags = true;
-
-  public function __construct($model = false, $post_data = false) {
+  public $form_prefix = false;
+   
+  public function __construct($model = false, $post_data = false, $options=array()) {
     if($this->post_data) $this->post_data=$post_data;
     elseif($_POST) $this->post_data = $_POST;
     if($model instanceof WaxModel) {
@@ -34,18 +35,35 @@ class WaxForm implements Iterator {
         $widget = new $widget_name($column, $element);
         $this->elements[$column] = $widget;
       }
-    }    
+    }  
+    foreach($options as $k=>$v) $this->$k = $v;  
+    if(!$this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
+    
     $this->setup();
+    
+    if($this->submit && !$this->bound_to_model) {
+      $settings = $this->element_settings('submit');
+      $settings['validate'] = "submission";
+      $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";
+      $this->submit = new SubmitInput($name, $settings);
+      $this->submit->attribute("value", 'Submit' );
+      $this->elements[$name] = $this->submit;
+    }
+    
   }
   
-  public function add_element($name, $field_type, $settings=array()) {
+  public function element_settings($name, $settings=array()){
     if(!$settings['post_fields']){
-      $settings['post_fields']['model'] = Inflections::underscore(get_class($this));
+      $settings['post_fields']['model'] = $this->form_prefix;
       $settings['post_fields']['attribute'] = $name;
     }
     if(!$settings['label']) $settings['label'] = ucwords($name);
-    if(!$settings['id']) $settings['id'] = Inflections::underscore(get_class($this))."_".Inflections::underscore($name);
-    
+    if(!$settings['id']) $settings['id'] = $settings['post_fields']['model']."_".Inflections::underscore($name);
+    return $settings;
+  }
+  
+  public function add_element($name, $field_type, $settings=array()) {
+    $settings = $this->element_settings($name, $settings);    
     $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";    
     $widget = new $field_type($name, $settings);
     $this->elements[$name] = $widget;
@@ -65,21 +83,26 @@ class WaxForm implements Iterator {
     $output .="";
     foreach($this->elements as $el) {
       if($el->editable) $output.= $el->render();
-    }
-    if($this->submit) {
-      $submit = new SubmitInput("submit");
-      $submit->attribute("value", $this->submit_text);
-      $output.= $submit->render();
-    }
+    }    
     if($this->form_tags) return sprintf($this->template, $this->make_attributes(), $output);
     else return $output;
   }
   
   public function save() {
     if(!is_array($this->post_data)) return false;
-    elseif(!$this->bound_to_model) $this->is_valid();
+    elseif(!$this->bound_to_model) return $this->is_valid();
     elseif($this->bound_to_model) return $this->handle_post();
     else return $this->post_data;
+  }
+  public function results(){
+    if($this->bound_to_model) return $this->bound_to_model;
+    else{
+      $results = array();
+      foreach($this->elements as $el) {
+        $results[$el->post_fields['attribute']] = $el->value();
+      }
+     return $results;
+    }
   }
   
   public function handle_post() {
@@ -93,7 +116,7 @@ class WaxForm implements Iterator {
   
   public function make_attributes() {
      $res = "";
-     if(!$this->attributes['id']) $this->attributes['id'] = Inflections::underscore(get_class($this));
+     if(!$this->attributes['id']) $this->attributes['id'] = $this->form_prefix;
      foreach($this->attributes as $name=>$value) {
        $res.=sprintf('%s="%s" ', $name, $value);
      }
@@ -101,6 +124,7 @@ class WaxForm implements Iterator {
    }
    
    public function is_valid() {
+     if($this->submit && !$this->submit->is_valid()) return false;
      foreach($this->elements as $el) {
        if(!$el->is_valid()) $this->validation_errors[] = $el->errors;
      }
@@ -129,7 +153,9 @@ class WaxForm implements Iterator {
      return $this->$name->handle_post(post($name));
    }
    
-   public function setup(){}
+   public function setup(){
+    
+   }
    
    public function is_posted(){
      foreach($this->elements as $el) {
