@@ -20,7 +20,7 @@ class WaxForm implements Iterator {
   public $post_data = false;
   public $bound_to_model = false;
   public $validation_errors = array();
-  
+  public $form_tags = true;
 
   public function __construct($model = false, $post_data = false) {
     if($this->post_data) $this->post_data=$post_data;
@@ -71,7 +71,8 @@ class WaxForm implements Iterator {
       $submit->attribute("value", $this->submit_text);
       $output.= $submit->render();
     }
-    return sprintf($this->template, $this->make_attributes(), $output);
+    if($this->form_tags) return sprintf($this->template, $this->make_attributes(), $output);
+    else return $output;
   }
   
   public function save() {
