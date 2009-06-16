@@ -39,7 +39,7 @@ class WaxForm implements Iterator {
     
     if(!$this->bound_to_model){
       foreach($options as $k=>$v) $this->$k = $v;  
-      if($this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
+      if($this->form_prefix === true) $this->form_prefix = Inflections::underscore(get_class($this));   
     }
     
     $this->setup();

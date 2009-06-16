@@ -4,7 +4,7 @@
  */
 
 class ContactForm extends WaxForm {
-  
+  public $form_prefix = true;
   public $form_tags = true; //toggle the form & fieldset containing tags on or off.
   
   public function setup(){
