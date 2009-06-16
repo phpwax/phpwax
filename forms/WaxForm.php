@@ -167,7 +167,6 @@ class WaxForm implements Iterator {
    }
    
    public function __set($name, $value) {
-     echo $name;
      if(class_exists($value, false)) $this->elements[$name] = new $value();
    }
    
