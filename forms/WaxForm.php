@@ -36,8 +36,11 @@ class WaxForm implements Iterator {
         $this->elements[$column] = $widget;
       }
     }  
-    foreach($options as $k=>$v) $this->$k = $v;  
-    if(!$this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
+    
+    if(!$this->bound_to_model){
+      foreach($options as $k=>$v) $this->$k = $v;  
+      if(!$this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
+    }
     
     $this->setup();
     /**
@@ -107,7 +110,8 @@ class WaxForm implements Iterator {
     elseif(!$this->bound_to_model){
       if($this->is_valid()) return $this->results();
       else return false;
-    }elseif($this->bound_to_model) return $this->handle_post();
+    }
+    elseif($this->bound_to_model) return $this->handle_post();
     else return $this->post_data;
   }
   public function results(){
@@ -163,6 +167,7 @@ class WaxForm implements Iterator {
    }
    
    public function __set($name, $value) {
+     echo $name;
      if(class_exists($value, false)) $this->elements[$name] = new $value();
    }
    

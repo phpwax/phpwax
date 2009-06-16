@@ -40,9 +40,9 @@ class WaxWidget{
      * the validation details
      */
     $this->validator = new WaxValidate($this, $name);
-    if(is_array($data['validate'])){
+    if(is_array($data) && isset($data['validate']) && is_array($data['validate'])){
      foreach($data['validate'] as $type) $this->validator->validate($type, $data);
-    }elseif($data['validate']) $this->validator->validate($data['validate'], $data);
+    }elseif(is_array($data) && $data['validate']) $this->validator->validate($data['validate'], $data);
   }
   
   
