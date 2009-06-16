@@ -41,7 +41,7 @@ class WaxValidate {
  	
  	
  	/**
-   *    $type:  the type of validation - the builtin options are:
+   *    $type:  the type of validation - the built-in options are:
    *            1.  length
    *            2.  float
    *            3.  required
@@ -60,22 +60,29 @@ class WaxValidate {
   }
   
   public function is_valid() {
-    
+    foreach($this->validations as $name){
+      $func = "valid_".$name;
+      $this->$func();
+    }
+    if(count($this->errors)) return false;
+    else return true;
   }
   
   /********* Validation Methods ********************/
   
   protected function valid_length() {
-    if($this->minlength && strlen($this->model->{$this->field}) < $this->minlength) {
-      $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
+    $value = $this->object->value();
+    if($this->minlength && strlen($value) < $this->minlength) {
+      $this->add_error($this->label, sprintf($this->messages["short"], $this->label, $this->minlength));
     }
-    if($this->maxlength && strlen($this->model->{$this->field})> $this->maxlength) {
+    if($this->maxlength && strlen($value)> $this->maxlength) {
       $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
   protected function valid_float(){
+    $value = $this->object->value();
 		$lengths = explode(",", $this->maxlength);
-		$values = explode(".", $this->model->{$this->field});
+		$values = explode(".", $value);
 		if(strlen($values[0]) > $lengths[0]){
 			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
 		}
@@ -84,19 +91,24 @@ class WaxValidate {
 		}
 	}
 
-  protected function valid_format($name, $pattern) {
-    if(!preg_match($pattern, $this->model->{$this->field})) {
+  protected function valid_email(){
+    $this->regex_pattern = '/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-\+]+)*@[a-zA-Z0-9-]+(\.[a-zA-z0-9-]+)*(\.[a-zA-Z]{2,4})$/i';
+    return $this->valid_format();
+  }
+  protected function valid_format() {
+    $value = $this->object->value();
+    if(!preg_match($this->regex_pattern, $value)) {
       $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
 		}
   }
   
   protected function valid_required() {
-    if(!$this->blank && strlen($this->model->{$this->field})< 1) {
-      $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
-    }
+    $value = $this->object->value();
+    if(strlen($value)< 1) $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
   }
   
   protected function valid_match($confirm_field, $confirm_name) {
+    $value = $this->object->value();
     if($this->model->{$this->field} != $this->model->{$confirm_field}) {
       $this->add_error($this->field, sprintf($this->messages["match"], $this->label, $confirm_name));
     }

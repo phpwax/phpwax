@@ -1,12 +1,11 @@
 <?php
 
-
 /**
  * Base Widget class
  *
  * @package PHP-Wax
  **/
-class WaxWidget {
+class WaxWidget{
 
   public $allowable_attributes = array(
     "type", "name", "value", "checked", "disabled", "readonly", "size", "id", "class",
@@ -15,12 +14,12 @@ class WaxWidget {
   
   public $defaults = array("name"=>"","editable"=>true,"value"=>"");
   
-
   public $label_template = '<label for="%s>%s</label>';
   public $template = '<input %s />%s';
   public $error_template = '<span class="error_message">%s</span>';
   public $bound_data = false;
-  
+  public $validator = false;
+  public $errors = array();
   
   public function __construct($name, $data=false) {
     if($data instanceof WaxModelField) $this->bound_data = $data;
@@ -30,13 +29,16 @@ class WaxWidget {
       $this->defaults["label"]=Inflections::humanize($name);
       $settings = array_merge($this->defaults, $data);
       foreach($settings as $datum=>$value) $this->$datum = $value;
-    }
-    else {
+    }else {
       $this->name = $name;
       $this->id = $name."_id";
       $this->editable = true;
       $this->label = Inflections::humanize($name);
     }
+    $this->validator = new WaxValidate($this, $name);
+    if(is_array($data['validate'])){
+     foreach($data['validate'] as $type) $this->validator->validate($type, $data);
+    }elseif($data['validate']) $this->validator->validate($data['validate'], $data);
   }
   
   
@@ -47,7 +49,7 @@ class WaxWidget {
     if($this->errors) $this->class.=" error_field";
     if($this->label) $out .= sprintf($this->label_template, $this->id, $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
-    if($this->bound_data && $this->errors) {
+    if($this->errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
     $out .= $this->after_tag();
@@ -56,6 +58,15 @@ class WaxWidget {
   
   public function attribute($name, $value) {
     $this->{$name} = $value;
+  }
+  
+  public function value(){
+    if($this->bound_data) return $this->bound_data->{$this->name};
+    else{
+      $data = Request::post($this->post_fields['model']);
+      $index = $this->post_fields['attribute'];
+      return $data[$index];
+    }
   }
   
   public function make_attributes() {
@@ -78,16 +89,15 @@ class WaxWidget {
   }
   
   public function is_valid() {
-    if(count($this->errors)>0) return false;
-    return true;
+    if($this->validator->is_valid()) return true;
+    else $this->errors = $this->validator->errors();
+    return false;
   }
   
   public function __get($value) {
     if(!$this->bound_data) return false;
-    if($this->bound_data instanceof WaxModelField) {
-      return $this->bound_data->{$value};
-    }
-    if(is_array($this->bound_data)) return $this->bound_data[$value];
+    else if($this->bound_data instanceof WaxModelField) return $this->bound_data->{$value};
+    else if(is_array($this->bound_data)) return $this->bound_data[$value];
   }
   
   public function __set($name, $value) {
