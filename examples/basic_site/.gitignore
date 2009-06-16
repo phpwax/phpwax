@@ -1,6 +1,4 @@
-wax
-wax/
-plugins/*
+wax*
 public/files/
 .DS_Store
 tmp/
