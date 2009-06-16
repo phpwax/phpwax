@@ -39,7 +39,7 @@ class WaxForm implements Iterator {
     
     if(!$this->bound_to_model){
       foreach($options as $k=>$v) $this->$k = $v;  
-      if(!$this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
+      if($this->form_prefix) $this->form_prefix = Inflections::underscore(get_class($this));   
     }
     
     $this->setup();
@@ -74,8 +74,10 @@ class WaxForm implements Iterator {
   }
   
   public function add_element($name, $field_type, $settings=array()) {
-    $settings = $this->element_settings($name, $settings);    
-    $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";    
+    if($this->form_prefix){
+      $settings = $this->element_settings($name, $settings);    
+      $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";    
+    }else $name = $name;
     $widget = new $field_type($name, $settings);
     $this->elements[$name] = $widget;
   }
