@@ -49,7 +49,7 @@ class WaxForm implements Iterator {
      */
     if($this->submit && !$this->bound_to_model) {      
       if($this->form_prefix){
-        $settings = $this->element_settings($name, $settings);    
+        $settings = $this->element_settings("submit", $settings);  
         $name = $settings['post_fields']['model']."[".$settings['post_fields']['attribute']."]";    
       }else $name = "submit";
       
