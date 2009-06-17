@@ -84,7 +84,7 @@ class WaxModel {
  	
  	public function filter($filters, $params=false, $operator="=") {
  	  if(is_string($filters)) {
- 	    if($params) {
+ 	    if($params !== false) {
  	      $this->filters[] = array("name"=>$filters, "operator"=>$operator, "value"=>$params);
  	    } else $this->filters[]=$filters;
     }else {
