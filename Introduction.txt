@@ -1,0 +1,70 @@
+h1. An Introduction to PHP Wax
+
+h2. A Web Framework for PHP
+
+The more we write and design web applications the more it becomes obvious that the majority share a core set of functionality.
+
+The simple things that you may do day in and day out such as querying a database, creating forms, sending emails and structuring a website layout often involves a great deal of repetitive work.
+
+It's for this reason that a well designed framework can help us to become much more efficient as well as helping to produce software with fewer bugs.
+
+h2. Why PHP Wax?
+
+Many frameworks are designed to be accessible to all competencies of programmers which often results in software that is bloated or unnecessarily abstracted.
+
+First up PHP Wax is designed for developers working in a professional environment with a good knowledge of object oriented programming. If you're more used to procedural style programming then you may want to do a little swotting before you get stuck in.
+
+The second thing to remember is that often, PHP Wax will use some of the more advanced features of the PHP language so you will need to have a fairly up to date version of the language and occasionally the ability to install extra dependencies too.
+
+Finally by way of a warning there are several features that will not work on Windows platforms. Whilst your application should run without any problems there's a few nice extra scripts included that will only work on Mac and Linux systems. 
+
+If all that doesn't scare you off then sit back and start to enjoy programming again.
+
+h2. Your First Application
+
+So it's about time we got started on an application and your first job is to grab a copy of the framework. PHP Wax is hosted on Github and you can download a copy in two ways. 
+
+If you have Git installed on your system then pop open a terminal window, navigate to your sites directory and type the following:
+
+@git clone git://github.com/phpwax/phpwax.git .@
+
+If you are working on a system with Git then you can download a zipped version of the package from:
+
+@http://github.com/phpwax/phpwax/zipball/master@
+
+If you download a zipped version you'll need to uncompress it, you'll be left with a folder structure as below:
+<pre>
+./phpwax
+  ./documentation
+  ./wax
+  ./skel
+</pre>
+
+An application is split into two parts, the framework folder which is called @wax@ and the application folder in this case called @skel@.
+
+When making our first application we'll use a self contained format which means we'll include the framework folder in the application. Later on we'll see how to install the framework on a server so that multiple applications can share the same codebase.
+
+All we have to do is copy the framework into the application folder and then we're ready to go. Do that using your filesystem or if you're using the command line then get yourself into the phpwax folder and type:
+
+@mv ./wax ./skel/@
+
+It's worth leaving this folder in place as a template which you can use to create more applications from. So to create a brand new application lets copy our @skel@ directory into our _Sites_ directory and give it a name.
+
+@mv ./skel ~/Sites/testapp@
+
+h2. See Your Application In Action
+
+We're almost there so it's about time we saw what our application looks like. To do this you'll need to set up your local web server to serve from the public directory. Normally you'd setup a local domain name and then a virtual host within Apache to serve it.
+
+On OS X or Linux you can edit your @/etc/hosts@ file add @127.0.0.1 testapp.local@ and you have a local domain.
+
+Then open up your Apache config file and add something like the following:
+
+<pre>
+<VirtualHost *:80>
+  DocumentRoot "/Users/yourusername/Sites/testapp/public"
+  ServerName testapp.local
+</VirtualHost>
+</pre>
+
+Then all that remains is to open your browser and type: @http://testapp.local@ - Congratulations, you're ready to go.
