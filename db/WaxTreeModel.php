@@ -60,25 +60,25 @@ class WaxTreeModel extends WaxModel {
 	}
 
 	protected function cached_tree_get() {
-		$cache = new WaxCache("section_tree" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
+		$cache = new WaxCache($this->table."_tree_cache" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
     if($cache->valid()) return $cache->get();
 		else return false;
 	}
 
 	protected function cached_tree_set($value) {
-		$cache = new WaxCache("section_tree" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
+		$cache = new WaxCache($this->table."_tree_cache" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
 		$cache->set($value);
 	}
 	
 	//clear the cache of the tree
 	public function delete() {	
-		$cache = new WaxCache("section_tree");
+		$cache = new WaxCache($this->table."_tree_cache");
 		$cache->expire();
 		return parent::delete();
 	}
 	
 	public function save(){
-		$cache = new WaxCache("section_tree");
+		$cache = new WaxCache($this->table."_tree_cache");
 		$cache->expire();
 		return parent::save();		
 	}
