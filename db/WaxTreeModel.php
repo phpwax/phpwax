@@ -188,5 +188,8 @@ class WaxTreeModel extends WaxModel {
     return $tree->filter(array("parent_id"=>$this->parent_id, $this->primary_key." NOT"=>array($this->primval())))->all();
   }
   
+  public function before_save(){
+    if($this->primval) foreach($this->tree() as $node) if($this->parent_id == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
+  }
 }
 ?>
