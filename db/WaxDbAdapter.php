@@ -339,7 +339,7 @@ abstract class WaxDbAdapter {
         }
       }
       if($col_exists==false) $output .= $this->add_column($model_field, $model, true);
-      if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed."\n";
+      if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed;
     }
     $table = get_class($model);
     $output .= "Table {$table} is now synchronised";
@@ -398,12 +398,12 @@ abstract class WaxDbAdapter {
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
-    if(!$field->col_name) return true;
+    if(!$field->col_name) return "";
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt, array(), $swallow_errors);
-    return "Updated column {$field->field} in {$model->table}";
+    return "Updated column {$field->field} in {$model->table}\n";
   }
   
   
