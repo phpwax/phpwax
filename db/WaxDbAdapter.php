@@ -320,14 +320,14 @@ abstract class WaxDbAdapter {
     foreach($tables as $table) {
       if($table[0]== $model->table) $exists=true;
     }
-    if(!$exists) $output .= $this->create_table($model)."\n";
+    if(!$exists && $info = $this->create_table($model)) $output .= $info."\n";
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required		
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
-      $output .= $model_field->before_sync();
+      if($info = $model_field->before_sync()) $output .= $info;
       $col_exists = false;
       $col_changed = false;
       foreach($db_cols as $key=>$col) {
@@ -338,8 +338,8 @@ abstract class WaxDbAdapter {
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
       }
-      if($col_exists==false) $output .= $this->add_column($model_field, $model, true);
-      if($col_changed) $output .= $this->alter_column($model_field, $model, true)." ".$col_changed;
+      if($col_exists==false && $info =$this->add_column($model_field, $model, true)) $output .= $info;
+      if($col_changed && $info = $this->alter_column($model_field, $model, true)) $output .= $info." ".$col_changed;
     }
     $table = get_class($model);
     $output .= "Table {$table} is now synchronised";
@@ -389,7 +389,7 @@ abstract class WaxDbAdapter {
   }
   
   public function add_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
-    if(!$field->col_name) return "";
+    if(!$field->col_name) return false;
     $sql = "ALTER TABLE `$model->table` ADD ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);
@@ -398,7 +398,7 @@ abstract class WaxDbAdapter {
   }
   
   public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
-    if(!$field->col_name) return "";
+    if(!$field->col_name) return false;
     $sql = "ALTER TABLE `$model->table` MODIFY ";
     $sql.= $this->column_sql($field, $model);
     $stmt = $this->db->prepare($sql);

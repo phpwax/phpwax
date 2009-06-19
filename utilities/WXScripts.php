@@ -216,7 +216,7 @@ class WXScripts {
       if(is_subclass_of($class, "WaxModel")) {
         $class_obj = new $class;
         $output = $class_obj->syncdb();
-        $this->add_output($output);
+        if(strlen($output)) $this->add_output($output);
       }
     }
   }
