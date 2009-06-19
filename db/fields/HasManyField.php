@@ -86,7 +86,7 @@ class HasManyField extends WaxModelField {
       $target_model = get_class($this->model);
    	  $link = new $this->target_model;
    	  $link->define($this->join_field, "ForeignKey", array("col_name" => $this->join_field, "target_model" => $target_model));
-   	  return $link->syncdb();
+   	  $link->syncdb();
     }
   }
   
