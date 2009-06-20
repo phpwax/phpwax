@@ -1,0 +1,18 @@
+html {
+  background:#27231f url(/images/bg.png);
+}
+#page {
+  width:990px;
+  background:white;
+  margin:0 auto;
+}
+#header, #footer, #content {
+  padding:0 40px;
+}
+#header {
+  border-bottom:2px solid #733f9a;
+  padding-top:30px;
+}
+#content {
+  margin:30px 0;
+}

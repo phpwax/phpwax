@@ -1,0 +1,101 @@
+---
+layout: home
+---
+
+<h1>An Introduction to <span class="caps">PHP</span> Wax</h1>
+
+
+	<h2>A Web Framework for <span class="caps">PHP</span></h2>
+
+
+	<p>The more we write and design web applications the more it becomes obvious that the majority share a core set of functionality.</p>
+
+
+	<p>The simple things that you may do day in and day out such as querying a database, creating forms, sending emails and structuring a website layout often involves a great deal of repetitive work.</p>
+
+
+	<p>It&#8217;s for this reason that a well designed framework can help us to become much more efficient as well as helping to produce software with fewer bugs.</p>
+
+
+	<h2>Why <span class="caps">PHP</span> Wax?</h2>
+
+
+	<p>Many frameworks are designed to be accessible to all competencies of programmers which often results in software that is bloated or unnecessarily abstracted.</p>
+
+
+	<p>First up <span class="caps">PHP</span> Wax is designed for developers working in a professional environment with a good knowledge of object oriented programming. If you&#8217;re more used to procedural style programming then you may want to do a little swotting before you get stuck in.</p>
+
+
+	<p>The second thing to remember is that often, <span class="caps">PHP</span> Wax will use some of the more advanced features of the <span class="caps">PHP</span> language so you will need to have a fairly up to date version of the language and occasionally the ability to install extra dependencies too.</p>
+
+
+	<p>Finally by way of a warning there are several features that will not work on Windows platforms. Whilst your application should run without any problems there&#8217;s a few nice extra scripts included that will only work on Mac and Linux systems.</p>
+
+
+	<p>If all that doesn&#8217;t scare you off then sit back and start to enjoy programming again.</p>
+
+
+	<h2>Your First Application</h2>
+
+
+	<p>So it&#8217;s about time we got started on an application and your first job is to grab a copy of the framework. <span class="caps">PHP</span> Wax is hosted on Github and you can download a copy in two ways.</p>
+
+
+	<p>If you have Git installed on your system then pop open a terminal window, navigate to your sites directory and type the following:</p>
+
+
+	<p><code>git clone git://github.com/phpwax/phpwax.git .</code></p>
+
+
+	<p>If you are working on a system with Git then you can download a zipped version of the package from:</p>
+
+
+	<p><code>http://github.com/phpwax/phpwax/zipball/master</code></p>
+
+
+If you download a zipped version you&#8217;ll need to uncompress it, you&#8217;ll be left with a folder structure as below:
+<pre>
+./phpwax
+  ./documentation
+  ./wax
+  ./skel
+</pre>
+
+	<p>An application is split into two parts, the framework folder which is called <code>wax</code> and the application folder in this case called <code>skel</code>.</p>
+
+
+	<p>When making our first application we&#8217;ll use a self contained format which means we&#8217;ll include the framework folder in the application. Later on we&#8217;ll see how to install the framework on a server so that multiple applications can share the same codebase.</p>
+
+
+	<p>All we have to do is copy the framework into the application folder and then we&#8217;re ready to go. Do that using your filesystem or if you&#8217;re using the command line then get yourself into the phpwax folder and type:</p>
+
+
+	<p><code>mv ./wax ./skel/</code></p>
+
+
+	<p>It&#8217;s worth leaving this folder in place as a template which you can use to create more applications from. So to create a brand new application lets copy our <code>skel</code> directory into our <em>Sites</em> directory and give it a name.</p>
+
+
+	<p><code>mv ./skel ~/Sites/testapp</code></p>
+
+
+	<h2>See Your Application In Action</h2>
+
+
+	<p>We&#8217;re almost there so it&#8217;s about time we saw what our application looks like. To do this you&#8217;ll need to set up your local web server to serve from the public directory. Normally you&#8217;d setup a local domain name and then a virtual host within Apache to serve it.</p>
+
+
+	<p>On <span class="caps">OS X</span> or Linux you can edit your <code>/etc/hosts</code> file add <code>127.0.0.1 testapp.local</code> and you have a local domain.</p>
+
+
+	<p>Then open up your Apache config file and add something like the following:</p>
+
+
+<pre>
+&lt;VirtualHost *:80&gt;
+  DocumentRoot "/Users/yourusername/Sites/testapp/public" 
+  ServerName testapp.local
+&lt;/VirtualHost&gt;
+</pre>
+
+	<p>Then all that remains is to open your browser and type: <code>http://testapp.local</code> &#8211; Congratulations, you&#8217;re ready to go.</p>
