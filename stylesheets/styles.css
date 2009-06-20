@@ -1,6 +1,9 @@
 html {
   background:#27231f url(../images/bg.png);
 }
+body {
+  font-family:Helvetica, Arial, sans-serif;
+}
 #page {
   width:990px;
   background:white;
@@ -17,3 +20,5 @@ html {
 #content {
   margin:30px 0;
 }
+h1 {color:#222222;}
+h2 {color:#444444;}
