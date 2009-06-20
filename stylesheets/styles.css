@@ -10,6 +10,7 @@ html {
   padding:0 40px;
 }
 #header {
+  border:0;
   border-bottom:2px solid #733f9a;
   padding-top:30px;
 }
