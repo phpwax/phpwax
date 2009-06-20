@@ -21,5 +21,6 @@ body {
 #content {
   padding:30px 40px;
 }
+h1,h2,h3,h4,h5 {font-weight:normal;}
 h1 {color:#222222;}
-h2 {color:#444444;}
+h2 {color:#222222;}
