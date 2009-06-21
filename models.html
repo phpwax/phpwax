@@ -46,11 +46,38 @@ class User extends WaxModel {
   third is an array of options that customises the database and validation behaviour.
 </p>
 <p>
-  PHP Wax has quite a few built in field types and the second argument refers to a class which handles the behaviour.
-  As you can see in the example above the most popular value is <em>CharField</em> this is the database equivalent of
+  PHP Wax has quite a few built in field types, the second argument refers to a class which handles the behaviour.
+  As you can see in the example above the most often used value is <em>CharField</em> this is the database equivalent of
   <em>varchar</em> and is used for short textual values, normally that require fewer than 255 characters.
 </p>
-<p></p>
+<p>
+  The other built in field options are:
+  <ul>
+    <li>AutoField</li>
+    <li>BooleanField</li>
+    <li>CharField      </li>
+    <li>DateTimeField  </li>
+    <li>EmailField     </li>
+    <li>FileField      </li>
+    <li>FloatField     </li>
+    <li>ForeignKey     </li>
+    <li>HasManyField   </li>
+    <li>IntegerField   </li>
+    <li>ManyToManyField</li>
+    <li>PasswordField  </li>
+    <li>TextField      </li>
+  </ul>
+  Of course since these map to class names you can add your own field type as well if you need any custom functionality
+  that the built in ones don't provide.
+</p>
+<p>
+  For now we'll focus on basic usage of models but we'll go into the more fine grained configuration in another tutorial.
+</p>
+<p>
+  As you can see the third value that is passed into the define call is an array of options. This value is optional so 
+  for now we'll use the 'out of the box' functionality to get started.
+</p>
+<h2>Using your </h2>
 
 
 
