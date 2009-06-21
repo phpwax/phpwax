@@ -29,7 +29,7 @@ class User extends WaxModel {
   public function setup() {
     $this->define("name", "CharField");
     $this->define("email", "CharField");
-		$this->define("username", "CharField");
+		$this->define("username", "CharField", array("required"=>true));
 		$this->define("password", "PasswordField");
 		$this->define("twitter", "CharField");
 		$this->define("flickr", "CharField");
@@ -38,3 +38,20 @@ class User extends WaxModel {
 }
 {% endhighlight %}  
 </code>
+
+<h2>How to Define Fields</h2>
+<p>
+  As you can see in the code example above all of the model's definition gets done in a special method, 'setup'.
+  A call to this->define can take three arguments, firstly the name of the field, the second is the type of field and the
+  third is an array of options that customises the database and validation behaviour.
+</p>
+<p>
+  PHP Wax has quite a few built in field types and the second argument refers to a class which handles the behaviour.
+  As you can see in the example above the most popular value is <em>CharField</em> this is the database equivalent of
+  <em>varchar</em> and is used for short textual values, normally that require fewer than 255 characters.
+</p>
+<p></p>
+
+
+
+
