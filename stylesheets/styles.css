@@ -24,3 +24,87 @@ body {
 h1,h2,h3,h4,h5 {font-weight:normal;}
 h1 {color:#222222;}
 h2 {color:#222222;}
+
+
+
+/*------------------------------------------------------------------------
+ *=CODE
+ ------------------------------------------------------------------------*/
+
+pre {
+  background: #f7f7f7;
+  padding: 10px;
+  font-size: 90%;
+  line-height: 130%;
+}
+
+pre {
+  overflow: auto;
+}
+
+pre code {
+    font-family: Monaco, Consolas, "Lucida Console", monospace;
+    font-size: 92%;
+}
+
+.html .tag { color:#3344AA /*#BB7711*/ }
+.html .attribute { color:#BB7711 }
+.keywords { color: #f71; }
+.comment { color: #517; }
+.string { color: #392; }
+.regex { 
+  background: #D0F0FF; 
+  color: #27b;
+}
+
+#excerpt pre {
+  background: transparent;
+  padding: 2px;
+  font-size: 100% !important;
+  font-family: Monaco, Consolas, "Lucida Console", monospace;
+  margin: 5px 0;
+  font-weight: normal;
+  border-bottom: 1px dotted #fff;
+  color: #34a;
+}
+
+/* interactive examples */
+form.example p { margin: 0; }
+form.example .note { 
+  margin-bottom:0.5em; 
+}
+
+form.example fieldset { 
+  margin: 1.2em 0; 
+  padding: 0.5em 1em; 
+  border: #DDD 1px solid; 
+}
+
+form.example legend { 
+  font-weight: bold; 
+  color: #666; 
+}
+
+form.example fieldset div { padding: 0.25em 0; }
+
+form.example label, form.example span.label {
+  margin-right: 0.5em; padding-right: 0.5em;
+  width: 9em; display: block; 
+  float: left; position: relative;
+  text-align: right; font-weight:bold
+}
+
+form.example div ul label, form.example div ul span.label {
+  margin-right: 0.5em; padding-right: 0;
+  width: auto; display: inline; 
+  float: none; position: static;
+  text-align: left; font-weight:normal
+}
+
+form.example div ul { 
+  list-style:none; 
+  margin:0 !important; 
+  padding-left:10em; 
+}
+
+form.example .buttonrow { margin-left: 10em; }
