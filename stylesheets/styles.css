@@ -28,10 +28,13 @@ p {color:#222; font-size:93%;}
 #nav {
   float:right;
   margin:20px 15px 40px 40px;
-  padding:10px 20px;
+  padding:10px 5px;
   border:2px solid #E1E1E1;
   -webkit-border-radius:4px;
   -moz-border-radius:4px;
+}
+#nav li {
+  list-style:none;
 }
 #nav li a {
   color:#733f9a;
