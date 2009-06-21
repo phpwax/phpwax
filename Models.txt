@@ -1,3 +1,0 @@
-h1. Setting Up Models
-
-Models are one of the three tiers of the MVC pattern. They are used to define an applications interaction with the database.
