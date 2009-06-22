@@ -47,3 +47,35 @@ layout: home
   <?=$form->render();?>
 {% endhighlight %}
 </code>
+
+<p>
+  Ok, now that does a little too scary that it can be that easy but in reality there's plenty of cases when you want to
+  customise things to a much finer level. The good news  is that PHP Wax lets you do this if you need to whilst giving
+  you a very usable out of the box behaviour.
+</p>
+<p>
+  This kind of setup is ideal for putting together quick scaffolds and to prove it we're going to use our form to edit
+  Fred's details. All we need to do is save the form and the data will be passed back to the User model and saved to
+  the database. To do this we'll edit our controller code to the following:
+</p>
+<code>
+{% highlight ruby %}
+  public function test() {
+    $user = new User;
+    $fred = $user->filter("username", "fred")->first();
+    $this->form = new WaxForm($fred);
+    if($this->form->is_posted) $this->form->save();
+  }
+{% endhighlight %}
+</code>
+
+<p>
+  Go to <em>http://testapp.local/test</em> and you'll see the result of all your hard work. Now change some of
+  Fred's details and hit the submit button. You'll see that our web application is working nicely.
+</p>
+
+<h2>Handling Unbound Forms</h2>
+<p>
+  When you're creating forms, you don't always want to save the results to the database and for this you can use unbound
+  or standalone forms.
+</p>
