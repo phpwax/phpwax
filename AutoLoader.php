@@ -113,25 +113,24 @@ class AutoLoader
 	  }
 	}
 	
-	static public function recursive_register($directory, $type) {
+	static public function recursive_register($directory, $type, $force = false) {
 	  if(!is_dir($directory)) { return false; }
 	  $dir = new RecursiveIteratorIterator(
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
 		  if(substr($file->getFilename(),0,1) != "." && strrchr($file->getFilename(), ".")==".php") {
-		    $classname = basename($file->getFilename(), ".php");
-			  self::register($type, $classname, $file->getPathName());
+		    if($force){
+		      require_once($file->getPathName());
+	      }else{
+  		    $classname = basename($file->getFilename(), ".php");
+  			  self::register($type, $classname, $file->getPathName());
+		    }
 			}	
 		}
 	}
 	
 	static public function include_dir($directory, $force = false) {
-		if($force) {
-			foreach(scandir($directory) as $file) {
-				if(strpos($file, ".php")) require_once($directory."/".$file);
-			}
-		}
-	  return self::recursive_register($directory, "framework");
+	  return self::recursive_register($directory, "framework", $force);
 	}
 	
 	static public function detect_test_mode() {
