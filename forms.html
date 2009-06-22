@@ -25,7 +25,7 @@ layout: home
   and then create a template to render it.
 </p>
 <p>
-  Here's the controller code which you can drop into app/controller/PageController.php:
+  Here's the controller code which you can drop into <em>app/controller/PageController.php</em>:
 </p>
 <code>
 {% highlight ruby %}
@@ -34,5 +34,16 @@ layout: home
     $fred = $user->filter("username", "fred")->first();
     $this->form = new WaxForm($fred);
   }
+{% endhighlight %}
+</code>
+
+<p>
+  Then we need a template to render our form. For this example we'll create an html page in <em>app/view/page/test.html</em>
+  All we need is the following code:
+</p>
+<code>
+{% highlight html %}
+  <h1>Form for Fred</h1>
+  <?=$form->render();?>
 {% endhighlight %}
 </code>
