@@ -77,8 +77,32 @@ class User extends WaxModel {
   As you can see the third value that is passed into the define call is an array of options. This value is optional so 
   for now we'll use the 'out of the box' functionality to get started.
 </p>
-<h2>Using your </h2>
+<h2>Using Your Model to Write to and Query the Database</h2>
+<p>
+  Luckily you've done all the hard work now and reading from and writing to the database is a doddle. Let's make a new
+  user in our database.
+</p>
+<code>
+{% highlight ruby %}
+$user = new User;
+$user->username = "fred";
+$user->name = "Fred Bloggs";
+$user->email = "fred@example.com";
+$user->save();
+{% endhighlight %}  
+</code>
 
-
-
-
+<p>
+  Jump into your database and you'll see, as if by magic, that you now have a new row in the database.
+</p>
+<p>
+  Now we need to get our record out of the database and add his Twitter username.
+</p>
+<code>
+{% highlight ruby %}
+$user = new User;
+$fred = $user->filter("username", "fred")->first();
+$fred->twitter = "fredbloggs";
+$fred->save();
+{% endhighlight %}  
+</code>
