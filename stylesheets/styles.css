@@ -46,7 +46,8 @@ p, ul li {color:#222; font-size:93%;}
   text-decoration:none;
 }
 em {
-  padding:1px 3px;
+  padding:3px 5px;
+  color:#555;
 }
 
 /*------------------------------------------------------------------------
