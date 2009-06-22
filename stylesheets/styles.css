@@ -46,8 +46,10 @@ p, ul li {color:#222; font-size:93%;}
   text-decoration:none;
 }
 em {
-  padding:3px 5px;
+  padding:1px 3px;
   color:#111;
+  font-weight:bold;
+  font-style:normal;
   font-family: Monaco, Consolas, "Lucida Console", monospace;
 }
 
@@ -62,7 +64,7 @@ code {
   line-height: 130%;
   display:block;
 }
-pre, em {
+pre {
   background: #f7f7f7; 
 }
 
