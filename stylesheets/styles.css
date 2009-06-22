@@ -57,7 +57,7 @@ code {
   line-height: 130%;
   display:block;
 }
-pre {
+pre, em {
   background: #f7f7f7; 
 }
 
