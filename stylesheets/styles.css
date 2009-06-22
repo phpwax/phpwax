@@ -1,6 +1,6 @@
 html, body {margin:0;padding:0;border:0;}
 html {
-  background:#27231f url(../images/bg.png);
+  background:#27231f;
 }
 body {
   font-family:Helvetica, Arial, sans-serif;
@@ -63,5 +63,5 @@ pre {
 
 pre code {
     font-family: Monaco, Consolas, "Lucida Console", monospace;
-    font-size: 92%;
+    font-size: 85%;
 }
