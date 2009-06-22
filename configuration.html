@@ -43,7 +43,7 @@ default_postcode: SW1 4AA
 
 <p>Those settings can be retrieved in your application by doing the following:</p>
 <code>
-{% highlight php %}
+{% highlight php5 %}
 Config::get("google_api_key");
 Config::get("default_postcode");
 {% endhighlight %}
@@ -70,7 +70,7 @@ users:
 	<p>Now we have a very basic user list stored in the configuration. Getting the info back is easy too, to access different levels of config <span class="caps">PHP</span> Wax uses a simple path system. So calling the following:</p>
 
 
-<code>{% highlight php %}
+<code>{% highlight php5 %}
 Config::get("users");
  {% endhighlight %}
 </code>
@@ -78,7 +78,7 @@ Config::get("users");
 will return an array of users each of which also contains an array of settings. By being more specific you can call either:
 
   <code>
-  {% highlight php %}
+  {% highlight php5 %}
     Config::get("users/fred");
     Config::get("users/fred/email");
  {% endhighlight %}
