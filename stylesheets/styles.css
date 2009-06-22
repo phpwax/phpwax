@@ -35,7 +35,7 @@ p {color:#222; font-size:93%;}
   background:#f1f1f1;
   background:-webkit-gradient(linear, left top, left bottom, from(#F1F1F1), to(#fff));
 }
-#nav ul {margin:0;}
+#nav ul {margin:0; padding:10px;}
 #nav li {
   list-style:none;
   padding:0;
