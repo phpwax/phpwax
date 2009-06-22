@@ -55,6 +55,7 @@ code {
   padding: 10px;
   font-size: 90%;
   line-height: 130%;
+  display:block;
 }
 
 pre {
