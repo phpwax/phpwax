@@ -36,14 +36,14 @@ layout: home
   Of course the <code>app/config/config.yml</code> file can be used to store as much additional configuration as you need. Simply add to the bottom of the file. For single settings you can do something like the following:</p>
 <code>
 {% highlight yaml %}
-google_api_key: ABCDEFGHIJKLMNOP01234567890
-default_postcode: SW1 4AA
+google_api_key: 'ABCDEFGHIJKLMNOP01234567890'
+default_postcode: 'SW1 4AA'
 {% endhighlight %}
 </code>
 
 <p>Those settings can be retrieved in your application by doing the following:</p>
 <code>
-{% highlight php5 %}
+{% highlight ruby %}
 Config::get("google_api_key");
 Config::get("default_postcode");
 {% endhighlight %}
@@ -57,31 +57,32 @@ Config::get("default_postcode");
   {% highlight yaml %}
 users:
   fred:
-    username: fred  
-    password: secret
-    email: fred@exaple.com
+    username: 'fred'  
+    password: 'secret'
+    email: 'fred@exaple.com'
   joe:
-    username: joe  
-    password: secret
-    email: joe@exaple.com
+    username: 'joe'  
+    password: 'secret'
+    email: 'joe@exaple.com'
   {% endhighlight %}
 </code>
 
 	<p>Now we have a very basic user list stored in the configuration. Getting the info back is easy too, to access different levels of config <span class="caps">PHP</span> Wax uses a simple path system. So calling the following:</p>
 
 
-<code>{% highlight php5 %}
+<code>
+{% highlight ruby %}
 Config::get("users");
- {% endhighlight %}
+{% endhighlight %}
 </code>
 
 will return an array of users each of which also contains an array of settings. By being more specific you can call either:
 
-  <code>
-  {% highlight php5 %}
-    Config::get("users/fred");
-    Config::get("users/fred/email");
- {% endhighlight %}
- </code>
+<code>
+{% highlight ruby %}
+Config::get("users/fred");
+Config::get("users/fred/email");
+{% endhighlight %}
+</code>
 
 which will get you either an array of Fred&#8217;s settings or in the second instance Fred&#8217;s email address.
