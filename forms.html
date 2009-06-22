@@ -3,3 +3,36 @@ layout: home
 ---
 
 <h1>Creating and Saving Forms</h1>
+
+<p>
+  Creating forms can often be a very time consuming process but fortunately PHP Wax tries to make the process
+  a lot easier.
+</p>
+
+<p>
+  To make things easier to understand we're going to cover two different types of form in this tutorial, forms
+  that are bound to models, and forms that are standalone.
+</p>
+
+<h2>Handling Bound Forms</h2>
+<p>
+  Since you've done all the hard work in your model definition it makes sense to reuse that application logic to 
+  create your forms, since it's often the case that forms are just a way of getting data from the user into the
+  database. We'll use the User model we created in the earlier tutorial to demonstrate how this works.
+</p>
+<p>
+  Remembering the correct way to separate our application code from the templates we'll create a form in our controller
+  and then create a template to render it.
+</p>
+<p>
+  Here's the controller code which you can drop into app/controller/PageController.php:
+</p>
+<code>
+{% highlight ruby %}
+  public function test() {
+    $user = new User;
+    $fred = $user->filter("username", "fred")->first();
+    $this->form = new WaxForm($fred);
+  }
+{% endhighlight %}
+</code>
