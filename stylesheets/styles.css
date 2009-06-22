@@ -50,7 +50,7 @@ p, ul li {color:#222; font-size:93%;}
  *=CODE
  ------------------------------------------------------------------------*/
 
-pre {
+code {
   background: #f7f7f7;
   padding: 10px;
   font-size: 90%;
@@ -65,3 +65,4 @@ pre code {
     font-family: Monaco, Consolas, "Lucida Console", monospace;
     font-size: 85%;
 }
+
