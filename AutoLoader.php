@@ -129,10 +129,6 @@ class AutoLoader
 		}
 	}
 	
-	static public function include_dir($directory, $force = false) {
-	  return self::recursive_register($directory, "framework", $force);
-	}
-	
 	static public function detect_test_mode() {
 	  if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) {
 	    define('ENV', 'test');
@@ -190,6 +186,12 @@ class AutoLoader
 		$app=new WXApplication($full_app);
 	}
 
+	/**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
+
+	static public function include_dir($directory, $force = false) {
+	  return self::recursive_register($directory, "framework", $force);
+	}
+	
 }
 Autoloader::initialise();
 
