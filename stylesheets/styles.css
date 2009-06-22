@@ -57,6 +57,9 @@ code {
   line-height: 130%;
   display:block;
 }
+pre {
+  background: #f7f7f7; 
+}
 
 pre {
   overflow: auto;
