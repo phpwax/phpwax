@@ -32,9 +32,12 @@ p {color:#222; font-size:93%;}
   border:2px solid #E1E1E1;
   -webkit-border-radius:4px;
   -moz-border-radius:4px;
+  background:#d1d1d1;
 }
 #nav li {
   list-style:none;
+  padding:0;
+  margin:3px 0;
 }
 #nav li a {
   color:#733f9a;
