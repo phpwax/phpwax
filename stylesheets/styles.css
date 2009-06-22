@@ -48,10 +48,9 @@ p, ul li {color:#222; font-size:93%;}
 em {
   padding:1px 3px;
   color:#111;
-  font-weight:bold;
   font-style:normal;
   font-family: Monaco, Consolas, "Lucida Console", monospace;
-  background:#8da7ca;
+  background:#E7E7E7;
 }
 
 /*------------------------------------------------------------------------
