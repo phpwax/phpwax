@@ -24,7 +24,7 @@ body {
 h1,h2,h3,h4,h5 {font-weight:normal;}
 h1 {color:#222222;}
 h2 {color:#222222;}
-p {color:#222; font-size:93%;}
+p, ul li {color:#222; font-size:93%;}
 #nav {
   float:right;
   margin:20px 15px 40px 40px;
