@@ -45,6 +45,9 @@ p, ul li {color:#222; font-size:93%;}
   color:#733f9a;
   text-decoration:none;
 }
+em {
+  padding:1px 3px;
+}
 
 /*------------------------------------------------------------------------
  *=CODE
