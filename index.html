@@ -38,46 +38,40 @@ layout: home
 	<h2>Your First Application</h2>
 
 
-	<p>So it&#8217;s about time we got started on an application and your first job is to grab a copy of the framework. <span class="caps">PHP</span> Wax is hosted on Github and you can download a copy in two ways.</p>
+	<p>
+	  So it's about time we got started on an application and your first job is to grab a copy of the framework and 
+	  a basic skeleton application. 
+	</p>
+	<p>
+	 First up we'll get a skeleton application downloaded to your machine. This consists mainly of a few files that
+	 help you put your files in the right place. You can download a zip of the skeleton from:
+	</p>
+	<code>http://github.com/phpwax/wax-site/zipball/master</code>
+	<p>Unzip the file and rename the top folder to the name of your application or a test name if your not planning 
+	  on doing anything serious at the moment. The best place to put this is in your Sites directory on your computer.
+	</p>
 
+  <p>
+    Now you have the skeleton application you just need a copy of the framework. It works really simply, inside your
+    folder that you've just created you need to have the framework files in a folder called <em>wax</em>.
+  </p>
 
+  <h3>Getting PHP Wax with Git</h3>
+  <p>
+    PHP Wax uses the Git VCS to manage development so if you want to easily update the framework code as new features
+    are added then we'd recommend that you use Git to clone the PHP Wax repository.
+  </p>
 	<p>If you have Git installed on your system then pop open a terminal window, navigate to your sites directory and type the following:</p>
+  <code>git clone git://github.com/phpwax/phpwax.git wax</code>
 
+  <h3>Downloading A Zip File for PHP Wax</h3>
 
-	<p><code>git clone git://github.com/phpwax/phpwax.git .</code></p>
-
-
-	<p>If you are working on a system with Git then you can download a zipped version of the package from:</p>
-
-
-	<p><code>http://github.com/phpwax/phpwax/zipball/master</code></p>
-
-
-If you download a zipped version you&#8217;ll need to uncompress it, you&#8217;ll be left with a folder structure as below:
-<code>
-./phpwax
-  ./documentation
-  ./wax
-  ./skel
-</code>
-
-	<p>An application is split into two parts, the framework folder which is called <code>wax</code> and the application folder in this case called <code>skel</code>.</p>
-
-
-	<p>When making our first application we&#8217;ll use a self contained format which means we&#8217;ll include the framework folder in the application. Later on we&#8217;ll see how to install the framework on a server so that multiple applications can share the same codebase.</p>
-
-
-	<p>All we have to do is copy the framework into the application folder and then we&#8217;re ready to go. Do that using your filesystem or if you&#8217;re using the command line then get yourself into the phpwax folder and type:</p>
-
-
-	<p><code>mv ./wax ./skel/</code></p>
-
-
-	<p>It&#8217;s worth leaving this folder in place as a template which you can use to create more applications from. So to create a brand new application lets copy our <code>skel</code> directory into our <em>Sites</em> directory and give it a name.</p>
-
-
-	<p><code>mv ./skel ~/Sites/testapp</code></p>
-
+	<p>If you are working on a system without Git then you can download a zipped version of the package from:</p>
+  <code>http://github.com/phpwax/phpwax/zipball/master</code>
+  <p>
+    Once you've downloaded and unzipped this file, just rename the top folder to wax, and move the folder into
+    your skeleton application folder.
+  </p>
 
 	<h2>See Your Application In Action</h2>
 
