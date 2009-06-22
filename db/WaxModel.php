@@ -391,6 +391,8 @@ class WaxModel {
   }
   
   public function syncdb() {
+    if(get_class($this) == "WaxModel") return;
+    if($this->disallow_sync) return;
     $res = $this->db->syncdb($this);
     return $res;
   }
