@@ -5,7 +5,7 @@
  * @package PHP-WAX
  */
 class WaxModelJoin extends WaxModel {
-  
+  public $disallow_sync = true;
   public $left_field = false;
   public $right_field = false;
   

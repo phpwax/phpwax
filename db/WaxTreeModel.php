@@ -191,5 +191,10 @@ class WaxTreeModel extends WaxModel {
   public function before_save(){
     if($this->primval) foreach($this->tree() as $node) if($this->parent_id == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
   }
+  
+  public function syncdb(){
+    if(get_class($this) == "WaxTreeModel") return;
+    parent::syncdb();
+  }
 }
 ?>

@@ -51,6 +51,7 @@ class ManyToManyField extends WaxModelField {
   
   public function before_sync() {
     $this->setup_join_model();
+    $this->join_model->disallow_sync = false;
    	$this->join_model->syncdb();
   }
     
