@@ -168,12 +168,14 @@ class File {
 	}
 	
 	static function get_folders($directory) {
-		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), true);
+		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
 		foreach ( $iter as $file ) {
-			if($iter->hasChildren() && !strstr($iter->getPath()."/".$file, "/.")) {
-				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());
-				$row['path']=$iter->getPath().'/'.$file->getFilename();
+			if(($iter->hasChildren(true)) && !strstr($iter->getPath()."/".$file, "/.")) {
+			  if($iter->isLink()) $row['path'] = readlink($iter->getPath().'/'.$file->getFilename());
+			  else $row['path']= $iter->getPath().'/'.$file->getFilename();
+				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());				
 				$rows[]=$row; unset($row);
+				if($iter->isLink()) $rows = array_merge($rows, self::get_folders(readlink($iter->getPath().'/'.$file->getFilename())));
 			} 
 		}
 		return $rows;
