@@ -15,7 +15,7 @@ class WaxCacheLoader {
 	public $dir = false;
   public $identifier = false;
   
-  public function __construct($engine="File",$dir="", $lifetime=3600){
+  public function __construct($engine="File",$dir, $lifetime=3600){
     $this->engine_type = $engine;
     $this->dir = $dir;  
     $this->lifetime = $lifetime;  
@@ -32,6 +32,7 @@ class WaxCacheLoader {
       if(count($data)) $str .= "-data-".serialize($data);
       if(count($_GET)) $str .= "-get-".serialize($_GET);
       if(count($_POST)) $str .= "-post-".serialize($_POST);      
+      if($suffix) $str .= ".".$suffix;
       $this->identifier = $str.'.'.$this->suffix;
       return $this->identifier;
     }
@@ -69,6 +70,24 @@ class WaxCacheLoader {
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->identifier, $this->lifetime);
     return $engine->expire();
+  }
+  
+  public function layout_cache_loader(){
+    $sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
+    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
+    $str = $_SERVER['HTTP_HOST'];
+    if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);
+    
+    $this->identifier($str, $sess, $type);    
+    
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->identifier, $this->lifetime);
+    $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
+    
+    if($cached = $engine->get()) return $cached;
+    else return false;
   }
   
 }

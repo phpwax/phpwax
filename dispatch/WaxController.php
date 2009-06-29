@@ -23,26 +23,29 @@ class WaxController implements Cacheable
 	public $filters = array(); 
 	public $plugins = array();
   /** interface vars **/
-  public $cache_identifier = false;
-  public $cache_engine = "File";
-  public $cache_object = false;
-  public $cache_config;
-  public $cache_content = false; 
+  public $cache_enabled = array();
+  public $cache_identifiers = array();
+  public $cache_engines = array();
+  public $cache_objects = array();
+  public $cache_config = array();
+  public $cache_content = array(); 
 
-	public function __construct() {
-	  $this->class_name=get_class($this);
+	public function __construct($run_init=true) {
+	  if($run_init) $this->init();    
+  }
+  
+  public function init(){
+    $this->class_name=get_class($this);
 	  $this->set_referrer();
     $this->referrer=Session::get('referrer');
     $this->filters["before"]=array();
-    $this->filters["after"]=array();
-    $this->cache_config = Config::get('layout_cache');  
-    $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.'layouts/');
-    $this->cache_identifier = $this->cache_identifier();
-    
+    $this->filters["after"]=array();    
   }
   
   public function __destruct(){
-    if($this->cache_content && $this->cache_object) $this->cache_set($this->cache_content);
+    foreach($this->cache_enabled as $type =>$enabled){
+      if($enabled) $this->cache_set($this->cache_objects[$type], $this->cache_content[$type]);
+    }
   }
 
 	/**
@@ -175,16 +178,17 @@ class WaxController implements Cacheable
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;		
-		if($cache = $this->cached()) return $cache;
+		if($this->cache_enabled('layout') && $this->cached($this->cache_objects['layout'], 'layout') ) return $this->cached($this->cache_objects['layout'], 'layout');
     else{
       $layout = new WaxTemplate($this);
       $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
       $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
       $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
 		  ob_end_clean();
-      $this->cache_content = $layout = $layout->parse();      
-		  return $layout;
+      $this->cache_content['layout'] = $layout->parse();      
+		  return $this->cache_content['layout'];
 	  }
+	  exit;
   }
   
   
@@ -295,28 +299,40 @@ class WaxController implements Cacheable
 	}
 	
 	/** INTERFACE METHODS **/
-	
-  public function cache_identifier(){
+  public function cache_identifier($model){
     $sess = $_SESSION[Session::get_hash()];
 		unset($sess['referrer']);
 		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     $str = $_SERVER['HTTP_HOST'];
     if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);
-    return $this->cache_object->identifier($str, $sess);    
+    return $model->identifier($str, $sess);    
   }
-  public function cacheable(){    
-	  return !$this->cache_object->excluded($this->cache_config);
+  
+  public function cacheable($model, $type){    
+	  return !$model->excluded($this->cache_config[$type]);
   }
-	public function cached(){
-	  if(!$this->cacheable()) return false;
-	  else return $this->cache_object->get();
+	public function cached($model, $type){
+	  if(!$this->cacheable($model, $type)) return false;
+	  else return $model->get();
 	}
-  public function cache_set($value){
-    $this->cache_object->set($value);
+  public function cache_set($model, $value){
+    $model->set($value);
   }
-  public function cache_expire(){
-    $this->cache_object->expire();
+  public function cache_enabled($type){
+    $check = $type."_cache";
+    if(isset($this->cache_enabled[$type])) return $this->cache_enabled[$type];
+    elseif(is_array(Config::get($check))){
+      $this->cache_config[$type] = Config::get($type);
+      $this->cache_engines[$type] = $this->cache_config[$type]['engine'];
+      $this->cache_objects[$type] = new WaxCacheLoader($this->cache_engines[$type], CACHE_DIR.$type."/");
+      $this->cache_identifiers[$type] = $this->cache_identifier($this->cache_objects[$type], $type);
+      $this->cache_enabled[$type] = true;
+      return true;
+    }else{
+      $this->cache_enabled[$type] = false;
+      return false;
+    }
   }
 
 }

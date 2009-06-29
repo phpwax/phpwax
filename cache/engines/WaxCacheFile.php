@@ -12,6 +12,7 @@ class WaxCacheFile {
   public $identifier = false;
   public $lifetime = false;  
   public $sub_dir = false;
+  public $marker = '<!-- from cache -->';
   
   public function __construct($identifier, $lifetime) {
     $this->lifetime = $lifetime;
@@ -20,17 +21,19 @@ class WaxCacheFile {
   }	
 	
 	public function get() {
-	  return $this->valid() . "<!-- from cache -->";
+	  if($content = $this->valid()) return $content . $this->marker;
+	  else return false;
 	}
 	
 	public function set($value) {
-	  file_put_contents($this->identifier, $value);
+	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
+	  if(!is_readable($this->identifier)) file_put_contents($this->identifier, $value); 
 	}
 	
 	public function valid() {
 	  if(!is_readable($this->identifier) ) return false;
-	  $stats = stat($this->identifier);
-	  if(time() > $stats["mtime"] + $this->lifetime){
+	  $mtime = filemtime($this->identifier);
+	  if(time() > $mtime + $this->lifetime){
 	    $this->expire();
 	    return false;
 	  }else return file_get_contents($this->identifier);
@@ -44,8 +47,6 @@ class WaxCacheFile {
 	  return $this->identifier;
 	}
 	
-  
-
 
 }
 

@@ -37,19 +37,42 @@ if(is_dir(WAX_ROOT."wax")) {
 	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/latest/wax");
 }
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
-require_once(FRAMEWORK_DIR."/AutoLoader.php");
 
-define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
-require_once FRAMEWORK_DIR.'/utilities/Session.php';
-
-//start session here!
-/* uncomment for cache
-if($_SERVER['REMOTE_ADDR']) Session::start();
-if($_SERVER['REMOTE_ADDR'] && WaxCacheLoader::valid()){
-	echo WaxCacheLoader::get();
-	exit;
+/************* CACHE OUTSIDE OF FRAMEWORK ****************************************************
+if($_SERVER['REMOTE_ADDR']){
+  define('CACHE_DIR', WAX_ROOT."tmp/cache/");
+  define('CONFIG_DIR', WAX_ROOT."app/config/");
+  //start the session
+  require_once FRAMEWORK_DIR.'/utilities/Session.php';
+  Session::start();
+  require_once FRAMEWORK_DIR.'/utilities/Spyc.php';
+  require_once FRAMEWORK_DIR.'/utilities/Config.php';
+  $layout_cache = Config::get('layout_cache');
+  //if turned on then start the cache
+  if(is_array($layout_cache) && count($layout_cache)){
+    //set the cache dir
+    
+    $engine = $layout_cache['engine'];
+    $layout_dir = CACHE_DIR . 'layout/';
+    //load files
+    require_once FRAMEWORK_DIR.'/cache/engines/WaxCache'.$engine.'.php';
+    require_once FRAMEWORK_DIR.'/cache/WaxCacheLoader.php';
+    //setup loader
+    if(is_numeric($layout_cache['lifetime'])) $cache = new WaxCacheLoader($engine, $layout_dir, $layout_cache['lifetime']);
+    else $cache = new WaxCacheLoader($engine, $layout_dir);
+    
+    //check if allowed
+    if(!$cache->excluded($layout_cache) && $cache->layout_cache_loader()){
+      echo $cache->layout_cache_loader();
+      exit;
+    }
+  }
+  
 }
-*/
+*********************************************************************************************/
+
+//load the framework
+require_once(FRAMEWORK_DIR."/AutoLoader.php");
 /*********************************************************************************************/
 
 
