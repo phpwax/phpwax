@@ -158,6 +158,11 @@ class WaxController implements Cacheable
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
+
+		if($this->cache_enabled('view') && $this->cached($this->cache_objects['view'], 'view') ){
+		  ob_end_clean();
+		  return $this->cached($this->cache_objects['view'], 'view');
+	  }
 		
     $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
@@ -169,6 +174,7 @@ class WaxController implements Cacheable
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
+		$this->cache_content['view'] = $content;
 		return $content;
   }
   
@@ -178,8 +184,10 @@ class WaxController implements Cacheable
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;		
-		if($this->cache_enabled('layout') && $this->cached($this->cache_objects['layout'], 'layout') ) return $this->cached($this->cache_objects['layout'], 'layout');
-    else{
+		if($this->cache_enabled('layout') && $this->cached($this->cache_objects['layout'], 'layout') ){
+		  ob_end_clean();
+		  return $this->cached($this->cache_objects['layout'], 'layout');
+	  }else{
       $layout = new WaxTemplate($this);
       $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
       $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
