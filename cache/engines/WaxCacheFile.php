@@ -9,52 +9,39 @@
  */
 class WaxCacheFile {
   
-  public $label = false;
-  public $lifetime = false;
-  public $cache_dir = false;
+  public $identifier = false;
+  public $lifetime = false;  
+  public $sub_dir = false;
   
-  public function __construct($label, $lifetime, $store = false) {
-    if(!$store) $this->cache_dir = CACHE_DIR;
-    $this->label = $label;
+  public function __construct($identifier, $lifetime) {
     $this->lifetime = $lifetime;
-		if(!is_readable(CACHE_DIR)) chmod(CACHE_DIR, 0777);
-  }
-		
+    $this->identifier = $identifier;
+    $this->sub_dir = $sub_dir;
+  }	
 	
 	public function get() {
-	  WaxLog::log("info", "[CACHE] Getting content from cache file for ".$this->label);
-	  if(is_readable($this->file())) return file_get_contents($this->file());
-		return false;
+	  return $this->valid() . "<!-- from cache -->";
 	}
 	
 	public function set($value) {
-	  WaxLog::log("info", "[CACHE] Writing cache file for ".$this->label);
-	  if(is_writable($this->cache_dir)) return file_put_contents($this->file(), $value);
-	  else {
-	    WaxLog::log("error", "[CACHE] Cache files could not be written. Check permissions on '".$this->cache_dir."'");
-	    return false;
-	  }
+	  file_put_contents($this->identifier, $value);
 	}
 	
-	public function valid($return = false) {
-	  if(!is_readable($this->file()) ) return false;
-    if($return) $ret = $this->get();
-	  $stats = stat($this->file());
-	  if(time() > $stats["mtime"] + $this->lifetime) {
+	public function valid() {
+	  if(!is_readable($this->identifier) ) return false;
+	  $stats = stat($this->identifier);
+	  if(time() > $stats["mtime"] + $this->lifetime){
 	    $this->expire();
-	    if(!$return) return false;
-	  }
-	  if($return) return $ret;
-	  else return true;
+	    return false;
+	  }else return file_get_contents($this->identifier);
 	}
 	
 	public function expire() {
-	  WaxLog::log("info", "[CACHE] Expiring cache file for ".$this->file());
-	  if(is_readable($this->file())) unlink($this->file());
+	  if(is_readable($this->identifier)) unlink($this->identifier);
 	}
 	
 	public function file() {
-	  return $this->cache_dir.Inflections::underscore(Inflections::slashcamelize($this->label)).".cache";
+	  return $this->identifier;
 	}
 	
   

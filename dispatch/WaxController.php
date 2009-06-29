@@ -6,7 +6,7 @@
  * Provides basic functionality which controllers inherit.
  */
 
-class WaxController
+class WaxController implements Cacheable
 {
 
   protected $route_array=null;
@@ -22,7 +22,12 @@ class WaxController
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 	public $plugins = array();
-
+  /** interface vars **/
+  public $cache_identifier = false;
+  public $cache_engine = "File";
+  public $cache_object = false;
+  public $cache_config;
+  public $cache_content = false; 
 
 	public function __construct() {
 	  $this->class_name=get_class($this);
@@ -30,6 +35,14 @@ class WaxController
     $this->referrer=Session::get('referrer');
     $this->filters["before"]=array();
     $this->filters["after"]=array();
+    $this->cache_config = Config::get('layout_cache');  
+    $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.'layouts/');
+    $this->cache_identifier = $this->cache_identifier();
+    
+  }
+  
+  public function __destruct(){
+    if($this->cache_content && $this->cache_object) $this->cache_set($this->cache_content);
   }
 
 	/**
@@ -142,13 +155,7 @@ class WaxController
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
-		if(Config::get('view_cache') && !substr_count($this->controller, "admin")){
-			$sess = $_SESSION[Session::get_hash()];
-			unset($sess['referrer']);
-			$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.view');
-			if(count($_POST)) $cache->expire();
-			elseif($cache->valid())	return $cache->get();
-		}
+		
     $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
@@ -159,7 +166,6 @@ class WaxController
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
-		if(Config::get('view_cache') && !substr_count($this->controller, "admin")) $cache->set($content);
 		return $content;
   }
   
@@ -168,23 +174,17 @@ class WaxController
 	 *	@return string
  	 */
   protected function render_layout() {
-		if(!$this->use_layout) return false;
-		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ){
-			$sess = $_SESSION[Session::get_hash()];
-			unset($sess['referrer']);
-			$fname = $_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.layout';
-			$cache = new WaxCache($fname);			
-			if(count($_POST)) $cache->expire();
-			else if($cache->valid())	return $cache->get();
-		}
-    $layout = new WaxTemplate($this);
-    $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
-    $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
-    $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
-		ob_end_clean();
-    $layout = $layout->parse();
-		if(Config::get('page_cache') && !substr_count($this->controller, "admin") ) $cache->set($layout);
-		return $layout;
+		if(!$this->use_layout) return false;		
+		if($cache = $this->cached()) return $cache;
+    else{
+      $layout = new WaxTemplate($this);
+      $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
+      $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
+      $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
+		  ob_end_clean();
+      $this->cache_content = $layout = $layout->parse();      
+		  return $layout;
+	  }
   }
   
   
@@ -202,17 +202,8 @@ class WaxController
 	    $partial = $path;
 	    $path = "_".$path;
 	  }
-		$sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
-		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
-		if(count($_POST)) $cache->expire();
-		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
-			$partial= $cache->get();
-		}else if($this->is_public_method($this, $partial."_partial")) {
-	    $this->{$partial."_partial"}();
-	  }
+		if($this->is_public_method($this, $partial."_partial")) $this->{$partial."_partial"}();
 	  $partial= $this->build_partial($path);		
-		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
 		return $partial;
 	}
 	
@@ -234,17 +225,8 @@ class WaxController
 	    $path = substr($path, 0, strrpos($path, "/")+1);
 	    $path = $path.$partial;
 	  } else $partial = $path;
-		$sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
-		$cache = new WaxCache($_SERVER['HTTP_HOST'].md5($_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess)).'.partial');
-		if(count($_POST)) $cache->expire();
-		if(Config::get('partial_cache') && !substr_count($path, "admin") && !substr_count(strtolower($this->controller), "admin") && $cache->valid()){			
-			$partial= $cache->get();
-		}else if($this->is_public_method($this, $partial)) {
-	    $this->{$partial}();
-	  }
+	  if($this->is_public_method($this, $partial)) $this->{$partial}();
 	  $partial= $this->build_partial($path, $format);		
-		if(Config::get('partial_cache') && !substr_count($this->controller, "admin") ) $cache->set($partial);
 		return $partial;
 	}
 	
@@ -312,6 +294,30 @@ class WaxController
 		else return false;
 	}
 	
+	/** INTERFACE METHODS **/
+	
+  public function cache_identifier(){
+    $sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
+    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
+    $str = $_SERVER['HTTP_HOST'];
+    if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);
+    return $this->cache_object->identifier($str, $sess);    
+  }
+  public function cacheable(){    
+	  return !$this->cache_object->excluded($this->cache_config);
+  }
+	public function cached(){
+	  if(!$this->cacheable()) return false;
+	  else return $this->cache_object->get();
+	}
+  public function cache_set($value){
+    $this->cache_object->set($value);
+  }
+  public function cache_expire(){
+    $this->cache_object->expire();
+  }
 
 }
 

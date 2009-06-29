@@ -9,45 +9,68 @@
  */
 class WaxCacheLoader {
 		
-	public static $sub_directory = '';
-	public static $life_time = 3600;
-	public static $cache_file = false;
-	public static $cache_type = 'layout';
-	public static $file_suffix = 'cache';
-	public static $clear_on_post = true;
-		
-	public static function valid($file=false){
-		if(!$file) $file = self::file_name(); //fetch the file name if none passed	
-		if($file && !count($_POST) ){ //if post data the cache isnt valid
-			$mtime = filemtime($file);
-			$diff = time() - $mtime;
-			if($diff < self::$life_time) return true; //if within time limit return true
-		}elseif(count($_POST) && self::$clear_on_post) self::expire(); //if post data then clear out the cache
-		return false;
+	public $lifetime = 3600;
+	public $engine_type = false;
+	public $suffix = 'cache';
+	public $dir = false;
+  public $identifier = false;
+  
+  public function __construct($engine="File",$dir="", $lifetime=3600){
+    $this->engine_type = $engine;
+    $this->dir = $dir;  
+    $this->lifetime = $lifetime;  
+    if(!is_readable($this->dir)){
+      mkdir($this->dir);
+      chmod($this->dir, 0777);
+    }    
+  }
+
+	public function identifier($prefix, $data){
+	  if($this->identifier) return $this->identifier;
+	  else{
+		  $str .= $this->dir.$prefix;
+      if(count($data)) $str .= "-data-".serialize($data);
+      if(count($_GET)) $str .= "-get-".serialize($_GET);
+      if(count($_POST)) $str .= "-post-".serialize($_POST);      
+      $this->identifier = $str.'.'.$this->suffix;
+      return $this->identifier;
+    }
 	}
 
-	public static function get($file=false){
-		if(self::valid($file)) return file_get_contents(self::$cache_file);
-		else return false;
-	}
-	
-	public static function expire($file=false){
-		if($file && is_readable($file)) unlink($file);
-		else{
-			foreach(glob(CACHE_DIR. self::$sub_directory . str_replace("-", "_",$_SERVER['HTTP_HOST']).'*.'.self::$file_suffix) as $file ) unlink($file);
-		}
-	}
-
-	public static function file_name(){
-		if(!self::$cache_file){
-			$sess = $_SESSION[Session::get_hash()];
-			unset($sess['referrer']);
-			$path = $_SERVER['REQUEST_URI'].serialize($_GET).serialize($sess);
-			self::$cache_file = CACHE_DIR . self::$sub_directory . str_replace("-", "_",$_SERVER['HTTP_HOST']). md5($path) . '.'.self::$cache_type . '.'.self::$file_suffix;
-		}
-		if(is_readable(self::$cache_file)) return self::$cache_file;
-		else return false;
-	}
+  public function excluded($config){
+    if($config['exclude_post'] == "yes" && count($_POST)) return true;
+    if(isset($config['exclusions'])){
+      $excluded = $config['exclusions'];
+      $all_matches = array();
+	    if(is_array($excluded)){
+	      foreach($excluded as $name => $regex){
+	        preg_match_all($regex, $_SERVER['REQUEST_URI'], $matches);	      
+	        if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
+	      }	    
+	    }else preg_match_all($excluded, $_SERVER['REQUEST_URI'], $all_matches);	    	    
+	    if(count($all_matches)) return true;
+    }
+    return false;
+  }
+  
+  public function get(){
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->identifier, $this->lifetime);
+    return $engine->get();
+  }
+  
+  public function set($value){
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->identifier, $this->lifetime);
+    return $engine->set($value);
+  }
+  
+  public function expire(){
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->identifier, $this->lifetime);
+    return $engine->expire();
+  }
+  
 }
 
 ?>
