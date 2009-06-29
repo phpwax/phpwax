@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WaxTemplate
+class WaxTemplate implements Cachable 
 {
 	public static $response_filters = array(
 	    'views'=>  array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
