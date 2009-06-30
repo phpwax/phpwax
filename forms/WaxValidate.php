@@ -9,6 +9,12 @@ class WaxValidate {
   public $attribute;
   public $validations = array();
   public $label;
+  public $formats = array(
+    "email"=>       '/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-\+]+)*@[a-zA-Z0-9-]+(\.[a-zA-z0-9-]+)*(\.[a-zA-Z]{2,4})$/i',
+    "datetime"=>    '/^([0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}|[0-9-]{4}-[0-9]{2}-[0-9]{2})$/',
+    "number"=>      '/^[0-9]*/',
+    "boolean"=>     '/^[0-1]?$/' 
+  );
   
   public $errors = array();
   //errors messages
@@ -18,7 +24,8 @@ class WaxValidate {
     "required"=>    "%s is a required field",
     "unique"=>      "%s has already been taken",
     "match"=>       "%s and %s do not match",
-    "format"=>      "%s is not a valid %s format"
+    "format"=>      "%s is not a valid %s format",
+    "checked"=>      "%s needs to be checked"
   );
   
   /**
@@ -48,7 +55,7 @@ class WaxValidate {
    *            4.  match
    *            5.  format 
  	 */
-  public function validate($type, $options=array()) {
+  public function add_validation($type, $options=array()) {
     foreach($options as $option_key=>$option_val) {
       $this->$option_key = $option_val;
     }
@@ -59,11 +66,14 @@ class WaxValidate {
     return $this->errors;
   }
   
-  public function is_valid() {
+  public function validate() {
     foreach($this->validations as $name){
       $func = "valid_".$name;
       $this->$func();
     }
+  }
+  
+  public function is_valid() {
     if(count($this->errors)) return false;
     else return true;
   }
@@ -71,7 +81,6 @@ class WaxValidate {
   /********* Validation Methods ********************/
   
   protected function valid_length() {
-    
     $value = $this->object->value();   
     if($this->minlength && strlen($value) < $this->minlength) {
       $this->add_error($this->label, sprintf($this->messages["short"], $this->label, $this->minlength));
@@ -80,6 +89,14 @@ class WaxValidate {
       $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
     }
   }
+  
+  protected function valid_checked() {
+    $value = $this->object->value();
+    if($value < 1){
+			$this->add_error($this->column, sprintf($this->messages["checked"], $this->label));
+		}
+  }
+  
   protected function valid_float(){
     $value = $this->object->value();
 		$lengths = explode(",", $this->maxlength);
@@ -93,14 +110,18 @@ class WaxValidate {
 	}
 
   protected function valid_email(){
-    $this->regex_pattern = '/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-\+]+)*@[a-zA-Z0-9-]+(\.[a-zA-z0-9-]+)*(\.[a-zA-Z]{2,4})$/i';
-    return $this->valid_format();
+    return $this->valid_format("email");
   }
-  protected function valid_format() {
+  protected function valid_format($name, $string=false) {
     $value = $this->object->value();
-    if(!preg_match($this->regex_pattern, $value)) {
+    if(!$string) $string = $this->formats[$name];
+    if(!preg_match($string, $value)) {
       $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
 		}
+  }
+  
+  protected function valid_datetime() {
+    return $this->valid_format("datetime");
   }
   
   protected function valid_required() {

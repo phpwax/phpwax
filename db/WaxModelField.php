@@ -22,25 +22,17 @@ class WaxModelField {
   public $text_choices = false; // Store choices as text in database
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true; 
-  public $label = true; // Set to false to never show labels
+  public $required = false; 
+  public $show_label = true;
+  public $label = false;
   public $help_text = false;
   public $widget="TextInput";
   public $is_association=false; // Distiguishes between standard field and one that links to other models
   protected $model = false;
   public $validator = "WaxValidate";
+  public $validations = array();
   
   public $errors = array();
-  //errors messages
-  public $messages = array(
-    "short"=>       "%s needs to be at least %d characters",
-    "long"=>        "%s needs to be shorter than %d characters",
-    "required"=>    "%s is a required field",
-    "unique"=>      "%s has already been taken",
-    "confirm"=>     "%s and %s do not match",
-    "format"=>      "%s is not a valid %s format"
-  );
-  
-  
 
   public function __construct($column, $model, $options = array()) {
     $this->model = $model;
@@ -48,16 +40,17 @@ class WaxModelField {
     if(!$this->field) $this->field = $column;
     if(!$this->table) $this->table = $this->model->table;
     if(!$this->col_name) $this->col_name = $this->field;
-    if($this->label===true) $this->label = Inflections::humanize($this->field);
-    $this->errors = $this->model->errors[$this->field];
+    if($this->show_label) $this->label = Inflections::humanize($this->field);
     $this->setup();
     $this->map_choices();
-    $this->validator = new $this->validator($this->model, $this->field, $this->label);
+    $this->setup_validations();
   }
   
   public function get() {
     return $this->model->row[$this->col_name];
   }
+  
+  public function value() {return $this->get();}
   
   public function set($value) {
     $this->model->row[$this->col_name]=$value;
@@ -83,6 +76,23 @@ class WaxModelField {
     }
   }
   
+  public function setup_validations() {
+    if($this->required) $this->validations[]="required";
+    if($this->minlength) $this->validations[]="length";
+    if($this->maxlength) $this->validations[]="length";
+  }
+  
+  
+  public function is_valid() {
+    $this->validate();
+    $validator = new $this->validator($this, $this->field);
+    foreach($this->validations as $valid) $validator->add_validation($valid);
+    $validator->validate();
+    if($validator->is_valid()) return true;
+    else $this->errors = $validator->errors;
+    return false;
+  }
+  
   
   protected function add_error($field, $message) {
     if(!in_array($message, (array)$this->errors)) $this->errors[]=$message;
@@ -98,48 +108,6 @@ class WaxModelField {
  	  if($value =="name") return $this->table."[".$this->field."]";
     if($value =="id") return $this->table."_{$this->field}";
  	}
- 	
- 	
- 	/**
- 	 *  Default Validation Methods
- 	 */
- 	 
-  protected function valid_length() {
-    if($this->minlength && strlen($this->model->{$this->field}) < $this->minlength) {
-      $this->add_error($this->column, sprintf($this->messages["short"], $this->label, $this->minlength));
-    }
-    if($this->maxlength && strlen($this->model->{$this->field})> $this->maxlength) {
-      $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
-    }
-  }
-  protected function valid_float(){
-		$lengths = explode(",", $this->maxlength);
-		$values = explode(".", $this->model->{$this->field});
-		if(strlen($values[0]) > $lengths[0]){
-			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
-		}
-		if($values[1] && $lengths[1] && strlen($values[1]) > $lengths[1]){
-			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
-		}
-	}
-
-  protected function valid_format($name, $pattern) {
-    if(!preg_match($pattern, $this->model->{$this->field})) {
-      $this->add_error($this->column, sprintf($this->messages["format"], $this->label, $name));
-		}
-  }
-  
-  protected function valid_required() {
-    if(!$this->blank && strlen($this->model->{$this->field})< 1) {
-      $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
-    }
-  }
-  
-  protected function valid_confirm($confirm_field, $confirm_name) {
-    if($this->model->{$this->field} != $this->model->{$confirm_field}) {
-      $this->add_error($this->field, sprintf($this->messages["confirm"], $this->label, $confirm_name));
-    }
-  }
   
 
 } // END class 

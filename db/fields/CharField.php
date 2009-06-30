@@ -9,14 +9,15 @@ class CharField extends WaxModelField {
   
   public $maxlength = "255";
   public $unique = false;
+  public $messages = array(
+    "unique"=>      "%s has already been taken"
+  );
   
   public function setup() {
     
   }
 
   public function validate() {    
-    $this->valid_length();
- 	  $this->valid_required();
  	  $this->valid_unique();
   }
 

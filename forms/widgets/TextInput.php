@@ -11,9 +11,7 @@ class TextInput extends WaxWidget {
   public $type="text";
   public $class = "input_field text_field";
   
-  public $label_template = '<label for="%s">%s</label>';
-  public $template = '<input %s />';
+  public $label_template = '<span><label for="%s">%s</label>';
+  public $template = '<input %s /></span>';
   
-
-
 } // END class
