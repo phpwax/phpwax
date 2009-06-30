@@ -22,7 +22,7 @@ class WaxController
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 	public $plugins = array();
- 
+  public $use_cache = true; //with this you can override the cache settings and turn it off
 
 	public function __construct($run_init=true) {
 	  if($run_init) $this->init();    

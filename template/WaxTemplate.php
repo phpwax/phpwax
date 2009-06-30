@@ -6,7 +6,8 @@
  **/
 class WaxTemplate implements Cacheable{
   
-   /** interface vars **/
+  /** interface vars **/
+  public $use_cache = true;
   public $cache_lifetime = 3600;
   public $cache_identifier = false;
   public $cache_engine = false;
@@ -103,7 +104,7 @@ class WaxTemplate implements Cacheable{
 	  if(!headers_sent()) header("Content-Type: $type; charset=utf-8");
 	  
 	  /** CACHE **/
-	  if($this->cache_enabled($parse_as)){
+	  if($this->use_cache && $this->cache_enabled($parse_as)){
 	    //change the suffix if not html - so .xml files etc cache seperately
 	    if($suffix != "html"){
 	      $this->cache_object->suffix = $suffix.'.cache';
