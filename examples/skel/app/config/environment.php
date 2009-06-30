@@ -6,9 +6,10 @@
  */
 
 define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
-
-if(is_dir(WAX_ROOT."wax")) define('FRAMEWORK_DIR', WAX_ROOT."wax");
+define('WAX_DIR', 'wax');
+if(is_dir(WAX_ROOT.WAX_DIR)) define('FRAMEWORK_DIR', WAX_ROOT.WAX_DIR);
 elseif(is_dir(WAX_ROOT."phpwax")) define('FRAMEWORK_DIR', WAX_ROOT."phpwax");
+
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
 
 //load the framework
