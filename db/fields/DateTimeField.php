@@ -14,12 +14,8 @@ class DateTimeField extends WaxModelField {
   public $output_format = "Y-m-d H:i:s";
   public $save_format = "Y-m-d H:i:s";
   public $use_uk_date = false;
+  public $validations = array("datetime");
 
-  public function validate() {
-    $this->valid_length();
- 	  $this->valid_required();
-    $this->valid_format("datetime", '/^([0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}|[0-9-]{4}-[0-9]{2}-[0-9]{2})$/');
-  }
   
   public function setup() {
     if($this->model->row[$this->field]==0 && $this->default=="now") {

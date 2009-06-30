@@ -14,35 +14,62 @@ class WaxWidget{
   
   public $defaults = array("name"=>"","editable"=>true,"value"=>"");
   
-  public $label_template = '<label for="%s>%s</label>';
-  public $template = '<input %s />%s';
+  public $show_label = true;
+  public $label_template = '<span><label for="%s>%s</label>';
+  public $template = '<input %s />%s</span>';
   public $error_template = '<span class="error_message">%s</span>';
   public $bound_data = false;
-  public $validator = false;
+  public $validator = "WaxValidate";
+  public $validations = array();
   public $errors = array();
-  public $auto_value = true; //fetch data from post automatically on render
+  public $prefix = false;
   
   public function __construct($name, $data=false) {
     if($data instanceof WaxModelField) $this->bound_data = $data;
-    elseif(is_array($data)) {
+    else {
       $this->defaults["name"]=$name;
-      $this->defaults["id"]=$name."_id";
-      $this->defaults["label"]=Inflections::humanize($name);
-      $settings = array_merge($this->defaults, $data);
-      foreach($settings as $datum=>$value) $this->$datum = $value;
-    }else {
-      $this->name = $name;
-      $this->id = $name."_id";
-      $this->editable = true;
-      $this->label = Inflections::humanize($name);
+      $this->defaults["id"]=$name;
+      if($this->show_label) $this->defaults["label"]=Inflections::humanize($name);
+      $settings = array_merge($this->defaults, (array)$data);
+      foreach($settings as $set=>$val) $this->{$set}=$val;
+      $this->value = $this->value();
     }
     /**
      * the validation details
      */
-    $this->validator = new WaxValidate($this, $name);
-    if(is_array($data) && isset($data['validate']) && is_array($data['validate'])){
-     foreach($data['validate'] as $type) $this->validator->validate($type, $data);
-    }elseif(is_array($data) && $data['validate']) $this->validator->validate($data['validate'], $data);
+    
+    $this->setup_validations();
+    $this->validation_classes();
+  }
+  
+  public function validation_classes() {
+    if($this->bound_data instanceof WaxModelField) {
+      $this->validations = array_merge($this->bound_data->validations, $this->validations);
+    }
+    foreach($this->validations as $valid) {
+      $this->add_class("valid-$valid");
+    }
+  }
+  
+  public function setup_validations() {
+    if($this->validate) $this->validations = (array)$this->validate;
+    if($this->required ===true) $this->validations[]="required";
+    if($this->minlength) $this->validations[]="length";
+    if($this->maxlength) $this->validations[]="length";
+  }
+  
+  public function is_valid() {
+    if($this->bound_data instanceof WaxModelField) {
+      $valid = $this->bound_data->is_valid();
+      $this->errors = $this->bound_data->errors;
+      return $valid;
+    }
+    $validator = new $this->validator($this, $this->field);
+    foreach($this->validations as $valid) $validator->add_validation($valid);
+    $validator->validate();
+    if($validator->is_valid()) return true;
+    else $this->errors = $validator->errors();
+    return false;
   }
   
   
@@ -50,8 +77,8 @@ class WaxWidget{
     if(!$this->editable) return false;
     $out ="";
     $out .= $this->before_tag();
-    if($this->errors) $this->class.=" error_field";
-    if($this->label) $out .= sprintf($this->label_template, $this->id, $this->label); 
+    if($this->errors) $this->add_class("error_field");
+    if($this->show_label) $out .= sprintf($this->label_template, $this->output_id(), $this->label);
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
@@ -65,30 +92,44 @@ class WaxWidget{
   }
   
   public function value(){
-    if($this->bound_data) return $this->bound_data->{$this->name};
-    else{      
-      if(isset($this->post_fields['model'])){
-        $data = Request::post($this->post_fields['model']);
-        $index = $this->post_fields['attribute'];
-      }else{
-        $data = $_POST;
-        $index = $this->name;
-      }
-      return $data[$index];
-    }
+    if($this->bound_data instanceof WaxModelField) return $this->bound_data->{$this->name};
+    elseif($this->post_data) return $this->post_data[$this->name];
   }
   
   public function make_attributes() {
     $res = "";
-    if(!$this->value && $this->auto_value) $this->value = $this->value();
     foreach($this->allowable_attributes as $name) {
-      if($this->{$name}) $res.=sprintf('%s="%s" ', $name, $this->{$name});
+      if($name == "name") $res.=sprintf('%s="%s" ', $name, $this->output_name());
+      elseif($name == "id") $res.=sprintf('%s="%s" ', $name, $this->output_id());
+      elseif($name == "value") $res.=sprintf('%s="%s" ', $name, $this->value);
+      elseif(isset($this->{$name})) $res.=sprintf('%s="%s" ', $name, $this->{$name});
     }
     return $res;
   }
   
+  public function output_name() {
+    if($this->prefix) return $this->prefix."[".$this->name."]";
+    return $this->name;
+  }
+  
+  public function output_id() {
+    if($this->prefix) return $this->prefix."_".$this->name;
+    return $this->id;
+  }
+  
+  public function add_class($class) {
+    $this->class = $this->class . " ".$class;
+    $this->class = trim($this->class);
+  }
+  
+  public function remove_class($class) {
+    $this->class = str_replace($class, "", $this->class);
+    $this->class = trim($this->class);
+  }
+  
   public function before_tag(){}
   public function after_tag(){}
+  public function validate(){}
   public function handle_post($post_val){
     return $post_val;
   }
@@ -98,16 +139,8 @@ class WaxWidget{
     return true;
   }
   
-  public function is_valid() {
-    if($this->validator->is_valid()) return true;
-    else $this->errors = $this->validator->errors();
-    return false;
-  }
-  
   public function __get($value) {
-    if(!$this->bound_data) return false;
-    else if($this->bound_data instanceof WaxModelField) return $this->bound_data->{$value};
-    else if(is_array($this->bound_data)) return $this->bound_data[$value];
+    if($this->bound_data instanceof WaxModelField) return $this->bound_data->{$value};
   }
   
   public function __set($name, $value) {
