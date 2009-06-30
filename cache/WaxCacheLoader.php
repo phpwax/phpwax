@@ -70,14 +70,13 @@ class WaxCacheLoader {
     return $engine->expire();
   }
   
-  public function layout_cache_loader(){
-    
+  public function layout_cache_loader($config){
     $this->identifier = $this->identifier();
     $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix);
+    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
     $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
     
-    if($cached = $engine->get()) return $cached;
+    if(!$this->excluded && $engine->get()) return $engine->get();
     else return false;
   }
   

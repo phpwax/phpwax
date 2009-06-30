@@ -25,7 +25,37 @@ if(!defined("STYLE_DIR")) define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
 if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
 
+/**
+ * check cache
+ *
+ */
+function auto_loader_check_cache(){
+  $cache_location = CACHE_DIR .'layout/';
+  $spyc = FRAMEWORK_DIR .'/utilities/Spyc.php';
+  $config_loader = FRAMEWORK_DIR .'/utilities/Config.php';
+  $cache_loader = FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+  $cache_engine = FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+  $session_class = FRAMEWORK_DIR .'/utilities/Session.php';
+  include_once $spyc;	  
+  include_once $config_loader;
+  include_once $cache_loader;	  
+  include_once $cache_engine;	    
+  include_once $session_class;  
+  if($config = Config::get('layout_cache')){
+    
+    if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
+    else $cache = new WaxCacheLoader('File', $cache_location);
+    if($content = $cache->layout_cache_loader($config)){
+      echo $content;
+      exit;
+    }
+  }
+  return false;
+}	
+
+
 function __autoload($class_name) {
+  auto_loader_check_cache();
   AutoLoader::include_from_registry($class_name);
 }
 
@@ -162,9 +192,8 @@ class AutoLoader
 	    }
 	  }
 	}
-	
 
-	static public function initialise() {	  
+	static public function initialise() {	
 		self::detect_assets();
 	  self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
