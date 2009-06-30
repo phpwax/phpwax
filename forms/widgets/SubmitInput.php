@@ -11,7 +11,11 @@ class SubmitInput extends TextInput {
   public $type="submit";
   public $class = "input_field submit_field";
   public $label_template = '';
-  public $editable =true;
-
-
+  
+  public $defaults = array("editable"=>true,"value"=>"Submit");
+  
+  public function value() {
+    return $this->label;
+  }
+  
 } // END class
