@@ -8,12 +8,12 @@
 define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
 /***
  * uncomment this line if you want an absolute path and replace the constant with the path to your
- * you wax folder
+ * you wax folder - TRAILING SLASH IS REQUIRED!!!!
  */ 
-//define('WAX_ROOT', "/path/to/wax/" );
+//define('WAX_ROOT', "/path/to/wax/folder/" );
 /**
  * to change the relative path of wax folder then set this constant to the location you want
- * remember this has to be relative to the wax_root set above..
+ * remember this has to be relative to the wax_root set above.. NO TRAILING SLASH
  */ 
 define('WAX_DIR', 'wax');
 if(is_dir(WAX_ROOT.WAX_DIR)) define('FRAMEWORK_DIR', WAX_ROOT.WAX_DIR);
