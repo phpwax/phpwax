@@ -13,14 +13,14 @@ class TextareaInput extends WaxWidget {
   );
 
   public $class = "input_field textarea_field";  
-  public $label_template = '<label for="%s">%s</label>';
-  public $template = '<textarea %s>%s</textarea>';
+  public $label_template = '<span><label for="%s">%s</label>';
+  public $template = '<textarea %s>%s</textarea></span>';
   
   
   
   public function render() {
     $out ="";
-    $value = $this->value;
+    $value = $this->value();
     unset($this->value);
     if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
     $out .= sprintf($this->template, $this->make_attributes(), $value);

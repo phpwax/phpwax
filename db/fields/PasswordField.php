@@ -7,17 +7,8 @@
  **/
 class PasswordField extends CharField {
   
-  public $maxlength = "32";
+  public $maxlength = "64";
   public $widget = "PasswordInput";
   
-  public function setup() {
-    
-  }
 
-  public function validate() {
- 	  $this->valid_required();
-  }
-  
-  
-  
 }
