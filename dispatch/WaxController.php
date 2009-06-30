@@ -22,7 +22,8 @@ class WaxController
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 	public $plugins = array();
-  public $use_cache = true; //with this you can override the cache settings and turn it off
+  //with this you can override the cache settings and turn it of on the application level ignoring the config
+  public $use_cache = true; 
 
 	public function __construct($run_init=true) {
 	  if($run_init) $this->init();    
@@ -168,19 +169,13 @@ class WaxController
 	 *	@return string
  	 */
   protected function render_layout() {
-		if(!$this->use_layout) return false;		
-		/***
-		if($this->cache_enabled('layout') && $this->cached($this->cache_objects['layout'], 'layout') ){
-		  ob_end_clean();
-		  return $this->cached($this->cache_objects['layout'], 'layout');
-	  }else{
-	  ***/
+		if(!$this->use_layout) return false;
     $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
     ob_end_clean();
-	  return $layout->parse();      
+	  return $layout->parse($this->use_format);      
   }
   
   
