@@ -11,13 +11,20 @@ class WaxCacheFile {
   
   public $identifier = false;
   public $lifetime = false;  
-  public $sub_dir = false;
+  public $dir = false;
   public $marker = '<!-- from cache -->';
+  public $suffix = 'cache';
   
-  public function __construct($identifier, $lifetime) {
-    $this->lifetime = $lifetime;
-    $this->identifier = $identifier;
-    $this->sub_dir = $sub_dir;
+  public function __construct($dir=false, $lifetime=false, $suffix='cache', $identifier=false) {
+    if($lifetime) $this->lifetime = $lifetime;
+    
+    if($dir) $this->dir = $dir;
+    else $this->dir = CACHE_DIR;
+    
+    if($identifier) $this->identifier = $identifier;
+    else $this->indentifier = $this->make_identifier($_SERVER['HTTP_HOST']);
+    $this->suffix = $suffix;
+    $this->dir = $dir;
   }	
 	
 	public function get() {
@@ -47,6 +54,20 @@ class WaxCacheFile {
 	  return $this->identifier;
 	}
 	
+	public function make_identifier($prefix=false){
+	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
+	  $str .= $this->dir.$prefix;
+	  $sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
+    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
+    if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);    
+	  
+    if(count($data)) $str .= "-data-".serialize($data);
+    if(count($_GET)) $str .= "-get-".serialize($_GET);
+    if(count($_POST)) $str .= "-post-".serialize($_POST);      
+    return $str.'.'.$this->suffix;
+	}
 
 }
 

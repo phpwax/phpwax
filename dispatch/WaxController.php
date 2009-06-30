@@ -6,7 +6,7 @@
  * Provides basic functionality which controllers inherit.
  */
 
-class WaxController implements Cacheable
+class WaxController
 {
 
   protected $route_array=null;
@@ -22,13 +22,7 @@ class WaxController implements Cacheable
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 	public $plugins = array();
-  /** interface vars **/
-  public $cache_enabled = array();
-  public $cache_identifiers = array();
-  public $cache_engines = array();
-  public $cache_objects = array();
-  public $cache_config = array();
-  public $cache_content = array(); 
+ 
 
 	public function __construct($run_init=true) {
 	  if($run_init) $this->init();    
@@ -42,11 +36,7 @@ class WaxController implements Cacheable
     $this->filters["after"]=array();    
   }
   
-  public function __destruct(){
-    foreach($this->cache_enabled as $type =>$enabled){
-      if($enabled) $this->cache_set($this->cache_objects[$type], $this->cache_content[$type]);
-    }
-  }
+  
 
 	/**
  	 *	Sends a header redirect, moving the app to a new url.
@@ -159,11 +149,7 @@ class WaxController implements Cacheable
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 
-		if($this->cache_enabled('view') && $this->cached($this->cache_objects['view'], 'view') ){
-		  ob_end_clean();
-		  return $this->cached($this->cache_objects['view'], 'view');
-	  }
-		
+
     $view = new WaxTemplate($this);
     $view->add_path(VIEW_DIR.$this->use_view);
     $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
@@ -174,7 +160,6 @@ class WaxController implements Cacheable
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
-		$this->cache_content['view'] = $content;
 		return $content;
   }
   
@@ -184,19 +169,18 @@ class WaxController implements Cacheable
  	 */
   protected function render_layout() {
 		if(!$this->use_layout) return false;		
+		/***
 		if($this->cache_enabled('layout') && $this->cached($this->cache_objects['layout'], 'layout') ){
 		  ob_end_clean();
 		  return $this->cached($this->cache_objects['layout'], 'layout');
 	  }else{
-      $layout = new WaxTemplate($this);
-      $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
-      $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
-      $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
-		  ob_end_clean();
-      $this->cache_content['layout'] = $layout->parse();      
-		  return $this->cache_content['layout'];
-	  }
-	  exit;
+	  ***/
+    $layout = new WaxTemplate($this);
+    $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
+    $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
+    $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
+    ob_end_clean();
+	  return $layout->parse();      
   }
   
   
@@ -220,7 +204,7 @@ class WaxController implements Cacheable
 	}
 	
 	public function build_partial($path, $format = false) {
-	  $partial = new WXTemplate($this);
+	  $partial = new WaxTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$path);
@@ -248,7 +232,7 @@ class WaxController implements Cacheable
 	 *	@return string
  	 */
 	public function view_to_string($view_path, $values=array(), $suffix="html") {
-		$view= new WXTemplate($values);
+		$view= new WaxTemplate($values);
 		$view->add_path(VIEW_DIR.$view_path);
 		if($this->use_format) return $view->parse($this->use_format);
 		return $view->parse($suffix);
@@ -306,42 +290,7 @@ class WaxController implements Cacheable
 		else return false;
 	}
 	
-	/** INTERFACE METHODS **/
-  public function cache_identifier($model){
-    $sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
-		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
-    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
-    $str = $_SERVER['HTTP_HOST'];
-    if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);
-    return $model->identifier($str, $sess);    
-  }
-  
-  public function cacheable($model, $type){    
-	  return !$model->excluded($this->cache_config[$type]);
-  }
-	public function cached($model, $type){
-	  if(!$this->cacheable($model, $type)) return false;
-	  else return $model->get();
-	}
-  public function cache_set($model, $value){
-    $model->set($value);
-  }
-  public function cache_enabled($type){
-    $check = $type."_cache";
-    if(isset($this->cache_enabled[$type])) return $this->cache_enabled[$type];
-    elseif(is_array(Config::get($check))){
-      $this->cache_config[$type] = Config::get($type);
-      $this->cache_engines[$type] = $this->cache_config[$type]['engine'];
-      $this->cache_objects[$type] = new WaxCacheLoader($this->cache_engines[$type], CACHE_DIR.$type."/");
-      $this->cache_identifiers[$type] = $this->cache_identifier($this->cache_objects[$type], $type);
-      $this->cache_enabled[$type] = true;
-      return true;
-    }else{
-      $this->cache_enabled[$type] = false;
-      return false;
-    }
-  }
+	
 
 }
 
