@@ -83,15 +83,17 @@ class WaxModel {
  	}
  	
  	public function filter($column, $value=NULL, $operator="=") {
+ 	  //if the var is a string, then we are asuming its a new style filter
  	  if(is_string($column)) {
+ 	    //with a value passed in this confirms its a new method of filter 
  	    if($value !== NULL) {
  	      //operator sniffing
         if(is_array($value))
-          if(strpos($column, "?") === false) $operator = "in";
-          else $operator = "raw";
+          if(strpos($column, "?") === false) $operator = "in"; //no ? params so this is an old in check
+          else $operator = "raw"; //otherwise its a raw operation, so substitue values
         
         $filter = array("name"=>$column,"operator"=>$operator, "value"=>$value);
-        if($operator == "=") $this->filters[$column] = $filter;
+        if($operator == "=") $this->filters[$column] = $filter; //if its equal then overwrite the filter passed on col name
         else $this->filters[] = $filter;
  	      
  	    } else $this->filters[] = $column; //assume a raw query, with no parameters
