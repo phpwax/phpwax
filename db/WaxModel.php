@@ -82,26 +82,26 @@ class WaxModel {
  	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
  	}
  	
- 	public function filter($filters, $params=false, $operator="=") {
- 	  if(is_string($filters)) {
- 	    if($params !== false) {
- 	      $this->filters[] = array("name"=>$filters, "operator"=>$operator, "value"=>$params);
- 	    } else $this->filters[]=$filters;
-    }else {
-      foreach((array)$filters as $key=>$filter) {
-        if(is_array($filter)) {
-          if(strpos($key, "?") === false) {
-            $this->filters[]= array( "name"=>$key, "operator"=>"in", "value"=>$filter);
-          }
-          else $this->filters[] = array("name"=>$key, "operator"=>"raw", "value"=>$filter);
-        }
-        else $this->filters[$key]= array("name"=>$key,"operator"=>"=", "value"=>$filter);
+ 	public function filter($column, $value=NULL, $operator="=") {
+ 	  if(is_string($column)) {
+ 	    if($value !== NULL) {
+ 	      //operator sniffing
+        if(is_array($value))
+          if(strpos($column, "?") === false) $operator = "in";
+          else $operator = "raw";
+        
+        $filter = array("name"=>$column,"operator"=>$operator, "value"=>$value);
+        if($operator == "=") $this->filters[$column] = $filter;
+        else $this->filters[] = $filter;
+ 	      
+ 	    } else $this->filters[] = $column; //assume a raw query, with no parameters
+    }else{ //if the column isn't a string, then we assume it's an array with multiple filter's passed in.
+      foreach((array)$column as $old_column => $old_value) {
+        $this->filter($old_column, $old_value);
       }
     }
     return $this;
  	}
- 	
- 	
  	
  	/**
  	 * Search Function, hands over to the DB to perform natural language searching.
