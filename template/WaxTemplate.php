@@ -31,7 +31,7 @@ class WaxTemplate implements Cacheable{
 	}
 	
 	public function __destruct(){
-    if($this->cache_content && $this->cache_object) $this->cache_set($this->cache_object, $this->cache_content);
+    if($this->use_cache && $this->cache_content && $this->cache_object) $this->cache_set($this->cache_object, $this->cache_content);
   }
 
 	public function add_path($path) {
@@ -106,10 +106,9 @@ class WaxTemplate implements Cacheable{
 	  /** CACHE **/
 	  if($this->use_cache && $this->cache_enabled($parse_as)){
 	    //change the suffix if not html - so .xml files etc cache seperately
-	    if($suffix != "html"){
-	      $this->cache_object->suffix = $suffix.'.cache';
-        $this->cache_object->marker = '';
-	    }
+	    if($suffix != "html") $this->cache_object->suffix = $suffix.'.cache';
+	    else $this->cache_object->marker = '<!-- from cache -->';
+	  
 	    if($this->cached($this->cache_object, $parse_as) ) return $this->cached($this->cache_object, $parse_as);	    
     }
     
@@ -158,7 +157,7 @@ class WaxTemplate implements Cacheable{
       $this->cache_engine = $this->cache_config['engine'];
       if(isset($this->cache_config['lifetime'])) $this->cache_lifetime = $this->cache_config['lifetime'];
       $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.$type."/", $this->cache_lifetime);      
-      $this->cache_identifier = $this->cache_identifier($this->cache_object, $type);
+      $this->cache_identifier = $this->cache_identifier($this->cache_object);
       $this->cache_enabled = true;
       return true;
     }else{
