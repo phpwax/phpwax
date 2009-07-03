@@ -3,6 +3,19 @@
  * cache interface system
  * in general $model should be an instance of WaxCacheLoader
  * To use cache you will have to set up you config.yaml file for each type of cache
+ *
+ * Recommend Usage:
+ *
+ * Querying & Returning :
+ * if($this->use_cache && $this->cache_enabled($type)){
+ *  if($this->cached(waxcacheloader, $type) ) return $this->cached(waxcacheloader, $type);
+ * }
+ * 
+ * Setting (on destruct):
+ *
+ * if($cache_content && waxcacheloader) $this->cache_set(waxcacheloader, $cache_content);
+ *
+ *
  */
 interface Cacheable{
   /**

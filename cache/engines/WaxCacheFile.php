@@ -7,7 +7,7 @@
  *	Engine for caching of data / objects to file.
  *  @package PHP-Wax
  */
-class WaxCacheFile {
+class WaxCacheFile implements CacheEngine{
   
   public $identifier = false;
   public $lifetime = false;  
