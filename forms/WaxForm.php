@@ -17,7 +17,6 @@ class WaxForm implements Iterator {
   public $submit = true;
   public $submit_text = "Submit";
   public $template = '<form %s><fieldset>%s</fieldset></form>';
-  public $elements = array();
   public $post_data = false;
   public $bound_to_model = false;
   public $validation_errors = array();
@@ -60,6 +59,7 @@ class WaxForm implements Iterator {
   }
    
   public function __get($name) {
+    if($name == "elements") return $this->handler->elements;
     if(array_key_exists($name, $this->handler->elements)) return $this->handler->elements[$name];
   }
   

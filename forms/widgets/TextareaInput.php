@@ -18,15 +18,7 @@ class TextareaInput extends WaxWidget {
   
   
   
-  public function render() {
-    $out ="";
-    $value = $this->value();
-    unset($this->value);
-    if($this->label) $out .= sprintf($this->label_template, $this->attributes["id"], $this->label); 
-    $out .= sprintf($this->template, $this->make_attributes(), $value);
-    $this->value = $value;
-    return $out;
-  }
+  
   
   public function tag_content() {
     return $this->value;

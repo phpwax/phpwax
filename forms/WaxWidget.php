@@ -73,7 +73,8 @@ class WaxWidget{
   }
   
   
-  public function render() {
+  public function render($settings = array()) {
+    foreach($settings as $set=>$val) $this->{$set}=$val;
     if(!$this->editable) return false;
     $out ="";
     $out .= $this->before_tag();

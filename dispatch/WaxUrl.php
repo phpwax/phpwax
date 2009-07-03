@@ -163,6 +163,8 @@ class WaxUrl {
 		}
 	  if(is_file(CONTROLLER_DIR.$path.Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  if(is_file(FRAMEWORK_DIR."/dispatch/".Inflections::slashcamelize($test, true)."Controller.php")) return true;
+	  foreach(Autoloader::$plugin_array as $plugin)
+	    if(is_file($plugin['dir']."/resources/app/controller/".$path.Inflections::slashcamelize($test, true)."Controller.php")) return true;
 	  return false;
 	}
 	

@@ -106,7 +106,9 @@ class AutoLoader
 	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
+	  self::recursive_register(PLUGIN_DIR.$plugin."/resources/app/controller", "plugin");
 		$setup = PLUGIN_DIR.$plugin."/setup.php";
+		self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
 		if(is_readable($setup)) include_once($setup);
 	}
 	
@@ -120,10 +122,10 @@ class AutoLoader
 	    $plugins = scandir(PLUGIN_DIR);
 	    sort($plugins);
 	    foreach($plugins as $plugin) {
-	      if(is_dir(PLUGIN_DIR.$plugin)) self::include_plugin($plugin);
+	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
 	    }
+      }
     }
-	}
 	
 	static public function detect_assets() {
 	  self::register("framework", "File", FRAMEWORK_DIR."/utilities/File.php");
@@ -183,7 +185,7 @@ class AutoLoader
 
 	static public function register_helpers() {
 	  foreach(get_declared_classes() as $class) {
-	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class == "WXInflections") {
+	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class == "Inflections") {
 	      foreach(get_class_methods($class) as $method) {
 	        if(substr($method,0,1)!="_" && !function_exists($method)) {
 	          WXGenerator::new_helper_wrapper($class, $method);

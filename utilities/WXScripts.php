@@ -8,20 +8,13 @@
 class WXScripts {
   
   public $output=array();
-  public $plugin_array = array(
-    "cms"=>"svn://php-wax.com/svn/plugins/cms/",
-    "cms-email"=>"svn://php-wax.com/svn/plugins/subscription_manager/",
-    "cms-ecom"=>"svn://php-wax.com/svn/plugins/cms-ecom/",
-		"googlemap"=>"svn://php-wax.com/svn/plugins/googlemap/"
-  );
   
-  
-  
-  
-  public function __construct($type, $argv) {
-    ob_end_clean();
-    error_reporting(E_PARSE);
-    define("IN_CLI", "true");
+  public function __construct($type, $argv=array()) {
+    if(isset($_SERVER["SHELL"])) {
+      ob_end_clean();
+      define("IN_CLI", "true");
+      error_reporting(E_PARSE);
+    }
     $this->$type($argv);
   }
   
@@ -193,24 +186,15 @@ class WXScripts {
     $test->run(new HtmlReporter());
   }
   
-  public function freeze($argv) {
-    if(is_dir(WAX_ROOT."wax")) {
-    	$this->add_output("[ERROR] Wax is already in your app directory. Delete it to freeze a new version.");
-    	return false;
-    } elseif(defined("WAX_EDGE")) {
-    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/trunk/wax/ ".WAX_ROOT."wax";
-    	system($command);
-    } else {
-    	$command = "svn export svn://php-wax.com/home/phpwax/svn/main/tags/".WAX_VERSION."/wax/ ".WAX_ROOT."wax";
-    	system($command);
-    }
-  }
+
   
-  public function syncdb($dir=false) {
-    if($dir[1] && ($dir[1]=="test" || $dir[1] == "production")) define("ENV", $dir[1]);
+  public function syncdb($argv) {
+    if($argv[1] && ($argv[1]=="test" || $argv[1] == "production")) define("ENV", $argv[1]);
     $this->app_setup();
-    if($dir && is_dir($dir)) Autoloader::include_dir($dir, true);
-    else Autoloader::include_dir(MODEL_DIR, true);
+    foreach(Autoloader::$plugin_array as $plugin) {
+      Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true); 
+    }
+    Autoloader::include_dir(MODEL_DIR, true);
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
         $class_obj = new $class;
@@ -220,50 +204,6 @@ class WXScripts {
     }
   }
   
-  public function migrate($argv) {
-    if(isset($argv[1]) && $argv[1]=="test" || $argv[1] == "production") {
-      define("ENV", $argv[1]);
-    	unset($argv[1]);
-    } elseif(isset($argv[1]) && $argv[1] =="directory" && isset($argv[2])) {
-      $this->app_setup();
-      $migrate = new WXMigrate(true);
-      $direction = "up";
-      if(isset($argv[3])) $direction="down";
-      $result = $migrate->version_less_migrate($argv[2], $direction, true); 
-      exit($result."\n");
-    } 
-
-    $this->app_setup();
-  	
-    $dbdir = WAX_ROOT.'app/db/migrate/';
-    if(!is_dir($dbdir)) {
-      $command = "mkdir -p $dbdir";
-      system($command);
-    }
-    $version = false;
-    if(isset($argv[1])) {
-      $version = $argv[1];
-    }
-
-    $migrate = new WXMigrate;
-    if($version == 'version') {
-      $this->add_output("Now at version ".$migrate->get_version());
-      return false;
-    }
-    if($version == 'clean') {
-      $result = $migrate->migrate_revert($dbdir);
-      $this->add_output("Database reset to version ".$result);
-      return false;
-    }
-    $result = $migrate->migrate($dbdir, $version);
-    if($result===false) {
-      $this->add_output("No Files to migrate");
-      return false;
-    }
-    $this->add_output("-------------------");
-    $this->add_output("Successfully migrated to version ".$result);
-    $this->add_output("-------------------");
-  }
   
   public function deploy($argv) {
     $deployment_settings = WXConfiguration::get('deploy');
