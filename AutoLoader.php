@@ -89,7 +89,7 @@ class AutoLoader
 	  $plugins = scandir(PLUGIN_DIR);
 	  sort($plugins);
 	  foreach($plugins as $plugin) {
-	    if(is_dir(PLUGIN_DIR.$plugin)) self::include_plugin($plugin);
+	    if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
 	  }
 	}
 	
