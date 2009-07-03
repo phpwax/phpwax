@@ -31,16 +31,17 @@ if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
  */
 function auto_loader_check_cache(){
   $cache_location = CACHE_DIR .'layout/';
+  $session_class = FRAMEWORK_DIR .'/utilities/Session.php';
   $spyc = FRAMEWORK_DIR .'/utilities/Spyc.php';
   $config_loader = FRAMEWORK_DIR .'/utilities/Config.php';
   $cache_loader = FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
   $cache_engine = FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  $session_class = FRAMEWORK_DIR .'/utilities/Session.php';
+  include_once $session_class;  
   include_once $spyc;	  
   include_once $config_loader;
   include_once $cache_loader;	  
-  include_once $cache_engine;	    
-  include_once $session_class;  
+  include_once $cache_engine;	  
+    
   if($config = Config::get('layout_cache')){
     
     if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
