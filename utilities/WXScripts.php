@@ -191,7 +191,9 @@ class WXScripts {
   public function syncdb($argv) {
     if($argv[1] && ($argv[1]=="test" || $argv[1] == "production")) define("ENV", $argv[1]);
     $this->app_setup();
-    Autoloader::recursive_register(PLUGIN_DIR, "plugin", true);
+    foreach(Autoloader::$plugin_array as $plugin) {
+      Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true); 
+    }
     Autoloader::include_dir(MODEL_DIR, true);
     foreach(get_declared_classes() as $class) {
       if(is_subclass_of($class, "WaxModel")) {
