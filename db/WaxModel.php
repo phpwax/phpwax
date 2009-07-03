@@ -40,13 +40,14 @@ class WaxModel implements Cacheable{
 	
 	
 	/** interface vars **/
+	public $cache_enabled = false;
   public $use_cache = true;
   public $cache_lifetime = 600;
   public $cache_identifier = false;
   public $cache_engine = false;
   public $cache_object = false;
   public $cache_content = false;
-  
+  public $cache_config=array();
 	
   /**
    *  constructor

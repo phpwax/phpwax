@@ -35,10 +35,12 @@ function auto_loader_check_cache(){
   $spyc = FRAMEWORK_DIR .'/utilities/Spyc.php';
   $config_loader = FRAMEWORK_DIR .'/utilities/Config.php';
   $cache_loader = FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+  $cache_interface = FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
   $cache_engine = FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
   include_once $session_class;  
   include_once $spyc;	  
   include_once $config_loader;
+  include_once $cache_interface;	    
   include_once $cache_loader;	  
   include_once $cache_engine;	  
     
@@ -101,6 +103,7 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
+    print_r(self::$registry);
    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	
