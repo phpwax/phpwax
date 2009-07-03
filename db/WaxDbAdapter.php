@@ -149,7 +149,9 @@ abstract class WaxDbAdapter {
     try { $stmt = $this->db->prepare($sql); } 
     catch(PDOException $e) {
 		  $err = $e->getMessage();
-			throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
+		  switch($e->getCode()) {
+		    default: 	throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
+		  }
       exit;
 		}
 		return $stmt;
@@ -163,7 +165,16 @@ abstract class WaxDbAdapter {
 		} catch(PDOException $e) {
 			$err = $pdo_statement->errorInfo();
 			WaxLog::log("error", "[DB] ". $err[2]);
-      if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Executing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
+			switch($e->getCode()) {
+		    case "42S02":
+		    ob_start();
+		    $sync = new WXScripts("syncdb");
+		    $sync = false; //Forces destruction and flushing of output buffer
+		    ob_end_clean();
+		    break;
+		    default: 	
+		    if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
+		  }
 		}
 		return $pdo_statement;
   }
