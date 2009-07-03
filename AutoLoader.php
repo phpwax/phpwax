@@ -76,7 +76,9 @@ class AutoLoader
 	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
+	  self::recursive_register(PLUGIN_DIR.$plugin."/resources/app/controller", "plugin");
 		$setup = PLUGIN_DIR.$plugin."/setup.php";
+		self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
 		if(is_readable($setup)) include_once($setup);
 	}
 	
