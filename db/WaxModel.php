@@ -8,7 +8,7 @@
  * 
  * Allows models to be mapped to application objects
  **/
-class WaxModel implements Cacheable{
+class WaxModel{
   
   static public $adapter = false;
   static public $db_settings;
@@ -79,11 +79,7 @@ class WaxModel implements Cacheable{
 	  }
  	}
  	
- 	public function __destruct(){
-    if($this->use_cache && $this->cache_content && $this->cache_object) $this->cache_set($this->cache_object, serialize($this->cache_content));
-  }
- 	
- 	
+ 
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
@@ -435,13 +431,7 @@ class WaxModel implements Cacheable{
    * @return WaxRecordset Object
    */
  	public function all() {
- 	  $res = false;
- 	  /** CACHE **/
-	  if($this->use_cache && $this->cache_enabled('model')){	        
-	    if($this->cached($this->cache_object, 'model') ) $res = unserialize($this->cached($this->cache_object, 'model'));
-    }    
-    if(!$res) $res = $this->cache_content = $this->db->select($this);
- 	  return new WaxRecordset($this, $res);
+ 	  return new WaxRecordset($this, $this->db->select($this));
  	}
  	
  	public function rows() {
@@ -628,81 +618,6 @@ class WaxModel implements Cacheable{
  	public function before_delete() {}
  	public function after_delete() {}   	
    	
-  /*** INTERFACE ***/
-  /**
-   * use the filters, groups, having, limit, order, offset and select cols
-   * to create a cache file name
-   * @param string $cache_loader 
-   * @return void
-   */ 
-  public function cache_identifier($cache_loader){
-    $ident = 'se-'.serialize($this->select_columns) .
-             '-fi-'.serialize($this->filters) .
-             '-gr-'.serialize($this->group_by) .
-             '-ha-'.serialize($this->having) .
-             '-or-'.serialize($this->order) .
-             '-li-'.serialize($this->limit) .
-             '-of-'.serialize($this->offset);
-
-    $ident = CACHE_DIR.get_class($this)."/" .md5($ident).".cache";
-    /***
-    WaxLog::log('error', '[IDENT - se]'.$this->select_columns);
-    WaxLog::log('error', '[IDENT - fi]'.$this->filters);
-    WaxLog::log('error', '[IDENT - gr]'.$this->group_by);    
-    WaxLog::log('error', '[IDENT - ha]'.$this->having);
-    WaxLog::log('error', '[IDENT - or]'.$this->order);
-    WaxLog::log('error', '[IDENT - li]'.$this->limit);
-    WaxLog::log('error', '[IDENT - of]'.$this->offset);    
-    WaxLog::log('error', '[IDENT]'.$ident);
-    ***/
-    return $ident;
-  }
   
-  public function cacheable($cache_loader,$type){
-    return !$cache_loader->excluded($this->cache_config);
-  }  
-  
-  public function cached($cache_loader, $type){
-    if(!$this->cacheable($cache_loader, $type)) return false;
-	  else return $cache_loader->get();
-  }
-  
-  public function cache_set($cache_loader, $value){
-    $cache_loader->set($value);
-  }
-  /**
-   * look to see if cache is enabled 
-   *
-   * Model cache can be set based on the class of the object
-   * or just the general model
-   *
-   * @param string $type 
-   * @return boolean
-   */
-  public function cache_enabled($type){
-    if($this->cache_engine) return true; 
-    $config = false;
-    //config based on model class or model
-    $check_for = array(get_class($this)."_cache", $type."_cache");
-    foreach($check_for as $check){
-      if($found = Config::get($check)) $config = $found;
-    }
-    if($config){
-      $this->cache_config = $config;
-      $this->cache_engine = $this->cache_config['engine'];
-      if(isset($this->cache_config['lifetime'])) $this->cache_lifetime = $this->cache_config['lifetime'];
-      $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.get_class($this)."/", $this->cache_lifetime);            
-      $this->cache_identifier = $this->cache_object->identifier = $this->cache_identifier($this->cache_object, $type);
-      $this->cache_object->suffix = '.cache';
-      $this->cache_object->marker = '';
-      $this->cache_enabled = true;
-      return true;
-    }else{
-      $this->cache_enabled = false;
-      return false;
-    }
-    
-    
-  }
 }
 ?>
