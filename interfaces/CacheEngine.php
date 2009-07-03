@@ -6,7 +6,7 @@
 interface CacheEngine{
   
   public function get();
-  public function set();
+  public function set($value);
   public function valid();
   public function expire();  
   

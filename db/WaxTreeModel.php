@@ -59,26 +59,33 @@ class WaxTreeModel extends WaxModel {
 		return array_values($tree);
 	}
 
+  protected function cache_object(){
+    $ident = $this->table;
+    if($this->filters) $ident .= ":".md5(serialize($this->filters));
+    $ident .= ".tree.cache";
+		$cache = new WaxCacheLoader("File", CACHE_DIR."/tree/");
+		$cache->identifier = CACHE_DIR."/tree/".$ident;
+		return $cache;
+  }
 	protected function cached_tree_get() {
-		$cache = new WaxCache($this->table."_tree_cache" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
-    if($cache->valid()) return $cache->get();
-		else return false;
+		$cache = $this->cache_object();
+		return $cache->get();
 	}
 
 	protected function cached_tree_set($value) {
-		$cache = new WaxCache($this->table."_tree_cache" . ($this->filters) ? (":".md5(serialize($this->filters))) : '');
+    $cache = $this->cache_object();
 		$cache->set($value);
 	}
 	
 	//clear the cache of the tree
 	public function delete() {	
-		$cache = new WaxCache($this->table."_tree_cache");
+		$cache = $this->cache_object();
 		$cache->expire();
 		return parent::delete();
 	}
 	
 	public function save(){
-		$cache = new WaxCache($this->table."_tree_cache");
+		$cache = $this->cache_object();
 		$cache->expire();
 		return parent::save();		
 	}
