@@ -15,7 +15,6 @@ class WaxCacheLoader {
 	public $dir = false;
   public $identifier = false;
   
-  
   public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){
     if($engine) $this->engine_type = $engine;
     if($dir) $this->dir = $dir;
@@ -71,6 +70,8 @@ class WaxCacheLoader {
     $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
     return $engine->expire();
   }
+  
+  
   
   public function layout_cache_loader($config){
     $this->identifier = $this->identifier();

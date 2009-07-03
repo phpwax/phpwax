@@ -24,7 +24,7 @@ interface Cacheable{
    * @param string $model 
    * @return string
    */
-  public function cache_identifier($model);
+  public function cache_identifier($cache_loader);
   /**
    * returns whether or not the model passed in is 
    * allowed to be read from the cache
