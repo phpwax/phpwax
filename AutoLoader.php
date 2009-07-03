@@ -58,7 +58,6 @@ function auto_loader_check_cache(){
 
 
 function __autoload($class_name) {
-  auto_loader_check_cache();
   AutoLoader::include_from_registry($class_name);
 }
 
@@ -219,6 +218,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
+    auto_loader_check_cache();
 	  //if(!defined('ENV')) define('ENV', $environment);	
 		$app=new WXApplication($full_app);
 	}
