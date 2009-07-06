@@ -36,16 +36,8 @@ class Session {
   }
 
     static function is_valid_host() {
-        if(($_SERVER['REMOTE_ADDR'] == self::$ip || self::is_aol_host()) &&
+        if(($_SERVER['REMOTE_ADDR'] == self::$ip) &&
            $_SERVER['HTTP_USER_AGENT'] == self::$user_agent) {
-            return true;
-        }
-        return false;
-    }
-
-    static function is_aol_host() {
-        if(ereg("proxy\.aol\.com$", gethostbyaddr($_SERVER['REMOTE_ADDR'])) ||
-           stristr($_SERVER['HTTP_USER_AGENT'], "AOL")) {
             return true;
         }
         return false;
@@ -53,9 +45,6 @@ class Session {
 
     static function get_hash() {
         $key = session_id().$_SERVER['HTTP_USER_AGENT'];
-        if(!self::is_aol_host()) {
-            $key .= $_SERVER['REMOTE_ADDR'];
-        }
         return md5($key);
     }
     

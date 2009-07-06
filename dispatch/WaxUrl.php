@@ -95,7 +95,7 @@ class WaxUrl {
           break;
         }
 
-        $mappings = split("/", $map[0]);
+        $mappings = explode("/", $map[0]);
         array_shift($matches);
         while(count($mappings)) {
           if($mappings[0]==$matches[0]) { // exact text mappings
@@ -143,8 +143,8 @@ class WaxUrl {
     *  @return boolean      If file exists true
     */
 	public function route_controller($input = false) {
-	  if(!$input) $route = split("/", self::$params["route"]);
-	  else $route = split("/", $input);
+	  if(!$input) $route = explode("/", self::$params["route"]);
+	  else $route = explode("/", $input);
 	  while(count($route) >0) {
 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
 	    if(!$controller) array_pop($route);

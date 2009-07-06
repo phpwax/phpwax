@@ -151,7 +151,7 @@ class WaxModel {
  	public function validate() {
  	  foreach($this->columns as $column=>$setup) {
  	    $field = new $setup[0]($column, $this, $setup[1]);
- 	    $field->validate();
+ 	    $field->is_valid();
  	    if($field->errors) {
  	      $this->errors[$column] = $field->errors;
       }

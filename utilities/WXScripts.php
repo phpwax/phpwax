@@ -60,11 +60,6 @@ class WXScripts {
     $gen = new WXGenerator("migration", array_slice($argv, 1));
   }
   
-  public function plugin($argv) {    
-    array_splice($argv,1,0,"cold_install");
-    $this->plugins($argv);
-  }
-  
   public function data($argv) {
     if(!$argv[1]) $this->fatal_error("[ERROR] You must give a data command to run.");
     $this->app_setup();
@@ -81,78 +76,7 @@ class WXScripts {
     }
     
   }
-  
-  public function plugins($argv) {
-    if(!$argv[1]) $this->fatal_error("[ERROR] You must give a plugin command to run.");
-    if(!$argv[2]) $this->fatal_error("[ERROR] You must give a plugin package name or url.");
-    switch($argv[1]) {
-      case "install":
-        $this->plugin_install($argv[2], $argv[3], $argv[4]);
-        break;
-      case "migrate":
-        $this->plugin_migrate($argv[2]);
-        break;
-      case "setup":
-        $this->plugin_post_setup($argv[2]);
-        break;
-      case "cold_install":
-        $this->plugin_install($argv[2]);
-        $this->plugin_migrate($argv[2]);
-        $this->plugin_post_setup($argv[2]);
-        break;
-      case "syncdb":
-        $this->plugin_syncdb($argv[2], $argv[3]);
-        break;
-    }
-  }
-  
-  protected function plugin_install($name, $source = false, $version = false) {
-    $output_dir = PLUGIN_DIR.$name;
-    if(!$source) {
-      echo("Not specifying a release will install the development version.... These releases may not be stable")."\n";
-      echo("Try using script/plugin install $name release <version>")."\n";
-      if(!$this->get_response("Continue installing development version?", "y")) exit;
-      $source = "svn://php-wax.com/svn/plugins/".$name."/trunk/";
-    }
-    elseif(($source=="tag" || $source=="release") && $version) {
-      $source = "svn://php-wax.com/svn/plugins/".$name."/tags/".$version."/";
-    }
-    if($this->get_response("This will overwrite files inside the plugin/{$name} directory. Do you want to continue?", "y")) {
-      File::recursively_delete(PLUGIN_DIR.$name);
-      $command = "svn export -q {$source} {$output_dir} --force";
-      system($command);
-      $this->add_output("Plugin installed in /plugins/{$name}");
-    }
-  }
-  
-  protected function plugin_post_setup($name) {
-    $this->app_setup();
-    if(is_readable(PLUGIN_DIR.$name."/installer") && 
-      $this->get_response("This plugin has an additional installer, would you like to run it?", "y")) {
-      include(PLUGIN_DIR.$name."/installer");
-      $this->add_output("Plugin installer ran.");
-    }      
-  }
-  
-  protected function plugin_migrate($dir) {
-    if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
-    if(!$this->get_response("About to run database setup is this ok?", "y")) return false;
-    $this->app_setup();
-    $migrate_dir = PLUGIN_DIR.$dir."/migrate/";
-    $migrate = new WXMigrate;
-    $migrate->version_less_migrate($migrate_dir);
-    $this->add_output("Plugin database setup completed");
-  }
-  
-  protected function plugin_syncdb($dir, $env = false) {
-    if($env && !defined("ENV")) define("ENV", $env);
-    if(!is_dir(PLUGIN_DIR.$dir)) $this->fatal_error("[ERROR] That plugin is not installed.");
-    $this->app_setup();
-    $syncdir = PLUGIN_DIR.$dir."/lib/model";
-    $this->add_output("Running sync from ".$syncdir);
-    $this->syncdb($syncdir);
-    $this->add_output("Plugin database has been synchronised");
-  }
+
   
   public function run_tests($argv) {
     error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);

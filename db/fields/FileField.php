@@ -35,7 +35,6 @@ class FileField extends WaxModelField {
 	}
 
   public function validate() {
- 	  $this->valid_required();
 		$this->valid_extension();
   }
 	public function valid_extension(){

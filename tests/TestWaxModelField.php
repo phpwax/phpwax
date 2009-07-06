@@ -73,7 +73,6 @@ class TestWaxModelField extends WXTestCase {
       $res->define("username", "CharField", array("minlength"=>"6"));
       $res->set_attributes($this->get_fixture("user1"));
       $this->assertFalse($res->validate());
-      $this->assertFalse($res->save());
     }
     
     public function test_validate_unique() {

@@ -77,6 +77,10 @@ class WaxForm implements Iterator {
       foreach($error as $err) $output .= "<li class='error_message'>$err</li>";
     return $output ."</ul>";
   }
+  
+  public function add_error($error) {
+    $this->handler->errors[]=array($error);
+  }
    
    public function __set($name, $value) {
      if(class_exists($value, false)) $this->handler->elements[$name] = new $value();
