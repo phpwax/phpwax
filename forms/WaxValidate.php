@@ -82,11 +82,11 @@ class WaxValidate {
   
   protected function valid_length() {
     $value = $this->object->value();   
-    if($this->minlength && strlen($value) < $this->minlength) {
-      $this->add_error($this->label, sprintf($this->messages["short"], $this->label, $this->minlength));
+    if($this->object->minlength && strlen($value) < $this->object->minlength) {
+      $this->add_error($this->label, sprintf($this->messages["short"], $this->label, $this->object->minlength));
     }
-    if($this->maxlength && strlen($value)> $this->maxlength) {
-      $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->maxlength));
+    if($this->object->maxlength && strlen($value)> $this->object->maxlength) {
+      $this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->object->maxlength));
     }
   }
   
