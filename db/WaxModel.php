@@ -56,7 +56,7 @@ class WaxModel{
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 		if(self::$adapter && !$this->db = new self::$adapter(self::$db_settings)) {
+ 		if(!self::$adapter || !$this->db = new self::$adapter(self::$db_settings)) {
     	throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
     }
  		$class_name =  get_class($this) ;
