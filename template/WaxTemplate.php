@@ -4,8 +4,17 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WaxTemplate
-{
+class WaxTemplate implements Cacheable{
+  
+  /** interface vars **/
+  public $use_cache = true;
+  public $cache_lifetime = 3600;
+  public $cache_identifier = false;
+  public $cache_engine = false;
+  public $cache_object = false;
+  public $cache_content = false;  
+  
+  
 	public static $response_filters = array(
 	    'views'=>  array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
 		  'layout'=> array('default'=>array('model'=>'self', 'method'=>'render_layout_response_filter')),
@@ -20,6 +29,10 @@ class WaxTemplate
       $this->{$var}=$val;
     }
 	}
+	
+	public function __destruct(){
+    if($this->use_cache && $this->cache_content && $this->cache_object) $this->cache_set($this->cache_object, $this->cache_content);
+  }
 
 	public function add_path($path) {
 	  $this->template_paths[]=$path;
@@ -88,8 +101,18 @@ class WaxTemplate
 	    case "js": $type="text/javascript";break;
 	    default: $type="text/".$suffix; break;
 	  }
-	  if(!headers_sent())
-	    header("Content-Type: $type; charset=utf-8");
+	  if(!headers_sent()) header("Content-Type: $type; charset=utf-8");
+	  
+	  /** CACHE **/
+	  if($this->use_cache && $this->cache_enabled($parse_as)){
+	    //change the suffix if not html - so .xml files etc cache seperately
+	    if($suffix != "html") $this->cache_object->suffix = $suffix.'.cache';
+	    else $this->cache_object->marker = '<!-- from cache -->';
+	  
+	    if($this->cached($this->cache_object, $parse_as) ) return $this->cached($this->cache_object, $parse_as);	    
+    }
+    
+	  
 	  foreach($this->template_paths as $path) {
 	    if(is_readable($path.".".$suffix)) {
 				$view_file = $path.".".$suffix;
@@ -97,18 +120,50 @@ class WaxTemplate
 			}
 	  }
 		extract((array)$this);
-		if(!is_readable($view_file)) {
-			throw new WXException("Unable to find ".$this->template_paths[0].".".$suffix, "Missing Template File");
-		}
-		if(!include($view_file) ) {
-			throw new WXUserException("PHP parse error in $view_file");
-		}
-		return $this->response_filter($parse_as);
+		if(!is_readable($view_file)) throw new WXException("Unable to find ".$this->template_paths[0].".".$suffix, "Missing Template File");
+		
+		if(!include($view_file)) throw new WXUserException("PHP parse error in $view_file");
+		
+		$this->cache_content =  $this->response_filter($parse_as);
+		return $this->cache_content;
 	}
 	
 	public function add_values($vals_array=array()) {
 	  foreach($vals_array as $var=>$val) $this->{$var}=$val;
 	}
 
+
+
+  /** INTERFACE METHODS **/
+  public function cache_identifier($model){    
+    return $model->identifier();
+  }
+  
+  public function cacheable($model, $type){    
+	  return !$model->excluded($this->cache_config);
+  }
+	public function cached($model, $type){
+	  if(!$this->cacheable($model, $type)) return false;
+	  else return $model->get();
+	}
+  public function cache_set($model, $value){
+    $model->set($value);
+  }
+  public function cache_enabled($type){
+    $check = $type."_cache";
+    if($this->cache_engine) return true; 
+    elseif(is_array(Config::get($check)) && count(Config::get($check))){
+      $this->cache_config = Config::get($check);
+      $this->cache_engine = $this->cache_config['engine'];
+      if(isset($this->cache_config['lifetime'])) $this->cache_lifetime = $this->cache_config['lifetime'];
+      $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.$type."/", $this->cache_lifetime);      
+      $this->cache_identifier = $this->cache_identifier($this->cache_object);
+      $this->cache_enabled = true;
+      return true;
+    }else{
+      $this->cache_enabled = false;
+      return false;
+    }
+  }
 
 }

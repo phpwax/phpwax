@@ -25,6 +25,38 @@ if(!defined("STYLE_DIR")) define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
 if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
 
+/**
+ * check cache
+ *
+ */
+function auto_loader_check_cache(){
+  $cache_location = CACHE_DIR .'layout/';
+  $session_class = FRAMEWORK_DIR .'/utilities/Session.php';
+  $spyc = FRAMEWORK_DIR .'/utilities/Spyc.php';
+  $config_loader = FRAMEWORK_DIR .'/utilities/Config.php';
+  $cache_loader = FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+  $cache_interface = FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
+  $cache_engine = FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+  include_once $session_class;  
+  include_once $spyc;	  
+  include_once $config_loader;
+  include_once $cache_interface;	    
+  include_once $cache_loader;	  
+  include_once $cache_engine;	  
+    
+  if($config = Config::get('layout_cache')){
+    
+    if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
+    else $cache = new WaxCacheLoader('File', $cache_location);
+    if($content = $cache->layout_cache_loader($config)){
+      echo $content;
+      exit;
+    }
+  }
+  return false;
+}	
+
+
 function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
@@ -71,6 +103,7 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
+    print_r(self::$registry);
    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	
@@ -88,12 +121,14 @@ class AutoLoader
 	
 	static public function autoregister_plugins() {
 	  if(defined('AUTOREGISTER_PLUGINS')) return false;
-	  $plugins = scandir(PLUGIN_DIR);
-	  sort($plugins);
-	  foreach($plugins as $plugin) {
-	    if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
-	  }
-	}
+	  if(is_readable(PLUGIN_DIR)){
+	    $plugins = scandir(PLUGIN_DIR);
+	    sort($plugins);
+	    foreach($plugins as $plugin) {
+	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
+	    }
+      }
+    }
 	
 	static public function detect_assets() {
 	  self::register("framework", "File", FRAMEWORK_DIR."/utilities/File.php");
@@ -162,9 +197,8 @@ class AutoLoader
 	    }
 	  }
 	}
-	
 
-	static public function initialise() {	  
+	static public function initialise() {	
 		self::detect_assets();
 	  self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
@@ -184,6 +218,7 @@ class AutoLoader
 	 *	@access public
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
+    auto_loader_check_cache();
 	  //if(!defined('ENV')) define('ENV', $environment);	
 		$app=new WXApplication($full_app);
 	}

@@ -88,8 +88,8 @@ class WaxModelField {
     $validator = new $this->validator($this, $this->field);
     foreach($this->validations as $valid) $validator->add_validation($valid);
     $validator->validate();
-    if($validator->is_valid()) return true;
-    else $this->errors = $validator->errors;
+    if($validator->is_valid() && (!$this->errors)) return true;
+    else $this->errors = array_merge($this->errors,$validator->errors);
     return false;
   }
   

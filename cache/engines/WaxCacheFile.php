@@ -7,58 +7,67 @@
  *	Engine for caching of data / objects to file.
  *  @package PHP-Wax
  */
-class WaxCacheFile {
+class WaxCacheFile implements CacheEngine{
   
-  public $label = false;
-  public $lifetime = false;
-  public $cache_dir = false;
+  public $identifier = false;
+  public $lifetime = false;  
+  public $dir = false;
+  public $marker = '';
+  public $suffix = 'cache';
   
-  public function __construct($label, $lifetime, $store = false) {
-    if(!$store) $this->cache_dir = CACHE_DIR;
-    $this->label = $label;
-    $this->lifetime = $lifetime;
-		if(!is_readable(CACHE_DIR)) chmod(CACHE_DIR, 0777);
-  }
-		
+  public function __construct($dir=false, $lifetime=false, $suffix='cache', $identifier=false) {
+    if($lifetime) $this->lifetime = $lifetime;
+    
+    if($dir) $this->dir = $dir;
+    else $this->dir = CACHE_DIR;
+    
+    if($identifier) $this->identifier = $identifier;
+    else $this->indentifier = $this->make_identifier($_SERVER['HTTP_HOST']);
+    $this->suffix = $suffix;
+    $this->dir = $dir;
+  }	
 	
 	public function get() {
-	  WaxLog::log("info", "[CACHE] Getting content from cache file for ".$this->label);
-	  if(is_readable($this->file())) return file_get_contents($this->file());
-		return false;
+	  if($content = $this->valid()) return $content . $this->marker;
+	  else return false;
 	}
 	
 	public function set($value) {
-	  WaxLog::log("info", "[CACHE] Writing cache file for ".$this->label);
-	  if(is_writable($this->cache_dir)) return file_put_contents($this->file(), $value);
-	  else {
-	    WaxLog::log("error", "[CACHE] Cache files could not be written. Check permissions on '".$this->cache_dir."'");
-	    return false;
-	  }
+	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
+	  if(!is_readable($this->identifier)) file_put_contents($this->identifier, $value); 
 	}
 	
-	public function valid($return = false) {
-	  if(!is_readable($this->file()) ) return false;
-    if($return) $ret = $this->get();
-	  $stats = stat($this->file());
-	  if(time() > $stats["mtime"] + $this->lifetime) {
+	public function valid() {
+	  if(!is_readable($this->identifier) ) return false;
+	  $mtime = filemtime($this->identifier);
+	  if(time() > $mtime + $this->lifetime){
 	    $this->expire();
-	    if(!$return) return false;
-	  }
-	  if($return) return $ret;
-	  else return true;
+	    return false;
+	  }else return file_get_contents($this->identifier);
 	}
 	
 	public function expire() {
-	  WaxLog::log("info", "[CACHE] Expiring cache file for ".$this->file());
-	  if(is_readable($this->file())) unlink($this->file());
+	  if(is_readable($this->identifier)) unlink($this->identifier);
 	}
 	
 	public function file() {
-	  return $this->cache_dir.Inflections::underscore(Inflections::slashcamelize($this->label)).".cache";
+	  return $this->identifier;
 	}
 	
-  
-
+	public function make_identifier($prefix=false){
+	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
+	  $str .= $this->dir.$prefix;
+	  $sess = $_SESSION[Session::get_hash()];
+		unset($sess['referrer']);
+		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
+    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
+    if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);    
+	  
+    if(count($data)) $str .= "-data-".serialize($data);
+    if(count($_GET)) $str .= "-get-".serialize($_GET);
+    if(count($_POST)) $str .= "-post-".serialize($_POST);      
+    return $str.'.'.$this->suffix;
+	}
 
 }
 

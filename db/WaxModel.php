@@ -8,7 +8,7 @@
  * 
  * Allows models to be mapped to application objects
  **/
-class WaxModel {
+class WaxModel{
   
   static public $adapter = false;
   static public $db_settings;
@@ -37,6 +37,18 @@ class WaxModel {
 	public $left_join_target = false;
 	public $left_join_table_name = false;
 	public $join_conditions = false;
+	
+	
+	/** interface vars **/
+	public $cache_enabled = false;
+  public $use_cache = true;
+  public $cache_lifetime = 600;
+  public $cache_identifier = false;
+  public $cache_engine = false;
+  public $cache_object = false;
+  public $cache_content = false;
+  public $cache_config=array();
+	
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
@@ -67,6 +79,7 @@ class WaxModel {
 	  }
  	}
  	
+ 
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
@@ -418,8 +431,7 @@ class WaxModel {
    * @return WaxRecordset Object
    */
  	public function all() {
- 	  $res = $this->db->select($this);
- 	  return new WaxRecordset($this, $res);
+ 	  return new WaxRecordset($this, $this->db->select($this));
  	}
  	
  	public function rows() {
@@ -431,6 +443,7 @@ class WaxModel {
    * @return WaxModel Object
    */
  	public function first() {
+ 	  
  	  $this->limit = "1";
  	  $row = clone $this;
  	  $res = $this->db->select($row);
@@ -595,15 +608,16 @@ class WaxModel {
    	*  
    	*/	
 
- 		public function setup() {}
-   	public function before_save() {}
-   	public function after_save() {}
-   	public function before_update() {}
-   	public function after_update() {}
-   	public function before_insert() {}
-   	public function after_insert() {}
-   	public function before_delete() {}
-   	public function after_delete() {}
+	public function setup() {}
+ 	public function before_save() {}
+ 	public function after_save() {}
+ 	public function before_update() {}
+ 	public function after_update() {}
+ 	public function before_insert() {}
+ 	public function after_insert() {}
+ 	public function before_delete() {}
+ 	public function after_delete() {}   	
+   	
   
 }
 ?>

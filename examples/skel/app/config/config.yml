@@ -45,3 +45,16 @@ production:
   #ip:       ^127.0.0*
   #redirect: 503.html
 
+#layout_cache:
+  #engine: "File"
+  #exclude_post: "yes"
+  #exclusions:
+    #contact: "/contact/i"
+    #admin: "/admin/i"
+    
+#view_cache:
+  #engine: "File"
+  #exclude_post: "yes"
+  #exclusions:
+    #contact: "/contact/i"
+    #admin: "/admin/i"

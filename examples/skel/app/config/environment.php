@@ -1,57 +1,29 @@
 <?
-/* When running sites on the PHP-WAX framework you have the option to have a single installation
- * which all applications share, or you can have a separate version of the framework files inside
- * each site folder. If you've downloaded a packaged version with a 'wax' folder in your site root,
- * then you don't need to worry about any of these options.
- *
- * You can run a server-wide install from a PEAR installation. How-tos can be found on the PHP-WAX site.
- * There are two packages currently available, phpwax and phpwax-devel.
- * The config below, sets up which version you want to use. 
+/********************************* DO NOT EDIT ***********************************************/
+/* When running sites on the PHP-WAX framework you have have a separate version of the framework 
+ * inside each site folder. If you've downloaded a packaged version with a 'wax' or 'phpwax' folder 
+ * in your site root, then you don't need to worry about any of these options.
  */
 
-/* You can change the version number to run on older versions of the framework  */
-define('WAX_VERSION', '0.8'); // This is set to your install path as created above.
-
-/* You normally wouldn't change this line, unless you want to have the PEAR package somewhere unusual */
-define('WAX_PATH', PEAR_INSTALL_DIR); 
-
-/* Uncomment this line to always run on the development code. You will need to have regularly reinstall the PEAR package
- * full instructions are available at dev.php-wax.com. Don't do this for production sites. 
- */
-//define('WAX_EDGE', 'true');
-
-
-
-/************ Don't edit this section *******************************************************/
 define('WAX_ROOT', dirname(dirname(dirname(__FILE__)))."/" );
-if(is_dir(WAX_ROOT."wax")) {
-	define('FRAMEWORK_DIR', WAX_ROOT."wax");
-} elseif(defined("WAX_EDGE")) {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/trunk/wax");
-	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/trunk/wax");
-} elseif(defined("WAX_VERSION")) {
-  ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/releases/".WAX_VERSION."/wax");
-  define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/".WAX_VERSION."/wax");
-} else {
-	ini_set('include_path', ini_get("include_path").":".WAX_PATH."/phpwax/releases/latest/wax");
-	define('FRAMEWORK_DIR', WAX_PATH."/phpwax/releases/latest/wax");
-}
+/***
+ * uncomment this line if you want an absolute path and replace the constant with the path to your
+ * you wax folder - TRAILING SLASH IS REQUIRED!!!!
+ */ 
+//define('WAX_ROOT', "/path/to/wax/folder/" );
+/**
+ * to change the relative path of wax folder then set this constant to the location you want
+ * remember this has to be relative to the wax_root set above.. NO TRAILING SLASH
+ */ 
+define('WAX_DIR', 'wax');
+if(is_dir(WAX_ROOT.WAX_DIR)) define('FRAMEWORK_DIR', WAX_ROOT.WAX_DIR);
+elseif(is_dir(WAX_ROOT."phpwax")) define('FRAMEWORK_DIR', WAX_ROOT."phpwax");
+else throw new Exception('PHP WAX folder does not exist!');
+
 ini_set('include_path', ini_get("include_path").":".WAX_ROOT);
+
+//load the framework
 require_once(FRAMEWORK_DIR."/AutoLoader.php");
-
-define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
-require_once FRAMEWORK_DIR.'/utilities/Session.php';
-
-//start session here!
-/* uncomment for cache
-if($_SERVER['REMOTE_ADDR']) Session::start();
-if($_SERVER['REMOTE_ADDR'] && WaxCacheLoader::valid()){
-	echo WaxCacheLoader::get();
-	exit;
-}
-*/
-/*********************************************************************************************/
-
 
 
 /************ Application Error Handling *******************************************************
@@ -63,7 +35,8 @@ if($_SERVER['REMOTE_ADDR'] && WaxCacheLoader::valid()){
 *  Both of these can be either actions in your application or static pages.
 *  
 *  Finally email_on_error accepts an email address and email_subject_on_error a text subject.
-*  If these are set a copy of the error trace will be emailed to the address. */
+*  If these are set a copy of the error trace will be emailed to the address. 
+*/
 
 WXRoutingException::$redirect_on_error = "/404.html"; // Page not found error
 
@@ -78,9 +51,6 @@ WXException::$redirect_on_error = "/error.html";
 
 /*********** Your Additional Application Configuration ***************************************
 *  This file is run at boot time so if you want to set any systemwide configuration values, 
-*  you can do so below this point */
-
-
-
-
+*  you can do so below this point 
+*/
 
