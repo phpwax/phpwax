@@ -7,7 +7,6 @@
  **/
 class HasManyField extends WaxModelField {
   
-  public $maxlength = "11";
   public $target_model = false;
   public $join_field = false;
   public $editable = false;
