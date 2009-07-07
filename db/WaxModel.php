@@ -56,7 +56,7 @@ class WaxModel{
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 		if(self::$adapter && !$this->db = new self::$adapter(self::$db_settings)) {
+ 		if(!self::$adapter || !$this->db = new self::$adapter(self::$db_settings)) {
     	throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
     }
  		$class_name =  get_class($this) ;
@@ -77,8 +77,7 @@ class WaxModel{
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) $this->$method;
 	  }
- 	}
- 	
+ 	} 	
  
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
@@ -305,10 +304,11 @@ class WaxModel{
 
     /**
      *  delete record from table
-     *  @param  mixed id    record id
-     *  @return boolean
+     *  @return model
      */
  	public function delete() {
+ 	  //throw an exception trying to delete a whole table.
+ 	  if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
 		foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();

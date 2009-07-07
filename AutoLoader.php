@@ -103,7 +103,6 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
-    print_r(self::$registry);
    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	

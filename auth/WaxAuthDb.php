@@ -101,10 +101,11 @@ class WaxAuthDb
     if($id = Session::get($this->session_key)) {
       $object = WXInflections::camelize($this->db_table, true);
       $result = new $object($id);
-      if($result) {
+      if($result->primval) {
         $this->user_object = $result;
         $this->user_id = $result->primval;
-      }
+        return true;
+      }else return false;
     }
   }
 
