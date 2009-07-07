@@ -305,10 +305,11 @@ class WaxModel{
 
     /**
      *  delete record from table
-     *  @param  mixed id    record id
-     *  @return boolean
+     *  @return model
      */
  	public function delete() {
+ 	  //throw an exception trying to delete a whole table.
+ 	  if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
 		foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();
