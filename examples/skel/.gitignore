@@ -6,3 +6,4 @@ public/files/
 tmp/
 !tmp/cache
 !tmp/log
+._*

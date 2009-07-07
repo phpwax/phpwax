@@ -1,6 +1,9 @@
-wax*
+wax
+wax/
+plugins/cms*
 public/files/
 .DS_Store
 tmp/
 !tmp/cache
 !tmp/log
+._*
