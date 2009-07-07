@@ -8,14 +8,10 @@
 class FloatField extends WaxModelField {
   
   public $maxlength = "4,2";
+  public $validations = array("float");
   
   public function setup() {
     
-  }
-
-  public function validate() {
-    $this->valid_float();
- 	  $this->valid_required();
   }
 
 
