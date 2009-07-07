@@ -77,8 +77,7 @@ class WaxModel{
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) $this->$method;
 	  }
- 	}
- 	
+ 	} 	
  
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
