@@ -95,7 +95,7 @@ namespace :cms do
   
   desc "Updates the CMS database"
   task :syncdb do
-    run "script/plugin syncdb production"
+    run "script/plugin cms syncdb production"
   end
   
 end
