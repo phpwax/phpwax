@@ -84,15 +84,17 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user1"));
       $this->model->create($this->get_fixture("user2"));
       $this->assertEqual($this->model->all()->count(), "2");
-      $res = $this->model->all()->delete();
-      $this->assertEqual($this->model->all()->count(), "0");
+      $this->model->filter("username","test1")->all()->delete();
+      $this->assertEqual($this->model->clear()->all()->count(), "1");
+      $this->model->clear()->query("delete from ".$this->model->table);
+      $this->assertEqual($this->model->clear()->all()->count(), "0");
     }
     
     public function test_update() {
       $res = $this->model->create($this->get_fixture("user1"));
       $res = $this->model->filter(array("username"=>"test1"))->all();
       $this->assertEqual($res->count(), "1");
-      $this->model->clear()->delete();
+      $this->model->clear()->query("delete from ".$this->model->table);
     }
     
     public function test_multiple_filters() {
@@ -100,7 +102,7 @@ class TestWaxModel extends WXTestCase {
       $this->model->create($this->get_fixture("user3"));
       $res = $this->model->filter(array("password"=>"password"))->all()->filter("username !='altered'")->all();
       $this->assertEqual($res->count(), 1);
-      $this->model->clear()->delete();
+      $this->model->clear()->query("delete from ".$this->model->table);
     }
     
     public function test_filter_security() {

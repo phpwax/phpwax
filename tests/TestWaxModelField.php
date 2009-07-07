@@ -78,7 +78,7 @@ class TestWaxModelField extends WXTestCase {
     public function test_validate_unique() {
 			$model1 = new ExampleUnique();
 			$model1->syncdb();
-			$model1->delete();
+      $model1->clear()->query("delete from ".$model1->table);
 			//check that duplicates are found and not saved
       $model1->set_attributes($this->get_fixture("user1"));
 			$model1 = $model1->save();
