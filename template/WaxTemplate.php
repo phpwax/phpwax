@@ -8,11 +8,6 @@ class WaxTemplate implements Cacheable{
   
   /** interface vars **/
   public $use_cache = true;
-  public $cache_lifetime = 3600;
-  public $cache_identifier = false;
-  public $cache_engine = false;
-  public $cache_object = false;
-  public $cache_content = false;  
   
   
 	public static $response_filters = array(
@@ -30,9 +25,7 @@ class WaxTemplate implements Cacheable{
     }
 	}
 	
-	public function __destruct(){
-    if($this->use_cache && $this->cache_content && $this->cache_object) $this->cache_set($this->cache_object, $this->cache_content);
-  }
+	
 
 	public function add_path($path) {
 	  $this->template_paths[]=$path;
@@ -104,12 +97,12 @@ class WaxTemplate implements Cacheable{
 	  if(!headers_sent()) header("Content-Type: $type; charset=utf-8");
 	  
 	  /** CACHE **/
-	  if($this->use_cache && $this->cache_enabled($parse_as)){
+	  if($cache_object = $this->cache_enabled($parse_as)){
 	    //change the suffix if not html - so .xml files etc cache seperately
-	    if($suffix != "html") $this->cache_object->suffix = $suffix.'.cache';
-	    else $this->cache_object->marker = '<!-- from cache -->';
+	    if($suffix != "html") $cache_object->suffix = $suffix.'.cache';
+	    else $cache_object->marker = '<!-- from cache -->';
 	  
-	    if($this->cached($this->cache_object, $parse_as) ) return $this->cached($this->cache_object, $parse_as);	    
+	    if($this->cached($cache_object, $parse_as) ) return $this->cached($cache_object, $parse_as);	    
     }
     
 	  
@@ -123,9 +116,10 @@ class WaxTemplate implements Cacheable{
 		if(!is_readable($view_file)) throw new WXException("Unable to find ".$this->template_paths[0].".".$suffix, "Missing Template File");
 		
 		if(!include($view_file)) throw new WXUserException("PHP parse error in $view_file");
+		$content = $this->response_filter($parse_as);
 		
-		$this->cache_content =  $this->response_filter($parse_as);
-		return $this->cache_content;
+		if($cache_object) $this->cache_set($cache_object, $content);
+		return $content;
 	}
 	
 	public function add_values($vals_array=array()) {
@@ -140,7 +134,7 @@ class WaxTemplate implements Cacheable{
   }
   
   public function cacheable($model, $type){    
-	  return !$model->excluded($this->cache_config);
+	  return !$model->excluded($model->config);
   }
 	public function cached($model, $type){
 	  if(!$this->cacheable($model, $type)) return false;
@@ -151,19 +145,15 @@ class WaxTemplate implements Cacheable{
   }
   public function cache_enabled($type){
     $check = $type."_cache";
-    if($this->cache_engine) return true; 
-    elseif(is_array(Config::get($check)) && count(Config::get($check))){
-      $this->cache_config = Config::get($check);
-      $this->cache_engine = $this->cache_config['engine'];
-      if(isset($this->cache_config['lifetime'])) $this->cache_lifetime = $this->cache_config['lifetime'];
-      $this->cache_object = new WaxCacheLoader($this->cache_engine, CACHE_DIR.$type."/", $this->cache_lifetime);      
-      $this->cache_identifier = $this->cache_identifier($this->cache_object);
-      $this->cache_enabled = true;
-      return true;
-    }else{
-      $this->cache_enabled = false;
-      return false;
-    }
+    if($this->use_cache && is_array(Config::get($check)) && count(Config::get($check))){
+      $cache_config = Config::get($check);
+      $cache_engine = $cache_config['engine'];
+      if(isset($cache_config['lifetime'])) $cache_lifetime = $this->cache_config['lifetime'];
+      $cache_object = new WaxCacheLoader($cache_engine, CACHE_DIR.$type."/", $cache_lifetime);          
+      $cache_object->config = $cache_config;
+      $cache_object->identifier = $cache_object->identifier();
+      return $cache_object;
+    }else return false;
   }
 
 }

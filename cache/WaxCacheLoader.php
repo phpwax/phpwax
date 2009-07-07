@@ -10,10 +10,12 @@
 class WaxCacheLoader {
 		
 	public $lifetime = 3600;
+	public $config = array();
 	public $engine_type = 'File';
 	public $suffix = 'cache';
 	public $dir = false;
   public $identifier = false;
+  
   
   public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){
     if($engine) $this->engine_type = $engine;
