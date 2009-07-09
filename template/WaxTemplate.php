@@ -118,7 +118,7 @@ class WaxTemplate implements Cacheable{
 		if(!include($view_file)) throw new WXUserException("PHP parse error in $view_file");
 		$content = $this->response_filter($parse_as);
 		
-		if($cache_object) $this->cache_set($cache_object, $content);
+		if($cache_object && $this->cacheable($model, $type)) $this->cache_set($cache_object, $content);
 		return $content;
 	}
 	
