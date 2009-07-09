@@ -39,20 +39,38 @@ class WaxCacheLoader {
     return $this->identifier;
 	}
 
-  public function excluded($config){
+  public function excluded($config, $match=false){
+    if(!$match) $match = $_SERVER['REQUEST_URI'];
     if($config['exclude_post'] == "yes" && count($_POST)) return true;
     if(isset($config['exclusions'])){
       $excluded = $config['exclusions'];
       $all_matches = array();
 	    if(is_array($excluded)){
 	      foreach($excluded as $name => $regex){
-	        preg_match_all($regex, $_SERVER['REQUEST_URI'], $matches);	      
+	        preg_match_all($regex, $match, $matches);	      
 	        if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
 	      }	    
 	    }else preg_match_all($excluded, $_SERVER['REQUEST_URI'], $all_matches);	    	    
 	    if(count($all_matches)) return true;
     }
     return false;
+  }
+  
+  public function included($config, $match=false){
+    if(!$match) $match = $_SERVER['REQUEST_URI'];
+    if($config['exclude_post'] == "yes" && count($_POST)) return false;
+    if(isset($config['inclusions'])){
+      $included = $config['inclusions'];
+      $all_matches = array();
+	    if(!is_array($included)) $included = array($included);
+	    foreach($included as $name => $regex){
+	      preg_match_all($regex, $match, $matches);	      
+	      if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
+	    }	   
+	   
+      if(!count($all_matches)) return false;
+    }
+    return true;
   }
   
   public function get(){

@@ -12,7 +12,7 @@ class WaxCacheFile implements CacheEngine{
   public $identifier = false;
   public $lifetime = false;  
   public $dir = false;
-  public $marker = '';
+  public $marker = '<!-- CACHED -->';
   public $suffix = 'cache';
   
   public function __construct($dir=false, $lifetime=false, $suffix='cache', $identifier=false) {
