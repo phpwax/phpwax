@@ -89,17 +89,20 @@ class WaxCacheLoader {
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
     return $engine->expire();
-  }
+  }  
   
-  
-  
+  /**
+   * this is whats ran outside of the framework
+   * @param string $config 
+   * @return void
+   */
   public function layout_cache_loader($config){
     $this->identifier = $this->identifier();
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
     $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
     
-    if(!$this->excluded && $engine->get()) return $engine->get();
+    if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
     else return false;
   }
   
