@@ -13,7 +13,7 @@ class HasManyField extends WaxModelField {
   public $is_association = true;
   public $eager_loading = false;
   public $widget = "MultipleSelectInput";
-  
+	public $join_order = false; //specify order of the returned joined objects
   
   public function setup() {
     $this->col_name = false;
@@ -29,6 +29,7 @@ class HasManyField extends WaxModelField {
   public function get($filters = false) {
     $target = new $this->target_model;
     if($filters) $target->filter($filters);
+    if($this->join_order) $target->order($this->join_order);
     if($this->eager_loading) return $this->eager_load($target);
     return $this->lazy_load($target);
   }
