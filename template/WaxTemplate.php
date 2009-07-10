@@ -134,7 +134,8 @@ class WaxTemplate implements Cacheable{
   }
   
   public function cacheable($model, $type){    
-	  return !$model->excluded($model->config);
+    if(!$model->excluded($model->config) && $model->included($model->config)) return true;
+    else return false;
   }
 	public function cached($model, $type){
 	  if(!$this->cacheable($model, $type)) return false;
@@ -145,7 +146,7 @@ class WaxTemplate implements Cacheable{
   }
   public function cache_enabled($type){
     $check = $type."_cache";
-    if($this->use_cache && is_array(Config::get($check)) && count(Config::get($check))){
+    if($this->use_cache && is_array(Config::get($check)) && count(Config::get($check))){      
       $cache_config = Config::get($check);
       $cache_engine = $cache_config['engine'];
       if(isset($cache_config['lifetime'])) $cache_lifetime = $this->cache_config['lifetime'];
