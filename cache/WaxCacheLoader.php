@@ -91,6 +91,11 @@ class WaxCacheLoader {
     return $engine->expire();
   }  
   
+  public function valid($config){
+    if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
+    else return false;
+  }
+  
   /**
    * this is whats ran outside of the framework
    * @param string $config 
@@ -101,9 +106,7 @@ class WaxCacheLoader {
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
     $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
-    
-    if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
-    else return false;
+    return $this->valid($config);    
   }
   
 }
