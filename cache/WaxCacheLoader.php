@@ -91,7 +91,10 @@ class WaxCacheLoader {
     return $engine->expire();
   }  
   
-  public function valid($config){
+  public function valid($config, $format="html"){
+    $class = 'WaxCache'.$this->engine_type;    
+    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
+    if($format == "html") $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
     if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
     else return false;
   }
@@ -101,12 +104,9 @@ class WaxCacheLoader {
    * @param string $config 
    * @return void
    */
-  public function layout_cache_loader($config){
-    $this->identifier = $this->identifier();
-    $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
-    $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
-    return $this->valid($config);    
+  public function layout_cache_loader($config, $format="html"){
+    $this->identifier = $this->identifier();    
+    return $this->valid($config, $format);    
   }
   
 }

@@ -56,7 +56,7 @@ class WaxCacheFile implements CacheEngine{
 	
 	public function make_identifier($prefix=false){
 	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
-	  $str .= $this->dir.$prefix;
+	  $str = $this->dir.$prefix;
 	  $sess = $_SESSION[Session::get_hash()];
 		unset($sess['referrer']);
 		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
