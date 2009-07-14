@@ -10,10 +10,12 @@
 class WaxCacheLoader {
 		
 	public $lifetime = 3600;
+	public $config = array();
 	public $engine_type = 'File';
 	public $suffix = 'cache';
 	public $dir = false;
   public $identifier = false;
+  
   
   public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){
     if($engine) $this->engine_type = $engine;
@@ -37,20 +39,38 @@ class WaxCacheLoader {
     return $this->identifier;
 	}
 
-  public function excluded($config){
+  public function excluded($config, $match=false){
+    if(!$match) $match = $_SERVER['REQUEST_URI'];
     if($config['exclude_post'] == "yes" && count($_POST)) return true;
     if(isset($config['exclusions'])){
       $excluded = $config['exclusions'];
       $all_matches = array();
 	    if(is_array($excluded)){
 	      foreach($excluded as $name => $regex){
-	        preg_match_all($regex, $_SERVER['REQUEST_URI'], $matches);	      
+	        preg_match_all($regex, $match, $matches);	      
 	        if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
 	      }	    
 	    }else preg_match_all($excluded, $_SERVER['REQUEST_URI'], $all_matches);	    	    
 	    if(count($all_matches)) return true;
     }
     return false;
+  }
+  
+  public function included($config, $match=false){
+    if(!$match) $match = $_SERVER['REQUEST_URI'];
+    if($config['exclude_post'] == "yes" && count($_POST)) return false;
+    if(isset($config['inclusions'])){
+      $included = $config['inclusions'];
+      $all_matches = array();
+	    if(!is_array($included)) $included = array($included);
+	    foreach($included as $name => $regex){
+	      preg_match_all($regex, $match, $matches);	      
+	      if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
+	    }	   
+	   
+      if(!count($all_matches)) return false;
+    }
+    return true;
   }
   
   public function get(){
@@ -69,17 +89,20 @@ class WaxCacheLoader {
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
     return $engine->expire();
-  }
+  }  
   
-  
-  
+  /**
+   * this is whats ran outside of the framework
+   * @param string $config 
+   * @return void
+   */
   public function layout_cache_loader($config){
     $this->identifier = $this->identifier();
     $class = 'WaxCache'.$this->engine_type;
     $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
     $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
     
-    if(!$this->excluded && $engine->get()) return $engine->get();
+    if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
     else return false;
   }
   
