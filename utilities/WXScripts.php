@@ -160,7 +160,7 @@ class WXScripts {
     if(!isset($argv[1]) || !isset($argv[2])) {
       exit("[ERROR] You must supply at least two values, a model and a method"."\n");
     }    
-    $model_name = Inflections::camelize($argv[1]);
+    $model_name = Inflections::camelize($argv[1], true);
     if(!class_exists($model_name) || !$model = new $model_name) {
       exit("[ERROR] Cannot find class name $model_name"."\n");
     }
