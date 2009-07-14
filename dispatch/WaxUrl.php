@@ -33,6 +33,7 @@ class WaxUrl {
   static public $default_controller = "page";
   static public $default_action = "index";
   static public $params = false;
+  static public $mapped=false;
 
 
   
@@ -119,6 +120,7 @@ class WaxUrl {
       break;
       }
     }
+    self::$mapped = true;
     self::force_defaults();
   }
   
@@ -128,12 +130,12 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
-    self::perform_mappings();
+    if(!self::$mapped) self::perform_mappings();
     return self::$params[$val];
   }
   
   static public function get_params() {
-    self::perform_mappings();
+    if(!self::$mapped) self::perform_mappings();
     return self::$params;
   }
   
