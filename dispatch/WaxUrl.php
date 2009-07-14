@@ -130,12 +130,12 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
-    if(!self::$mapped) self::perform_mappings();
+    self::perform_mappings();
     return self::$params[$val];
   }
   
   static public function get_params() {
-    if(!self::$mapped) self::perform_mappings();
+    self::perform_mappings();
     return self::$params;
   }
   
