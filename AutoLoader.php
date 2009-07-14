@@ -30,29 +30,35 @@ if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
  *
  */
 function auto_loader_check_cache(){
+  
   $cache_location = CACHE_DIR .'layout/';
-  $session_class = FRAMEWORK_DIR .'/utilities/Session.php';
-  $spyc = FRAMEWORK_DIR .'/utilities/Spyc.php';
-  $config_loader = FRAMEWORK_DIR .'/utilities/Config.php';
-  $cache_loader = FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-  $cache_interface = FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  $cache_engine = FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  include_once $session_class;  
-  include_once $spyc;	  
-  include_once $config_loader;
-  include_once $cache_interface;	    
-  include_once $cache_loader;	  
-  include_once $cache_engine;	  
-    
-  if($config = Config::get('layout_cache')){
-    
+  $image_cache_location = CACHE_DIR.'images/';
+  include_once FRAMEWORK_DIR .'/utilities/Session.php';
+  include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
+  include_once FRAMEWORK_DIR .'/utilities/Config.php';
+  include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+  include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
+  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
+  include_once FRAMEWORK_DIR .'/utilities/File.php';  
+ 
+  
+  /** CHECK LAYOUT CACHE **/
+  if($config = Config::get('layout_cache')){    
     if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
     else $cache = new WaxCacheLoader('File', $cache_location);
     if($content = $cache->layout_cache_loader($config)){
       echo $content;
       exit;
     }
-  }
+  }  
+  /** ALSO CHECK FOR IMAGES **/
+  if($img_config = Config::get('image_cache') && substr_count($_SERVER['REQUEST_URI'], 'show_image')){
+    if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader('Image', $image_cache_location, $img_config['lifetime']);
+    else $cache = new WaxCacheLoader('Image', $image_cache_location);
+    if($cache->valid($img_config)) File::display_image($cache->identifier);
+  }  
+  
   return false;
 }	
 
