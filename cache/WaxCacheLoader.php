@@ -19,7 +19,6 @@ class WaxCacheLoader {
   
   
   public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){
-	  $this->init();
     if($engine) $this->engine_type = $engine;
     if($dir) $this->dir = $dir;
     else $this->dir = CACHE_DIR;
@@ -100,11 +99,6 @@ class WaxCacheLoader {
     if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
     else return false;
   }
-  
-  public function init() {
-	  if(Config::get("cache") == "off") $this->enabled=false;
-	  if($store = Config::get("cache_store")) $this->engine_type = ucfirst($store);
-	}
   
   /**
    * this is whats ran outside of the framework
