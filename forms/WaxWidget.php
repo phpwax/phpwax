@@ -25,8 +25,10 @@ class WaxWidget{
   public $prefix = false;
   
   public function __construct($name, $data=false) {
-    if($data instanceof WaxModelField) $this->bound_data = $data;
-    else {
+    if($data instanceof WaxModelField){
+      $this->bound_data = $data;
+      if($this->show_label) $this->bound_data->label=Inflections::humanize($this->bound_data->field);
+    }else {
       $this->defaults["name"]=$name;
       $this->defaults["id"]=$name;
       if($this->show_label) $this->defaults["label"]=Inflections::humanize($name);
