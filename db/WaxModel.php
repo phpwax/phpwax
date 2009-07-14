@@ -464,8 +464,7 @@ class WaxModel{
  	  //move association fields to the end of the array
  	  foreach((array)$array as $k=>$v) {
  	    if($this->columns[$k]){
-   	    $field = $this->get_col($k);
-   	    if($field->is_association){
+   	    if(in_array($this->columns[$k][0],array("ForeignKey","HasManyField","ManyToManyField"))){
    	      $swap = $array[$k];
    	      unset($array[$k]);
    	      $array[$k] = $swap;
