@@ -15,17 +15,14 @@ class WaxCacheFile implements CacheEngine{
   public $marker = '';
   public $suffix = 'cache';
   
-  public function __construct($dir=false, $lifetime=false, $suffix='cache', $identifier=false) {
+  public function __construct($dir=false, $lifetime=3600, $suffix='cache', $identifier=false) {
     if($lifetime) $this->lifetime = $lifetime;
-    
     if($dir) $this->dir = $dir;
     else $this->dir = CACHE_DIR;
-    
     if($identifier) $this->identifier = $identifier;
     else $this->indentifier = $this->make_identifier($_SERVER['HTTP_HOST']);
-    $this->suffix = $suffix;
-    $this->dir = $dir;
-  }	
+    if($suffix) $this->suffix = $suffix;
+  }
 	
 	public function get() {
 	  if($content = $this->valid()) return $content . $this->marker;

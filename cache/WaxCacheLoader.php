@@ -15,6 +15,7 @@ class WaxCacheLoader {
 	public $suffix = 'cache';
 	public $dir = false;
   public $identifier = false;
+  public $enabled= true;
   
   
   public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){

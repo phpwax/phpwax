@@ -18,8 +18,9 @@ class WaxCache {
 	static public $lifetime = 3600;
 	
 	
-	public function __construct($label) {
+	public function __construct($label, $options = array()) {
 	  $this->init();
+	  foreach($options as $k=>$option) $this->$k=$option; 
 	  $this->label = $label;
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, self::$lifetime);
@@ -44,7 +45,7 @@ class WaxCache {
 	
 	public function init() {
 	  if(Config::get("cache") == "off") $this->enabled=false;
-	  if($store = Config::get("cache_store")) $this->store=$store;
+	  if($engine = Config::get("cache_engine")) $this->store=ucfirst($engine);
 	}
 	
   
