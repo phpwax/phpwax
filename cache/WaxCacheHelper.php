@@ -22,7 +22,8 @@ class WaxCacheHelper extends WXHelpers {
     global $cache_reading;
     $cache = new WaxCacheFile();
     $cache->identifier = $cache->dir.$this->make_id($label);
-    ob_start();    
+    ob_start();  
+    if(Config::get("cache") == "off") return true;  
     if($cache->get()) {
       $cache_reading = true;
       return false;
@@ -35,17 +36,18 @@ class WaxCacheHelper extends WXHelpers {
     global $cache;
     global $cache_reading;
     if($cache_reading) {
-      $cache_reading = false;
       ob_end_clean();
       echo $cache->get();
       return true;
+    } elseif(Config::get("cache") != "off") {
+      $content = ob_get_contents();
+      $cache->set($content);
     }
-    $content = ob_get_contents();
-    $cache->set($content);
     ob_end_flush();
   }
   
   public function cache_valid($label) {
+    if(Config::get("cache") == "off") return false;
     $cache = new WaxCacheFile();
     $cache->identifier = $cache->dir.$this->make_id($label);
     return $cache->get();  
