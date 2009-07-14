@@ -70,6 +70,14 @@ function throw_wxerror($code, $error) {
 }
 
 
+class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
+  
+  public function hasChildren() {
+    if(substr($this->getFilename(),0,1)==".") return false;
+    else return parent::hasChildren();
+  }
+}
+
 /**
  *	A simple static class to Preload php files and commence the application.
  *  It manages a registry of PHP files and includes them according to hierarchy.
@@ -150,15 +158,15 @@ class AutoLoader
 	}
 	
 	static public function recursive_register($directory, $type, $force = false) {
-	  if(!is_dir($directory)) { return false; }
+	  if(!is_dir($directory)||substr($directory,0,1)==".") { return false; }
 	  $dir = new RecursiveIteratorIterator(
-		           new RecursiveDirectoryIterator($directory), true);
+		            $dirit = new WaxRecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
-		  if(substr($file->getFilename(),0,1) != "." && strrchr($file->getFilename(), ".")==".php") {
+		  if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==".php") {
 		    if($force){
 		      require_once($file->getPathName());
 	      }else{
-  		    $classname = basename($file->getFilename(), ".php");
+  		    $classname = basename($fn, ".php");
   			  self::register($type, $classname, $file->getPathName());
 		    }
 			}	
