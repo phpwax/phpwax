@@ -11,19 +11,18 @@ class WaxCache {
 		
 	public $store = "File";
 	public $engine = false;
-	public $label = false;
-	public $writing = false;
 	public $enabled = true;
+	public static $lifetime = 3600;
 	
-	static public $lifetime = 3600;
 	
 	
 	public function __construct($label, $options = array()) {
 	  $this->init();
 	  foreach($options as $k=>$option) $this->$k=$option; 
 	  $this->label = $label;
+	  if($this->store == "File") $this->store="Filesystem";
 	  $class = "WaxCache".$this->store;
-	  $this->engine = new $class($label, self::$lifetime);
+	  $this->engine = new $class($label, $options);
 	}
 	
 	public function get() {

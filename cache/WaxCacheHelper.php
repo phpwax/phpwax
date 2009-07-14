@@ -14,16 +14,14 @@ class WaxCacheHelper extends WXHelpers {
 
   
   protected function make_id($label) {
-    return "helper_".str_replace("/","_",$label);
+    return "helper/".str_replace("/","_",$label);
   }
 
   public function cache_start($label) {
     global $cache;
     global $cache_reading;
-    $cache = new WaxCacheFile();
-    $cache->identifier = $cache->dir.$this->make_id($label);
+    $cache = new WaxCache($this->make_id($label));
     ob_start();  
-    if(Config::get("cache") == "off") return true;  
     if($cache->get()) {
       $cache_reading = true;
       return false;
@@ -48,14 +46,12 @@ class WaxCacheHelper extends WXHelpers {
   
   public function cache_valid($label) {
     if(Config::get("cache") == "off") return false;
-    $cache = new WaxCacheFile();
-    $cache->identifier = $cache->dir.$this->make_id($label);
+    $cache = new WaxCache($this->make_id($label));
     return $cache->get();  
   }
 
   public function cache_get($label) {
-    $cache = new WaxCacheFile();
-    $cache->identifier = $cache->dir.$this->make_id($label);
+    $cache = new WaxCache($this->make_id($label));
     return $cache->get();  
   }
   
