@@ -7,6 +7,7 @@
  * 
  **/
 class WaxTreeModel extends WaxModel {
+  static public $all_rows;
   public $parent_column;
   public $children_column;
   public $root_path = false;
@@ -109,34 +110,31 @@ class WaxTreeModel extends WaxModel {
     $root = clone $this;
     $root_return = $root->clear()->filter("(".join(" OR ", $filter).")")->order('id')->all();
     
-    if($root_return){
-      WaxModel::set_cache(get_class($root), "parent", "rootnodes", $root_return);
-      return $root_return;
-    }else return false;
+    if($root_return) return $root_return;
+    else return false;
   }
 
   /**
    * this makes an array based on the path from this object back up to its root
    * @return array $paths
    */
-  public function path_to_root() {
+  public function path_to_root(){
     if($this->root_path) return $this->root_path;
-		$roots = $this->roots();
-    //get the possible root id's
-    foreach($roots->rowset as $root){
-			$rootids[] = $root->id;
+    $model = clone $this;
+    if(!self::$all_rows) self::$all_rows = $model->rows();
+		foreach( self::$all_rows as $item ){
+			$lookup[$item['id']] = $item;
 		}
-    
-    $current = clone $this;
-    if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
-      while(!in_array($current->primval, $rootids)){
-        $this->root_path[] = $current;
-        $current = $current->{$current->parent_column}; //move up a node
-      }
-      $this->root_path[] = $current; //loop stops on the root node, so add it into the array
-      return $this->root_path;
-    }
-
+		$current_id = $this->primval();
+		while($lookup[$current_id]){
+		  $path_to_root[] = $lookup[$current_id];
+		  $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
+		}
+		return $this->root_path = new WaxRecordSet(clone $this, $path_to_root);
+  }
+  
+  public function path_from_root(){
+    return new WaxRecordSet(clone $this, array_reverse($this->path_to_root()->rowset));
   }
   /**
    * returns a numeric representation of this objects depth in the tree
@@ -148,8 +146,6 @@ class WaxTreeModel extends WaxModel {
     $this->level = count($this->root_path) - 1;
     return $this->level;
   }
-
-  //depreciated functions below this line
 
   public function cache_whole_tree() {
     $class = get_class($this);
