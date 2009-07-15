@@ -18,7 +18,7 @@ class TestPaginatedRecordset extends WXTestCase {
     }
     
     public function tearDown() {
-     $this->model->db->drop_table($this->model->table);
+     WaxModel::$db->drop_table($this->model->table);
     }
     
     public function gen_fixtures($field, $value, $number) {

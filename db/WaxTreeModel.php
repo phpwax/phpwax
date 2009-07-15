@@ -120,7 +120,7 @@ class WaxTreeModel extends WaxModel {
   public function path_to_root(){
     if($this->root_path) return $this->root_path;
     $model = clone $this;
-    if(!self::$all_rows) self::$all_rows = $model->rows();
+    if(!self::$all_rows) self::$all_rows = $model->clear()->rows();
 		foreach( self::$all_rows as $item ){
 			$lookup[$item['id']] = $item;
 		}
@@ -144,6 +144,14 @@ class WaxTreeModel extends WaxModel {
     if(!$this->root_path) $this->path_to_root();
     $this->level = count($this->root_path) - 1;
     return $this->level;
+  }
+  
+  public function clear(){
+    parent::clear();
+    $this->root_path = false;
+    $this->level = false;
+    $this->tree_array = false;
+    return $this;
   }
 
   public function cache_whole_tree() {

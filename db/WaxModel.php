@@ -11,8 +11,8 @@
 class WaxModel{
   
   static public $adapter = false;
-  static public $db_settings;
-  public $db = false;
+  static public $db_settings = false;
+  static public $db = false;
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
@@ -56,9 +56,13 @@ class WaxModel{
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 		if(!self::$adapter || !$this->db = new self::$adapter(self::$db_settings)) {
-    	throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
-    }
+ 	  try {
+ 	    if(!self::$db && self::$adapter) self::$db = new self::$adapter(self::$db_settings);
+ 	  } catch (Exception $e) {
+ 	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
+ 	  }
+ 	  
+    	
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
@@ -127,7 +131,7 @@ class WaxModel{
  	 */
  	
  	public function search($text, $columns = array()) {
- 	  $res = $this->db->search($this, $text, $columns);
+ 	  $res = self::$db->search($this, $text, $columns);
     return $res;
  	}
  	
@@ -313,7 +317,7 @@ class WaxModel{
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
 		foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();
- 	  $res = $this->db->delete($this);
+ 	  $res = self::$db->delete($this);
     $this->after_delete();
     return $res;
   }
@@ -324,7 +328,7 @@ class WaxModel{
 	}
 	
 	public function random($limit) {
-	  $this->order($this->db->random());
+	  $this->order(self::$db->random());
 	  $this->limit($limit);
 	  return $this;
 	}
@@ -393,14 +397,14 @@ class WaxModel{
 	
   public function update( $id_list = array() ) {
     $this->before_update();
-    $res = $this->db->update($this);
+    $res = self::$db->update($this);
     $res->after_update();
     return $res;
   }
 
   public function insert() {
     $this->before_insert();
-    $res = $this->db->insert($this);
+    $res = self::$db->insert($this);
     $this->row = $res->row;
     $this->after_insert();
     return $this;
@@ -409,12 +413,12 @@ class WaxModel{
   public function syncdb() {
     if(get_class($this) == "WaxModel") return;
     if($this->disallow_sync) return;
-    $res = $this->db->syncdb($this);
+    $res = self::$db->syncdb($this);
     return $res;
   }
   
   public function query($query) {
-    return $this->db->query($query);
+    return self::$db->query($query);
   }
   
   /**
@@ -432,11 +436,11 @@ class WaxModel{
    * @return WaxRecordset Object
    */
  	public function all() {
- 	  return new WaxRecordset($this, $this->db->select($this));
+ 	  return new WaxRecordset($this, self::$db->select($this));
  	}
  	
  	public function rows() {
- 	  return $this->db->select($this);
+ 	  return self::$db->select($this);
  	}
  	
  	/**
@@ -447,7 +451,7 @@ class WaxModel{
  	  
  	  $this->limit = "1";
  	  $row = clone $this;
- 	  $res = $this->db->select($row);
+ 	  $res = self::$db->select($row);
  	  if($res[0])
  	    $row->set_attributes($res[0]);
  	  else
@@ -563,7 +567,7 @@ class WaxModel{
   
   public function find_by_sql($sql) {
     $this->sql($sql);
-    $res = $this->db->select($this);
+    $res = self::$db->select($this);
     return new WaxRecordset($this, $res); 	  
   }
   
@@ -599,7 +603,7 @@ class WaxModel{
    }
 
 	public function total_without_limits(){
-		return $this->db->total_without_limits;
+		return self::$db->total_without_limits;
 	}
 	
 
