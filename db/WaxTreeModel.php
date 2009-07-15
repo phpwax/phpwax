@@ -64,8 +64,7 @@ class WaxTreeModel extends WaxModel {
     $ident = $this->table;
     if($this->filters) $ident .= ":".md5(serialize($this->filters));
     $ident .= ".tree.cache";
-		$cache = new WaxCacheLoader("File", CACHE_DIR."/tree/");
-		$cache->identifier = CACHE_DIR."/tree/".$ident;
+		$cache = new WaxCache("tree/$ident");
 		return $cache;
   }
 	protected function cached_tree_get() {
