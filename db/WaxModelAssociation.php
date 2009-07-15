@@ -22,19 +22,16 @@ class WaxModelAssociation extends WaxRecordset {
   }
   
   public function offsetGet($offset) {
-    if(!$this->offsetExists($offset)) return false;
-    $model = get_class($this->target_model);
-    if(is_numeric($this->rowset[$offset])) return new $model($this->rowset[$offset]);
-    $obj = new $model();
-    $obj->set_attributes($this->rowset[$offset]);
-    return $obj;
+    if(is_numeric($this->rowset[$offset])){
+      $model = get_class($this->target_model);
+      return new $model($this->rowset[$offset]);
+    }else{
+      $obj = clone $this->target_model;
+      $obj->row = $this->rowset[$offset];
+      return $obj;
+    }
   }
   
-  public function __set($setting, $val) {
-    echo $val;
-    die();
-  }
-
   public function __call($method, $args) {
     return call_user_func_array(array($this->model->get_col($this->owner_field), $method), $args);
   }
