@@ -200,7 +200,7 @@ class WaxModel{
      	  return new WaxRecordset(new $model, $data);
       }else{
         $row = new $model;
-        $row->set_attributes($data);
+        $row->row = $data;
         return $row;
       }
     }
@@ -448,15 +448,14 @@ class WaxModel{
    * @return WaxModel Object
    */
  	public function first() {
- 	  
  	  $this->limit = "1";
- 	  $row = clone $this;
- 	  $res = self::$db->select($row);
+ 	  $model = clone $this;
+ 	  $res = self::$db->select($model);
  	  if($res[0])
- 	    $row->set_attributes($res[0]);
+ 	    $model->row = $res[0];
  	  else
- 	    $row = false;
- 	  return $row;
+ 	    $model = false;
+ 	  return $model;
  	}
 
 

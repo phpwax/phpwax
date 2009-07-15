@@ -34,13 +34,10 @@ class WaxTreeRecordset extends WaxRecordset implements RecursiveIterator {
   
   public function current() {
     $obj = clone $this->model;
-    return $obj->set_attributes($this->current_row());
+    $obj->row = $this->rowset[$this->key()];
+    return $obj;
   }
   
-  public function current_row() {
-    return $this->rowset[$this->key()];
-  }  
-
 }
 
 ?>
