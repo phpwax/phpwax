@@ -96,7 +96,7 @@ class WaxTreeModel extends WaxModel {
    * @return WaxRecordSet of all the self-parented nodes or nodes with unidentifiable parents
    */
   public function roots() {
-  	if($root_return = WaxModel::get_cache(get_class($this), "parent", "rootnodes")) return $root_return;
+  	if($root_return = WaxModel::get_cache($this->table, "parent", "rootnodes")) return $root_return;
   	  
     /** Methods of finding a root node **/
     //First method: parent reference same as primary key
@@ -123,13 +123,13 @@ class WaxTreeModel extends WaxModel {
     if($this->root_path) return $this->root_path;
 		$roots = $this->roots();
     //get the possible root id's
-    foreach($roots as $root){
-			$rootids[] = $root->primval();
+    foreach($roots->rowset as $root){
+			$rootids[] = $root->id;
 		}
     
     $current = clone $this;
-    if($current->primval() && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
-      while(!in_array($current->primval(), $rootids)){
+    if($current->primval && count($rootids) > 0){ //sanity check, if this passes an infinite loop can't occur
+      while(!in_array($current->primval, $rootids)){
         $this->root_path[] = $current;
         $current = $current->{$current->parent_column}; //move up a node
       }

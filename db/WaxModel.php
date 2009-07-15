@@ -38,6 +38,17 @@ class WaxModel{
 	public $left_join_table_name = false;
 	public $join_conditions = false;
 	
+	
+	/** interface vars **/
+	public $cache_enabled = false;
+  public $use_cache = true;
+  public $cache_lifetime = 600;
+  public $cache_identifier = false;
+  public $cache_engine = false;
+  public $cache_object = false;
+  public $cache_content = false;
+  public $cache_config=array();
+	
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
@@ -175,8 +186,8 @@ class WaxModel{
   }
   
   static public function get_cache($model, $field, $id, $transform = true) {
-    $cache = new WaxCache($model."_".$field."_".$id);
-    $data = $cache->get();
+    $cache = new WaxCache($model."/".$field."/".$id, "memory");
+    $data = unserialize($cache->get());
     if(!$transform) return $data;
     if($data) {
       //find target model to reinstantiate using the field name
@@ -193,17 +204,16 @@ class WaxModel{
   }
   
   static public function set_cache($model, $field, $id, $value) {
-    $cache = new WaxCache($model."_".$field."_".$id);
+    $cache = new WaxCache($model."/".$field."/".$id, "memory");
     if($value instanceof WaxModel)
-      $cache->set($value->row);
+      $cache->set(serialize($value->row));
     elseif($value instanceof WaxRecordSet)
-      $cache->set($value->rowset);
-    else
-      $cache->set($value);
+      $cache->set(serialize($value->rowset));
+    else $cache->set($value);
   }
   
 	static public function unset_cache($model, $field, $id = false){
-    $cache = new WaxCache($model."_".$field."_".$id);
+    $cache = new WaxCache($model."/".$field."/".$id, "memory");
     $cache->expire();
 	}
   /**

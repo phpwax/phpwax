@@ -16,8 +16,9 @@ class WaxCache {
 	
 	
 	
-	public function __construct($label, $options = array()) {
+	public function __construct($label, $store=false, $options = array()) {
 	  $this->init();
+	  if($store) $this->store=ucfirst($store);
 	  foreach($options as $k=>$option) $this->$k=$option; 
 	  $this->label = $label;
 	  if($this->store == "File") $this->store="Filesystem";
