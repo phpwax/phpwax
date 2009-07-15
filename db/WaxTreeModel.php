@@ -143,6 +143,14 @@ class WaxTreeModel extends WaxModel {
     $this->level = count($this->root_path) - 1;
     return $this->level;
   }
+  
+  public function clear(){
+    parent::clear();
+    $this->root_path = false;
+    $this->level = false;
+    $this->tree_array = false;
+    return $this;
+  }
 
   public function cache_whole_tree() {
     $class = get_class($this);
