@@ -17,7 +17,7 @@ class TestWaxAuthDb extends WXTestCase {
   }
   
   public function tearDown() {
-    $this->model->db->drop_table($this->model->table);
+    WaxModel::$db->drop_table($this->model->table);
   }
   
   protected function get_fixture($type) {

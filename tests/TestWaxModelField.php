@@ -36,13 +36,13 @@ class TestWaxModelField extends WXTestCase {
     }
     
     public function tearDown() {
-      $this->model->db->drop_table($this->model->table);
-      $this->model_owner->db->drop_table($this->model_owner->table);
-      $this->model_editor->db->drop_table($this->model_editor->table);
-      $this->model_file->db->drop_table($this->model_file->table);
-      $this->model_file_field->db->drop_table($this->model_file_field->table);
-      $this->model_property->db->drop_table($this->model_property->table);
-      $this->model_property->db->drop_table("example_example_property");
+      WaxModel::$db->drop_table($this->model->table);
+      WaxModel::$db->drop_table($this->model_owner->table);
+      WaxModel::$db->drop_table($this->model_editor->table);
+      WaxModel::$db->drop_table($this->model_file->table);
+      WaxModel::$db->drop_table($this->model_file_field->table);
+      WaxModel::$db->drop_table($this->model_property->table);
+      WaxModel::$db->drop_table("example_example_property");
     }
     
     public function get_fixture($type) {
@@ -92,7 +92,7 @@ class TestWaxModelField extends WXTestCase {
 			$model1 = $model1->save();
 			$this->assertFalse(count($model2->errors));
 			//cleanup after the syncdb
-			$model1->db->drop_table($model1->table);
+			WaxModel::$db->drop_table($model1->table);
     }
     
     public function test_foreign_key() {
