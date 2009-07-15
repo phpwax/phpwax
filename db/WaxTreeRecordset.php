@@ -27,7 +27,7 @@ class WaxTreeRecordset extends WaxRecordset implements RecursiveIterator {
   } 
 
   public function getChildren() { 
-    $current = $this->current_row();
+    $current = $this->rowset[$this->key()];
     return new WaxTreeRecordset($this->model, $current["children"]); 
   }
   
