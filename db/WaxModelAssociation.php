@@ -26,7 +26,7 @@ class WaxModelAssociation extends WaxRecordset {
       $model = get_class($this->target_model);
       return new $model($this->rowset[$offset]);
     }else{
-      $obj = clone $this->target_model
+      $obj = clone $this->target_model;
       $obj->row = $this->rowset[$offset];
       return $obj;
     }
