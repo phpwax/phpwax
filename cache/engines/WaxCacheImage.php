@@ -31,6 +31,7 @@ class WaxCacheImage extends WaxCacheFile implements CacheEngine{
 	
 	public function valid() {
 	  if(!is_readable($this->identifier) ) return false;
+	  if($this->lifetime == "forever") return true;
 	  $mtime = filemtime($this->identifier);
 	  if(time() > $mtime + $this->lifetime){
 	    $this->expire();
