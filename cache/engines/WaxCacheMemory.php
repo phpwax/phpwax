@@ -22,17 +22,32 @@ class WaxCacheMemory implements CacheEngine{
 	}
 	
 	public function set($value) {
-    self::$cache[$this->key] = $value;
+	  $write_to = $this->array_path();
+    $write_to[$this->keyname($this->key)] = $value;
 	}
 	
 	public function valid() {
-	  if(!isset(self::$cache[$this->key]) ) return false;
-	  else return self::$cache[$key];
+    $read_from = $this->array_path();
+	  if(!isset($read_from[$this->key_name($this->key)]) ) return false;
+	  else return $read_from[$this->key_name($this->key);
 	}
 	
-	public function expire() {
-	  if(isset(self::$cache[$this->key])) unset(self::$cache[$this->key]);
+	public function expire($query=false) {
+	  if(!$query) {
+	    $expire = $this->array_path();
+	    if(isset($expire[$this->key])) unset($expire[$this->key]);
+	  }
 	}
+
+	public function array_path() {
+	  $array_path = explode("/",$this->key_path($this->key));
+    $location = self::$cache;
+    while($array_path) {
+      $location = $write_to[array_shift($array_path)];
+    }
+    return $location;
+	}
+	
 
 }
 

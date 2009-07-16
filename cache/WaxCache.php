@@ -20,9 +20,9 @@ class WaxCache {
 	  $this->init();
 	  if(is_string($store)) {
 	    if($store) $this->store=ucfirst($store);
-	    if($this->store == "File") $this->store="Filesystem";
 	    if($this->store == "default") $this->store= ucfirst(Config::get("cache_engine"));
 	  }
+	  if($this->store == "File") $this->store="Filesystem";
 	  if(is_array($store)) $options = $store;
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, $options);
@@ -45,6 +45,10 @@ class WaxCache {
     return $this->engine->expire();
 	}
 	
+	public function flush($query = false) {
+	  return $this->engine->flush($query);
+	}
+	
 	public function init() {
 	  if(Config::get("cache") == "off") $this->enabled=false;
 	  if($engine = Config::get("cache_engine")) $this->store=ucfirst($engine);
@@ -52,6 +56,19 @@ class WaxCache {
 	
 	public function set_key($key) {
 	  $this->engine->key = $key;
+	}
+	
+	public function key_path($full_key) {
+	  if(strpos($full_key, "/")) {
+      $path = substr($full_key, 0, strrpos($full_key, "/")+1);
+      return $path;
+    } else return "";
+	}
+	
+	public function keyname($full_key) {
+	  if(strpos($full_key, "/")) {
+      return substr(strrchr($full_key, "/"),1);
+    } else return $full_key;
 	}
 	
   
