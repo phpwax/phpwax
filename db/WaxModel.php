@@ -58,7 +58,7 @@ class WaxModel{
  	  } catch (Exception $e) {
  	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
  	  }
- 	  if(!$this->cache) $this->cache_init();
+
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
@@ -457,10 +457,6 @@ class WaxModel{
  	
  	/************ End of database methods *************/
  	
- 	public function cache_init() {
- 	  $this->cache = new WaxCache(get_class($this).$this->primval(), 
- 	    array("engine"=>$this->cache_engine, "lifetime"=>$this->cache_lifetime));
- 	}
  	
  	public function set_attributes($array) {
  	  //move association fields to the end of the array

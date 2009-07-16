@@ -16,7 +16,7 @@ class WaxCache {
 	
 	
 	
-	public function __construct($label, $store=false, $options = array()) {
+	public function __construct($label=false, $store=false, $options = array()) {
 	  $this->init();
 	  if(is_string($store)) {
 	    if($store) $this->store=ucfirst($store);
@@ -41,8 +41,8 @@ class WaxCache {
 	  return $this->engine->valid($return);
 	}
 	
-	public function expire() {
-    return $this->engine->expire();
+	public function expire($query) {
+    return $this->engine->expire($query);
 	}
 	
 	public function flush($query = false) {
@@ -56,19 +56,6 @@ class WaxCache {
 	
 	public function set_key($key) {
 	  $this->engine->key = $key;
-	}
-	
-	public function key_path($full_key) {
-	  if(strpos($full_key, "/")) {
-      $path = substr($full_key, 0, strrpos($full_key, "/")+1);
-      return $path;
-    } else return "";
-	}
-	
-	public function keyname($full_key) {
-	  if(strpos($full_key, "/")) {
-      return substr(strrchr($full_key, "/"),1);
-    } else return $full_key;
 	}
 	
   
