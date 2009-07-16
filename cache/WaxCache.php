@@ -12,15 +12,13 @@ class WaxCache {
 	public $store = "File";
 	public $engine = false;
 	public $enabled = true;
-	public static $lifetime = 3600;
+	public $lifetime = 3600;
 	
 	
 	
 	public function __construct($label, $store=false, $options = array()) {
 	  $this->init();
 	  if($store) $this->store=ucfirst($store);
-	  foreach($options as $k=>$option) $this->$k=$option; 
-	  $this->label = $label;
 	  if($this->store == "File") $this->store="Filesystem";
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, $options);
@@ -46,6 +44,10 @@ class WaxCache {
 	public function init() {
 	  if(Config::get("cache") == "off") $this->enabled=false;
 	  if($engine = Config::get("cache_engine")) $this->store=ucfirst($engine);
+	}
+	
+	public function set_label($label) {
+	  $this->engine->key = $label;
 	}
 	
   

@@ -37,17 +37,14 @@ class WaxModel{
 	public $left_join_target = false;
 	public $left_join_table_name = false;
 	public $join_conditions = false;
+	public $cols = array();
 	
 	
 	/** interface vars **/
 	public $cache_enabled = false;
-  public $use_cache = true;
   public $cache_lifetime = 600;
-  public $cache_identifier = false;
-  public $cache_engine = false;
-  public $cache_object = false;
-  public $cache_content = false;
-  public $cache_config=array();
+  public $cache_engine = "Memory";
+  public $cache = false;
 	
   /**
    *  constructor
@@ -62,7 +59,6 @@ class WaxModel{
  	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
  	  }
  	  
-    	
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
@@ -194,7 +190,6 @@ class WaxModel{
     $data = unserialize($cache->get());
     if(!$transform) return $data;
     if($data) {
-      //find target model to reinstantiate using the field name
       $model_this = new $model;
       if(is_array($data[0])) {
      	  return new WaxRecordset(new $model, $data);
@@ -395,6 +390,10 @@ class WaxModel{
     return $this;
 	}
 	
+	
+	/************** Methods that hit the database ****************/
+	
+	
   public function update( $id_list = array() ) {
     $this->before_update();
     $res = self::$db->update($this);
@@ -421,20 +420,13 @@ class WaxModel{
     return self::$db->query($query);
   }
   
-  /**
-   * Create function
-   *
-   * @return WaxModel Object
-   **/
+
   public function create($attributes = array()) {
  		$row = clone $this;
  		return $row->update_attributes($attributes);
   }
 
-  /**
-   * Select and return dataset
-   * @return WaxRecordset Object
-   */
+
  	public function all() {
  	  return new WaxRecordset($this, self::$db->select($this));
  	}
@@ -443,10 +435,7 @@ class WaxModel{
  	  return self::$db->select($this);
  	}
  	
- 	/**
-   * Select and return single row data
-   * @return WaxModel Object
-   */
+
  	public function first() {
  	  $this->limit = "1";
  	  $model = clone $this;
@@ -462,6 +451,14 @@ class WaxModel{
  	public function update_attributes($array) {
  	  $this->set_attributes($array);
 		return $this->save();
+ 	}
+ 	
+ 	
+ 	/************ End of database methods *************/
+ 	
+ 	public function cache_init() {
+ 	  $this->cache = new WaxCache(get_class($this).$this->primval(), 
+ 	    array("engine"=>$this->cache_engine, "lifetime"=>$this->cache_lifetime));
  	}
  	
  	public function set_attributes($array) {
