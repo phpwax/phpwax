@@ -33,6 +33,8 @@ class WaxModelField {
   public $validations = array();
   
   public $errors = array();
+  
+  public static $skip_field_delegation_cache = array();
 
   public function __construct($column, $model, $options = array()) {
     $this->model = $model;
@@ -43,6 +45,7 @@ class WaxModelField {
     $this->setup();
     $this->map_choices();
     $this->setup_validations();
+    if(!is_array(self::$skip_field_delegation_cache[get_class($this)])) $this->setup_skip_delegation_cache();
   }
   
   public function get() {
@@ -108,6 +111,11 @@ class WaxModelField {
     if($value =="id") return $this->table."_{$this->field}";
  	}
   
-
+  public function setup_skip_delegation_cache(){
+    $class = get_class($this);
+    $method = new ReflectionMethod($class, 'get');
+    if($method->getDeclaringClass()->name == "WaxModelField") WaxModelField::$skip_field_delegation_cache[$class]['get'] = true;
+    else self::$skip_field_delegation_cache[$class]['get'] = false;
+  }
 } // END class 
 
