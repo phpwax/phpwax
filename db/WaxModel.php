@@ -58,7 +58,7 @@ class WaxModel{
  	  } catch (Exception $e) {
  	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
  	  }
- 	  
+ 	  if(!$this->cache) $this->cache_init();
  		$class_name =  get_class($this) ;
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );

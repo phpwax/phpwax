@@ -18,8 +18,12 @@ class WaxCache {
 	
 	public function __construct($label, $store=false, $options = array()) {
 	  $this->init();
-	  if($store) $this->store=ucfirst($store);
-	  if($this->store == "File") $this->store="Filesystem";
+	  if(is_string($store)) {
+	    if($store) $this->store=ucfirst($store);
+	    if($this->store == "File") $this->store="Filesystem";
+	    if($this->store == "default") $this->store= ucfirst(Config::get("cache_engine"));
+	  }
+	  if(is_array($store)) $options = $store;
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, $options);
 	}
@@ -46,8 +50,8 @@ class WaxCache {
 	  if($engine = Config::get("cache_engine")) $this->store=ucfirst($engine);
 	}
 	
-	public function set_label($label) {
-	  $this->engine->key = $label;
+	public function set_key($key) {
+	  $this->engine->key = $key;
 	}
 	
   
