@@ -119,8 +119,10 @@ class WaxTreeModel extends WaxModel {
    */
   public function path_to_root(){
     if($this->root_path) return $this->root_path;
-    $model = clone $this;
-    if(!self::$all_rows) self::$all_rows = $model->clear()->rows();
+    if(!self::$all_rows){
+      $model = clone $this;
+      self::$all_rows = $model->clear()->rows();
+    }
 		foreach( self::$all_rows as $item ){
 			$lookup[$item['id']] = $item;
 		}
@@ -129,7 +131,7 @@ class WaxTreeModel extends WaxModel {
 		  $path_to_root[] = $lookup[$current_id];
 		  $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
 		}
-		return $this->root_path = new WaxRecordSet(clone $this, $path_to_root);
+		return $this->root_path = new WaxRecordSet($this, $path_to_root);
   }
   
   public function path_from_root(){
