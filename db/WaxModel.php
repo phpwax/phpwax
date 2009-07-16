@@ -526,10 +526,7 @@ class WaxModel{
       $col_type = $details[0];
       $ours = $this->$col;
       $theirs = $model->$col;
-      if(in_array($col_type, array("HasManyField","ManyToManyField"))){
-        $ours = $ours->rowset;
-        $theirs = $theirs->rowset;
-      }elseif($col_type == "ForeignKey"){
+      if($ours->is_assocation){
         $ours = $ours->rowset;
         $theirs = $theirs->rowset;
       }
