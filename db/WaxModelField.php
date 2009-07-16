@@ -27,7 +27,7 @@ class WaxModelField {
   public $label = false;
   public $help_text = false;
   public $widget="TextInput";
-  public $is_association=false; // Distiguishes between standard field and one that links to other models
+  public $is_association = false; // Distiguishes between standard field and one that links to other models
   protected $model = false;
   public $validator = "WaxValidate";
   public $validations = array();
@@ -113,6 +113,11 @@ class WaxModelField {
   
   public function setup_skip_delegation_cache(){
     $class = get_class($this);
+    
+    //static cache of associations
+    if($this->is_association) WaxModelField::$skip_field_delegation_cache[$class]['assoc'] = true;
+    
+    //static cache of overridden get methods
     $method = new ReflectionMethod($class, 'get');
     if($method->getDeclaringClass()->name == "WaxModelField") WaxModelField::$skip_field_delegation_cache[$class]['get'] = true;
     else self::$skip_field_delegation_cache[$class]['get'] = false;
