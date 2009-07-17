@@ -28,18 +28,23 @@ class WaxBoundForm implements iterator {
   
   public function save() {
     if(!$this->is_posted()) return false;
+    $associations = array();
     foreach($this->elements as $name=>$el) {
       if($this->post_data[$name]) {
-        $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+ 	      if(!$el->is_association) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+ 	      else $associations[$name] = $el;
       }
     } 
+    foreach($associations as $name=>$el) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
     $this->validate();
     if($this->is_valid()) $this->bound_to_model->save();
+
     return $this->is_valid();
   }
   
   public function validate() {
     foreach($this->elements as $el) {
+      
       if(!$el->is_valid()) $this->errors[] = $el->errors;
     }  
   }
