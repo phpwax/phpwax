@@ -41,7 +41,7 @@ class WaxCache {
 	  return $this->engine->valid($return);
 	}
 	
-	public function expire($query) {
+	public function expire($query=false) {
     return $this->engine->expire($query);
 	}
 	
