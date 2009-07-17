@@ -44,7 +44,7 @@ class WaxCacheFilesystem implements CacheEngine{
 	}
 	
 	public function expire($query = false) {
-    if(!$query) return unlink($this->file());
+    if(!$query && is_readable($this->file())) return unlink($this->file());
     else $this->flush($query);
 	}
 	
