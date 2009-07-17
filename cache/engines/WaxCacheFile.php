@@ -61,14 +61,14 @@ class WaxCacheFile implements CacheEngine{
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);    
 	  
-    if(count($data)) $str .= "-data-".serialize($data);
+    if(count($data)) $str .= "-data-".md5(serialize($data));
     if(count($_GET)){
       $get = $_GET;
       unset($get['route']);
-      $str .= "-get-".serialize($get);
+      $str .= "-get-".md5(serialize($get));
     }
-    if(count($_POST)) $str .= "-post-".serialize($_POST);      
-    return $str.'.'.$this->suffix;
+    if(count($_POST)) $str .= "-post-".md5(serialize($_POST));      
+    return $str;
 	}
 
 }
