@@ -14,13 +14,13 @@ class DateTimeField extends WaxModelField {
   public $output_format = "Y-m-d H:i:s";
   public $save_format = "Y-m-d H:i:s";
   public $use_uk_date = false;
-  public $validations = array("datetime");
 
   
   public function setup() {
     if($this->model->row[$this->field]==0 && $this->default=="now") {
       $this->model->row[$this->field] = date($this->save_format);
     }
+    if($this->required) $this->validations["datetime"];
   }
   
   public function output() {
@@ -28,7 +28,7 @@ class DateTimeField extends WaxModelField {
   }
   
   public function save() {
-    $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
+    if($this->required) $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
   }
   
   public function uk_date_switch() {
