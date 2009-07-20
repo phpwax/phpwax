@@ -11,4 +11,9 @@ class FloatField extends CharField {
   public $validations = array("float");
   
 
+  public function setup_validations() {
+    parent::setup_validations();
+    if($this->required || !$this->blank) $this->validations[]="float";
+    
+  }
 } 
