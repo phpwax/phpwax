@@ -8,7 +8,6 @@
 class FloatField extends CharField {
   
   public $maxlength = "4,2";
-  public $validations = array("float");
   
 
   public function setup_validations() {
