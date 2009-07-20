@@ -99,13 +99,13 @@ class WaxValidate {
   
   protected function valid_float(){
     $value = $this->object->value();
-		$lengths = explode(",", $this->maxlength);
+		$lengths = explode(",", $this->object->maxlength);
 		$values = explode(".", $value);
 		if(strlen($values[0]) > $lengths[0]){
-			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
+			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->object->minlength));
 		}
 		if($values[1] && $lengths[1] && strlen($values[1]) > $lengths[1]){
-			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->minlength));
+			$this->add_error($this->column, sprintf($this->messages["long"], $this->label, $this->object->minlength));
 		}
 	}
 
