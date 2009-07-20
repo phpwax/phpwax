@@ -153,7 +153,7 @@ abstract class WaxDbAdapter {
       $this->exec($stmt, $params);
       $this->row_count_query($model);
 		  $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		  $cache->set(serialize($res));
+		  //$cache->set(serialize($res));
 		  return $res;
 	  //}
   }
