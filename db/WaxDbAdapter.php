@@ -145,17 +145,17 @@ abstract class WaxDbAdapter {
       $this->sql_without_limit = $sql;
       $sql.= $this->limit($model);
     }
-    $key = "querycache/".md5($sql.implode(",",$params));
-    $cache = new WaxCache($key);
-    if($ret = $cache->get()) return unserialize($ret);
-    else {
+    //$key = "querycache/".md5($sql.implode(",",$params));
+    //$cache = new WaxCache($key);
+    //if($ret = $cache->get()) return unserialize($ret);
+    //else {
       $stmt = $this->prepare($sql);
       $this->exec($stmt, $params);
       $this->row_count_query($model);
 		  $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		  $cache->set(serialize($res));
 		  return $res;
-	  }
+	  //}
   }
   
   public function prepare($sql) {

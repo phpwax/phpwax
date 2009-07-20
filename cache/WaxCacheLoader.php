@@ -29,6 +29,15 @@ class WaxCacheLoader {
       chmod($this->dir, 0777);
     }    
     $this->suffix = $format.'.'.$this->suffix;
+    $this->options = $this->options();
+    $this->cache = new WaxCache($this->identifier, $this->options);
+  }
+  
+  public function options() {
+    return array(
+      "lifetime"=>$this->lifetime,
+      "engine" => $this->engine_type
+    );
   }
 
 	public function identifier(){
@@ -75,21 +84,15 @@ class WaxCacheLoader {
   }
   
   public function get(){
-    $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime,$this->suffix, $this->identifier);
-    return $engine->get();
+    return $this->cache->get();
   }
   
   public function set($value){
-    $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
-    return $engine->set($value);
+    return $this->cache->set($value);
   }
   
   public function expire(){
-    $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
-    return $engine->expire();
+    return $this->cache->expire();
   }  
   
   public function valid($config, $format="html"){
