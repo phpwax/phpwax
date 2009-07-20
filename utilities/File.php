@@ -186,10 +186,10 @@ class File {
 		if(is_file($item)) { unlink($item); return true; }
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($item), 2);
 		foreach ( $iter as $file ) {
-				if($iter->isDir()) { rmdir($file); }
+				if($iter->isDir() && is_readable($file)) { rmdir($file); }
 				else { unlink($file); }
 		}
-		if(is_dir($item)) { rmdir($item); }
+		if(is_dir($item) && is_readable($item) && substr($item, -1) != "." ) { rmdir($item); }
 		return true;
 	}
 		
