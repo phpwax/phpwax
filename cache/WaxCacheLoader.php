@@ -2,13 +2,13 @@
 /**
 	* @package PHP-Wax
   */
-
+ 
 /**
  *	Class for loading in pre existing cache files based on the current location or value passed in
  *  @package PHP-Wax
  */
 class WaxCacheLoader {
-		
+ 
 	public $lifetime = 3600;
 	public $config = array();
 	public $engine_type = 'File';
@@ -29,17 +29,8 @@ class WaxCacheLoader {
       chmod($this->dir, 0777);
     }    
     $this->suffix = $format.'.'.$this->suffix;
-    $this->options = $this->options();
-    $this->cache = new WaxCache($this->identifier, $this->options);
   }
-  
-  public function options() {
-    return array(
-      "lifetime"=>$this->lifetime,
-      "engine" => $this->engine_type
-    );
-  }
-
+ 
 	public function identifier(){
 	  if(!$this->identifier){
 		  $class = 'WaxCache'.$this->engine_type;
@@ -48,7 +39,7 @@ class WaxCacheLoader {
     }
     return $this->identifier;
 	}
-
+ 
   public function excluded($config, $match=false){
     if(!$match) $match = $_SERVER['REQUEST_URI'];
     if($config['exclude_post'] == "yes" && count($_POST)) return true;
@@ -77,22 +68,28 @@ class WaxCacheLoader {
 	      preg_match_all($regex, $match, $matches);	      
 	      if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
 	    }	   
-	   
+ 
       if(!count($all_matches)) return false;
     }
     return true;
   }
   
   public function get(){
-    return $this->cache->get();
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->dir, $this->lifetime,$this->suffix, $this->identifier);
+    return $engine->get();
   }
   
   public function set($value){
-    return $this->cache->set($value);
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
+    return $engine->set($value);
   }
   
   public function expire(){
-    return $this->cache->expire();
+    $class = 'WaxCache'.$this->engine_type;
+    $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
+    return $engine->expire();
   }  
   
   public function valid($config, $format="html"){
@@ -114,5 +111,5 @@ class WaxCacheLoader {
   }
   
 }
-
+ 
 ?>
