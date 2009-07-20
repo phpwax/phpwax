@@ -26,7 +26,7 @@ class WaxCacheFilesystem implements CacheEngine{
 	
 	public function get() {
 	  if($content = $this->valid()) return $content;
-	  else return false;
+	  return false;
 	}
 	
 	public function set($value) {
