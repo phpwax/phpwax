@@ -7,42 +7,32 @@
  *	Engine for caching of data / objects to file.
  *  @package PHP-Wax
  */
-class WaxCacheImage extends WaxCacheFile implements CacheEngine{
+class WaxCacheImage extends WaxCacheFilesystem implements CacheEngine{
   
   public $identifier = false;
-  public $lifetime = false;  
-  public $dir = false;
-  public $marker = '';
-  public $suffix = '';  
+  public $size = "100";
+  public $lifetime = 10000;
   	
-  public function __construct($dir=false, $lifetime=false, $suffix='cache', $identifier=false) {
-    if($lifetime) $this->lifetime = $lifetime;    
-    if($dir) $this->dir = $dir;
-    else $this->dir = CACHE_DIR;    
-    if($identifier) $this->identifier = $identifier;
-    else $this->identifier = $this->make_identifier($_SERVER['HTTP_HOST']);
-    $this->suffix = $suffix;
-    $this->dir = $dir;
+  public function __construct($key, $options) {
+    $this->key = $this->key_name();
+    parent::__construct($this->key, $options);
   }	
   	
 	public function get(){
-    return $this->valid();
+    File::display_image($this->file());
 	}
 	
-	public function valid() {
-	  if(!is_readable($this->identifier) ) return false;
-	  if($this->lifetime == "forever") return true;
-	  $mtime = filemtime($this->identifier);
-	  if(time() > $mtime + $this->lifetime){
-	    $this->expire();
-	    return false;
-	  }else return true;
+	public function set($value) {
+	  if(!$this->source) return false;
+	  return File::resize_image($this->source, $this->file(), $this->size);
 	}
 	
-	public function make_identifier($prefix=false){
+	
+	
+	public function key_name(){
 	  if(!$this->indentifier){
 	    $details = explode("/", ltrim($_SERVER['REQUEST_URI'],"/show_image"));
-      return $this->dir. $details[0].'_'.$details[1];    
+      return "images/".$details[0].'_'.$details[1];    
     }else return $this->indentifier;
 	}
 

@@ -36,9 +36,10 @@ function auto_loader_check_cache(){
   include_once FRAMEWORK_DIR .'/utilities/Session.php';
   include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
   include_once FRAMEWORK_DIR .'/utilities/Config.php';
+  include_once FRAMEWORK_DIR .'/cache/WaxCache.php';
   include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
   include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFilesystem.php';
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
   include_once FRAMEWORK_DIR .'/utilities/File.php';  
  
@@ -53,10 +54,9 @@ function auto_loader_check_cache(){
     }
   }  
   /** ALSO CHECK FOR IMAGES **/
-  if($img_config = Config::get('image_cache') && substr_count($_SERVER['REQUEST_URI'], 'show_image')){
-    if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader('Image', $image_cache_location, $img_config['lifetime']);
-    else $cache = new WaxCacheLoader('Image', $image_cache_location);
-    if($cache->valid($img_config)) File::display_image($cache->identifier);
+  if($img_config = Config::get('cache/image') && strpos($_SERVER['REQUEST_URI'], 'show_image')){
+    $cache = new WaxCache($_SERVER['REQUEST_URI'], "image");
+    if($cache->valid()) $cache->get();
   }  
   
   return false;

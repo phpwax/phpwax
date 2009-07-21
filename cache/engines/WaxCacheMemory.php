@@ -41,7 +41,7 @@ class WaxCacheMemory implements CacheEngine{
 
 	public function &array_path() {
 	  $array_path = explode("/",trim($this->key_path($this->key),"/"));
-   $location = &self::$cache;
+    $location = &self::$cache;
     while($array_path) {
       $location = &$location[array_shift($array_path)];
       $location = array();

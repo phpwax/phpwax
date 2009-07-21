@@ -62,7 +62,7 @@ class Config
 		$config=explode("/", $config);
 		$confarray=self::$config_array;
 		foreach($config as $conf) {
-  		if(!$confarray) return false;
+  		if(!is_array($confarray)) return false;
 			if(array_key_exists($conf,$confarray)) $confarray=$confarray[$conf];
 			else $confarray=false;
 		}
@@ -83,10 +83,24 @@ class Config
 	
 	static public function set($new_config, $new_value=false) {
 	  self::initialise();
+	  if(strpos($new_config,"/")) {
+      $write = &self::array_path($new_config);
+	    $write = $new_value;
+	    return true;
+	  }
 	  if(!is_array($new_config)) {
 	    $new_config = array($new_config=>$new_value);
 	  }
 	  self::$config_array = array_merge(self::$config_array, $new_config);
+	}
+	
+	public function &array_path($path) {
+	  $array_path = explode("/",trim($path,"/"));
+    $location = &self::$config_array;
+    while($array_path) {
+      $location = &$location[array_shift($array_path)];
+    }
+    return $location;
 	}
 	
 	/**
