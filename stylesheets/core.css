@@ -1,8 +1,4 @@
-/* Use Yahoo reset.css to start all styles with a level playing field */
-@import url("/stylesheets/resets.css");
-
-
-
+img{ border: none; }
 
 /* Basic form styling */
 
