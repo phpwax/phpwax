@@ -15,8 +15,8 @@ class WaxWidget{
   public $defaults = array("name"=>"","editable"=>true,"value"=>"");
   
   public $show_label = true;
-  public $label_template = '<span><label for="%s>%s</label>';
-  public $template = '<input %s />%s</span>';
+  public $label_template = '<label for="%s>%s</label>';
+  public $template = '<input %s />%s';
   public $error_template = '<span class="error_message">%s</span>';
   public $bound_data = false;
   public $validator = "WaxValidate";
