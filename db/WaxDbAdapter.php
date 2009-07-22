@@ -464,6 +464,7 @@ abstract class WaxDbAdapter {
       case "=": return "?";
       case "!=": return "?";
       case "~": return "%?%";
+      case "LIKE": return " LIKE ?";
       case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
       case "raw": return "";
       default: return "?"; 
