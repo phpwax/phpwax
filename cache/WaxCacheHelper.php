@@ -45,7 +45,6 @@ class WaxCacheHelper extends WXHelpers {
   }
   
   public function cache_valid($label) {
-    if(Config::get("cache") == "off") return false;
     $cache = new WaxCache($this->make_id($label));
     return $cache->get();  
   }
