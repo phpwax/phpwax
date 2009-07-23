@@ -40,9 +40,10 @@ class WaxForm implements Iterator {
  
   /*** Handler Methods - Get Passed on to the form handler */
   public function render() {
-    foreach($this->handler->elements as $element) $output .= $element->render();
+
+    foreach($this->handler->elements as $element) $output .= $element->render(array('prefix'=>$this->form_prefix));
     if($this->submit === true) {
-      $sub = new SubmitInput($this->submit_text, array("name"=>$this->form_prefix));
+      $sub = new SubmitInput($this->submit_text, array("prefix"=>$this->form_prefix));
       $output .= $sub->render();
     }
     if($this->form_tags) return sprintf($this->template, $this->make_attributes(), $output);
