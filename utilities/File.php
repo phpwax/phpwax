@@ -187,7 +187,7 @@ class File {
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($item), 2);
 		foreach ( $iter as $file ) {
 				if($iter->isDir() && is_readable($file)) { rmdir($file); }
-				else { unlink($file); }
+				elseif(is_readable($file)) unlink($file);
 		}
 		if(is_dir($item) && is_readable($item) && substr($item, -1) != "." ) { rmdir($item); }
 		return true;
