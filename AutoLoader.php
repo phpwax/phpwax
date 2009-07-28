@@ -98,7 +98,7 @@ class AutoLoader
  *	@param string $dir The directory to include 
  */
   static $plugin_array=array();
-  
+  static $plugin_asset_types = array('images'=>"images", 'javascripts'=>"javascripts", 'stylesheets'=>"stylesheets");
   /**
    *  The registry allows classes to be registered in a central location.
    *  A responsibility chain then decides upon include order.
@@ -107,6 +107,9 @@ class AutoLoader
   static public $registry = array();
   static public $registry_chain = array("user", "application", "plugin", "framework");
   
+  static public function add_asset_type($key, $type){
+    self::$plugin_asset_types[$key] = $type;
+  }
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility][$class]=$path;
   }
@@ -132,6 +135,14 @@ class AutoLoader
 		return is_readable(PLUGIN_DIR.$plugin);
 	}
 	
+	static public function detect_inis(){
+	  if(is_readable(PLUGIN_DIR)){
+	    foreach(glob(PLUGIN_DIR.'*') as $file){
+	      if(is_dir($file) && is_readable($file) && is_readable($file."/ini.php")) include $file."/ini.php";
+	    }
+	  }
+	}
+	
 	static public function autoregister_plugins() {
 	  if(defined('AUTOREGISTER_PLUGINS')) return false;
 	  if(is_readable(PLUGIN_DIR)){
@@ -140,8 +151,8 @@ class AutoLoader
 	    foreach($plugins as $plugin) {
 	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
 	    }
-      }
     }
+  }
 	
 	static public function detect_assets() {
 	  self::register("framework", "File", FRAMEWORK_DIR."/utilities/File.php");
@@ -150,15 +161,22 @@ class AutoLoader
 	  $_temp_route= preg_replace("/[^a-zA-Z0-9_\-\.]/", "", $temp_route);
 	  while(strpos($temp_route, "..")) $temp_route= str_replace("..", ".", $temp_route);
 	  $asset_paths = explode("/", $_GET["route"]);
-	  if($asset_paths[0] =="images" || $asset_paths[0] =="javascripts" || $asset_paths[0] =="stylesheets") {
+	  if(in_array($asset_paths[0], self::$plugin_asset_types)) {
 	    $plugins = scandir(PLUGIN_DIR);
 	    $type = array_shift($asset_paths);
   	  rsort($plugins);
   	  foreach($plugins as $plugin) {
-  	    $path = PLUGIN_DIR.$plugin."/resources/public/".$type."/".implode("/", $asset_paths);
-  	    if($type=="images") File::display_image($path);
-  	    if($type=="javascripts") File::display_asset($path, "text/javascript");
-  	    if($type=="stylesheets") File::display_asset($path, "text/css");
+  	    if(!is_file($plugin) && substr($plugin,0,1) != "."){
+	        $path = PLUGIN_DIR.$plugin."/resources/public/".$type."/".implode("/", $asset_paths);
+	        $mime = File::mime_map($path);
+	        if(is_readable($path)){
+	          $mime = File::mime_map($path);
+	          switch($type){
+	            case "images": File::display_image($path);break;
+	            default: File::display_asset($path, $mime); break;
+            }
+          }
+        }
   	  }
 	  }
 	}
@@ -212,6 +230,7 @@ class AutoLoader
 	}
 
 	static public function initialise() {	
+	  self::detect_inis();
 		self::detect_assets();
 	  self::detect_test_mode();
 	  self::recursive_register(APP_LIB_DIR, "user");
