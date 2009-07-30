@@ -32,6 +32,51 @@ class WaxTemplate implements Cacheable{
 	}
 	
 	/**
+	 * Ok, this little beauty runs over config array of replace regexs
+	 * and uses the available_domains list to allow certain src files
+	 * to come from an alternative domain in order to improve concurrent
+	 * downloads in the browser
+	 * @param string $buffer_string 
+	 * @param string $randomise_config 
+	 * @return void
+	 */
+	private static function randomise_source_domains($buffer_string, $randomise_config){
+	  if(!is_array($randomise_config) || !$randomise_config 
+	    || !count($randomise_config['available_domains']) || !count($randomise_config['replace'])) return $buffer_string;
+	    
+	  $domains = $randomise_config['available_domains'];
+	  $patterns = $randomise_config['replace'];
+	  foreach($patterns as $pattern) $buffer_string = self::replace_source_domains($buffer_string, $pattern, $domains);
+    return $buffer_string;
+	}
+	/**
+	 * use the regex passed in to replace the content of the buffer_string with the new 
+	 * source domains
+	 * @param string $buffer_string 
+	 * @param string $pattern 
+	 * @param string $domains 
+	 * @return void
+	 */
+	private static function replace_source_domains($buffer_string, $pattern, $domains){
+	  if($pattern_position > count($patterns)) return $buffer_string;
+	  $modified_string = $buffer_string;
+    preg_match_all($pattern, $modified_string, $matches,  PREG_SET_ORDER);
+    if(count($matches)){
+      $domain_count = 0;
+      foreach($matches as $match){
+        $original = $match[0];
+        $str = ($_SERVER['https']) ? "https://" : "http://";
+        $str .= $domains[$domain_count];
+        $new = str_ireplace($match[1], $str.$match[1], $original);
+        $modified_string = str_ireplace($original, $new, $modified_string);
+        $domain_count++;
+        if($domain_count >= count($domains)) $domain_count = 0;
+      }
+    }
+    return $modified_string;
+	}
+	
+	/**
 	 * default static function to provide a before hook to rendering views 
 	 * lets you do things like replacing markdown style code with proper html etc
 	 * As these defaults simply return whats passed in then we need to discard the 
@@ -51,7 +96,8 @@ class WaxTemplate implements Cacheable{
 	 * @author charles marshall
 	 */
 	private static function render_layout_response_filter($buffer_string, $template = false){
-		return $buffer_string;
+	  if($randomise = Config::get('randomise_domains')) return self::randomise_source_domains($buffer_string, $randomise);
+	  else return $buffer_string;
 	}
 	/**
 	 * default static function to give a before hook on rendering a partial
