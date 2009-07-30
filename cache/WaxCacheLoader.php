@@ -51,7 +51,7 @@ class WaxCacheLoader {
 	        preg_match_all($regex, $match, $matches);	      
 	        if(count($matches[0])) $all_matches = array_merge($all_matches, $matches);
 	      }	    
-	    }else preg_match_all($excluded, $_SERVER['REQUEST_URI'], $all_matches);	    	    
+	    }else preg_match_all($excluded, $match, $all_matches);	    	    
 	    if(count($all_matches)) return true;
     }
     return false;

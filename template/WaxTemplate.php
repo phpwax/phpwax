@@ -43,7 +43,13 @@ class WaxTemplate implements Cacheable{
 	private static function randomise_source_domains($buffer_string, $randomise_config){
 	  if(!is_array($randomise_config) || !$randomise_config 
 	    || !count($randomise_config['available_domains']) || !count($randomise_config['replace'])) return $buffer_string;
-	    
+	  //check exclusions
+	  if($randomise_config && is_array($randomise_config['exclusions'])){
+	    foreach($randomise_config['exclusions'] as $name => $regex){
+	      preg_match_all($regex, $_SERVER['REQUEST_URI'], $matches);	      
+	      if(count($matches[0])) return $buffer_string;
+	    }
+	  }
 	  $domains = $randomise_config['available_domains'];
 	  $patterns = $randomise_config['replace'];
 	  foreach($patterns as $pattern) $buffer_string = self::replace_source_domains($buffer_string, $pattern, $domains);
