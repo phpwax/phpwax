@@ -9,8 +9,8 @@ class WaxUnboundForm implements iterator {
   
   public function __construct($model, $post_data, $options) {
     foreach($options as $k=>$v) $this->{$k} = $v;
-    if(!$post_data) $this->post_data = $_POST;
     if(!$post_data && $this->form_prefix) $this->post_data = $_POST[$this->form_prefix];
+    elseif(!$post_data) $this->post_data = $_POST;
   }
   
   public function add_element($name, $field_type, $settings=array()) {
@@ -39,7 +39,8 @@ class WaxUnboundForm implements iterator {
   }
   
   public function is_posted(){
-    if($this->form_prefix) {if(count($_POST[$this->form_prefix])) return true;}
+    if($this->form_prefix && count($_POST[$this->form_prefix])) return true;
+		elseif($this->form_prefix) return false;
     else {
       foreach($this->elements as $el) {
         if(isset($_POST[$el->name])) return true;
@@ -50,9 +51,10 @@ class WaxUnboundForm implements iterator {
   
   public function results(){
     $results = array();
-    foreach($this->elements as $el){
-      if(strlen($el->value())) $results[$el->post_fields['attribute']] = $el->value();
+    foreach($this->elements as $name=>$el){
+      if(strlen($el->value())) $results[$name] = $el->value();
     }
+		
     return $results;
   }
   
