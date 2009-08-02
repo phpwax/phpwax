@@ -13,8 +13,8 @@ class TextareaInput extends WaxWidget {
   );
 
   public $class = "input_field textarea_field";  
-  public $label_template = '<span><label for="%s">%s</label>';
-  public $template = '<textarea %s>%s</textarea></span>';
+  public $label_template = '<label for="%s">%s</label>';
+  public $template = '<textarea %s>%s</textarea>';
   
   
   

@@ -11,8 +11,8 @@ class CheckboxInput extends TextInput {
   public $type="checkbox";
   public $class = "input_field checkbox_field";
   
-  public $template = '<span><input %s />';
-  public $label_template = '<label for="%s">%s</label></span>';
+  public $template = '<input %s />';
+  public $label_template = '<label for="%s">%s</label>';
   public $checked_value=1;
   public $unchecked_value=0;
   
