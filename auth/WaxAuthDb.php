@@ -31,7 +31,7 @@ class WaxAuthDb
 	function __construct($options=array()) {
 		if(is_string($options["encrypt"]) || is_numeric($options["encrypt"])){
 			$this->encrypt = true;
-			$this->salt = $options["encrypt"];
+			if($options['salt']) $this->salt = $options["salt"];
 		}elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 		
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
@@ -65,7 +65,7 @@ class WaxAuthDb
   
   protected function encrypt($password) {
 		if($this->algorithm == "md5" && !$this->salt) return md5($password);
-    else return hash_hmac($this->algorithm, $password, $this->salt);
+    else echo $this->salt;exit;//return hash_hmac($this->algorithm, $password, $this->salt);
   }
 
 	/**
@@ -112,7 +112,9 @@ class WaxAuthDb
   public function verify($username, $password) {
     $object = WXInflections::camelize($this->db_table, true);
     $user = new $object;
+    echo $password."<br />";
     if($this->encrypt) $password = $this->encrypt($password);
+    
     $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
     if($result->primval) {
       $this->user_object = $result;
