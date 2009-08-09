@@ -149,7 +149,7 @@ class File {
   	return $type;
 	}
 	
-	static function stream_file($file) {
+	static function stream_file($file, $autoexit=true) {
 	  $length=filesize($file);
 		$filename = preg_replace("/[^a-zA-Z0-9-_\.]/", "_", basename($file));
 		if(is_readable($file)) { 
@@ -158,7 +158,9 @@ class File {
 			header("Content-disposition: inline; filename=".$filename."\n");
 			header("Connection: close"."\n");
 			ob_end_clean();
-			readfile($file); exit;
+			readfile($file); 
+			if(!$autoexit) return true;
+			exit;
 		}
 		return false;
 	}
