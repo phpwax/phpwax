@@ -156,6 +156,7 @@ class WaxUrl {
 	    self::$params["route"]=preg_replace("/" . preg_quote($controller, "/") . "/", "", self::$params["route"], 1);
 	    self::$params["route"]=ltrim(self::$params["route"], "/");
 	  } elseif($controller && $input) return $controller;
+    return false;
 	}
 	
 	protected function is_controller($test) {
