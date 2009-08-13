@@ -76,6 +76,11 @@ class WaxModelField {
         else $this->choices[$key]=$choice;
       }
     }
+    if($this->choices instanceof WaxRecordset) {
+      foreach($choices as $choice) {
+        $this->choices[$choice->primval()]=$choice->{$choice->identifier};
+      }
+    }
   }
   
   public function setup_validations() {

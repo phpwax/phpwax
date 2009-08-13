@@ -138,11 +138,11 @@ class WaxController
   protected function render_view() {
     if($this->use_plugin) {
       WaxLog::log("info", "[DEPRECATION] use_plugin in controllers is deprecated, use the add_plugin method intead.");
-      $this->plugins[]=$this->use_plugin;
+      $this->add_plugin($this->use_plugin);
     }
     if($this->shared_plugin) {
       WaxLog::log("info", "[DEPRECATION] shared_plugin in controllers is deprecated, use the add_plugin method intead.");
-      $this->plugins[]=$this->shared_plugin;
+      $this->add_plugin($this->shared_plugin);
     }
 		if(!$this->use_view) return false;
 		if($this->use_view == "none") return false;
@@ -150,8 +150,8 @@ class WaxController
 
 
     $view = new WaxTemplate($this);
+    $view->add_path(VIEW_DIR.rtrim($this->controller,"/")."/".$this->use_view);
     $view->add_path(VIEW_DIR.$this->use_view);
-    $view->add_path(VIEW_DIR.$this->controller."/".$this->use_view);
     foreach($this->plugins as $plugin) {
       $view->add_path(PLUGIN_DIR.$plugin."/view/".get_parent_class($this)."/".$this->use_view);
       $view->add_path(PLUGIN_DIR.$plugin."/view/".$this->plugin_share."/".$this->use_view);

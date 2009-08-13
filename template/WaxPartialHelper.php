@@ -37,6 +37,7 @@ class WaxPartialHelper extends WXHelpers {
         if(!$view->{$var}) $view->{$var}=$val;
       }
   		$view->add_path(VIEW_DIR.$view->controller."/".$path);
+  		//print_r($view); exit;
   		$partial = $view->parse($format, "partial");
 	  } else {
       if(!$controller) $controller = WaxUrl::$default_controller;
