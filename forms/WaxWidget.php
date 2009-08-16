@@ -27,7 +27,7 @@ class WaxWidget{
   public function __construct($name, $data=false) {
     if($data instanceof WaxModelField){
       $this->bound_data = $data;
-      if($this->show_label) $this->bound_data->label=Inflections::humanize($this->bound_data->field);
+      if($this->show_label && !$this->bound_data->label) $this->bound_data->label=Inflections::humanize($this->bound_data->field);
     }else {
       $this->defaults["name"]=$name;
       $this->defaults["id"]=$name;
@@ -75,9 +75,9 @@ class WaxWidget{
   }
   
   
-  public function render($settings = array()) {
+  public function render($settings = array(), $force=false) {
     foreach($settings as $set=>$val) $this->{$set}=$val;
-    if(!$this->editable) return false;
+    if(!$this->editable && !$force) return false;
     $out ="";
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");

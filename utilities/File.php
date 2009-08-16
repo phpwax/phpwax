@@ -149,16 +149,19 @@ class File {
   	return $type;
 	}
 	
-	static function stream_file($file) {
+	static function stream_file($file, $stream_as = false, $autoexit=true) {
 	  $length=filesize($file);
 		$filename = preg_replace("/[^a-zA-Z0-9-_\.]/", "_", basename($file));
 		if(is_readable($file)) { 
 			header("Content-Type: application/force-download"."\n");
 			header("Content-Length: ".$length.'\n');
+			if($stream_as) $filename = $stream_as;
 			header("Content-disposition: inline; filename=".$filename."\n");
 			header("Connection: close"."\n");
 			ob_end_clean();
-			readfile($file); exit;
+			readfile($file); 
+			if(!$autoexit) return true;
+			exit;
 		}
 		return false;
 	}

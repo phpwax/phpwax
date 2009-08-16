@@ -6,6 +6,8 @@
  * @package PHP-Wax
  **/
 class SelectInput extends WaxWidget {
+  
+  public $null=false;
 
   public $allowable_attributes = array(
     "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple"
@@ -21,6 +23,7 @@ class SelectInput extends WaxWidget {
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
     if(!$this->choices) $this->choices = $this->get_choices();
+    $this->map_choices();
     foreach($this->choices as $value=>$option) {
       $sel = "";
 			if(is_numeric($this->value) && (int)$this->value==(int)$value) $sel = ' selected="selected"';
@@ -32,6 +35,17 @@ class SelectInput extends WaxWidget {
   
   public function get_choices(){
     return $this->bound_data->get_choices();
+  }
+  
+  public function map_choices() {
+    if($this->choices instanceof WaxRecordset) {
+      $mapped_choice = array();
+      foreach($this->choices as $choice) {
+        $mapped_choice[$choice->primval()]=$choice->{$choice->identifier};
+      }
+      if($this->null !==false) $mapped_choice[""]=$this->null;
+      $this->choices = $mapped_choice;      
+    }    
   }
 
 
