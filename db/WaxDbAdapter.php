@@ -83,16 +83,12 @@ abstract class WaxDbAdapter {
   public function insert(WaxModel $model) {
     $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
-    $cache = new WaxCache;
-    $cache->expire("querycache");
     return $model;
 	}
   
   public function update(WaxModel $model) {
     $this->exec($this->prepare($this->update_sql($model)), $model->row);
     $id = $model->primval;
-    $cache = new WaxCache;
-    $cache->expire("querycache");
     return $model;
   }
   
@@ -106,8 +102,6 @@ abstract class WaxDbAdapter {
       $sql.= $this->order($model);
       $sql.= $this->limit($model);
     }
-    $cache = new WaxCache;
-    $cache->expire("querycache");
     return $this->exec($this->db->prepare($sql), $params);
   }
   
