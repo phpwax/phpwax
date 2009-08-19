@@ -53,7 +53,7 @@ class WaxForm implements Iterator {
   
   public function save() { return $this->handler->save(); }
   public function is_valid() { return $this->handler->is_valid(); }
-  
+  public function validate(){ return $this->handler->validate(); }
   
   /* Form rendering methods */
   public function start() {
