@@ -64,9 +64,9 @@ class File {
 		  $height = floor($y / $ratio);
 	  }
 		if($overwrite) {
-			$command="mogrify ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
+			$command="mogrify ".escapeshellarg($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
 		} else {
-			$command="convert ".escapeshellcmd($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
+			$command="convert ".escapeshellarg($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }

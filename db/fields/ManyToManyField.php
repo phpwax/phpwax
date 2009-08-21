@@ -149,13 +149,13 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
 
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) {
-        if(!$obj->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object");
+        if(!$obj->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object", print_r($obj,1));
 				else $filter[$links->table."_".$links->primary_key] = $obj->primval;
       }
       if(count($filter)) $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
     }else{
       if($model instanceof WaxModel){
-        if(!$model->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object");
+        if(!$model->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object", print_r($obj,1));
         else $model = $model->primval;
       }
       $this->join_model->filter(array($links->table."_".$links->primary_key => $model))->delete();
