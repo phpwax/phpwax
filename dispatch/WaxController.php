@@ -271,6 +271,7 @@ class WaxController
 		}
 		$this->run_filters("after");		
 		$this->content_for_layout = $this->render_view();
+	  if(!headers_sent()) header("Content-Type: $type; charset=utf-8");
 		if($content = $this->render_layout()) echo $content;
 		elseif($this->content_for_layout) echo $this->content_for_layout;
 		else echo "";
