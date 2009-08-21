@@ -23,6 +23,7 @@ class WaxWidget{
   public $validations = array();
   public $errors = array();
   public $prefix = false;
+  public $inline_errors = true;
   
   public function __construct($name, $data=false) {
     if($data instanceof WaxModelField){
@@ -83,7 +84,7 @@ class WaxWidget{
     if($this->errors) $this->add_class("error_field");
     if($this->show_label) $out .= sprintf($this->label_template, $this->output_id(), $this->label);
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
-    if($this->errors){
+    if($this->errors && $this->inline_errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
     $out .= $this->after_tag();
@@ -97,6 +98,7 @@ class WaxWidget{
   public function value(){
     if($this->bound_data instanceof WaxModelField) return $this->bound_data->{$this->name};
     elseif($this->post_data) return $this->post_data[$this->name];
+    return $this->value;
   }
   
   public function make_attributes() {
