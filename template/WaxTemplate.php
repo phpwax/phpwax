@@ -146,7 +146,6 @@ class WaxTemplate implements Cacheable{
 	    case "js": $type="text/javascript";break;
 	    default: $type="text/".$suffix; break;
 	  }
-	  if(!headers_sent()) header("Content-Type: $type; charset=utf-8");
 	  
 	  /** CACHE **/
 	  if($cache_object = $this->cache_enabled($parse_as)){
