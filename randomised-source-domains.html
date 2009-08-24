@@ -1,0 +1,41 @@
+---
+layout: home
+---
+
+<h1>Improve Download Performance With Randomised Source Domains</h1>
+
+<p>An advanced feature of the framework is the ability to manipulate the contents of the output buffer before it is rendered. This can allow you to use PHPs extensive string library to alter the resulting page with ease.</p>
+
+<p>The process of adding a such a hook is covered in the advanced feature set listing under output buffer manipulation.</p>
+
+<p>We added this one to the framework by default as we've found it very useful for those image heavy pages in IE (damn concurrent request limits).</p>
+
+<p>It takes a regular expression of your creation and replaces the match with the substitute you provide. It is meant to be used to change the source location of all css, javascript and inline image files.</p>
+
+<p>Again this is something done inside your <code>app/config/config.yml</code> file; below is the example.</p>
+
+<code>
+  {% highlight yaml %}
+randomise_domains:
+  exclusions:
+    admin:"/admin/i"
+  replace:
+    0: "/<link[^>]*href=\"(\/.*?)\" type=\"text\/css\"[^>]*>/i"
+    1: "/<img[^>]*src=\"(\/.*?)\"[^>]*>/i"
+    2: "/<script[^>]*src=\"(\/.*?)\"[^>]*>/i"
+  available_domains:
+    0: "static1.your.domain"
+    1: "static2.your.domain"
+    2: "static3.your.domain"
+    3: "static4.your.domain"
+    4: "static5.your.domain"
+  {% endhighlight %}
+</code>    
+
+<p>As with the <a href="cache.html">cache</a> you can add an exclusions list to stop this from running.</p>
+
+<p>In this case you have 5 extra domains (which will need to be pointing at the same place as the primary site) and 3 regular expressions to match against.</p>
+
+<p>Each regular expression is tested, the matches are then looped over with each results source being modified to come from one of the available_domains provided.</p>
+
+<p>Although the regular expression does add a slight extra overheard (regular expressions aren't the fastest things in the world) the benefits for load balancing large number of files see a faster overall page load time; especially good for IE.</p>
