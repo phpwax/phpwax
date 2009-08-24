@@ -3,3 +3,18 @@ layout: home
 ---
 
 <h1>Views, Layouts and Partials</h1>
+
+<p>The V part of MVC refers to the display of data; like many others we use partials, views and layouts. Each has its own purpose with in the framework.</p>
+
+<p>The layout is the main container of the website (header, footer etc), views are the main block of page content being shown (with information from your action), and partials being helpful blocks you can use in either.</p>
+
+<h2>The Layout</h2>
+
+<p>This is the outer chunk of your website more traditionally used as two separate header and footer files. In this case we simply combined them and use a variable to echo out the content of your view.</p>
+
+
+<h2>Partials</h2>
+
+<p>These are used almost as code snippets; small, self contained blocks of display information (such as a navigation, comment form and even lists) that are reused within many views or even the layout.</p>
+
+<p>Typically they contain very little code and run on data passed in to them.</p>
