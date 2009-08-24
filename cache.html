@@ -62,3 +62,20 @@ layout_cache:
     #admin: "/admin/i"
   {% endhighlight %}
 </code>
+
+
+<h3>More Override Control</h3>
+
+<p>If the regular expressions aren't enough and you need to be able to turn cache on or off in your controller based upon certain logic / query outcomes that is also possible.</p>
+
+<p>Say you have you want to turn off caching if a certain session value is present (such as a logged in user flag) you can use the use_cache property:</p>
+
+<code>
+  {% highlight ruby %}
+  public function test() {
+    if(Session::get('user_logged_in') == 1) $this->use_cache = false;
+  }
+{% endhighlight %}
+</code>
+
+<p>This will force caching to be turned off for this page (as long as the page has not been called directly from the cache).</p>
