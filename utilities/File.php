@@ -186,7 +186,7 @@ class File {
 	
 	static function recursively_delete($item) {
 	  if(!is_file($item) && !is_dir($item)) return true;
-		if(is_file($item)) { unlink($item); return true; }
+		if(is_file($item) && is_readable($item)) { unlink($item); return true; }
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($item), 2);
 		foreach ( $iter as $file ) {
 				if($iter->isDir() && is_readable($file)) { rmdir($file); }
