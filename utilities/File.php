@@ -171,6 +171,7 @@ class File {
 	}
 	
 	static function get_folders($directory) {
+	  if(!is_dir($directory)) return array();
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
 		foreach ( $iter as $file ) {
 			if(($iter->hasChildren(true)) && !strstr($iter->getPath()."/".$file, "/.")) {
