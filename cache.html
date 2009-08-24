@@ -3,3 +3,62 @@ layout: home
 ---
 
 <h1>Improve Performance With Caching</h1>
+
+<p>If your site is being hit hard then the built in caching system can help. It is completely configurable and supports caching of the entire rendered template, views, partials and images.</p>
+
+<p>Currently only file based caching is supported in the framework.</p>
+
+<p>To turn on caching you simply edit your <code>app/config/config.yml</code> file along with the <code>app/config/production.php</code> file.</p>
+
+<h2>Configuring The Cache</h2>
+
+<p>In these examples we will use 'layout_cache'. This type of cache stores the entire rendered layout of the url you are visiting and can be loaded without the need for most of the framework files, making it even faster.</p>
+
+<code>
+  {% highlight yaml %}
+layout_cache:
+  engine: "File"
+  exclude_post: "no"  
+  {% endhighlight %}
+</code>
+
+<p>To increase duration of the cache you can set life time of the cache:</p>
+
+<code>
+  {% highlight yaml %}
+layout_cache:
+  lifetime: 36000
+  engine: "File"
+  exclude_post: "no"  
+  {% endhighlight %}
+</code>
+
+<h3>White and Black Listing</h3>
+
+<p>The cache system also supports regular expression based includes and exclude options. This way you can either cache only certain pages (archives etc that don't change) or exclude pages that you always want to be up to date (live feed data etc).</p>
+
+<p>This is very simple to do and is applied on a per cache basis (so layout cache can exclude certain pages that image cache includes).</p>
+
+<code>
+  {% highlight yaml %}
+layout_cache:
+  lifetime: 36000
+  engine: "File"
+  exclude_post: "no"
+  exclusions:
+    #contact: "/contact/i"
+    #admin: "/admin/i"
+  {% endhighlight %}
+</code>
+
+<code>
+  {% highlight yaml %}
+layout_cache:
+  lifetime: 36000
+  engine: "File"
+  exclude_post: "no"
+  inclusions:
+    #contact: "/contact/i"
+    #admin: "/admin/i"
+  {% endhighlight %}
+</code>

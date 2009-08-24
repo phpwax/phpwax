@@ -64,7 +64,7 @@ layout: home
     $user = new User;
     $fred = $user->filter("username", "fred")->first();
     $this->form = new WaxForm($fred);
-    if($this->form->is_posted) $this->form->save();
+    if($this->form->is_posted()) $this->form->save();
   }
 {% endhighlight %}
 </code>
