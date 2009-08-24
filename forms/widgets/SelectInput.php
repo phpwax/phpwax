@@ -43,9 +43,10 @@ class SelectInput extends WaxWidget {
       foreach($this->choices as $choice) {
         $mapped_choice[$choice->primval()]=$choice->{$choice->identifier};
       }
-      if($this->null !==false) $mapped_choice[""]=$this->null;
-      $this->choices = $mapped_choice;      
-    }    
+      if($this->null !==false) $push[""]=$this->null;
+      $this->choices = (array)$push+(array)$mapped_choice;      
+    }
+    
   }
 
 

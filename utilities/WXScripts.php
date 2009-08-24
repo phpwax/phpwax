@@ -155,11 +155,11 @@ class WXScripts {
     if(isset($argv[3]) && $argv[3]=="production") {
       define("ENV", "production");
       unset($argv[3]);
-    }
+    }    
     $this->app_setup();
     if(!isset($argv[1]) || !isset($argv[2])) {
       exit("[ERROR] You must supply at least two values, a model and a method"."\n");
-    }    
+    }        
     $model_name = Inflections::camelize($argv[1], true);
     if(!class_exists($model_name) || !$model = new $model_name) {
       exit("[ERROR] Cannot find class name $model_name"."\n");
@@ -168,7 +168,7 @@ class WXScripts {
     array_shift($argv);
     array_shift($argv);
     array_shift($argv);
-
+    
     if(call_user_func_array($commands, $argv) ) {
       $this->add_output("...successfully ran command, and method returned true.");
     } else {

@@ -24,7 +24,7 @@ class CheckboxInput extends TextInput {
     $hidden = new HiddenInput($this->name);
     $out.=$hidden->render(array("prefix"=>$this->prefix, "value"=>$this->unchecked_value));
     $this->value = $this->checked_value;
-    if($this->value()==$this->checked_value) $this->checked="checked";
+    if($this->value==$this->checked_value) $this->checked="checked";
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->label && $this->prefix) $out .= sprintf($this->label_template, $this->prefix."_".$this->name, $this->label);
     elseif($this->label) $out .= sprintf($this->label_template, $this->id, $this->label);

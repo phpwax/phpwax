@@ -29,10 +29,22 @@ class Config
 	
 	static public function initialise($initial_config=false) {
 	  if(self::$initialised) return true;
-		if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
+	  switch(true) {
+	    case is_readable(CONFIG_DIR."config.yml"): self::init_yaml(); break;
+	    case is_readable(CONFIG_DIR."config.php"): self::init_php(); break;
+	  }
+		self::$initialised=true;
+	}
+	
+	static public function init_yaml() {
+	  if(!$initial_config) $initial_config = CONFIG_DIR."config.yml";
 	  self::$app_yaml_file = $initial_config;
 	  self::$config_array = self::load_yaml(self::$app_yaml_file);
-	  self::$initialised=true;
+	  
+	}
+	
+	static public function init_php() {
+	  eval(file_get_contents(CONFIG_DIR."config.php"));
 	}
 	
 	/**

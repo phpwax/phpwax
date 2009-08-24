@@ -76,7 +76,7 @@ class WaxModelField {
         else $this->choices[$key]=$choice;
       }
     }
-    if($this->choices instanceof WaxRecordset) {
+    if($choices instanceof WaxRecordset) {
       foreach($choices as $choice) {
         $this->choices[$choice->primval()]=$choice->{$choice->identifier};
       }
