@@ -19,3 +19,10 @@ public function test() {
 {% endhighlight %}
 
 <p>Now if you go to <em>http://yoursite.local/test</em> you'll get the hello world message.</p>
+
+<h2>Matching URLs, Method Names and Views</h2>
+
+<p>As <acronym class='caps'>PHP</acronym> doesn't support - inside function names these are replaced in the URL with and underscore (_) and this will be the name of the method.</p>
+<p>For example, <em>http://yoursite.local/contact-us</em> will look for a public method called <em>contact_us</em></p>
+<p>In such cases the name of the view will match the url style, with hyphens (-).</p>
+
