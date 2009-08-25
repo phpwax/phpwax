@@ -7,13 +7,13 @@ layout: home
 
 <h2>An Introduction to Configuration with Wax</h2>
 
-<p>Configuring your application should be easy and extensible. For this reason you'll notice that for setting up <acronym class="caps">PHP</acronym> Wax applications we've chosen the easy to use and easy to read <acronym class="caps">YAML</acronym> format.</p>
-<p>If you've got your first application at the ready opening up the file <em>app/config/config.yml</em> will give you an example of how to use <acronym class="caps">YAML</acronym> for configuration.</p>
+<p>Configuring your application should be easy and extensible. For this reason you'll notice that for setting up <acronym class="caps" title='Pre Hypertext Processor'>PHP</acronym> Wax applications we've chosen the easy to use and easy to read <acronym class='caps' title="YAML Ain't Markup Language">YAML</acronym> format.</p>
+<p>If you've got your first application at the ready opening up the file <em>app/config/config.yml</em> will give you an example of how to use <acronym class='caps' title="YAML Ain't Markup Language">YAML</acronym> for configuration.</p>
 <p>What you see inside that file is some basic configuration for a standard Wax application. One of the first things you'll need to change if you want to create database driven applications is the database settings.</p>
 
 <h2>Working with Multiple Environments</h2>
 
-<p>The best thing about using a framework like <acronym class="caps">PHP</acronym> Wax is that it encourages you to work in a much more efficient manner. When creating web applications you want deploying your application to have as few points of failure as possible. Hence using different environments is a great idea, you can have different settings for your development, testing and production environments which means that when you put an application live everything just works.</p>
+<p>The best thing about using a framework like <acronym class="caps" title='Pre Hypertext Processor'>PHP</acronym> Wax is that it encourages you to work in a much more efficient manner. When creating web applications you want deploying your application to have as few points of failure as possible. Hence using different environments is a great idea, you can have different settings for your development, testing and production environments which means that when you put an application live everything just works.</p>
 
 <h2>The Default Configuration</h2>
 
@@ -37,7 +37,7 @@ Config::get("default_postcode");
 {% endhighlight %}
 
 
-<p>For more complex setups you can use <acronym class="caps">YAML</acronym>'s easy to understand nesting. Take the following as an example:</p>
+<p>For more complex setups you can use <acronym class='caps' title="YAML Ain't Markup Language">YAML</acronym>'s easy to understand nesting. Take the following as an example:</p>
 
 {% highlight yaml %}
 users:
@@ -52,7 +52,7 @@ users:
 {% endhighlight %}
 
 
-<p>Now we have a very basic user list stored in the configuration. Getting the info back is easy too, to access different levels of config <acronym class="caps">PHP</acronym> Wax uses a simple path system. So calling the following:</p>
+<p>Now we have a very basic user list stored in the configuration. Getting the info back is easy too, to access different levels of config <acronym class="caps" title='Pre Hypertext Processor'>PHP</acronym> Wax uses a simple path system. So calling the following:</p>
 
 {% highlight ruby %}
 Config::get("users");
@@ -67,4 +67,4 @@ Config::get("users/fred/email");
 
 <p>which will get you either an array of Fred's settings or in the second instance Fred's email address.</p>
 
-<p>Installing <acronym class="caps">SYCK</acronym> will improve the speed of reading <acronym class="caps">YAML</acronym> files greatly, which is a benefit on busy production servers.</p>
+<p>Installing <acronym class="caps">SYCK</acronym> will improve the speed of reading <acronym class='caps' title="YAML Ain't Markup Language">YAML</acronym> files greatly, which is a benefit on busy production servers.</p>
