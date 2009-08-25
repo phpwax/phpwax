@@ -15,14 +15,14 @@ layout: home
 &lt;?php
 class User extends WaxModel {  
 
-  public function setup() {
-    $this->define("name", "CharField");
-    $this->define("email", "CharField");
-		$this->define("username", "CharField", array("required"=>true));
-		$this->define("password", "PasswordField");
-		$this->define("twitter", "CharField");
-		$this->define("flickr", "CharField");
-	}
+public function setup() {
+  $this->define("name", "CharField");
+  $this->define("email", "CharField");
+	$this->define("username", "CharField", array("required"=>true));
+	$this->define("password", "PasswordField");
+	$this->define("twitter", "CharField");
+	$this->define("flickr", "CharField");
+}
   	
 }
 ?&gt;
