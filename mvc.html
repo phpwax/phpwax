@@ -29,6 +29,32 @@ capfile
 
 <p>By way of a brief introduction to this setup here's a brief summary of an application's components.</p>
 
-<h2>The app directory</h2>
+<h2>The <em>app</em> directory</h2>
 
-<p>First up, the app directory contains a few subdirectories. The first of these is the config directory. By default this will contain two files, <em>config.yml</em> and <em>environment.php</em>.</p>
+<p>First up, the app directory contains a few subdirectories. The first of these is the config directory. By default this will contain four files, <em>config.yml</em>, <em>environment.php</em>, <em>production.php</em>, and <em>development.php</em>.</p>
+
+<h3>config.yml</h3>
+
+<p>You standard configuration file. By default this handles the database setup and other items such as the <a href='/phpwax/cache.html'>cache configuration</a>.</p>
+
+<h3>environment.php</h3>
+
+<p>The environment file is the first file to be included by the framework (inside the <em>index.php</em> file). It sets up 2 constants that are used within the framework:</p>
+<ul>
+  <li><em>WAX_ROOT</em> - The directory the website is running out of.</li>
+  <li><em>FRAMEWORK_DIR</em> - The location of the PHP Wax folder.</li>
+</ul>
+<p>It is very rare that you will ever need to change either of those to variables. Once these are set then the <em>WAX_ROOT</em> is added to <acronym class='caps'>PHP</acronym>s include path.</p>
+<p>The main <em>AutoLoader.php</em> is now loaded.</p>
+
+<h3>production.php and development.php</h3>
+
+<p>These two files are used for settings that you want to either change or add config settings depending on what environment you are running in.</p>
+<p>For example; on your live production server you might want to enable caching on your layout but obviously while you are developing the site you would not want to do that.</p>
+<p>Using the <em>Config::set()</em> and <em>Config::get()</em> methods in this file you can do that.</p>
+
+<h2>The <em>capfile</em></h2>
+
+<p>This is a <em>capistrano</em> file used for deploying your site.</p>
+
+
