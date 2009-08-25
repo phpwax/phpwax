@@ -34,7 +34,6 @@ layout_cache:
 <h3>White and Black Listing</h3>
 
 <p>The cache system also supports regular expression based includes and exclude options. This way you can either cache only certain pages (archives etc that don't change) or exclude pages that you always want to be up to date (live feed data etc).</p>
-
 <p>This is very simple to do and is applied on a per cache basis (so layout cache can exclude certain pages that image cache includes).</p>
 
 {% highlight yaml %}
@@ -58,12 +57,9 @@ layout_cache:
     admin: "/admin/i"
 {% endhighlight %}
 
-
-
 <h3>More Override Control</h3>
 
 <p>If the regular expressions aren't enough and you need to be able to turn cache on or off in your controller based upon certain logic / query outcomes that is also possible.</p>
-
 <p>Say you have you want to turn off caching if a certain session value is present (such as a logged in user flag) you can use the use_cache property:</p>
 
 {% highlight ruby %}
