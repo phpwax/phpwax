@@ -78,5 +78,5 @@ pre code {
     font-family: Monaco, Consolas, "Lucida Console", monospace;
     font-size: 85%;
 }
-acronym{text-decoration:underline;}
+acronym{text-decoration:underline;cursor:help;}
 
