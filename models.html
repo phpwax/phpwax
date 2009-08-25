@@ -4,30 +4,15 @@ layout: home
 
 <h1>Setting Up Models</h1>
 
-
-<p>
-	Models are one of the three tiers of the <span class="caps">MVC</span> pattern. 
-	They are used to define an application's interaction with the database.
-</p>
-
-
-<p>
-  PHP Wax takes care of saving your models to the database with as little hassle as possible, it can also 
-  handle different types of joins between database tables, later when we cover the more advanced functionality
-  you'll see how models can also handle validation too. 
-</p>
+<p>Models are one of the three tiers of the <acronym class="caps">MVC</acronym> pattern. They are used to define an application's interaction with the database.</p>
+<p>PHP Wax takes care of saving your models to the database with as little hassle as possible, it can also handle different types of joins between database tables, later when we cover the more advanced functionality you'll see how models can also handle validation too.</p>
 
 <h2>Setting up Models and Defining Fields</h2>
 
-<p>
-  Here's an example of how a model is setup, this model handles a user table in the database. Ordinarily you'll make
-  a new file in your app/model folder called User.php to make use of PHP Wax's automatic include feature you'll need
-  to make sure that the filename is the same as the class name, so a class of User gets saved in User.php, a class of 
-  MySiteUser would go in a file called MySiteUser.php.
-</p>
+<p>Here's an example of how a model is setup, this model handles a user table in the database. Ordinarily you'll make a new file in your app/model folder called User.php to make use of PHP Wax's automatic include feature you'll need to make sure that the filename is the same as the class name, so a class of User gets saved in User.php, a class of MySiteUser would go in a file called MySiteUser.php</p>
 
-<code>
 {% highlight ruby %}
+&lt;?php
 class User extends WaxModel {  
 
   public function setup() {
@@ -40,53 +25,38 @@ class User extends WaxModel {
 	}
   	
 }
+?&gt;
 {% endhighlight %}  
-</code>
+
 
 <h2>How to Define Fields</h2>
-<p>
-  As you can see in the code example above all of the model's definition gets done in a special method, 'setup'.
-  A call to this->define can take three arguments, firstly the name of the field, the second is the type of field and the
-  third is an array of options that customises the database and validation behaviour.
-</p>
-<p>
-  PHP Wax has quite a few built in field types, the second argument refers to a class which handles the behaviour.
-  As you can see in the example above the most often used value is <em>CharField</em> this is the database equivalent of
-  <em>varchar</em> and is used for short textual values, normally that require fewer than 255 characters.
-</p>
-<p>
-  The other built in field options are:
-  <ul>
-    <li>AutoField</li>
-    <li>BooleanField</li>
-    <li>CharField      </li>
-    <li>DateTimeField  </li>
-    <li>EmailField     </li>
-    <li>FileField      </li>
-    <li>FloatField     </li>
-    <li>ForeignKey     </li>
-    <li>HasManyField   </li>
-    <li>IntegerField   </li>
-    <li>ManyToManyField</li>
-    <li>PasswordField  </li>
-    <li>TextField      </li>
-  </ul>
-  Of course since these map to class names you can add your own field type as well if you need any custom functionality
-  that the built in ones don't provide.
-</p>
-<p>
-  For now we'll focus on basic usage of models but we'll go into the more fine grained configuration in another tutorial.
-</p>
-<p>
-  As you can see the third value that is passed into the define call is an array of options. This value is optional so 
-  for now we'll use the 'out of the box' functionality to get started.
-</p>
+
+<p>As you can see in the code example above all of the model's definition gets done in a special method, 'setup'. A call to this->define can take three arguments, firstly the name of the field, the second is the type of field and the third is an array of options that customises the database and validation behaviour.</p>
+<p>PHP Wax has quite a few built in field types, the second argument refers to a class which handles the behaviour. As you can see in the example above the most often used value is <em>CharField</em> this is the database equivalent of <em>varchar</em> and is used for short textual values, normally that require fewer than 255 characters.</p>
+<p>The other built in field options are:</p>
+<ul>
+  <li>AutoField</li>
+  <li>BooleanField</li>
+  <li>CharField</li>
+  <li>DateTimeField</li>
+  <li>EmailField</li>
+  <li>FileField</li>
+  <li>FloatField</li>
+  <li>ForeignKey</li>
+  <li>HasManyField</li>
+  <li>IntegerField</li>
+  <li>ManyToManyField</li>
+  <li>PasswordField</li>
+  <li>TextField</li>
+</ul>
+<p>Of course since these map to class names you can add your own field type as well if you need any custom functionality that the built in ones don't provide.</p>
+<p>For now we'll focus on basic usage of models but we'll go into the more fine grained configuration in another tutorial.</p>
+<p>As you can see the third value that is passed into the define call is an array of options. This value is optional so for now we'll use the 'out of the box' functionality to get started.</p>
+
 <h2>Using Your Model to Write to and Query the Database</h2>
-<p>
-  Luckily you've done all the hard work now and reading from and writing to the database is a doddle. Let's make a new
-  user in our database.
-</p>
-<code>
+
+<p>Luckily you've done all the hard work now and reading from and writing to the database is a doddle. Let's make a new user in our database.</p>
+
 {% highlight ruby %}
 $user = new User;
 $user->username = "fred";
@@ -94,19 +64,15 @@ $user->name = "Fred Bloggs";
 $user->email = "fred@example.com";
 $user->save();
 {% endhighlight %}  
-</code>
 
-<p>
-  Jump into your database and you'll see, as if by magic, that you now have a new row in the database.
-</p>
-<p>
-  Now we need to get our record out of the database and add his Twitter username.
-</p>
-<code>
+<p>Jump into your database and you'll see, as if by magic, that you now have a new row in the database.</p>
+<p>Now we need to get our record out of the database and add his Twitter username.</p>
+
 {% highlight ruby %}
 $user = new User;
 $fred = $user->filter("username", "fred")->first();
 $fred->twitter = "fredbloggs";
 $fred->save();
-{% endhighlight %}  
-</code>
+{% endhighlight %}
+
+

@@ -25,6 +25,7 @@ h1,h2,h3,h4,h5 {font-weight:normal;}
 h1 {color:#222222;}
 h2 {color:#222222;}
 p, ul li {color:#222; font-size:93%;}
+p{line-height:1.5em;}
 #nav {
   float:right;
   margin:20px 15px 40px 40px;
@@ -51,13 +52,14 @@ em {
   font-style:normal;
   font-family: Monaco, Consolas, "Lucida Console", monospace;
   background:#E7E7E7;
+  display:inline-block;
 }
 
 /*------------------------------------------------------------------------
  *=CODE
  ------------------------------------------------------------------------*/
 
-code {
+code{
   background: #f7f7f7;
   padding: 10px;
   font-size: 90%;

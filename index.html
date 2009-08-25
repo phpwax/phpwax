@@ -4,96 +4,67 @@ layout: home
 
 <h1>An Introduction to PHP Wax</h1>
 
+<h2>A Web Framework for PHP</h2>
 
-	<h2>A Web Framework for PHP</h2>
+<p>The more we write and design web applications the more it becomes obvious that the majority share a core set of functionality.</p>
+<p>The simple things that you may do day in and day out such as querying a database, creating forms, sending emails and structuring a website layout often involves a great deal of repetitive work.</p>
+<p>It's for this reason that a well designed framework can help us to become much more efficient as well as helping to produce software with fewer bugs.</p>
 
+<h2>Why PHP Wax?</h2>
 
-	<p>The more we write and design web applications the more it becomes obvious that the majority share a core set of functionality.</p>
+<p>Many frameworks are designed to be accessible to all competencies of programmers which often results in software that is bloated or unnecessarily abstracted.</p>
+<p>First up PHP Wax is designed for developers working in a professional environment with a good knowledge of object oriented programming. If you're more used to procedural style programming then you may want to do a little swotting before you get stuck in.</p>
+<p>The second thing to remember is that often, PHP Wax will use some of the more advanced features of the <acronym class="caps">PHP</acronym> language so you will need to have a fairly up to date version of the language and occasionally the ability to install extra dependencies too.</p>
+<p>Finally by way of a warning there are several features that will not work on Windows platforms. Whilst your application should run without any problems there's a few nice extra scripts included that will only work on Mac and Linux systems.</p>
+<p>If all that doesn't scare you off then sit back and start to enjoy programming again.</p>
 
+<h2>Your First Application</h2>
 
-	<p>The simple things that you may do day in and day out such as querying a database, creating forms, sending emails and structuring a website layout often involves a great deal of repetitive work.</p>
+<p>So it's about time we got started on an application and your first job is to grab a copy of the framework and a basic skeleton application.</p>
+<p>First up we'll get a skeleton application downloaded to your machine. This consists mainly of a few files that help you put your files in the right place.</p>
 
+<h3>Getting The Skeleton</h3>
 
-	<p>It's for this reason that a well designed framework can help us to become much more efficient as well as helping to produce software with fewer bugs.</p>
+<p>Download the current skeleton from:</p>
 
+<code><a href="http://github.com/phpwax/wax-site/zipball/master">http://github.com/phpwax/wax-site/zipball/master</a></code>
 
-	<h2>Why PHP Wax?</h2>
+<p>Unzip the file and rename the top folder to the name of your application or a test name if your not planning on doing anything serious at the moment. The best place to put this is in your 'Sites' directory on your computer.</p>
+<p>Now you have the skeleton application you just need a copy of the framework. It works really simply, inside your folder that you've just created you need to have the framework files in a folder called <em>wax</em>.</p>
 
+<h3>Getting PHP Wax with Git</h3>
 
-	<p>Many frameworks are designed to be accessible to all competencies of programmers which often results in software that is bloated or unnecessarily abstracted.</p>
+<p>PHP Wax uses the Git VCS to manage development so if you want to easily update the framework code as new features are added then we'd recommend that you use Git to clone the PHP Wax repository.</p>
+<p>If you have Git installed on your system then pop open a terminal window, navigate to your sites directory and type the following:</p>
 
+<code>git clone git://github.com/phpwax/phpwax.git wax</code>
 
-	<p>First up PHP Wax is designed for developers working in a professional environment with a good knowledge of object oriented programming. If you're more used to procedural style programming then you may want to do a little swotting before you get stuck in.</p>
+<h3>Getting a PHP Wax ZIP File</h3>
 
+<p>If you don't have <acronym class='code'>GiT</acronym> on your machine you can get a zip snapshot of the current version of PHP Wax here:</p>
 
-	<p>The second thing to remember is that often, PHP Wax will use some of the more advanced features of the <span class="caps">PHP</span> language so you will need to have a fairly up to date version of the language and occasionally the ability to install extra dependencies too.</p>
+<code><a href="http://github.com/phpwax/phpwax/zipball/v2-stable">http://github.com/phpwax/phpwax/zipball/v2-stable</a></code>
 
-
-	<p>Finally by way of a warning there are several features that will not work on Windows platforms. Whilst your application should run without any problems there's a few nice extra scripts included that will only work on Mac and Linux systems.</p>
-
-
-	<p>If all that doesn't scare you off then sit back and start to enjoy programming again.</p>
-
-
-	<h2>Your First Application</h2>
-
-
-	<p>
-	  So it's about time we got started on an application and your first job is to grab a copy of the framework and 
-	  a basic skeleton application. 
-	</p>
-	<p>
-	 First up we'll get a skeleton application downloaded to your machine. This consists mainly of a few files that
-	 help you put your files in the right place. You can download a zip of the skeleton from:
-	</p>
-	<code><a href="http://github.com/phpwax/wax-site/zipball/master">http://github.com/phpwax/wax-site/zipball/master</a></code>
-	<p>Unzip the file and rename the top folder to the name of your application or a test name if your not planning 
-	  on doing anything serious at the moment. The best place to put this is in your Sites directory on your computer.
-	</p>
-
-  <p>
-    Now you have the skeleton application you just need a copy of the framework. It works really simply, inside your
-    folder that you've just created you need to have the framework files in a folder called <em>wax</em>.
-  </p>
-
-  <h3>Getting PHP Wax with Git</h3>
-  <p>
-    PHP Wax uses the Git VCS to manage development so if you want to easily update the framework code as new features
-    are added then we'd recommend that you use Git to clone the PHP Wax repository.
-  </p>
-	<p>If you have Git installed on your system then pop open a terminal window, navigate to your sites directory and type the following:</p>
-  <code>git clone git://github.com/phpwax/phpwax.git wax</code>
-
-  <h3>Downloading A Zip File for PHP Wax</h3>
-
-	<p>If you are working on a system without Git then you can download a zipped version of the package from:</p>
-  <code><a href="http://github.com/phpwax/phpwax/zipball/master">http://github.com/phpwax/phpwax/zipball/master</a></code>
-  <p>
-    Once you've downloaded and unzipped this file, just rename the top folder to wax, and move the folder into
-    your skeleton application folder.
-  </p>
-
-	<h2>See Your Application In Action</h2>
+<p>Once you've downloaded and unzipped this file, just rename the top folder to wax, and move the folder into your skeleton application folder.</p>
 
 
-	<p>We're almost there so it's about time we saw what our application looks like. To do this you'll need to set up your local web server to serve from the public directory. Normally you'd setup a local domain name and then a virtual host within Apache to serve it.</p>
+<h2>See Your Application In Action</h2>
 
+<p>We're almost there so it's about time we saw what our application looks like. To do this you'll need to set up your local web server to serve from the public directory. Normally you'd setup a local domain name and then a virtual host within Apache to serve it.</p>
+<p>On <acronym class="caps">OS X</acronym> or Linux you can edit your <em>/etc/hosts</em> file add <em>127.0.0.1 testapp.local</em> and you have a local domain.</p>
+<p>Then open up your Apache config file and add something like the following:</p>
 
-	<p>On <span class="caps">OS X</span> or Linux you can edit your <code>/etc/hosts</code> file add <code>127.0.0.1 testapp.local</code> and you have a local domain.</p>
-
-
-	<p>Then open up your Apache config file and add something like the following:</p>
-
-
-<code>
 {% highlight yaml %}
 <VirtualHost *:80>
-  DocumentRoot "/Users/yourusername/Sites/testapp/public" 
-  ServerName testapp.local
+DocumentRoot "/Users/yourusername/Sites/testapp/public" 
+ServerName testapp.local
 </VirtualHost>
 {% endhighlight %}
-</code>
 
-	<p>Then all that remains is to open your browser and type: <code>http://testapp.local</code> &#8211; Congratulations, you're ready to go.</p>
+<p>Please note that the path file above presumes an <acronym class='caps'>OS X</acronym> architecture.</p>
+<p>On some systems you may have to restart Apache.</p>
+<p>Then all that remains is to open your browser and type:</p>
 
-  <p>Next: <a href="mvc.html">An introduction to the Model View Controller Pattern</a></p>
+<code>http://testapp.local</code>
+
+<p>Congratulations, you're ready to go.</p>

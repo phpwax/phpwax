@@ -4,30 +4,15 @@ layout: home
 
 <h1>Creating and Saving Forms</h1>
 
-<p>
-  Creating forms can often be a very time consuming process but fortunately PHP Wax tries to make the process
-  a lot easier.
-</p>
-
-<p>
-  To make things easier to understand we're going to cover two different types of form in this tutorial, forms
-  that are bound to models, and forms that are standalone.
-</p>
+<p>Creating forms can often be a very time consuming process but fortunately PHP Wax tries to make the process a lot easier.</p>
+<p>To make things easier to understand we're going to cover two different types of form in this tutorial, forms that are bound to models, and forms that are standalone.</p>
 
 <h2>Handling Bound Forms</h2>
-<p>
-  Since you've done all the hard work in your model definition it makes sense to reuse that application logic to 
-  create your forms, since it's often the case that forms are just a way of getting data from the user into the
-  database. We'll use the User model we created in the earlier tutorial to demonstrate how this works.
-</p>
-<p>
-  Remembering the correct way to separate our application code from the templates we'll create a form in our controller
-  and then create a template to render it.
-</p>
-<p>
-  Here's the controller code which you can drop into <em>app/controller/PageController.php</em>:
-</p>
-<code>
+
+<p>Since you've done all the hard work in your model definition it makes sense to reuse that application logic to create your forms, since it's often the case that forms are just a way of getting data from the user into the database. We'll use the User model we created in the earlier tutorial to demonstrate how this works.</p>
+<p>Remembering the correct way to separate our application code from the templates we'll create a form in our controller and then create a template to render it.</p>
+<p>Here's the controller code which you can drop into <em>app/controller/PageController.php</em>:</p>
+
 {% highlight ruby %}
   public function test() {
     $user = new User;
@@ -35,47 +20,28 @@ layout: home
     $this->form = new WaxForm($fred);
   }
 {% endhighlight %}
-</code>
 
-<p>
-  Then we need a template to render our form. For this example we'll create an html page in <em>app/view/page/test.html</em>
-  All we need is the following code:
-</p>
-<code>
+<p>Then we need a template to render our form. For this example we'll create an html page in <em>app/view/page/test.html</em>. All we need is the following code:</p>
+
 {% highlight html %}
   <h1>Form for Fred</h1>
   <?=$form->render();?>
 {% endhighlight %}
-</code>
 
-<p>
-  Ok, now that does a little too scary that it can be that easy but in reality there's plenty of cases when you want to
-  customise things to a much finer level. The good news  is that PHP Wax lets you do this if you need to whilst giving
-  you a very usable out of the box behaviour.
-</p>
-<p>
-  This kind of setup is ideal for putting together quick scaffolds and to prove it we're going to use our form to edit
-  Fred's details. All we need to do is save the form and the data will be passed back to the User model and saved to
-  the database. To do this we'll edit our controller code to the following:
-</p>
-<code>
+<p>Ok, now that does a little too scary that it can be that easy but in reality there's plenty of cases when you want to customise things to a much finer level. The good news  is that PHP Wax lets you do this if you need to whilst giving you a very usable out of the box behaviour.</p>
+<p>This kind of setup is ideal for putting together quick scaffolds and to prove it we're going to use our form to edit Fred's details. All we need to do is save the form and the data will be passed back to the User model and saved to the database. To do this we'll edit our controller code to the following:</p>
+
 {% highlight ruby %}
-  public function test() {
-    $user = new User;
-    $fred = $user->filter("username", "fred")->first();
-    $this->form = new WaxForm($fred);
-    if($this->form->is_posted()) $this->form->save();
-  }
+public function test() {
+  $user = new User;
+  $fred = $user->filter("username", "fred")->first();
+  $this->form = new WaxForm($fred);
+  if($this->form->is_posted()) $this->form->save();
+}
 {% endhighlight %}
-</code>
 
-<p>
-  Go to <em>http://testapp.local/test</em> and you'll see the result of all your hard work. Now change some of
-  Fred's details and hit the submit button. You'll see that our web application is working nicely.
-</p>
+<p>Go to <em>http://testapp.local/test</em> and you'll see the result of all your hard work. Now change some of Fred's details and hit the submit button. You'll see that our web application is working nicely.</p>
 
 <h2>Handling Unbound Forms</h2>
-<p>
-  When you're creating forms, you don't always want to save the results to the database and for this you can use unbound
-  or standalone forms.
-</p>
+
+<p>When you're creating forms, you don't always want to save the results to the database and for this you can use unbound or standalone forms.</p>

@@ -2,39 +2,33 @@
 layout: home
 ---
 
-<h1>How <span class="caps">PHP</span> Wax Uses the Model View Controller Pattern</h1>
+<h1>How <acronym class="caps">PHP</acronym> Wax Uses the Model View Controller Pattern</h1>
 
+<p>This isn't meant as a complete description of the Model View Controller (MVC) pattern, if it's a new word for you then a bit of research may be in order. However everyone's definition of <acronym class="caps">MVC</acronym> is a little different so what follows is a basic summary of how <acronym class="caps">PHP</acronym> Wax uses the pattern to organise an application.</p>
+<p>If you have a browse through your newly created application folder you'll see the following structure:</p>
 
-	<p>This isn&#8217;t meant as a complete description of the Model View Controller (MVC) pattern, if it&#8217;s a new word for you then a bit of research may be in order. However everyone&#8217;s definition of <span class="caps">MVC</span> is a little different so what follows is a basic summary of how <span class="caps">PHP</span> Wax uses the pattern to organise an application.</p>
+<code>
+./app
+  ./config
+  ./controller
+  ./db
+  ./lib
+  ./model
+  ./view
+capfile
+./plugins
+./public
+  ./images
+  ./javascripts
+  ./stylesheets
+./script
+./tmp
+  ./log
+  ./cache
+</code>
 
+<p>By way of a brief introduction to this setup here's a brief summary of an application's components.</p>
 
-	<p>If you have a browse through your newly created application folder you&#8217;ll see the following structure:</p>
+<h2>The app directory</h2>
 
-
-<pre>
-  ./app
-    ./config
-    ./controller
-    ./db
-    ./lib
-    ./model
-    ./view
-  capfile
-  ./plugins
-  ./public
-    ./images
-    ./javascripts
-    ./stylesheets
-  ./script
-  ./tmp
-    ./log
-    ./cache
-</pre>
-
-	<p>By way of a brief introduction to this setup here&#8217;s a brief summary of an application&#8217;s components.</p>
-
-
-	<h2>The app directory</h2>
-
-
-	<p>First up, the app directory contains a few subdirectories. The first of these is the config directory. By default this will contain two files, <code>config.yml</code> and <code>environment.php</code>.</p>
+<p>First up, the app directory contains a few subdirectories. The first of these is the config directory. By default this will contain two files, <em>config.yml</em> and <em>environment.php</em>.</p>

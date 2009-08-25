@@ -14,24 +14,20 @@ layout: home
 
 <p>In these examples we will use 'layout_cache'. This type of cache stores the entire rendered layout of the url you are visiting and can be loaded without the need for most of the framework files, making it even faster.</p>
 
-<code>
-  {% highlight yaml %}
+{% highlight yaml %}
 layout_cache:
   engine: "File"
   exclude_post: "no"  
-  {% endhighlight %}
-</code>
+{% endhighlight %}
 
 <p>To increase duration of the cache you can set life time of the cache:</p>
 
-<code>
-  {% highlight yaml %}
+{% highlight yaml %}
 layout_cache:
   lifetime: 36000
   engine: "File"
   exclude_post: "no"  
-  {% endhighlight %}
-</code>
+{% endhighlight %}
 
 <h3>White and Black Listing</h3>
 
@@ -39,29 +35,27 @@ layout_cache:
 
 <p>This is very simple to do and is applied on a per cache basis (so layout cache can exclude certain pages that image cache includes).</p>
 
-<code>
-  {% highlight yaml %}
+{% highlight yaml %}
 layout_cache:
   lifetime: 36000
   engine: "File"
   exclude_post: "no"
   exclusions:
-    #contact: "/contact/i"
-    #admin: "/admin/i"
-  {% endhighlight %}
-</code>
+    contact: "/contact/i"
+    admin: "/admin/i"
+{% endhighlight %}
 
-<code>
-  {% highlight yaml %}
+
+{% highlight yaml %}
 layout_cache:
   lifetime: 36000
   engine: "File"
   exclude_post: "no"
   inclusions:
-    #contact: "/contact/i"
-    #admin: "/admin/i"
-  {% endhighlight %}
-</code>
+    contact: "/contact/i"
+    admin: "/admin/i"
+{% endhighlight %}
+
 
 
 <h3>More Override Control</h3>
@@ -70,12 +64,10 @@ layout_cache:
 
 <p>Say you have you want to turn off caching if a certain session value is present (such as a logged in user flag) you can use the use_cache property:</p>
 
-<code>
-  {% highlight ruby %}
-  public function test() {
-    if(Session::get('user_logged_in') == 1) $this->use_cache = false;
-  }
+{% highlight ruby %}
+public function test() {
+  if(Session::get('user_logged_in') == 1) $this->use_cache = false;
+}
 {% endhighlight %}
-</code>
 
 <p>This will force caching to be turned off for this page (as long as the page has not been called directly from the cache).</p>
