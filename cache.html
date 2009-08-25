@@ -12,7 +12,9 @@ layout: home
 
 <h2>Configuring The Cache</h2>
 
+<p>Out of the box the framework supports caching on layouts (layout_cache), views (view_cache) and partials (partial_cache).</p>
 <p>In these examples we will use 'layout_cache'. This type of cache stores the entire rendered layout of the url you are visiting and can be loaded without the need for most of the framework files, making it even faster.</p>
+<p>All cache configurations use the same syntax and structure:</p>
 
 {% highlight yaml %}
 layout_cache:
