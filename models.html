@@ -96,7 +96,7 @@ public function user_list(){
   <?foreach($all_users as $user):?>
   <div class='list_item'>
     <h3><?=$user->name?></h3>
-    <p><a href='/user-edit/<?=$user->primval?>'>edit</a></p>
+    <p><a href="/user-edit/<?=$user->primval?>">edit</a></p>
   </div>
   <?endforeach?>  
 <?else:?>
