@@ -8,7 +8,8 @@ class WaxTemplate implements Cacheable{
   
   /** interface vars **/
   public $use_cache = true;
-  
+  public static $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml');
+    
   
 	public static $response_filters = array(
 	    'views'=>  array('default'=>array('model'=>'self', 'method'=>'render_view_response_filter')),
@@ -141,11 +142,8 @@ class WaxTemplate implements Cacheable{
 	public function parse($suffix="html", $parse_as="layout") {
 	  ob_start();
 	  if(!$suffix) $suffix = "html";
-	  switch($suffix) {
-			case "json": $type="text/javascript";break;
-	    case "js": $type="text/javascript";break;
-	    default: $type="text/".$suffix; break;
-	  }
+    if(in_array($suffix, array_keys(self::$mime_types))) $type = self::$mime_types[$suffix];
+    else $type = "text/".$suffix;
 	  
 	  /** CACHE **/
 	  if($cache_object = $this->cache_enabled($parse_as)){
