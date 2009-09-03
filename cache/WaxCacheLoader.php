@@ -95,7 +95,6 @@ class WaxCacheLoader {
   public function valid($config, $format="html"){
     $class = 'WaxCache'.$this->engine_type;    
     $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
-    if($format == "html") $engine->marker = "<!-- FROM CACHE - NO WAX -->";    
     if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
     else return false;
   }
