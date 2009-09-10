@@ -1009,18 +1009,27 @@ class WXEmail
     }
     
     public function get_templates($action) {
-      $view = WXInflections::underscore(get_class($this))."/".$action;
-      $html = VIEW_DIR.$view.".html";
-      $txt =  VIEW_DIR.$view.".txt";
-      if(is_readable($html && is_readable($txt))) {
+			$view = WXInflections::underscore(get_class($this))."/".$action;
+			
+			$view_path= new WaxTemplate($this);
+			
+			$view_path->add_path(VIEW_DIR.$view);
+			$view_path->add_path(PLUGIN_DIR."cms/view/".$view);
+
+			foreach($view_path->template_paths as $path){
+				if(is_readable($path.".html")) $html = $view_path->parse();
+				if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
+			}
+			
+     	if($html && $txt) {
         $this->is_html(true);
-        $this->body=WXControllerBase::view_to_string($view, $this);
-        $this->alt_body = WXControllerBase::view_to_string($view, $this, "txt");
-      } elseif(is_readable($html)) {
+        $this->body=$html;
+        $this->alt_body = $txt;
+      } elseif($html) {
         $this->is_html(true);
-        $this->body=WXControllerBase::view_to_string($view, $this);
-      } elseif(!is_readable($html) && is_readable($txt)) {
-        $this->body = WXControllerBase::view_to_string($view, $this, "txt");
+        $this->body=$html;
+      } elseif(!$html && $txt) {
+        $this->body = $txt;
       }
     }
     
