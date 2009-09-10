@@ -79,7 +79,7 @@ class WXScripts {
 
   
   public function run_tests($argv) {
-    error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+    error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE ^ E_DEPRECATED);
     define("ENV", "test");
     $this->app_setup();
     define("CLI_ENV", true);
