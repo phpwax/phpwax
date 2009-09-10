@@ -150,17 +150,11 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
 
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($model instanceof WaxRecordset) {
-      foreach($model as $obj) {
-        if(!$obj->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object", print_r($obj,1));
-				else $filter[$links->table."_".$links->primary_key] = $obj->primval;
-      }
-      if(count($filter)) $this->join_model->filter("(".join(" OR ", $filter).")")->delete();
+      foreach($model as $obj) $filter[] = $obj->primval;
+      if(count($filter)) $this->join_model->filter($links->table."_".$links->primary_key,$filter)->delete();
     }else{
-      if($model instanceof WaxModel){
-        if(!$model->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object", print_r($obj,1));
-        else $model = $model->primval;
-      }
-      $this->join_model->filter(array($links->table."_".$links->primary_key => $model))->delete();
+      if($model instanceof WaxModel) $model = $model->primval();
+      $this->join_model->filter($links->table."_".$links->primary_key, $model)->delete();
     }
     return $this->join_model;
   }
