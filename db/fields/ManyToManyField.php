@@ -140,15 +140,10 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
    */
 	public function delete($model){return $this->unlink($model);}
   public function unlink($model) {
-    if(!$this->model->primval){
-      throw new WXException("ManyToMany unlink before Model Save", "Cannot unlink from ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
-      return;
-    }
-    $links = new $this->target_model;
-
+    if(!$this->model->primval) return $this->join_model; //if we don't know what to unlink from we can't unlink anything, just do nothing and return
     WaxModel::unset_cache(get_class($this->model), $this->field);
-
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
+    $links = new $this->target_model;
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) $filter[] = $obj->primval;
       if(count($filter)) $this->join_model->filter($links->table."_".$links->primary_key,$filter)->delete();
