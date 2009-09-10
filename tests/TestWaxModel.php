@@ -7,6 +7,7 @@ class Example extends WaxModel {
     $this->define("example_owner", "ForeignKey", array("null"=>true));
     $this->define("propertiesLazy", "ManyToManyField", array("target_model"=>"ExampleProperty"));
     $this->define("propertiesEager", "ManyToManyField", array("target_model"=>"ExampleProperty","eager_loading"=>true));
+    $this->define("oneWayProperties", "ManyToManyField", array("target_model"=>"ExampleOneWayProperty"));
   }
 }
 
@@ -30,6 +31,12 @@ class ExampleProperty extends WaxModel {
     $this->define("name", "CharField", array("maxlength"=>40));
     $this->define("examples", "ManyToManyField", array("target_model"=>"Example"));
   } 
+}
+
+class ExampleOneWayProperty extends WaxModel {
+  public function setup(){
+    $this->define("name","CharField");
+  }
 }
 
 class TestWaxModel extends WXTestCase {

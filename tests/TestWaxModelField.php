@@ -27,12 +27,14 @@ class TestWaxModelField extends WXTestCase {
       $this->model_file = new ExampleFile();
 			$this->model_file_field = new ExampleFileField();
       $this->model_property = new ExampleProperty();
+      $this->model_one_way_property = new ExampleOneWayProperty();
       $this->model->syncdb();
       $this->model_owner->syncdb();
       $this->model_editor->syncdb();
       $this->model_file->syncdb();
       $this->model_file_field->syncdb();
       $this->model_property->syncdb();
+      $this->model_one_way_property->syncdb();
     }
     
     public function tearDown() {
@@ -42,7 +44,9 @@ class TestWaxModelField extends WXTestCase {
       WaxModel::$db->drop_table($this->model_file->table);
       WaxModel::$db->drop_table($this->model_file_field->table);
       WaxModel::$db->drop_table($this->model_property->table);
+      WaxModel::$db->drop_table($this->model_one_way_property->table);
       WaxModel::$db->drop_table("example_example_property");
+      WaxModel::$db->drop_table("example_example_one_way_property");
     }
     
     public function get_fixture($type) {
@@ -183,6 +187,29 @@ class TestWaxModelField extends WXTestCase {
 
     }
 
+    public function test_many_many_one_side() {
+      $model = $this->model->create($this->get_fixture("user1"));
+      $props = new ExampleOneWayProperty;
+      $prop1 = $props->create(array("name"=>"Property 1"));
+      $prop2 = $props->create(array("name"=>"Property 2"));
+      $prop3 = $props->create(array("name"=>"Property 3"));
+      $model->oneWayProperties = $prop1;
+      $model->oneWayProperties = $prop2;
+      $model->oneWayProperties = $prop3;
+
+      $prop2->delete();
+      $counter = 0;
+      foreach($model->oneWayProperties as $property) $counter++;
+      $this->assertEqual($counter, 2);
+      $this->assertEqual($model->oneWayProperties->count(), 2);
+
+      $rand_sql = new WaxModel();
+      $rand_sql->query('delete from example_one_way_property where name = "Property 3"');
+      $counter = 0;
+      foreach($model->oneWayProperties as $property) $counter++;
+      $this->assertEqual($counter, 1);
+      $this->assertEqual($model->oneWayProperties->count(), 1);
+    }
 
 		/*** FILE UPLOAD ****/
 
