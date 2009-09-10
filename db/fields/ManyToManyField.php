@@ -134,10 +134,11 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
     return $ret;
   }
   /**
-   * this unset function removes any link between the origin and target
+   * this unset / delete function removes any link between the origin and target
    * again the cache is cleared so any 'get' calls return accurate data
    * @param string $model 
-   */  
+   */
+	public function delete($model){return $this->unlink($model);}
   public function unlink($model) {
     if(!$this->model->primval){
       throw new WXException("ManyToMany unlink before Model Save", "Cannot unlink from ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
@@ -147,6 +148,7 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
 
     WaxModel::unset_cache(get_class($this->model), $this->field);
 
+    if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($model instanceof WaxRecordset) {
       foreach($model as $obj) {
         if(!$obj->primval) throw new WXException("ManyToMany Delete not possible", "Cannot find ".get_class($this->model)."->".$this->field." joined object", print_r($obj,1));
@@ -163,16 +165,6 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
     return $this->join_model;
   }
   
-	/**
-	 * as this is a many to many, the delete doesnt actually delete!
-	 * instead it unlinks the join table & yes, the obligatory cache clearing 
-	 */	
-	public function delete(){
-    WaxModel::unset_cache(get_class($this->model), $this->field);
-		//delete join tables!
-		$data = $this->get();
-		if($data->count()) $this->unlink($data);
-	}
 	/**
 	 * as a save on a many to many doesn't do anything, just return true
 	 */
