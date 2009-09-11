@@ -138,8 +138,8 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
    * again the cache is cleared so any 'get' calls return accurate data
    * @param string $model 
    */
-	public function delete($model){return $this->unlink($model);}
-  public function unlink($model) {
+	public function delete($model = false){return $this->unlink($model);}
+  public function unlink($model = false) {
     if(!$this->model->primval) return $this->join_model; //if we don't know what to unlink from we can't unlink anything, just do nothing and return
     WaxModel::unset_cache(get_class($this->model), $this->field);
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
