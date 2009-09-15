@@ -110,7 +110,7 @@ class WaxValidate {
 	}
 
   protected function valid_email(){
-    return $this->valid_format("email");
+    if($this->object->value()) return $this->valid_format("email");
   }
   protected function valid_format($name, $string=false) {
     $value = $this->object->value();
