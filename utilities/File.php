@@ -63,7 +63,8 @@ class File {
 		  $ratio = $x / $width;
 		  $height = floor($y / $ratio);
 	  }
-		if($overwrite) {
+	  if($ratio == 1) $command = "cp ".escapeshellarg($source)." ".escapeshellarg($destination);
+		elseif($overwrite) {
 			$command="mogrify ".escapeshellarg($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
 		} else {
 			$command="convert ".escapeshellarg($source)." -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
