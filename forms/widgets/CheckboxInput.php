@@ -16,8 +16,9 @@ class CheckboxInput extends TextInput {
   public $checked_value=1;
   public $unchecked_value=0;
   
-  public function render() {
-    if(!$this->editable) return false;
+  public function render($settings = array(), $force=false) {
+    foreach($settings as $set=>$val) $this->{$set}=$val;
+    if(!$this->editable && !$force) return false;
     $out ="";
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");
