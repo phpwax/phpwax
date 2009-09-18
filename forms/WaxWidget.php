@@ -107,7 +107,8 @@ class WaxWidget{
       if($name == "name") $res.=sprintf('%s="%s" ', $name, $this->output_name());
       elseif($name == "id") $res.=sprintf('%s="%s" ', $name, $this->output_id());
       elseif($name == "value") $res.=sprintf('%s="%s" ', $name, $this->value);
-      elseif(isset($this->{$name})) $res.=sprintf('%s="%s" ', $name, $this->{$name});
+      elseif($name == "checked" && $this->{$name} == "checked") $res.=sprintf('%s="%s" ', $name, $this->value);
+      elseif(isset($this->{$name}) && $name != "checked") $res.=sprintf('%s="%s" ', $name, $this->{$name});
     }
     return $res;
   }
