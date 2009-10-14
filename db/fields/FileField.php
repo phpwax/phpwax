@@ -16,6 +16,9 @@ class FileField extends WaxModelField {
 	//allowed extensions - array of exts, false means everythings allowed
 	public $allowed_extensions = false;
 	public $widget = "FileInput";
+	public $messages = array(
+    "format"=>      "%s is not a valid format"
+  );
 	
 
 	public function __construct($column, $model, $options = array()) {	

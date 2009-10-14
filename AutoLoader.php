@@ -24,6 +24,10 @@ if(!defined("SCRIPT_DIR")) define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
 if(!defined("STYLE_DIR")) define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
 if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
 if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
+if(function_exists('date_default_timezone_set')){
+  if(!defined('PHPWAX_TIMEZONE')) date_default_timezone_set('Europe/London');
+  else date_default_timezone_set(PHPWAX_TIMEZONE);
+}
 
 /**
  * check cache
@@ -51,7 +55,8 @@ function auto_loader_check_cache(){
       $pos = strrpos($_SERVER['REQUEST_URI'], ".");
       $ext = substr($_SERVER['REQUEST_URI'],$pos+1); 
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
-      echo $content;      
+      echo $content;
+      if($ext == "html") echo "<!-- FROM CACHE -->";      
       exit;
     }
   }  

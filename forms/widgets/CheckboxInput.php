@@ -16,16 +16,16 @@ class CheckboxInput extends TextInput {
   public $checked_value=1;
   public $unchecked_value=0;
   
-  public function render() {
-    if(!$this->editable) return false;
+  public function render($settings = array(), $force=false) {
+    foreach($settings as $set=>$val) $this->{$set}=$val;
+    if(!$this->editable && !$force) return false;
     $out ="";
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");
-    $hidden = new HiddenInput($this->name);
-    $out.=$hidden->render(array("prefix"=>$this->prefix, "value"=>$this->unchecked_value));
-    $this->value = $this->checked_value;
+    $hidden = new HiddenInput($this->name, array("prefix"=>$this->prefix, "value"=>$this->unchecked_value));
+    $out.=$hidden->render();
     if($this->value==$this->checked_value) $this->checked="checked";
-    $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
+    $out = sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->label && $this->prefix) $out .= sprintf($this->label_template, $this->prefix."_".$this->name, $this->label);
     elseif($this->label) $out .= sprintf($this->label_template, $this->id, $this->label);
     if($this->errors){
@@ -34,6 +34,7 @@ class CheckboxInput extends TextInput {
     $out .= $this->after_tag();
     return $out;
   }
+  
   
   public function setup_validations() {
     if($this->validate) $this->validations = (array)$this->validate;
