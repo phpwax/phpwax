@@ -28,7 +28,11 @@ class WaxPartialHelper extends WXHelpers {
 		  if(!$controller) $controller = $extra_vals->controller;
 		  $old_template_paths = $extra_vals->template_paths;
 		  foreach($extra_vals as $var=>$val) $this->{$var}=$val;
-		  $view= new WXTemplate();
+		  $view= new WaxTemplate();
+		  if($extra_vals->use_plugin){
+		    $tpath = PLUGIN_DIR.$extra_vals->use_plugin."/view/".$extra_vals->plugin_share."/".$path;
+		    $view->add_path($tpath);
+		  }
 		  if(count($extra_vals->plugins)>0) {
 		    foreach($old_template_paths as $template) $view->add_path(str_replace($extra_vals->use_view, $path, $template));
   		}
@@ -37,6 +41,7 @@ class WaxPartialHelper extends WXHelpers {
         if(!$view->{$var}) $view->{$var}=$val;
       }
   		$view->add_path(VIEW_DIR.$view->controller."/".$path);
+  		
   		//print_r($view); exit;
   		$partial = $view->parse($format, "partial");
 	  } else {
