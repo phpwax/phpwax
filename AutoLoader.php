@@ -55,8 +55,8 @@ function auto_loader_check_cache(){
       $pos = strrpos($_SERVER['REQUEST_URI'], ".");
       $ext = substr($_SERVER['REQUEST_URI'],$pos+1); 
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
+      header("wax-cache: true");
       echo $content;
-      if($ext == "html") echo "<!-- FROM CACHE -->";      
       exit;
     }
   }  
