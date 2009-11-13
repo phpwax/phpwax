@@ -52,8 +52,9 @@ function auto_loader_check_cache(){
     if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
     else $cache = new WaxCacheLoader('File', $cache_location);
     if($content = $cache->layout_cache_loader($config)){
-      $pos = strrpos($_SERVER['REQUEST_URI'], ".");
-      $ext = substr($_SERVER['REQUEST_URI'],$pos+1); 
+      $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+      $pos = strrpos($url_details['path'], ".");
+      $ext = substr($url_details['path'],$pos+1); 
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
       header("wax-cache: true");
       echo $content;
