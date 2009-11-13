@@ -45,7 +45,7 @@ function auto_loader_check_cache(){
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
   include_once FRAMEWORK_DIR .'/utilities/File.php';  
-  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html');
+  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   
   /** CHECK LAYOUT CACHE **/
   if($config = Config::get('layout_cache')){    
