@@ -29,7 +29,7 @@ class WaxModelField {
   public $help_text = false;
   public $widget="TextInput";
   public $is_association = false; // Distiguishes between standard field and one that links to other models
-  protected $model = false;
+  public $model = false;
   public $validator = "WaxValidate";
   public $validations = array();
   
