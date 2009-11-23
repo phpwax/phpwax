@@ -79,6 +79,19 @@ class WaxValidate {
   }
   
   /********* Validation Methods ********************/
+  protected function valid_model_unique(){
+    //if this isnt a wax model & this is being called by mistake, return true
+    if(! $this->object->model instanceOf WaxModel) return true;
+    $field = $this->object->field;
+    $value = $this->object->value();    
+    $class = get_class($this->object->model);
+    $primary_field = $this->object->model->primary_key;
+    $primary_key = $this->object->model->primval();
+    $model= new $class; 
+    if($primary_key) $model->filter($primary_field, $primary_key, "!=");
+    if($model->filter($field, $value)->first()) $this->add_error($this->label, sprintf($this->messages["unique"], $this->label));
+  }
+  
   
   protected function valid_length() {
     $value = $this->object->value();   
