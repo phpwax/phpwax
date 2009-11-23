@@ -170,15 +170,15 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
    * @return WaxModelAssociation
    */
   
-  public function filter($params) {
+  public function filter($params, $value=NULL, $operator="=") {    
     if(is_array($params)){
       foreach($params as $column => $value){
-        if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params));
+        if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params, $value, $operator));
       }
-      $this->join_model->filter($params);
+      $this->join_model->filter($params, $value, $operator);
   		WaxModel::unset_cache(get_class($this->model), $this->field);
       return $this->get();
-    }else return $this->__call("filter", array($params));
+    }else return $this->__call("filter", array($params, $value, $operator));
   }
 
 	/**
@@ -208,7 +208,8 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
   public function __call($method, $args) {
     $assoc = $this->get();
     $model = clone $assoc->target_model;
-    if($assoc->rowset) $model->filter(array($model->primary_key=>$assoc->rowset));
+    $filter_args = array($model->primary_key=>$assoc->rowset);
+    if($assoc->rowset) $model->filter($filter_args);
     else $model->filter("1 = 2");
     return call_user_func_array(array($model, $method), $args);
   }
