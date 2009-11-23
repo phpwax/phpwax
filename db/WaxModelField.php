@@ -23,6 +23,7 @@ class WaxModelField {
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true; 
   public $required = false; 
+  public $unique = false;
   public $show_label = true;
   public $label = false;
   public $help_text = false;
