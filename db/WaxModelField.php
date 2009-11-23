@@ -61,7 +61,7 @@ class WaxModelField {
   
   public function before_sync() {}  
   public function setup() {}
-  public function validate() {}
+  public function validate(){}
   public function save() {}
   public function delete(){}  
   public function output() {
@@ -88,6 +88,7 @@ class WaxModelField {
     if($this->required) $this->validations[]="required";
     if($this->minlength) $this->validations[]="length";
     if($this->maxlength) $this->validations[]="length";
+    if($this->unique) $this->validations[]="model_unique";
   }
   
   
