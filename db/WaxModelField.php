@@ -113,8 +113,8 @@ class WaxModelField {
  	
  	public function __get($value) {
  	  if($value =="value") return $this->output();
- 	  if($value =="name") return $this->table."[".$this->field."]";
-    if($value =="id") return $this->table."_{$this->field}";
+ 	  else if($value =="name") return $this->table."[".$this->field."]";
+    else if($value =="id") return $this->table."_{$this->field}";
  	}
   
   public function setup_skip_delegation_cache(){
