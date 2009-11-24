@@ -103,6 +103,7 @@ class WaxClosureTree extends WaxModel {
    * @author Sheldon Els
    */
   public function syncdb(){
+    $this->closure_table->syncdb();
   }
 }
 ?>
