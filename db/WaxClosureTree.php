@@ -7,6 +7,14 @@
  *
  **/
 class WaxClosureTree extends WaxModel {
+  public $closure_table_class = "WaxClosureTable";
+  public $closure_table = false;
+  
+ 	function __construct($params=null) {
+    parent::__construct($params);
+    $this->closure_table = new $this->closure_table_class;
+    $this->closure_table->table = $this->table."_closure_table";
+  }
   public function parent(){
   }
   /**
