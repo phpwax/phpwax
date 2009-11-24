@@ -15,6 +15,11 @@ class WaxClosureTree extends WaxModel {
     $this->closure_table = new $this->closure_table_class;
     $this->closure_table->table = $this->table."_closure_table";
   }
+  /**
+   * gets the parent node of the current node
+   *
+   * @return WaxClosureTree
+   */
   public function parent(){
   }
   /**
