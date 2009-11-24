@@ -100,10 +100,16 @@ class WaxClosureTree extends WaxModel {
    * if it doesn't exist, creates the closure table and makes all existing nodes roots
    *
    * @return void
-   * @author Sheldon Els
    */
   public function syncdb(){
     $this->closure_table->syncdb();
+  }
+  
+  public function after_insert(){
+    $this->closure_table->clear();
+    $this->closure_table->ancestor = $this;
+    $this->closure_table->descendant = $this;
+    $this->closure_table->save();
   }
 }
 ?>
