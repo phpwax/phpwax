@@ -20,7 +20,7 @@ class WaxClosureTree extends WaxModel {
   /**
    * gets the direct children of the current node
    *
-   * @return void
+   * @return WaxRecordSet
    */
   public function children(){
   }
