@@ -90,13 +90,6 @@ class WaxClosureTree extends WaxModel {
   }
   
   /**
-   * Makes sure that before saving a tree, anything in the ancestors doesn't exist in the subtree, causing recursion
-   * @return void
-   */
-  public function before_save(){
-  }
-  
-  /**
    * if it doesn't exist, creates the closure table and makes all existing nodes roots
    *
    * @return void
