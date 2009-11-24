@@ -16,6 +16,29 @@ class WaxClosureTree extends WaxModel {
     $this->closure_table->table = $this->table."_closure_table";
   }
   /**
+   * used to implement setting parent or children
+   * makes sure that anything in the ancestors doesn't exist in the subtree, causing recursion
+   *
+   * @return void
+   */
+	public function __set($name, $value){
+	  if($name == "parent"){
+	    //first isolate the subtree, removing all descendants of the node you're reparenting from all ancestors of it's original parent
+	    $this->closure_table->clear()->filter("ancestor",$this->parent()->ancestors())->filter("descendants",$this->descendants())->delete();
+	    //add each descendant to each ancestor
+	    //INSERT INTO CLOSURE_TABLE cross product of $value->ancestors() and $this->descendants()
+	    //this way is super slow, need a way to do the inserts as 1 query
+	    foreach($value->ancestors() as $ancestor)
+	      foreach($this->descendants() as $descendant)
+	        $this->closure_table->clear()->create(array("ancestor"=>$ancestor,"descendant"=>$descendant));
+	  }elseif($name == "children"){
+	    if($value instanceof Iterator) foreach($value as $node) $this->__set("children",$node);
+	    //get all the ancestors of the current and assign them as ancestors of the new node
+	    $child_primval = $value->primval();
+	    foreach($this->path_from_root as $node) $this->closure_table->create(array("ancestor"=>$node->primval(),"descendant"=>$child_primval));
+	  }else parent::__set($name, $value);
+  }
+  /**
    * gets the parent node of the current node
    *
    * @return WaxClosureTree
