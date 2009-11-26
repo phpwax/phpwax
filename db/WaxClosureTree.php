@@ -9,6 +9,11 @@
 class WaxClosureTree extends WaxModel {
   public $closure_table_class = "WaxClosureTable";
   
+ 	function __construct($params=null) {
+    parent::__construct($params);
+    $this->define("pre_order","IntegerField");
+    $this->define("level","IntegerField");
+  }
   /**
    * returns an empty closure table model
    */
@@ -28,7 +33,7 @@ class WaxClosureTree extends WaxModel {
 		$res->left_join($this->closure_table());
 		$res->join_condition("$this->table.$this->primary_key = ancestor_id");
 		$res->select_columns = array($this->table.".*");
-		$res->order("level");
+		$res->order("depth");
     $res->filter("descendant_id",$this->primval());
     if($depth !== null) $this->limit($depth + 1);
     return $res->all();
@@ -51,9 +56,9 @@ class WaxClosureTree extends WaxModel {
 		$res->left_join($this->closure_table());
 		$res->join_condition("$this->table.$this->primary_key = descendant_id");
 		$res->select_columns = array($this->table.".*");
-		$res->order("level");
+		$res->order("depth");
 		$res->filter("ancestor_id",$this->primval());
-    if($depth !== null) $this->filter("level",$depth,"<=");
+    if($depth !== null) $this->filter("depth",$depth,"<=");
     return $res->all();
   }
 
@@ -61,7 +66,7 @@ class WaxClosureTree extends WaxModel {
    * returns the direct children of the current node
    */
   public function children(){
-    $res = $this->descendants(1); //fetch 1 level of descendants
+    $res = $this->descendants(1); //fetch 1 depth of descendants
     array_shift($res); //drop off itself
     return $res;
   }
@@ -110,19 +115,27 @@ class WaxClosureTree extends WaxModel {
       array_pop($ancestors);
       $this->closure_table()->filter("ancestor",$ancestors)->filter("descendants",$subtree_root->descendants())->delete();
     }
-
+    
+    $descendants = $subtree_root->descendants();
+    
     //add each descendant to each ancestor
     //INSERT INTO CLOSURE_TABLE cross product of $new_parent->ancestors() and $this->descendants()
     //this way is super slow, need a way to do the inserts as 1 query
     foreach($new_parent->ancestors() as $ancestor){
-      foreach($subtree_root->descendants() as $descendant){
+      foreach($descendants as $descendant){
         $link = $this->closure_table();
         $link->ancestor = $ancestor;
         $link->descendant = $descendant;
-        $link->level = $ancestor->level + $descendant->level;
+        $link->depth = $ancestor->depth + $descendant->depth;
         $link->save();
       }
     }
+    foreach($descendants as $descendant){
+      $descedant->level = $new_parent->level + $descendant->depth;
+      print_r(get_class($descendant)); flush();
+      $descedant->save();
+    }
+    exit;
   }
   
   /**
@@ -133,17 +146,10 @@ class WaxClosureTree extends WaxModel {
   }
 
   /**
-   * returns a numeric representation of this node's depth in the tree
-   */
-  public function level() {
-    return count($this->ancestors()) - 1;
-  }
-
-  /**
    * returns true if the node has a parent, and false if not
    */
   public function is_root() {
-    return ($this->level() === 0);
+    return ($this->level === 0);
   }
 
   /**
@@ -168,6 +174,12 @@ class WaxClosureTree extends WaxModel {
     $this->closure_table()->syncdb();
   }
   
+  public function before_insert(){
+    $max_pre_order = clone $this;
+    $max_pre_order = $max_pre_order->clear()->order("pre_order DESC")->first()->pre_order;
+    $this->pre_order = $max_pre_order + 1;
+    $this->level = 0;
+  }
   /**
    * close each entry over itself
    */
@@ -175,7 +187,7 @@ class WaxClosureTree extends WaxModel {
     $new_closure = $this->closure_table();
     $new_closure->ancestor = $this;
     $new_closure->descendant = $this;
-    $new_closure->level = 0;
+    $new_closure->depth = 0;
     $new_closure->save();
   }
 }

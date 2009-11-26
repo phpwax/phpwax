@@ -19,7 +19,7 @@ class WaxClosureTable extends WaxModel {
   public function setup(){
     $this->define("ancestor","ForeignKey",array("col_name"=>"ancestor_id","target_model"=>$this->closure_tree_class));
     $this->define("descendant","ForeignKey",array("col_name"=>"descendant_id","target_model"=>$this->closure_tree_class));
-    $this->define("level","IntegerField");
+    $this->define("depth","IntegerField");
   }
 
   /**
