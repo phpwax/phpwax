@@ -130,13 +130,15 @@ class WaxClosureTree extends WaxModel {
         $link->save();
       }
     }
-    foreach($descendants as $descendant){
-      $descedant->level = $new_parent->level + $descendant->depth;
-      print_r(get_class($descendant)); flush();
-      $descedant->save();
+    foreach($descendants as $desc){
+      $desc->level = $desc->level + $desc->depth;
+      print_r($desc); flush();
+      $desc->save();
     }
     exit;
   }
+  
+
   
   /**
    * get the root nodes
