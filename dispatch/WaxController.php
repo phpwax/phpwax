@@ -174,6 +174,7 @@ class WaxController
 		if(!$this->use_layout) return false;
     $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
+
     $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
     $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
     ob_end_clean();
@@ -204,6 +205,7 @@ class WaxController
 	  $partial = new WaxTemplate($this);
     $partial->add_path(VIEW_DIR.$path);
     $partial->add_path(VIEW_DIR.$this->controller."/".$path);
+    
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".get_parent_class($this)."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->use_plugin."/view/".$this->plugin_share."/".$path);
     $partial->add_path(PLUGIN_DIR.$this->share_plugin."/view/".get_parent_class($this)."/".$path);
@@ -219,7 +221,7 @@ class WaxController
 	    $path = $path.$partial;
 	  } else $partial = $path;
 	  if($this->is_public_method($this, $partial)) $this->{$partial}();
-	  $partial= $this->build_partial($path, $format);		
+	  $partial= $this->build_partial($partial, $format);		
 		return $partial;
 	}
 	

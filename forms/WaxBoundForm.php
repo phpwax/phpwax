@@ -43,11 +43,11 @@ class WaxBoundForm implements iterator {
     return $this->is_valid();
   }
   
-  public function validate() {
+  public function validate() {  
     foreach($this->elements as $el) {
-      
       if(!$el->is_valid()) $this->errors[] = $el->errors;
-    }  
+    } 
+    
   }
   
   public function is_valid() {

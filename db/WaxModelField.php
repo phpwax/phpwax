@@ -23,12 +23,13 @@ class WaxModelField {
   public $editable = true; // Only editable options will be displayed in forms
   public $blank = true; 
   public $required = false; 
+  public $unique = false;
   public $show_label = true;
   public $label = false;
   public $help_text = false;
   public $widget="TextInput";
   public $is_association = false; // Distiguishes between standard field and one that links to other models
-  protected $model = false;
+  public $model = false;
   public $validator = "WaxValidate";
   public $validations = array();
   
@@ -60,7 +61,7 @@ class WaxModelField {
   
   public function before_sync() {}  
   public function setup() {}
-  public function validate() {}
+  public function validate(){}
   public function save() {}
   public function delete(){}  
   public function output() {
@@ -87,6 +88,7 @@ class WaxModelField {
     if($this->required) $this->validations[]="required";
     if($this->minlength) $this->validations[]="length";
     if($this->maxlength) $this->validations[]="length";
+    if($this->unique) $this->validations[]="model_unique";
   }
   
   
@@ -112,8 +114,8 @@ class WaxModelField {
  	
  	public function __get($value) {
  	  if($value =="value") return $this->output();
- 	  if($value =="name") return $this->table."[".$this->field."]";
-    if($value =="id") return $this->table."_{$this->field}";
+ 	  else if($value =="name") return $this->table."[".$this->field."]";
+    else if($value =="id") return $this->table."_{$this->field}";
  	}
   
   public function setup_skip_delegation_cache(){
