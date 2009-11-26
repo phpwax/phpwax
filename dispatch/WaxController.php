@@ -150,11 +150,15 @@ class WaxController
 
 
     $view = new WaxTemplate($this);
-    $view->add_path(VIEW_DIR.rtrim($this->controller,"/")."/".$this->use_view);
-    $view->add_path(VIEW_DIR.$this->use_view);
-    foreach($this->plugins as $plugin) {
-      $view->add_path(PLUGIN_DIR.$plugin."/view/".get_parent_class($this)."/".$this->use_view);
-      $view->add_path(PLUGIN_DIR.$plugin."/view/".$this->plugin_share."/".$this->use_view);
+    foreach(Autoloader::view_paths("user") as $path) {
+      $view->add_path($path.rtrim($this->controller,"/")."/".$this->use_view);
+      $view->add_path($path."shared/".$this->use_view);
+      $view->add_path($path.$this->use_view);
+    }
+    
+    foreach(Autoloader::view_paths("plugin") as $path) {
+      $view->add_path($path.get_parent_class($this)."/".$this->use_view);
+      $view->add_path($path."shared/".$this->use_view);
     }
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');

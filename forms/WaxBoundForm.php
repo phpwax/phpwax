@@ -34,7 +34,7 @@ class WaxBoundForm implements iterator {
  	      if(!$el->is_association) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
  	      else $associations[$name] = $el;
       }
-    } 
+    }
     foreach($associations as $name=>$el) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
     $this->validate();
     if($this->is_valid()){

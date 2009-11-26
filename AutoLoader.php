@@ -114,12 +114,21 @@ class AutoLoader
    */
   static public $registry = array();
   static public $registry_chain = array("user", "application", "plugin", "framework");
+  static public $controller_registry = array();
+  static public $view_registry = array();
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
   }
   static public function register($responsibility, $class, $path) {
     self::$registry[$responsibility][$class]=$path;
+  }
+  
+  static public function register_controller_path($responsibility, $path) {
+    self::$controller_registry[$responsibility][]=$path;
+  }
+  static public function register_view_path($responsibility, $path) {
+    self::$view_registry[$responsibility][]=$path;
   }
   
   static public function include_from_registry($class_name) {
@@ -131,9 +140,27 @@ class AutoLoader
    	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	
+	static public function controller_paths($resp=false) {
+	  if($resp) return self::$controller_registry[$resp];
+	  foreach(self::$controller_registry as $responsibility) {
+      foreach($responsibility as $path) $paths[]=$path;
+    }
+    return $paths;
+	}
+	static public function view_paths($resp = false) {
+	  if($resp) return self::$view_registry[$resp];
+	  foreach(self::$view_registry as $responsibility) {
+      foreach($responsibility as $path) $paths[]=$path;
+    }
+    return $paths;
+	}
+	
 	static public function include_plugin($plugin) {
 	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
 	  self::recursive_register(PLUGIN_DIR.$plugin."/resources/app/controller", "plugin");
+	  self::register_controller_path("plugin", PLUGIN_DIR.$plugin."/lib/controller/");
+	  self::register_controller_path("plugin", PLUGIN_DIR.$plugin."/resources/app/controller/");
+	  self::register_view_path("plugin", PLUGIN_DIR.$plugin."/view/");
 		$setup = PLUGIN_DIR.$plugin."/setup.php";
 		self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
 		if(is_readable($setup)) include_once($setup);
@@ -246,6 +273,8 @@ class AutoLoader
 	  self::recursive_register(CONTROLLER_DIR, "application");
 	  self::recursive_register(FORMS_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
+		self::register_controller_path("user", CONTROLLER_DIR);
+		self::register_view_path("user", VIEW_DIR);
 		self::autoregister_plugins();
 		self::include_from_registry('Inflections');  // Bit of a hack -- forces the inflector functions to load
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load

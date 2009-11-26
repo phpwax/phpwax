@@ -41,11 +41,8 @@ class ForeignKey extends WaxModelField {
       $this->model->{$this->col_name} = $value->{$value->primary_key};
       return $this->model->save();
     } else {
-      $obj = new $this->target_model($value);
-      if($obj->primval) {
-        $this->model->{$this->col_name} = $value;
-        return $this->model->save();
-      }
+      $this->model->{$this->col_name} = $value;
+      return $this->model->save();
     }
     $class = get_class($this->model);
     WaxModel::unset_cache($class, $this->field, $this->model->{$this->col_name});

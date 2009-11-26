@@ -19,7 +19,7 @@ class WaxCacheFilesystem implements CacheEngine{
     foreach($options as $k=>$option) $this->$k = $option;
     if(!$this->root_dir) $this->root_dir = CACHE_DIR;
     $this->key = $key;
-    if(!is_writable($this->file_path())) mkdir($this->file_path(),0777,true);
+    if(!is_writable($this->file_path()) && !is_dir($this->file_path())) mkdir($this->file_path(),0777,true);
     if(!is_writable($this->file())) $this->writable = false;
     else $this->writable = true;
   }

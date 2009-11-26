@@ -10,9 +10,10 @@ class WaxException extends Exception {
   public $help = "No further information was available";
   static $replacements = array('error_message'=> '<!-- MESSAGE -->', 'error_heading'=>'<!-- HEADING -->', 'error_site'=>'<!-- SITE -->', 'error_site_name'=> '<!-- SITENAME -->');
 
-	public function __construct($message, $heading="Application Error") {
+	public function __construct($message, $heading="Application Error", $context=false) {
     parent::__construct($message, $code);
     $this->error_heading = $heading;
+		if($context) $this->help = $context;
     $this->error_message = $this->format_trace($this);
 		$this->error_site = str_ireplace("www.", '', $_SERVER['HTTP_HOST']);
 		$this->error_site = substr($this->error_site, 0, strpos($this->error_site, '.'));
