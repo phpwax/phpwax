@@ -173,7 +173,10 @@ class WaxModel{
     $this->_offset = "0";
     $this->sql = false;
 		$this->is_paginated = false;
-		$this->is_left_joined = false;
+  	$this->is_left_joined = false;
+  	$this->left_join_target = false;
+  	$this->left_join_table_name = false;
+  	$this->join_conditions = false;
     $this->errors = array();
 		$this->having = false;
 		$this->select_columns = array();
