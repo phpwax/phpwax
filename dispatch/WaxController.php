@@ -148,7 +148,6 @@ class WaxController
 		if($this->use_view == "none") return false;
 		if($this->use_view=="_default") $this->use_view = $this->action;
 
-
     $view = new WaxTemplate($this);
     foreach(Autoloader::view_paths("user") as $path) {
       $view->add_path($path.rtrim($this->controller,"/")."/".$this->use_view);
