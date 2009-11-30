@@ -44,9 +44,6 @@ class UrlHelper extends WXHelpers {
             } else {
                 $html_options = $href;
             }
-            if(!$name) {
-                $name = $options;
-            }
             $html = $this->content_tag("a", $name, $html_options);
         } else {
             $url = $this->url_for($options);
