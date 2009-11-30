@@ -68,6 +68,10 @@ class WaxModelField {
     return $this->get();
   }
   
+  public function add_validations($array){
+    $this->validations = array_unique(array_merge($this->validations, $array));    
+  }
+  
   public function map_choices() {
     if($this->text_choices && is_array($this->choices)) {
       $choices = $this->choices;
