@@ -70,7 +70,7 @@ class WaxValidate {
     $this->validations = array_unique($this->validations);
     foreach($this->validations as $name){
       $func = "valid_".$name;
-      $this->$func();
+      if(method_exists($this, $func)) $this->$func();
     }
   }
   
