@@ -48,7 +48,7 @@ class WaxWidget{
   public function validation_classes() {
     if($this->bound_data instanceof WaxModelField) {
       $this->validations = array_merge($this->bound_data->validations, $this->validations);
-    }
+    }    
     foreach($this->validations as $valid) {
       $this->add_class("valid-$valid");
     }
@@ -59,6 +59,7 @@ class WaxWidget{
     if($this->required ===true) $this->validations[]="required";
     if($this->minlength) $this->validations[]="length";
     if($this->maxlength) $this->validations[]="length";
+    if(count($this->validations) && $this->bound_data instanceof WaxModelField) $this->bound_data->add_validations($this->validations);
   }
   
   public function is_valid() {
