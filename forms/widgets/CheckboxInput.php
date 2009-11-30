@@ -28,6 +28,7 @@ class CheckboxInput extends TextInput {
     }
     if($this->value == $this->checked_value) $this->checked="checked";
     else $this->value = $this->checked_value;
+    $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->label && $this->prefix) $out .= sprintf($this->label_template, $this->prefix."_".$this->name, $this->label);
     elseif($this->label) $out .= sprintf($this->label_template, $this->id, $this->label);
     if($this->errors){
