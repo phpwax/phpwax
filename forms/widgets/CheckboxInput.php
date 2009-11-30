@@ -39,9 +39,9 @@ class CheckboxInput extends TextInput {
   }
   
   
-  public function setup_validations() {
-    if($this->validate) $this->validations = (array)$this->validate;
-    if($this->required ===true) $this->validations[]="checked";
+  public function setup_validations() {    
+    if($this->required === true) $this->validations[]="checked";    
+    parent::setup_validations();
   }
   
 
