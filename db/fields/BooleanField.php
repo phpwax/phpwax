@@ -12,6 +12,7 @@ class BooleanField extends WaxModelField {
   public $maxlength = false;
   public $choices = array(0 => "No", 1 => "Yes");
   public $widget = "SelectInput";
+  public $data_type = "integer";
   
   public function setup() {
     

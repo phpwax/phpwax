@@ -12,6 +12,7 @@ class CharField extends WaxModelField {
   public $messages = array(
     "unique"=>      "%s has already been taken"
   );
+  public $data_type = "string";
   
   public function setup() {}
 

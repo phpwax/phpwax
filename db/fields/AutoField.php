@@ -13,5 +13,6 @@ class AutoField extends WaxModelField {
   public $auto = true;
   public $primary = true;
   public $editable = false;
+  public $data_type = "integer";
 
 } 
