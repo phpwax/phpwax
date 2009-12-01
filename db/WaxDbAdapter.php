@@ -166,10 +166,10 @@ abstract class WaxDbAdapter {
 			switch($e->getCode()) {
 		    case "42S02":
 		    case "42S22":
-		    //ob_start();
+		    ob_start();
 		    $sync = new WXScripts("syncdb");
 		    $sync = false; //Forces destruction and flushing of output buffer
-		    //ob_end_clean();
+		    ob_end_clean();
 		    try {
 		      $pdo_statement->execute($bindings);
 		    } catch(PDOException $e) {
