@@ -167,7 +167,18 @@ abstract class WaxDbAdapter {
 		    case "42S02":
 		    case "42S22":
 		    ob_start();
-		    $sync = new WXScripts("syncdb");
+		    
+		    foreach(Autoloader::$plugin_array as $plugin) Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true); 
+        Autoloader::include_dir(MODEL_DIR, true);
+        foreach(get_declared_classes() as $class) {
+          if(is_subclass_of($class, "WaxModel")) {
+            $class_obj = new $class;
+            $output = $class_obj->syncdb();
+            if(strlen($output)) echo $output;
+          }
+        }
+		    
+		    
 		    $sync = false; //Forces destruction and flushing of output buffer
 		    ob_end_clean();
 		    try {
