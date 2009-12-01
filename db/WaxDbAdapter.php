@@ -17,24 +17,16 @@ abstract class WaxDbAdapter {
 	protected $timestamp = false;
 	protected $db_settings;
 	public $data_types = array(
-	    'AutoField'=>         'int',
-      'BooleanField'=>      'int',
-      'CharField'=>         'varchar',
-      'DateField'=>         'date',
-      'DateTimeField'=>     'datetime',
-      'DecimalField'=>      'decimal',
-      'EmailField'=>        'varchar',
-      'FileField'=>         'varchar',
-      'FilePathField'=>     'varchar',
-      'ForeignKey'=>        'int',
-      'ImageField'=>        'varchar',
-      'IntegerField'=>      'int',
-      'IPAddressField'=>    'varchar',
-      'PasswordField'=>     'varchar',
-      'SlugField'=>         'varchar',
-      'TextField'=>         'longtext',
-      'TimeField'=>         'time',
-			'FloatField'=>				'float'
+	    'string'          => "varchar",
+	    'text'            => "longtext",
+	    
+	    'date'            => "date",
+	    'time'            => 'time',
+	    'date_and_time'   => "datetime",
+	    
+	    'integer'         => "int",
+	    'decimal'         => "decimal",
+	    'float'           => "float"
   );
   
   public $operators = array(
@@ -174,10 +166,10 @@ abstract class WaxDbAdapter {
 			switch($e->getCode()) {
 		    case "42S02":
 		    case "42S22":
-		    ob_start();
+		    //ob_start();
 		    $sync = new WXScripts("syncdb");
 		    $sync = false; //Forces destruction and flushing of output buffer
-		    ob_end_clean();
+		    //ob_end_clean();
 		    try {
 		      $pdo_statement->execute($bindings);
 		    } catch(PDOException $e) {
@@ -337,6 +329,7 @@ abstract class WaxDbAdapter {
    */
   
   public function syncdb(WaxModel $model) {
+    
     // First check the table for this model exists
     $tables = $this->view_table($model);
     $exists = false;
@@ -361,8 +354,8 @@ abstract class WaxDbAdapter {
           if($col["IS_NULLABLE"]=="YES" && !$model_field->null) $col_changed = "now not null";
         }
       }
-      if($col_exists==false && $info =$this->add_column($model_field, $model, true)) $output .= $info;
-      if($col_changed && $info = $this->alter_column($model_field, $model, true)) $output .= $info." ".$col_changed;
+      if($col_exists==false && ($info =$this->add_column($model_field, $model, true))) $output .= $info;
+      if($col_changed && ($info = $this->alter_column($model_field, $model, true))) $output .= $info." ".$col_changed;
     }
     $table = get_class($model);
     $output .= "Table {$table} is now synchronised";
@@ -401,7 +394,8 @@ abstract class WaxDbAdapter {
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->col_name}`";
-    $sql.=" ".$this->data_types[get_class($field)];
+    if(!$type = $model->data_type) $type = "string";
+    $sql.=" ".$this->data_types[$type];
     if($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
