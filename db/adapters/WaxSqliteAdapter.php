@@ -95,7 +95,7 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->col_name}`";
-    if(!$type = $model->data_type) $type = "string";
+    if(!$type = $field->data_type) $type = "string";
     $sql.=" ".$this->data_types[$type];
     if($field->null ===true) $sql.=" NULL";
     else $sql.=" NOT NULL";
