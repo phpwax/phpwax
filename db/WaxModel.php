@@ -527,18 +527,19 @@ class WaxModel{
    * @return Boolean, true if the models match, false if they don't (per column matching)
    */
   public function equals(WaxModel $model){
-	  $comp_cols = array_diff_key($this->columns,array($this->primary_key => false)); //take out ID
-    foreach($comp_cols as $col => $details){
-      $col_type = $details[0];
-      $ours = $this->$col;
-      $theirs = $model->$col;
-      if($ours->is_assocation){
-        $ours = $ours->rowset;
-        $theirs = $theirs->rowset;
-      }
-      if($ours != $theirs) return false;
-    }
+    $skip_cols = array($this->primary_key => false);
+    if(array_diff_key($this->row, $skip_cols) != array_diff_key($model->row, $skip_cols)) return false;
+    foreach($this->associations() as $assoc => $data) if($this->$assoc->rowset != $model->$assoc->rowset) return false;
     return true;
+  }
+
+  /**
+   * returns a copied model minus the primary key
+   */
+  public function copy(){
+    $res = clone $this;
+    unset($res->row[$this->primary_key]);
+    return $res;
   }
 
   /**
