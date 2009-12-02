@@ -509,6 +509,18 @@ class WaxModel{
   }
   
   /**
+   * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField
+   */
+  public function associations(){
+    $ret = array();
+    foreach($this->columns as $column => $data){
+      $type = $data[0];
+      if($type == "HasManyField" || $type == "ManyToManyField") $ret[$column] = $data;
+    }
+    return $ret;
+  }
+  
+  /**
    * comparison function for models
    *
    * @param WaxModel $model this is the model to compare this one to
