@@ -5,11 +5,11 @@
  *
  * @package PHP-Wax
  * @author Ross Riley
- * 
+ *
  * Allows models to be mapped to application objects
  **/
 class WaxModel{
-  
+
   static public $adapter = false;
   static public $db_settings = false;
   static public $db = false;
@@ -38,14 +38,14 @@ class WaxModel{
 	public $left_join_table_name = false;
 	public $join_conditions = false;
 	public $cols = array();
-	
-	
+
+
 	/** interface vars **/
 	public $cache_enabled = false;
   public $cache_lifetime = 600;
   public $cache_engine = "Memory";
   public $cache = false;
-	
+
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
@@ -68,7 +68,7 @@ class WaxModel{
  		  $this->row=$res->row;
  		  $this->clear();
  		}
- 		
+
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
  		$this->set_identifier();
@@ -77,37 +77,37 @@ class WaxModel{
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) $this->$method;
 	  }
- 	} 	
- 
+ 	}
+
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
  	  self::$adapter = $adapter;
  	  self::$db_settings = $db_settings;
  	}
- 	
+
  	public function define($column, $type, $options=array()) {
  	  $this->columns[$column]=array($type, $options);
  	}
- 	
+
  	public function add_error($field, $message) {
  	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
  	}
- 	
+
  	public function filter($column, $value=NULL, $operator="=") {
  	  //if the var is a string, then we are asuming its a new style filter
  	  if(is_string($column)) {
- 	    //with a value passed in this confirms its a new method of filter 
+ 	    //with a value passed in this confirms its a new method of filter
  	    if($value !== NULL) {
  	      //operator sniffing
         if(is_array($value))
           if(strpos($column, "?") === false) $operator = "in"; //no ? params so this is an old in check
           else $operator = "raw"; //otherwise its a raw operation, so substitue values
-        
+
         $filter = array("name"=>$column,"operator"=>$operator, "value"=>$value);
         if($operator == "=") $this->filters[$column] = $filter; //if its equal then overwrite the filter passed on col name
         else $this->filters[] = $filter;
- 	      
+
  	    } else $this->filters[] = $column; //assume a raw query, with no parameters
     }else{ //if the column isn't a string, then we assume it's an array with multiple filter's passed in.
       foreach((array)$column as $old_column => $old_value) {
@@ -116,35 +116,35 @@ class WaxModel{
     }
     return $this;
  	}
- 	
+
  	/**
  	 * Search Function, hands over to the DB to perform natural language searching.
  	 * Takes an array of columns which can each have a weighting value
  	 *
- 	 * @param string $text 
- 	 * @param array $columns 
+ 	 * @param string $text
+ 	 * @param array $columns
  	 * @return WaxRecordset Object
  	 */
- 	
+
  	public function search($text, $columns = array()) {
  	  $res = self::$db->search($this, $text, $columns);
     return $res;
  	}
- 	
+
  	/**
  	 * Scope function... allows a named scope function to be called which configures a view of the model
  	 *
- 	 * @param string $scope 
+ 	 * @param string $scope
  	 * @return $this
  	 */
- 	
+
  	public function scope($scope) {
  	  $method = "scope_".$scope;
     if(method_exists($this, $method)) $this->$method;
     return $this;
  	}
- 	
- 	
+
+
  	public function clear() {
     $this->filters = array();
     $this->order = false;
@@ -152,14 +152,14 @@ class WaxModel{
     $this->offset = "0";
     $this->sql = false;
 		$this->is_paginated = false;
-		$this->is_left_joined = false;		
+		$this->is_left_joined = false;
     $this->errors = array();
 		$this->having = false;
-		$this->select_columns = array();		
+		$this->select_columns = array();
     return $this;
  	}
- 	
- 	
+
+
  	public function validate() {
  	  foreach($this->columns as $column=>$setup) {
  	    $field = new $setup[0]($column, $this, $setup[1]);
@@ -171,7 +171,7 @@ class WaxModel{
  	  if(count($this->errors)) return false;
  	  return true;
  	}
- 	
+
  	public function get_errors() {
  	  return $this->errors;
  	}
@@ -184,7 +184,7 @@ class WaxModel{
     if(!$this->columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
     return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
   }
-  
+
   static public function get_cache($model, $field, $id, $transform = true) {
     $cache = new WaxCache($model."/".$field."/".$id, "memory");
     $data = unserialize($cache->get());
@@ -201,7 +201,7 @@ class WaxModel{
     }
     return false;
   }
-  
+
   static public function set_cache($model, $field, $id, $value) {
     $cache = new WaxCache($model."/".$field."/".$id, "memory");
     if($value instanceof WaxModel)
@@ -210,7 +210,7 @@ class WaxModel{
       $cache->set(serialize($value->rowset));
     else $cache->set($value);
   }
-  
+
 	static public function unset_cache($model, $field, $id = false){
     $cache = new WaxCache($model."/".$field."/".$id, "memory");
     $cache->expire();
@@ -219,15 +219,15 @@ class WaxModel{
    * output_val function
    * Gets the output value of a field,
    * Allows transformation of data to display to user
-   * @param string $name 
+   * @param string $name
    * @return mixed
    */
-  
+
   public function output_val($name) {
     $field = $this->get_col($name);
     return $field->output();
   }
-  
+
   public function set_identifier() {
     // Grab the first text field to display
     if($this->identifier) return true;
@@ -269,7 +269,7 @@ class WaxModel{
  	    $field->set($value);
     } else $this->row[$name]=$value;
   }
-  
+
   /**
    *  __toString overload
    *  @return  primary key of class
@@ -322,17 +322,17 @@ class WaxModel{
 		$this->order = $order_by;
 		return $this;
 	}
-	
+
 	public function random($limit) {
 	  $this->order(self::$db->random());
 	  $this->limit($limit);
 	  return $this;
 	}
-	
+
 	public function dates($start, $end) {
-	  
+
 	}
-	
+
 	public function offset($offset){
 		$this->offset = $offset;
 		return $this;
@@ -349,7 +349,7 @@ class WaxModel{
 	  $this->sql = $query;
 	  return $this;
 	}
-	
+
 	//take the page number, number to show per page, return paginated record set..
 	public function page($page_number="1", $per_page=10){
 		$this->is_paginated = true;
@@ -361,7 +361,7 @@ class WaxModel{
 	 * @param string $target (this can be a model name or the wax model itself)
 	 * @return WaxModel $this
 	 * @author charles marshall
-	 */	
+	 */
 	public function left_join($target){
 		if(is_string($target) || $target instanceof WaxModel){
 		  $this->left_join_table_name = $target->table;
@@ -371,10 +371,10 @@ class WaxModel{
 		return $this;
 	}
 	/**
-	 * takes the conditions to add to the join syntax in the db adapter 
-	 * @param string $conditions or array $conditions 
-	 * @return WaxModel $this 
-	 */	
+	 * takes the conditions to add to the join syntax in the db adapter
+	 * @param string $conditions or array $conditions
+	 * @return WaxModel $this
+	 */
 	public function join_condition($conditions){
  	  if(is_string($conditions)) $this->join_conditions[]=$conditions;
  	  else {
@@ -390,11 +390,11 @@ class WaxModel{
     }
     return $this;
 	}
-	
-	
+
+
 	/************** Methods that hit the database ****************/
-	
-	
+
+
   public function update( $id_list = array() ) {
     $this->before_update();
     $res = self::$db->update($this);
@@ -409,18 +409,18 @@ class WaxModel{
     $this->after_insert();
     return $this;
   }
-  
+
   public function syncdb() {
     if(get_class($this) == "WaxModel") return;
     if($this->disallow_sync) return;
     $res = self::$db->syncdb($this);
     return $res;
   }
-  
+
   public function query($query) {
     return self::$db->query($query);
   }
-  
+
 
   public function create($attributes = array()) {
  		$row = clone $this;
@@ -431,11 +431,11 @@ class WaxModel{
  	public function all() {
  	  return new WaxRecordset($this, self::$db->select($this));
  	}
- 	
+
  	public function rows() {
  	  return self::$db->select($this);
  	}
- 	
+
 
  	public function first() {
  	  $this->limit = "1";
@@ -453,11 +453,11 @@ class WaxModel{
  	  $this->set_attributes($array);
 		return $this->save();
  	}
- 	
- 	
+
+
  	/************ End of database methods *************/
- 	
- 	
+
+
  	public function set_attributes($array) {
  	  //move association fields to the end of the array
  	  foreach((array)$array as $k=>$v) {
@@ -497,7 +497,7 @@ class WaxModel{
  	  }
  	  return false;
  	}
- 	
+
  	/**
  	 * primval() function
  	 *
@@ -507,7 +507,7 @@ class WaxModel{
  	public function primval() {
     return $this->{$this->primary_key};
   }
-  
+
   /**
    * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField
    */
@@ -519,7 +519,7 @@ class WaxModel{
     }
     return $ret;
   }
-  
+
   /**
    * comparison function for models
    *
@@ -543,12 +543,12 @@ class WaxModel{
   }
 
   /**
-   * Maintains Backward compatibility 
+   * Maintains Backward compatibility
    *
-   * @param array $options 
+   * @param array $options
    * @return WaxRecordset
    */
-  
+
   public function find_all($options=array()) {
 		$this->clear();
     if($options["conditions"]) $this->filter($options["conditions"]);
@@ -559,12 +559,12 @@ class WaxModel{
   }
 
   /**
-   * Maintains Backward compatibility 
+   * Maintains Backward compatibility
    *
-   * @param array $options 
+   * @param array $options
    * @return WaxModel
    */
-  
+
   public function find($options=array()) {
 		$this->clear();
     if($options["conditions"]) $this->filter($options["conditions"]);
@@ -572,13 +572,13 @@ class WaxModel{
     if($options["order"]) $this->order = $options["order"];
     return $this->first();
   }
-  
+
   public function find_by_sql($sql) {
     $this->sql($sql);
     $res = self::$db->select($this);
-    return new WaxRecordset($this, $res); 	  
+    return new WaxRecordset($this, $res);
   }
-  
+
   public function dynamic_finders($func, $args) {
 		$func = WXInflections::underscore($func);
 	  $finder = explode("by", $func);
@@ -591,7 +591,7 @@ class WaxModel{
 
 			if(is_array($args[1])) $params = $args[1];
 			elseif(is_array($args[2])) $params = $args[2];
-			
+
 			if($finder[0]=="find_all_") return $this->find_all($params);
       else return $this->find($params);
     }
@@ -605,7 +605,7 @@ class WaxModel{
     }
  	  return $this->dynamic_finders($func, $args);
   }
-   
+
   public function __clone() {
   	$this->setup();
    }
@@ -613,12 +613,12 @@ class WaxModel{
 	public function total_without_limits(){
 		return self::$db->total_without_limits;
 	}
-	
+
 
    /**
    	*  These are left deliberately empty in the base class
-   	*  
-   	*/	
+   	*
+   	*/
 
 	public function setup() {}
  	public function before_save() {}
@@ -628,8 +628,8 @@ class WaxModel{
  	public function before_insert() {}
  	public function after_insert() {}
  	public function before_delete() {}
- 	public function after_delete() {}   	
-   	
-  
+ 	public function after_delete() {}
+
+
 }
 ?>
