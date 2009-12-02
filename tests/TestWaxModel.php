@@ -125,6 +125,14 @@ class TestWaxModel extends WXTestCase {
     public function test_equal(){
       $res1 = $this->model->create($this->get_fixture("user1"));
       $res2 = $this->model->create($this->get_fixture("user1"));
+      $res3 = $this->model->create($this->get_fixture("user2"));
+      $res4 = $this->model->create($this->get_fixture("user2"));
+
+      $this->assertTrue($res1->equal($res2));
+      $this->assertTrue($res2->equal($res1));
+      
+      $this->assertFalse($res1->equal($res3));
+      $this->assertFalse($res3->equal($res1));
       
       $prop = new ExampleProperty();
       $prop1 = $prop->create(array('name'=>'Property 1'));
@@ -133,10 +141,29 @@ class TestWaxModel extends WXTestCase {
       $res1->propertiesLazy = $prop1;
       $res1->propertiesLazy = $prop2;
 
+      $res3->propertiesLazy = $prop1;
+      $res3->propertiesLazy = $prop2;
+
+      $this->assertFalse($res1->equal($res2));
+      $this->assertFalse($res2->equal($res3));
+      $this->assertFalse($res3->equal($res4));
+      $this->assertFalse($res4->equal($res1));
+
+      $this->assertFalse($res4->equal($res3));
+      $this->assertFalse($res3->equal($res2));
+      $this->assertFalse($res2->equal($res1));
+      $this->assertFalse($res1->equal($res4));
+      
       $res2->propertiesLazy = $prop1;
       $res2->propertiesLazy = $prop2;
 
+      $res4->propertiesLazy = $prop1;
+      $res4->propertiesLazy = $prop2;
+      
       $this->assertTrue($res1->equal($res2));
+      $this->assertTrue($res2->equal($res1));
+      $this->assertTrue($res3->equal($res4));
+      $this->assertTrue($res4->equal($res3));
     }
     
     public function test_copy(){
