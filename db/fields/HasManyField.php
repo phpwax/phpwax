@@ -14,6 +14,7 @@ class HasManyField extends WaxModelField {
   public $eager_loading = false;
   public $widget = "MultipleSelectInput";
 	public $join_order = false; //specify order of the returned joined objects
+  public $data_type = "integer";
   
   public function setup() {
     $this->col_name = false;

@@ -12,6 +12,7 @@ class ForeignKey extends WaxModelField {
   public $widget = "SelectInput";
   public $choices = array();
   public $is_association = true;
+  public $data_type = "integer";
   
   public function setup() {
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);

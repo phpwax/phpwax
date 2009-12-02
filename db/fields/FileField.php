@@ -19,7 +19,7 @@ class FileField extends WaxModelField {
 	public $messages = array(
     "format"=>      "%s is not a valid format"
   );
-	
+	public $data_type = "string";
 
 	public function __construct($column, $model, $options = array()) {	
     if(isset($options['allowed_extensions'])){

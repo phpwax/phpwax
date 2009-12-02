@@ -35,6 +35,8 @@ class WaxModelField {
   
   public $errors = array();
   
+  public $data_type = "string";
+  
   public static $skip_field_delegation_cache = array();
 
   public function __construct($column, $model, $options = array()) {

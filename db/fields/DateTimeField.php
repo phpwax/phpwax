@@ -14,7 +14,7 @@ class DateTimeField extends WaxModelField {
   public $output_format = "Y-m-d H:i:s";
   public $save_format = "Y-m-d H:i:s";
   public $use_uk_date = false;
-
+  public $data_type = "date_and_time";
   
   public function setup() {
     if($this->model->row[$this->field]==0 && $this->default=="now") {

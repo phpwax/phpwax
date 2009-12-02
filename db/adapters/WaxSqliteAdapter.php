@@ -8,24 +8,16 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
   protected $date = 'CURDATE()';
 	protected $timestamp = 'date("now")'; 
 	public $data_types = array(
-	    'AutoField'=>         'INTEGER',
-      'BooleanField'=>      'INTEGER',
-      'CharField'=>         'TEXT',
-      'DateField'=>         'date',
-      'DateTimeField'=>     'datetime',
-      'DecimalField'=>      'decimal',
-      'EmailField'=>        'TEXT',
-      'FileField'=>         'TEXT',
-      'FilePathField'=>     'TEXT',
-      'ForeignKey'=>        'INTEGER',
-      'ImageField'=>        'TEXT',
-      'IntegerField'=>      'INTEGER',
-      'IPAddressField'=>    'TEXT',
-      'PasswordField'=>     'TEXT',
-      'SlugField'=>         'TEXT',
-      'TextField'=>         'TEXT',
-      'TimeField'=>         'time',
-			'FloatField'=>				'float'
+	  'string'          => "TEXT",
+    'text'            => "TEXT",
+    
+    'date'            => "date",
+    'time'            => 'time',
+    'date_and_time'   => "datetime",
+    
+    'integer'         => "INTEGER",
+    'decimal'         => "decimal",
+    'float'           => "float"
   );
 	
 	public function connect($db_settings) {
@@ -103,7 +95,8 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
   
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->col_name}`";
-    $sql.=" ".$this->data_types[get_class($field)];
+    if(!$type = $field->data_type) $type = "string";
+    $sql.=" ".$this->data_types[$type];
     if($field->null ===true) $sql.=" NULL";
     else $sql.=" NOT NULL";
     if($field->default !==false) {$sql.= " DEFAULT '{$field->default}'";}

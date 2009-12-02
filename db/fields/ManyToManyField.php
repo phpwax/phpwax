@@ -16,7 +16,7 @@ class ManyToManyField extends WaxModelField {
   public $is_association = true;
 	public $join_table = false; //this chap means that you can pass any name for the join table in on define()
 	public $join_order = false; //specify order of the returned joined objects
-	
+  public $data_type = "integer";
 	/**
 	 * the setup function for this field is different, as this is a many to many relationship it takes into 
 	 * account both sides of the relationship, initialises the join table if its missing and preps the 
