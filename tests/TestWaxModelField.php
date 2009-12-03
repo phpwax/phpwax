@@ -158,8 +158,13 @@ class TestWaxModelField extends WXTestCase {
       $this->assertIsA($model->propertiesEager[0], "ExampleProperty");
       $this->assertIsA($model->propertiesEager[0]->examples[0], "Example");
       
+      $this->assertIsA($model->propertiesLazy->filter("name", "Property 1")->first(), "ExampleProperty");
+      $test_first = $model->propertiesLazy->filter("name", "Property 1")->all();
+      $this->assertIsA($test_first[0], "ExampleProperty");      
+      
       $this->assertIsA($model->propertiesEager->filter("name", "Property 2")->first(), "ExampleProperty");
-      $this->assertIsA($model->propertiesEager->filter("name", "Property 2")[0], "ExampleProperty");
+      $test_first = $model->propertiesEager->filter("name", "Property 2")->all();
+      $this->assertIsA($test_first[0], "ExampleProperty");
 
       $this->assertEqual($model->propertiesLazy->count(), 2);
       $this->assertEqual($model->propertiesEager->count(), 2);

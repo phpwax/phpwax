@@ -24,10 +24,7 @@ class WaxCacheLoader {
     else $this->dir = CACHE_DIR;
     
     $this->lifetime = $lifetime;  
-    if(!is_readable($this->dir)){
-      mkdir($this->dir);
-      chmod($this->dir, 0777);
-    }    
+    if(!is_readable($this->dir)) mkdir($this->dir, 0777, true);
     $this->suffix = $format.'.'.$this->suffix;
   }
  
