@@ -17,8 +17,8 @@ class DateTimeField extends WaxModelField {
   public $data_type = "date_and_time";
   
   public function setup() {
-    if($this->model->row[$this->field]==0 && $this->default=="now") {
-      $this->model->row[$this->field] = date($this->save_format);
+    if($this->model->row[$this->field]==0 && is_string($this->default)) {
+      $this->model->row[$this->field] = date($this->save_format,strtotime($this->default));
     }
     if($this->required) $this->validations["datetime"];
   }
