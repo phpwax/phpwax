@@ -209,7 +209,10 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
   public function __call($method, $args) {
     $assoc = $this->get();
     $model = clone $assoc->target_model;
-    $filter_args = array($model->primary_key=>$assoc->rowset);
+    if($this->eager_loading){
+      $key = $model->primary_key;
+      foreach((array) $assoc->rowset as $row) $filter_args[$key][] = $row[$key];
+    }else $filter_args = array($model->primary_key=>$assoc->rowset);
     if($assoc->rowset) $model->filter($filter_args);
     else $model->filter("1 = 2");
     return call_user_func_array(array($model, $method), $args);

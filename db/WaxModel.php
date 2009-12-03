@@ -77,8 +77,25 @@ class WaxModel{
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) $this->$method;
 	  }
- 	}
-
+ 	} 	
+  
+  static public function find($finder, $params = array()) {
+    $class = get_called_class();
+    if(is_numeric($finder)) return new $class($finder);
+    $mod = new $class;
+    foreach($params as $method=>$args) {
+      $mod->$method($args);
+    }
+    switch($finder) {
+      case 'all': $mod = new $class;
+        return $mod->all();
+        break;
+      case 'first': $mod = new $class;
+        return $mod->first();
+        break;
+    }
+  }
+ 
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
@@ -173,10 +190,6 @@ class WaxModel{
  	}
 
  	public function get_errors() {
- 	  return $this->errors;
- 	}
-
- 	public function stealth_get_errors() {
  	  return $this->errors;
  	}
 
@@ -603,7 +616,6 @@ class WaxModel{
       $field = $this->get_col($func);
       return $field->get($args[0]);
     }
- 	  return $this->dynamic_finders($func, $args);
   }
 
   public function __clone() {
@@ -632,4 +644,3 @@ class WaxModel{
 
 
 }
-?>
