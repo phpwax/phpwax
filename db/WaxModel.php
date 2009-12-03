@@ -78,6 +78,23 @@ class WaxModel{
 	    if(method_exists($this, $method)) $this->$method;
 	  }
  	} 	
+  
+  static public function find($finder, $params = array()) {
+    $class = get_called_class();
+    if(is_numeric($finder)) return new $class($finder);
+    $mod = new $class;
+    foreach($params as $method=>$args) {
+      $mod->$method($args);
+    }
+    switch($finder) {
+      case 'all': $mod = new $class;
+        return $mod->all();
+        break;
+      case 'first': $mod = new $class;
+        return $mod->first();
+        break;
+    }
+  }
  
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
@@ -173,10 +190,6 @@ class WaxModel{
  	}
  	
  	public function get_errors() {
- 	  return $this->errors;
- 	}
-
- 	public function stealth_get_errors() {
  	  return $this->errors;
  	}
 
@@ -528,37 +541,6 @@ class WaxModel{
     }
     return true;
   }
-
-  /**
-   * Maintains Backward compatibility 
-   *
-   * @param array $options 
-   * @return WaxRecordset
-   */
-  
-  public function find_all($options=array()) {
-		$this->clear();
-    if($options["conditions"]) $this->filter($options["conditions"]);
-    if($options["limit"]) $this->limit=$options["limit"];
-    if($options["order"]) $this->order = $options["order"];
-    if($options["page"] && $options["per_page"]) return $this->page($options["page"], $options["per_page"]);
-    return $this->all();
-  }
-
-  /**
-   * Maintains Backward compatibility 
-   *
-   * @param array $options 
-   * @return WaxModel
-   */
-  
-  public function find($options=array()) {
-		$this->clear();
-    if($options["conditions"]) $this->filter($options["conditions"]);
-    if($options["limit"]) $this->limit=$options["limit"];
-    if($options["order"]) $this->order = $options["order"];
-    return $this->first();
-  }
   
   public function find_by_sql($sql) {
     $this->sql($sql);
@@ -566,31 +548,11 @@ class WaxModel{
     return new WaxRecordset($this, $res); 	  
   }
   
-  public function dynamic_finders($func, $args) {
-		$func = WXInflections::underscore($func);
-	  $finder = explode("by", $func);
-		$what=explode("and", $finder[1]);
-		foreach($what as $key=>$val) $what[$key]=rtrim(ltrim($val, "_"), "_");
-
-    if( $args ) {
-      if(count($what)==2) $this->filter(array($what[0]=>$args[0], $what[1], $args[1]));
-			else $this->filter(array($what[0]=>$args[0]));
-
-			if(is_array($args[1])) $params = $args[1];
-			elseif(is_array($args[2])) $params = $args[2];
-			
-			if($finder[0]=="find_all_") return $this->find_all($params);
-      else return $this->find($params);
-    }
-	}
-
-
  	public function __call( $func, $args ) {
     if(array_key_exists($func, $this->columns)) {
       $field = $this->get_col($func);
       return $field->get($args[0]);
     }
- 	  return $this->dynamic_finders($func, $args);
   }
    
   public function __clone() {
@@ -619,4 +581,3 @@ class WaxModel{
    	
   
 }
-?>
