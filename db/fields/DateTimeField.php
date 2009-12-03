@@ -28,7 +28,7 @@ class DateTimeField extends WaxModelField {
   }
   
   public function save() {
-    if($this->required) $this->model->row[$this->field]= date($this->save_format, strtotime($this->get()));    
+    if($value = $this->get()) $this->model->row[$this->field]= date($this->save_format, strtotime($value));    
   }
   
   public function uk_date_switch() {
