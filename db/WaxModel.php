@@ -551,7 +551,7 @@ class WaxModel{
    */
   public function copy(){
     $res = clone $this;
-    unset($res->row[$tghis->primary_key]);
+    unset($res->row[$this->primary_key]);
     return $res;
   }
 
