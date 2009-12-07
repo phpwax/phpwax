@@ -50,6 +50,8 @@ class TestWaxModel extends WXTestCase {
     public function tearDown() {
       WaxModel::$db->drop_table($this->model->table);
 			WaxModel::$db->drop_table($this->prop->table);
+			WaxModel::$db->drop_table("example_example_property");
+			WaxModel::$db->drop_table("example_example_one_way_property");
     }
     
     public function get_fixture($type) {
