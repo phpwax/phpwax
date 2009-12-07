@@ -40,8 +40,8 @@ class WaxPartialHelper extends WXHelpers {
       }
   		$partial = $view->parse($format, "partial");
 	  } else {
-	    $controller = WaxUrl::$params["controller"];
-      if(!$controller) $controller = WaxUrl::$default_controller;
+	    if(!$controller && WaxUrl::$params["controller"]) $controller = WaxUrl::$params["controller"];
+      else if(!$controller) $controller = WaxUrl::$default_controller;
       $delegate = Inflections::slashcamelize($controller, true);
       $delegate .="Controller";
       $delegate_controller = new $delegate;
