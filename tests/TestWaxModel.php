@@ -169,8 +169,17 @@ class TestWaxModel extends WXTestCase {
     
     public function test_copy(){
       $res1 = $this->model->create($this->get_fixture("user1"));
+      
+      $prop = new ExampleProperty();
+      $prop1 = $prop->create(array('name'=>'Property 1'));
+      $prop2 = $prop->create(array('name'=>'Property 2'));
+      
+      $res1->propertiesLazy = $prop1;
+      $res1->propertiesLazy = $prop2;
+
       $res2 = $res1->copy()->save();
       
-      $this->assertTrue(($res1->primval() != $res2->primval()) && ($res1->equals($res2)));
+      $this->assertTrue($res1->primval() != $res2->primval());
+      $this->assertTrue($res1->equals($res2));
     }
 }
