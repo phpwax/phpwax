@@ -542,7 +542,13 @@ class WaxModel{
   public function equals(WaxModel $model){
     $skip_cols = array($this->primary_key => false);
     if(array_diff_key($this->row, $skip_cols) != array_diff_key($model->row, $skip_cols)) return false;
-    foreach($this->associations() as $assoc => $data) if($this->$assoc->rowset != $model->$assoc->rowset) return false;
+    foreach($this->associations() as $assoc => $data){
+      $this_assoc = $this->$assoc->rowset;
+      $model_assoc = $model->$assoc->rowset;
+      sort($this_assoc);
+      sort($model_assoc);
+      if($this_assoc != $model_assoc) return false;
+    }
     return true;
   }
 
