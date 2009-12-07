@@ -181,5 +181,11 @@ class TestWaxModel extends WXTestCase {
       
       $this->assertTrue($res1->primval() != $res2->primval());
       $this->assertTrue($res1->equals($res2));
+      
+      $res3 = $this->model->create($this->get_fixture("user2"));
+      $res3 = $res1->copy($res3)->save();
+      
+      $this->assertTrue($res1->primval() != $res3->primval());
+      $this->assertTrue($res1->equals($res3));
     }
 }

@@ -553,12 +553,26 @@ class WaxModel{
   }
 
   /**
-   * returns a copied model minus the primary key
+   * returns a copied row
+   * if there are associations the row will have a new primary key otherwise it will have no primary key ready to be saved
    */
-  public function copy(){
-    $res = clone $this;
-    unset($res->row[$this->primary_key]);
-    return $res;
+  public function copy($dest = false){
+    if($dest){
+      $ret = clone $this;
+      $ret->{$ret->primary_key} = $dest->primval();
+      if($assocs = $this->associations()){
+        if(!$ret->primval()) $ret->save();
+        foreach($assocs as $assoc => $data){
+          $ret->$assoc->unlink();
+          $ret->$assoc = $this->$assoc;
+        }
+      }
+      return $ret;
+    }else{
+      $ret = clone $this;
+      $ret->{$ret->primary_key} = false;
+      return $this->copy($ret);
+    }
   }
 
 
