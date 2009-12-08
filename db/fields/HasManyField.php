@@ -64,7 +64,8 @@ class HasManyField extends WaxModelField {
     }
   }
   
-  public function unlink($value) {
+  public function unlink($value = false) {
+    if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($value instanceof $this->target_model){
       $value->{$this->join_field} = 0;
       $value->save();

@@ -542,17 +542,37 @@ class WaxModel{
   public function equals(WaxModel $model){
     $skip_cols = array($this->primary_key => false);
     if(array_diff_key($this->row, $skip_cols) != array_diff_key($model->row, $skip_cols)) return false;
-    foreach($this->associations() as $assoc => $data) if($this->$assoc->rowset != $model->$assoc->rowset) return false;
+    foreach($this->associations() as $assoc => $data){
+      $this_assoc = $this->$assoc->rowset;
+      $model_assoc = $model->$assoc->rowset;
+      sort($this_assoc);
+      sort($model_assoc);
+      if($this_assoc != $model_assoc) return false;
+    }
     return true;
   }
 
   /**
-   * returns a copied model minus the primary key
+   * returns a copied row
+   * if there are associations the row will have a new primary key otherwise it will have no primary key ready to be saved
    */
-  public function copy(){
-    $res = clone $this;
-    unset($res->row[$tghis->primary_key]);
-    return $res;
+  public function copy($dest = false){
+    if($dest){
+      $ret = clone $this;
+      $ret->{$ret->primary_key} = $dest->primval();
+      if($assocs = $this->associations()){
+        if(!$ret->primval()) $ret->save();
+        foreach($assocs as $assoc => $data){
+          $ret->$assoc->unlink();
+          $ret->$assoc = $this->$assoc;
+        }
+      }
+      return $ret;
+    }else{
+      $ret = clone $this;
+      $ret->{$ret->primary_key} = false;
+      return $this->copy($ret);
+    }
   }
 
 
