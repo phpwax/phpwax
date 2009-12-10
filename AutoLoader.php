@@ -138,7 +138,7 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
       }
     }
-   	throw new WXDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
+   	throw new WaxDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
 	}
 	
 	static public function controller_paths($resp=false) {
@@ -240,10 +240,10 @@ class AutoLoader
 	}
 	
 	static public function detect_environments() {
-	  if(!is_array(WXConfiguration::get("environments"))) return false;
+	  if(!is_array(Config::get("environments"))) return false;
 	  if($_SERVER['HOSTNAME']) $addr = gethostbyname($_SERVER['HOSTNAME']);
 	  elseif($_SERVER['SERVER_ADDR']) $addr = $_SERVER['SERVER_ADDR'];
-	  if($envs= WXConfiguration::get("environments")) {
+	  if($envs= Config::get("environments")) {
 	    foreach($envs as $env=>$range) {
   	    $range = "/".str_replace(".", "\.", $range)."/";
   	    if(preg_match($range, $addr) && !defined($env) ) {
@@ -274,6 +274,7 @@ class AutoLoader
 	  self::recursive_register(CONTROLLER_DIR, "application");
 	  self::recursive_register(FORMS_DIR, "application");
 		self::recursive_register(FRAMEWORK_DIR, "framework");
+		WaxEvent::run("wax.start");
 		self::register_controller_path("user", CONTROLLER_DIR);
 		self::register_view_path("user", VIEW_DIR);
 		self::autoregister_plugins();
@@ -281,7 +282,8 @@ class AutoLoader
 		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
 		self::register_helpers();
 		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxerror', 247 );		
+		set_error_handler('throw_wxerror', 247 );
+		WaxEvent::run("wax.init");
 	}
 	/**
 	 *	Includes the necessary files and instantiates the application.
@@ -289,7 +291,7 @@ class AutoLoader
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
 	  //if(!defined('ENV')) define('ENV', $environment);	
-		$app=new WXApplication($full_app);
+		$app=new WaxApplication($full_app);
 	}
 
 	/**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
