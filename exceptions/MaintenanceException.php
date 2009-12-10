@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author charles marshall
  **/
-class MaintenanceException extends WXException
+class MaintenanceException extends WaxException
 {
   //duration - ( (60 * 60) * 24) - 1 day  (86,400)
 	function __construct( $message="Servive undergoing maintenance", $status = "503", $duration="86,400") {  	

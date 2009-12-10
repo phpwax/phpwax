@@ -16,7 +16,7 @@ class ExampleFileField extends WaxModel {
   
   public function setup() {
 		//restrict file uploads to just gifs and jpgs
-    $this->define("file", "FileField", array("maxlength"=>255, 'allowed_extensions'=> array('.gif', '.jpg') ));
+    $this->define("file", "FileField", array('allowed_extensions'=> array('.gif', '.jpg') ));
   }
 }
 class TestWaxModelField extends WXTestCase {

@@ -24,11 +24,11 @@ class WaxException extends Exception {
   
 	public function format_trace($e, $cli=false) {
 	  if(IN_CLI =="true" || $cli) {
-	    $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
+	    $view= new WaxTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
   		return $view->parse();
 	  }else {
-      $view= new WXTemplate(array("e"=>$e, "help"=>$this->help));
+      $view= new WaxTemplate(array("e"=>$e, "help"=>$this->help));
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
 	  }

@@ -63,7 +63,7 @@ class WXScripts {
   public function data($argv) {
     if(!$argv[1]) $this->fatal_error("[ERROR] You must give a data command to run.");
     $this->app_setup();
-    $db = WXConfiguration::get('db');
+    $db = Config::get('db');
     if($argv[1] == "save" && $this->get_response("About to write database to app/db/data.sql. This will overwrite previous versions!", "y")) {
       $command = "mysqldump ".$db['database']." --skip-comments --add-drop-table --ignore-table=".$db['database'].".migration_info -u".$db['username']." -p".$db['password']." > app/db/data.sql";
       system($command);
@@ -85,8 +85,9 @@ class WXScripts {
     define("CLI_ENV", true);
     if((!include 'simpletest/unit_tester.php') 
       || (!include 'simpletest/mock_objects.php')
+      || (!include 'simpletest/reporter.php')
       ) {
-      throw new WXDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
+      throw new WaxDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
     }
 
     if($argv[1] == "wax") {
@@ -130,7 +131,7 @@ class WXScripts {
   
   
   public function deploy($argv) {
-    $deployment_settings = WXConfiguration::get('deploy');
+    $deployment_settings = Config::get('deploy');
     $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
     if(is_array($deployment_settings['before_deploy'])) {
       foreach($deployment_settings['before_deploy'] as $before) $remote->add_command($before);
@@ -145,7 +146,7 @@ class WXScripts {
   }
   
   public function remote($argv) {
-    $deployment_settings = WXConfiguration::get('deploy');
+    $deployment_settings = Config::get('deploy');
     $remote = new WXRemote($deployment_settings['user'], $deployment_settings['server']);
     $remote->add_command($argv[1]);
     $remote->run_commands();
