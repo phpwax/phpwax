@@ -407,7 +407,8 @@ abstract class WaxDbAdapter {
     $sql.= "`{$field->col_name}`";
     if(!$type = $field->data_type) $type = "string";
     $sql.=" ".$this->data_types[$type];
-    if($field->maxlength) $sql.= "({$field->maxlength}) ";
+    if($type == "string" && !$field->maxlength) $sql.= "(255) ";
+    elseif($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
     if($field->default) $sql.= " DEFAULT '{$field->default}'";
