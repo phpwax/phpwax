@@ -44,12 +44,23 @@ class WaxPartialHelper extends WXHelpers {
       else if(!$controller) $controller = WaxUrl::$default_controller;
       $delegate = Inflections::slashcamelize($controller, true);
       $delegate .="Controller";
-      $delegate_controller = new $delegate;
-      $delegate_controller->controller = $controller;
-  		$partial = $delegate_controller->execute_partial($path, $format);
+      $p_controller = new $delegate;
+      $p_controller->controller = $controller;
+      $p_controller->use_layout = false;
+      $p_controller->use_format = $format;
+      if(strpos($path, "/")) {
+        $partial = substr($path, strrpos($path, "/")+1);
+      	$path = substr($path, 0, strrpos($path, "/")+1);
+      	$path = $path.$partial;
+      } else $partial = $path; {
+      	if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();
+      }
+      $p_controller->use_view = $path;
+  		$partial = $p_controller->render_view();
   	}
     return $partial;
   }
+  
   
   
 
