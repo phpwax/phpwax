@@ -222,7 +222,7 @@ class WXEmail
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
         return true;
 			} else {
-				throw new WXEmailException("Couldn't Send Email", $header."\n".$body);
+				throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
 			}
     }
 
@@ -1009,7 +1009,7 @@ class WXEmail
     }
     
     public function get_templates($action) {
-			$view = WXInflections::underscore(get_class($this))."/".$action;
+			$view = Inflections::underscore(get_class($this))."/".$action;
 			
 			$view_path= new WaxTemplate($this);
 			
