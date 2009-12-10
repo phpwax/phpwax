@@ -1,8 +1,18 @@
 <?php
+/** Mock Classes To Allow Url Testing **/
+class BlogController extends WaxController {}
+class AdminContentController extends WaxController {}
 
 class TestWaxUrl extends WXTestCase {
+  public static $orig_mappings = false;
+  public static $setup = false;
+  
     public function setUp() {
+      if(!self::$setup) {self::$orig_mappings = WaxUrl::$mappings; self::$setup=true;}
+      WaxUrl::$mappings = self::$orig_mappings;
       WaxUrl::$params = false;
+      WaxUrl::$mapped=false;
+      WaxUrl::$uri=false;
     }
     
     public function tearDown() {
@@ -37,6 +47,7 @@ class TestWaxUrl extends WXTestCase {
       WaxUrl::map("blog/:category/:id", array("controller"=>"blog", "action"=>"show"));
       $this->assertEqual(WaxUrl::get("controller"), "blog");
       $this->assertEqual(WaxUrl::get("category"), "tech");
+      $this->assertEqual(WaxUrl::get("action"), "show");
       $this->assertEqual(WaxUrl::get("id"), "5");      
     }
     
@@ -58,7 +69,7 @@ class TestWaxUrl extends WXTestCase {
     
     public function test_nested_controller() {
       $_GET["route"]="admin/content";
-      $this->assertEqual(WaxUrl::get("controller"), "admin/content");      
+      $this->assertEqual(WaxUrl::get("controller"), "admin/content");     
     }
     
     public function test_formats() {
@@ -92,6 +103,15 @@ class TestWaxUrl extends WXTestCase {
       $this->assertEqual(WaxUrl::get("controller"), "page");
       $this->assertEqual(WaxUrl::get("action"), "gallery-create");
       $this->assertEqual(WaxUrl::get("id"), "anyid");
+    }
+    
+    public function test_non_sequential_controller() {
+      $_GET["route"]="/en/page/index/45";
+      WaxUrl::map(":language/:controller/:action/:id");
+      $this->assertEqual(WaxUrl::get("controller"), "page");
+      $this->assertEqual(WaxUrl::get("action"), "index");
+      $this->assertEqual(WaxUrl::get("id"), "45");
+      $this->assertEqual(WaxUrl::get("language"), "en");
     }
     
    
