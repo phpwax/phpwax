@@ -19,7 +19,7 @@ class AssetTagHelper extends WXHelpers {
 
   public function __construct() {
     $this->javascript_default_sources =	array('prototype', 'builder','effects', 'dragdrop', 'controls', 'slider');
-    self::$asset_server = WXConfiguration::get("assets");
+    self::$asset_server = Config::get("assets");
   }
   
   public function serve_asset($type, $namespace, $filename) {

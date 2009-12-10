@@ -229,7 +229,7 @@ class WXHelpers {
 		$class= new $object;
 		$errors = $class->get_errors();
 		foreach($errors as $error) {
-			$html.= $this->content_tag("li", WXInflections::humanize($error['field'])." ".$error['message'], array("class"=>"user_error"));
+			$html.= $this->content_tag("li", Inflections::humanize($error['field'])." ".$error['message'], array("class"=>"user_error"));
 		}
 		if(count($errors)>0) return $this->content_tag("ul", $html, array("class"=>"user_errors"));
 		return false;
