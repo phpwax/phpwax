@@ -99,7 +99,7 @@ class WaxAuthDb
 
   public function setup_user() {
     if($id = Session::get($this->session_key)) {
-      $object = WXInflections::camelize($this->db_table, true);
+      $object = Inflections::camelize($this->db_table, true);
       $result = new $object($id);
       if($result->primval) {
         $this->user_object = $result;
@@ -110,7 +110,7 @@ class WaxAuthDb
   }
 
   public function verify($username, $password) {
-    $object = WXInflections::camelize($this->db_table, true);
+    $object = Inflections::camelize($this->db_table, true);
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
     
