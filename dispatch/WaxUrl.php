@@ -16,7 +16,9 @@
  * It also requires access to the config object to check configurations.
  **/
 class WaxUrl {
-  
+  const REGEX_SEG = "(?P<$1>[^/.,;?]+)";
+  const REGEX_CATCHALL = "(?P<$1>[^.,;?]+)";
+	const REGEX_URL  = '[A-Za-z0-9-_]';
   
   /**
    *  This is simply a stackable array of mappings - new mappings are added to the top of the stack
@@ -27,14 +29,14 @@ class WaxUrl {
   static public $mappings = array(
     array(":action/:id/:params*"),
     array(":action/:id"),
-    array(":action")
+    array(":action"),
+    array("")
   );
   
-  static public $default_controller = "page";
-  static public $default_action = "index";
+  static public $defaults = array("controller"=>"page", "action"=>"index");
   static public $params = false;
   static public $mapped=false;
-
+  static public $uri = false;
 
   
   /**
@@ -61,6 +63,46 @@ class WaxUrl {
     array_unshift(self::$mappings, array($pattern, $outcome, $conditions));
   }
   
+  /*
+   *    Compiles syntax in defined routes to simple regular expressions.
+   *    
+  **/
+  
+  static public function compile() {
+    /* Setup */
+    if(!self::$uri) self::$uri = $_GET["route"];
+    
+    /*** Get the raw URI and try to map a controller *****/
+    self::$params["controller"] = self::route_controller(self::$uri);
+    self::$uri = ltrim(str_replace(self::$params["controller"],"", self::$uri),"/");
+    
+    /* This part converts placeholders to normal regular expressions */
+    foreach(self::$mappings as &$map) {
+      $map[0] = preg_replace("/:(".self::REGEX_URL."*)\*/", self::REGEX_CATCHALL,$map[0]);
+      $map[0] = preg_replace("/:(".self::REGEX_URL."*)/", self::REGEX_SEG,$map[0]);
+    } 
+    
+    //before mappings get the format
+    if(!self::$params["format"] && preg_match("/(.*)\.(.*)/", self::$uri, $matches)){
+      self::$params["format"] = $matches[2];
+    }
+
+    /**** This part matches the url against the regular expressions *******/
+    foreach(self::$mappings as &$map) {
+      $map[0] = ltrim(str_replace(self::$params["controller"],"", $map[0]),"/");
+      if(preg_match("#$map[0]#", self::$uri, $matches)) {
+        if($map[1]["controller"]) self::$params["controller"]=$map[1]["controller"];
+        /*** We make the final params by merging the defaults with the matches *********/
+        self::$params = array_merge($_GET, (array)self::$params, (array)$matches, (array)$map[1]);
+        self::force_defaults();
+        return self::$mapped = true;
+      }
+    }
+  }
+  
+  
+  
+  
   
   /**
    *  Loops through the defined lookup patterns until one matches
@@ -70,58 +112,7 @@ class WaxUrl {
    **/
 
   static public function perform_mappings() {
-    if(!self::$params) self::$params = $_GET;
-    self::detect_maintenance();
-    
-    //before mappings get the format
-    if(!self::$params["format"] && preg_match("/(.*)\.(.*)/", self::$params["route"], $matches)){
-      self::$params["format"] = $matches[2];
-      self::$params["route"] = $matches[1];
-    }
-    
-    //before mappings build a route array
-    if(!self::$params["route_array"]) self::$params["route_array"] = explode("/", self::$params["route"]);
-    
-    foreach(self::$mappings as $map) {
-      $left = $map[0];
-      $right = self::$params["route"];
-      if(substr($right,-1)=="/") $right = substr($right, 0,-1); //take off the first slash if it's there
-      $left = preg_replace("/:([A-Za-z0-9\-_]*\*)/", "([A-Za-z0-9.\-/_]*)", $left);
-      $left = preg_replace("/:([A-Za-z0-9\-_]*)/", "([A-Za-z0-9.\-_]*)", $left);
-      $left = str_replace("/", "\/", $left);  
-      if($left===$right && !strpos($left,":")) $mapped_route = $map[1];
-      elseif(preg_match("/".$left."/", $right, $matches)) {
-        if(!self::$params["controller"] && !$map[1]["controller"]) {
-          self::route_controller();
-          break;
-        }
-
-        $mappings = explode("/", $map[0]);
-        array_shift($matches);
-        while(count($mappings)) {
-          if($mappings[0]==$matches[0]) { // exact text mappings
-            array_shift($matches);
-          } elseif(substr($mappings[0],0,1)==":" && substr($mappings[0],-1)=="*") { // *-based variable mappings to allow any number of variables
-            $mapped_route[substr($mappings[0],1, -1)]=explode("/", $matches[0]);
-          } elseif(substr($mappings[0],0,1)==":") { // variable-based mappings
-            $mapped_route[substr($mappings[0],1)]=$matches[0];
-            array_shift($matches); 
-          }
-          array_shift($mappings);
-        }
-        $mapped_route = array_merge($mapped_route, (array) $map[1]);
-      }
-      // Map against named parameters in options array
-     
-      if($mapped_route) {
-        foreach($mapped_route as $k=>$val) {
-          self::$params[$k]=$val;
-        }
-      break;
-      }
-    }
-    self::$mapped = true;
-    self::force_defaults();
+    self::compile();
   }
   
   /**
@@ -130,15 +121,16 @@ class WaxUrl {
    * @return mixed
    **/
   static public function get($val) {
-    self::perform_mappings();
+    if(!self::$mapped) self::compile();
+    if($val !=="controller" && strpos(self::$params[$val], "/")) return explode("/",self::$params[$val]);
     return self::$params[$val];
   }
   
   static public function get_params() {
-    self::perform_mappings();
+    if(!self::$mapped) self::compile();
     return self::$params;
   }
-  
+    
   
   /**
     *  Checks whether a file exists for the named controller
@@ -160,6 +152,7 @@ class WaxUrl {
 	}
 	
 	protected function is_controller($test) {
+	  if(class_exists(Inflections::slashcamelize($test, true)."Controller", false)) return true;
 	  $path = "";
 	  if(strpos($test, "/")) {
 			$path = substr($test, 0, strpos($test, "/")+1);
@@ -172,8 +165,8 @@ class WaxUrl {
 	}
 	
   protected function force_defaults() {
-    if(!self::$params["controller"]) self::$params["controller"]=self::$default_controller;
-    if(!self::$params["action"]) self::$params["action"]=self::$default_action;
+    if(!self::$params["controller"]) self::$params["controller"]=self::$defaults["controller"];
+    if(!self::$params["action"]) self::$params["action"]=self::$defaults["action"];
   }
   
   protected function detect_maintenance() {
