@@ -41,7 +41,7 @@ class ManyToManyField extends WaxModelField {
     $join->table = $this->join_table;
     $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
-    if($this->join_order) $this->join_model->order($this->join_order);
+    if($this->join_order) $this->join_model->order($this->join_order); 
   }
 
   public function validate() {

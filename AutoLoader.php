@@ -258,7 +258,7 @@ class AutoLoader
 	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class == "Inflections") {
 	      foreach(get_class_methods($class) as $method) {
 	        if(substr($method,0,1)!="_" && !function_exists($method)) {
-	          WXGenerator::new_helper_wrapper($class, $method);
+	          WaxCodeGenerator::new_helper_wrapper($class, $method);
           }
 	      }
 	    }

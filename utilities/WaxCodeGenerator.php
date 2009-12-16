@@ -6,7 +6,7 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WXGenerator {
+class WaxCodeGenerator {
   
   public $output="";
   public $functions = array();

@@ -30,7 +30,10 @@ class WaxController
   public $use_cache = true;
 
 	public function __construct($application=false) {
-	  if($application) $this->application = $application;
+	  if($application) {
+	    $this->application = $application;
+	    $this->response = $this->application->response;
+    }
 	  $this->init();    
   }
   
@@ -39,7 +42,6 @@ class WaxController
     $this->referrer=Session::get('referrer');
     $this->filters["before"]=array();
     $this->filters["after"]=array();
-    $this->response = $this->application->response;
   }
   
   

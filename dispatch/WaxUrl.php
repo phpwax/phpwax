@@ -74,14 +74,13 @@ class WaxUrl {
     
     /*** Get the raw URI and try to map a controller *****/
     self::$params["controller"] = self::route_controller(self::$uri);
-    self::$uri = ltrim(str_replace(self::$params["controller"],"", self::$uri),"/");
+    self::$uri = ltrim(preg_replace("/".str_replace("/","\/",self::$params["controller"])."/","", self::$uri,1),"/");
     
     /* This part converts placeholders to normal regular expressions */
     foreach(self::$mappings as &$map) {
       $map[0] = preg_replace("/:(".self::REGEX_URL."*)\*/", self::REGEX_CATCHALL,$map[0]);
       $map[0] = preg_replace("/:(".self::REGEX_URL."*)/", self::REGEX_SEG,$map[0]);
     } 
-    
     //before mappings get the format
     if(!self::$params["format"] && preg_match("/(.*)\.(.*)/", self::$uri, $matches)){
       self::$params["format"] = $matches[2];
@@ -89,9 +88,13 @@ class WaxUrl {
 
     /**** This part matches the url against the regular expressions *******/
     foreach(self::$mappings as &$map) {
+      
+      /**** This line makes sure that the controller has been stripped from the uri ****/
       $map[0] = ltrim(str_replace(self::$params["controller"],"", $map[0]),"/");
+      
       if(preg_match("#$map[0]#", self::$uri, $matches)) {
         if($map[1]["controller"]) self::$params["controller"]=$map[1]["controller"];
+        
         /*** We make the final params by merging the defaults with the matches *********/
         self::$params = array_merge($_GET, (array)self::$params, (array)$matches, (array)$map[1]);
         self::force_defaults();

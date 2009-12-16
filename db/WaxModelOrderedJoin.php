@@ -9,4 +9,3 @@ class WaxModelOrderedJoin extends WaxModelJoin {
   }
 }
 
-?>

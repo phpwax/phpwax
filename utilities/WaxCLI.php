@@ -5,7 +5,7 @@
  * @author Ross Riley
  **/
  
-class WXScripts {
+class WaxCLI {
   
   public $output=array();
   
@@ -24,16 +24,16 @@ class WXScripts {
   }
   
   public function controller($argv) {
-    $gen = new WXGenerator("controller", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("controller", array_slice($argv, 1));
   }
   
   public function email($argv) {
-    $gen = new WXGenerator("email", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("email", array_slice($argv, 1));
   }
   
   public function test($argv) {
     $this->app_setup();
-    $gen = new WXGenerator("test", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("test", array_slice($argv, 1));
   }
   
   public function docs($argv) {
@@ -47,17 +47,17 @@ class WXScripts {
   
   public function model($argv) {
     $this->app_setup();
-    $gen = new WXGenerator("model", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("model", array_slice($argv, 1));
   }
   
   public function form($argv) {
     $this->app_setup();
-    $gen = new WXGenerator("form", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("form", array_slice($argv, 1));
   }
   
   public function migration($argv) {
     $this->app_setup();
-    $gen = new WXGenerator("migration", array_slice($argv, 1));
+    $gen = new WaxCodeGenerator("migration", array_slice($argv, 1));
   }
   
   public function data($argv) {

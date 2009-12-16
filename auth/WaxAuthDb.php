@@ -35,6 +35,7 @@ class WaxAuthDb
 		}elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 		
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+	  if(isset($options["salt"])) $this->salt=$options["salt"];
 	  if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
 	  if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
 	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
@@ -113,7 +114,6 @@ class WaxAuthDb
     $object = Inflections::camelize($this->db_table, true);
     $user = new $object;
     if($this->encrypt) $password = $this->encrypt($password);
-    
     $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
     if($result->primval) {
       $this->user_object = $result;

@@ -11,5 +11,3 @@
  *  In production mode errors are handled quietly and optionally emailed or logged. 
  */
 class WXException extends WaxException{}
-
-?>

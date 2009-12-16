@@ -67,7 +67,7 @@ class File {
 		elseif($overwrite) {
 			$command="mogrify ".escapeshellarg($source)." -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
 		} else {
-			$command="convert ".escapeshellarg($source)." -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
+			$command="convert ".escapeshellarg($source)." -coalesce -thumbnail {$width}x{$height} -quality ".self::$compression_quality."  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }

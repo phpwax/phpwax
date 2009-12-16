@@ -95,6 +95,14 @@ class AssetTagHelper extends WXHelpers {
     return $this->tag("img", $options);
   }
   
+  public function js_bundle($name, $options) {
+    
+  }
+  
+  public function css_bundle($name, $options) {
+    
+  }
+  
   protected function image_path($source) {
     return $this->compute_public_path($source, 'images', 'png');
   }
