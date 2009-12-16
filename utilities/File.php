@@ -65,9 +65,9 @@ class File {
 	  }
 	  if($ratio == 1) $command = "cp ".escapeshellarg($source)." ".escapeshellarg($destination);
 		elseif($overwrite) {
-			$command="mogrify ".escapeshellarg($source)." -limit area 50mb -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
+			$command="mogrify ".escapeshellarg($source)." -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
 		} else {
-			$command="convert ".escapeshellarg($source)." -limit area 50mb -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
+			$command="convert ".escapeshellarg($source)." -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
