@@ -37,6 +37,7 @@ class WaxUrl {
   static public $params = false;
   static public $mapped=false;
   static public $uri = false;
+  static public $original_route = false;
 
   
   /**
