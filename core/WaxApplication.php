@@ -101,6 +101,7 @@ class WaxApplication {
 	      
     $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");
+	  print_r(WaxUrl::get("route")); exit;
 	  $controller->route_array = explode("/", WaxUrl::get("route"));
 	  $controller->use_format = WaxUrl::get("format");
 	  
