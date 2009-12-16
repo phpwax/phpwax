@@ -24,6 +24,7 @@ class WaxAuthDb
  	protected $user_id=null;
   protected $user_object=null;
 	protected $db_table = "user";
+	protected $user_class = false;
   protected $encrypt=false;
   protected $salt=false;
 	protected $algorithm = "md5";
@@ -35,6 +36,7 @@ class WaxAuthDb
 		}elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
 		
 	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+	  if(isset($options["user_class"])) $this->user_class=$options["user_class"];
 	  if(isset($options["salt"])) $this->salt=$options["salt"];
 	  if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
 	  if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
@@ -100,7 +102,8 @@ class WaxAuthDb
 
   public function setup_user() {
     if($id = Session::get($this->session_key)) {
-      $object = Inflections::camelize($this->db_table, true);
+      if(!$this->user_class) $object = Inflections::camelize($this->db_table, true);
+      else $object = $this->user_class;
       $result = new $object($id);
       if($result->primval) {
         $this->user_object = $result;
