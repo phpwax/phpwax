@@ -71,7 +71,7 @@ class WaxUrl {
   static public function compile() {
     /* Setup */
     if(!self::$uri) self::$uri = $_GET["route"];
-    if(!self::$orginal_route) self::$original_route = $_GET["route"];
+    if(!self::$original_route) self::$original_route = $_GET["route"];
     
     /*** Get the raw URI and try to map a controller *****/
     self::$params["controller"] = self::route_controller(self::$uri);
