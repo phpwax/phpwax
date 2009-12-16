@@ -38,7 +38,6 @@ class WaxUrl {
   static public $mapped=false;
   static public $uri = false;
   static public $original_route = false;
-
   
   /**
    *  Can be called from anywhere in the application. Maps a url to a particular outcome.
