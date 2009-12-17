@@ -95,12 +95,22 @@ class AssetTagHelper extends WXHelpers {
     return $this->tag("img", $options);
   }
   
-  public function js_bundle($name, $options) {
-    
+  public function js_bundle($name, $options = array()) {
+    if(ENV=="development") {
+      foreach(glob(PUBLIC_DIR."javascripts/$name/*.js") as $file){
+        $ret .= $this->javascript_include_tag("/javascripts/$name/".basename($file), $options);
+      }
+    } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined", $options);
+    return $ret;
   }
   
-  public function css_bundle($name, $options) {
-    
+  public function css_bundle($name, $options=array()) {
+    if(ENV=="development") {
+      foreach(glob(PUBLIC_DIR."stylesheets/$name/*.css") as $file){
+        $ret .= $this->stylesheet_link_tag("/stylesheets/$name/".basename($file), $options);
+      }
+    } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
+    return $ret;
   }
   
   protected function image_path($source) {

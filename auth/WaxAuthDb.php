@@ -102,8 +102,8 @@ class WaxAuthDb
 
   public function setup_user() {
     if($id = Session::get($this->session_key)) {
-      if(!$this->user_class) $object = Inflections::camelize($this->db_table, true);
-      else $object = $this->user_class;
+      if($this->user_class) $object = $this->user_class; 
+      else $object = Inflections::camelize($this->db_table, true);
       $result = new $object($id);
       if($result->primval) {
         $this->user_object = $result;
