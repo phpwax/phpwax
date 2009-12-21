@@ -134,8 +134,10 @@ class WaxValidate {
 		}
   }
   
+  //if the value isnt present return true - allowing empty strings to pass the test
   protected function valid_datetime() {
-    return $this->valid_format("datetime");
+    if(!$this->object->value()) return true;
+    else return $this->valid_format("datetime");
   }
   
   protected function valid_required() {
