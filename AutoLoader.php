@@ -51,6 +51,7 @@ function auto_loader_check_cache(){
   if($config = Config::get('layout_cache')){    
     if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
     else $cache = new WaxCacheLoader('File', $cache_location);
+    Session::start(); //start session before checking cache, to support caching by session data
     if($content = $cache->layout_cache_loader($config)){
       $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
       $pos = strrpos($url_details['path'], ".");
