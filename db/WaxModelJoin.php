@@ -5,9 +5,11 @@
  * @package PHP-WAX
  */
 class WaxModelJoin extends WaxModel {
+  
   public $disallow_sync = true;
   public $left_field = false;
   public $right_field = false;
+  
   
   public function init(WaxModel $left, WaxModel $right) {
     if(!$this->table) $this->table = $left->table."_".$right->table;

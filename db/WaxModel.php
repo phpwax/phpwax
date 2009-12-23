@@ -13,8 +13,9 @@ class WaxModel{
   static public $adapter = false;
   static public $db_settings = false;
   static public $db = false;
-  static public $columns = array();
+  static public $column_maps = array();
 
+  public $columns = array()
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
@@ -103,9 +104,13 @@ class WaxModel{
  	  self::$adapter = $adapter;
  	  self::$db_settings = $db_settings;
  	}
+ 	
 
  	public function define($column, $type, $options=array()) {
- 	  self::$columns[$column]=array($type, $options);
+ 	  if(function_exists("get_called_class")) {
+ 	    $class= get_called_class();
+ 	    $class::$column_maps[$column] = array($type, $options);
+ 	  } else $this->columns[$column] = array($type, $options);
  	}
 
  	public function add_error($field, $message) {
@@ -179,7 +184,7 @@ class WaxModel{
 
 
  	public function validate() {
- 	  foreach(self::$columns as $column=>$setup) {
+ 	  foreach($this->columns() as $column=>$setup) {
  	    $field = new $setup[0]($column, $this, $setup[1]);
  	    $field->is_valid();
  	    if($field->errors) {
@@ -195,12 +200,16 @@ class WaxModel{
  	}
 
   public function get_col($name) {
-    if(!self::$columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
-    return new self::$columns[$name][0]($name, $this, self::$columns[$name][1]);
+    $cols = $this->columns();
+    if(!$cols[$name][0]) throw new WXException("Error", $name." is not a valid call");
+    return new $cols[$name][0]($name, $this, $cols[$name][1]);
   }
   
   public function columns() {
-    return self::$columns;
+    if(function_exists("get_called_class")) {
+ 	    $class= get_called_class();
+ 	    return $class::$column_maps;
+ 	  } else return $this->columns;
   }
 
   static public function get_cache($model, $field, $id, $transform = true) {
@@ -249,7 +258,7 @@ class WaxModel{
   public function set_identifier() {
     // Grab the first text field to display
     if($this->identifier) return true;
-    foreach(self::$columns as $name=>$col) {
+    foreach($this->columns() as $name=>$col) {
       if($col[0]=="CharField") {
         $label_field = $name;
       }
@@ -266,8 +275,9 @@ class WaxModel{
       *  @return mixed           property value
       */
  	public function __get($name) {
-    if(array_key_exists($name, self::$columns)) {
-      if(WaxModelField::$skip_field_delegation_cache[self::$columns[$name][0]]["get"]) return $this->row[$name];
+ 	  $cols = $this->columns();
+    if(array_key_exists($name, $cols)) {
+      if(WaxModelField::$skip_field_delegation_cache[$cols[$name][0]]["get"]) return $this->row[$name];
       $field = $this->get_col($name);
       return $field->get();
     }
@@ -282,7 +292,7 @@ class WaxModel{
    *  @param  mixed   value   property value
    */
  	public function __set( $name, $value ) {
-    if(array_key_exists($name, self::$columns)) {
+    if(array_key_exists($name, $this->columns())) {
  	    $field = $this->get_col($name);
  	    $field->set($value);
     } else $this->row[$name]=$value;
@@ -305,7 +315,7 @@ class WaxModel{
   */
  	public function save() {
  	  $this->before_save();
- 	  foreach(self::$columns as $col=>$setup) $this->get_col($col)->save();
+ 	  foreach($this->columns() as $col=>$setup) $this->get_col($col)->save();
  	  if(!$this->validate) return false;
     if($this->primval) $res = $this->update();
     else $res = $this->insert();
@@ -322,7 +332,7 @@ class WaxModel{
  	  if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
-		foreach(self::$columns as $col=>$setup) $this->get_col($col)->delete();
+		foreach($this->columns() as $col=>$setup) $this->get_col($col)->delete();
  	  $res = self::$db->delete($this);
     $this->after_delete();
     return $res;
@@ -470,9 +480,10 @@ class WaxModel{
 
  	public function set_attributes($array) {
  	  //move association fields to the end of the array
+ 	  $cols = $this->columns();
  	  foreach((array)$array as $k=>$v) {
- 	    if(self::$columns[$k]){
- 	      $is_assoc = WaxModelField::$skip_field_delegation_cache[self::$columns[$k][0]]['assoc'];
+ 	    if($cols[$k]){
+ 	      $is_assoc = WaxModelField::$skip_field_delegation_cache[$cols[$k][0]]['assoc'];
         if(!isset($is_assoc)){
      	    $field = $this->get_col($k);
      	    $is_assoc = $field->is_association;
@@ -523,7 +534,7 @@ class WaxModel{
    */
   public function associations(){
     $ret = array();
-    foreach(self::$columns as $column => $data){
+    foreach($this->columns() as $column => $data){
       $type = $data[0];
       if($type == "HasManyField" || $type == "ManyToManyField") $ret[$column] = $data;
     }
@@ -583,7 +594,7 @@ class WaxModel{
 
 
  	public function __call( $func, $args ) {
-    if(array_key_exists($func, self::$columns)) {
+    if(array_key_exists($func, $this->columns())) {
       $field = $this->get_col($func);
       return $field->get($args[0]);
     }
