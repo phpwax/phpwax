@@ -79,9 +79,6 @@ class WaxApplication {
   private function initialise_database() {
     if($db = Config::get('db')) {
       if($db['dbtype']=="none") return false;
-      if(!$db['host']) $db['host']="localhost";
-      if(!$db['port']) $db['port']="3306";
-      
       WaxModel::load_adapter($db);
     }
   }

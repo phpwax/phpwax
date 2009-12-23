@@ -169,6 +169,12 @@ class WaxController
   public function is_public_method($object, $method) {
     return WaxApplication::is_public_method($object, $method);
   }
+  
+  public function is_viewable($path, $format="html"){
+  	$file_path = VIEW_DIR . $path . ".". $format;
+  	if(is_readable($file_path)) return true;
+  	else return false;
+  }
 
 
 	/**
