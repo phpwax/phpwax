@@ -31,7 +31,6 @@ class WaxApplication {
 
 	function __construct($delegate) {
 	  $this->setup_environment();	
-	  $this->initialise_database();
 	  if($delegate) $this->execute();
   }
 
@@ -74,18 +73,7 @@ class WaxApplication {
 	 *
 	 *  @access private
    *  @return void
-   */
-  
-  private function initialise_database() {
-    if($db = Config::get('db')) {
-      if($db['dbtype']=="none") return false;
-      if(!$db['host']) $db['host']="localhost";
-      if(!$db['port']) $db['port']="3306";
-      
-      WaxModel::load_adapter($db);
-    }
-  }
-	
+   */	
 
   
   public function execute() {
