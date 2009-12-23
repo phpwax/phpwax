@@ -296,7 +296,7 @@ class WaxModel{
  	  $this->before_save();
  	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
  	  if(!$this->validate) return false;
-    if($this->primval) $res = $this->update();
+    if($this->primval()) $res = $this->update();
     else $res = $this->insert();
  		$res->after_save();
  		return $res;
