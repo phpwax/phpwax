@@ -183,7 +183,15 @@ class WaxController
 	 *	@access protected
  	 */
    public function controller_global() {}
-
+   
+   /**
+    * Added back in as this is heavily used by the cms
+    */
+   public function is_viewable($path, $format="html"){
+     $file_path = VIEW_DIR . $path . ".". $format;
+     if(is_readable($file_path)) return true;
+     else return false;
+   }
 
 
 }
