@@ -300,18 +300,10 @@ class WaxModel{
   */
  	public function save() {
  	  $this->before_save();
- 	  $associations = array();
- 	  foreach($this->columns as $col=>$setup) {
- 	    $field = $this->get_col($col);
- 	    if(!$field->is_association) $this->get_col($col)->save();
- 	    else $associations[]=$field;
- 	  }
+ 	  foreach($this->columns as $col=>$setup) $this->get_col($col)->save();
  	  if(!$this->validate) return false;
- 	  if($this->persistent) {
- 	    if($this->primval) $res = $this->update();
- 	    else $res = $this->insert();
- 		}
- 		foreach($associations as $assoc) $assoc->save();
+    if($this->primval) $res = $this->update();
+    else $res = $this->insert();
  		$res->after_save();
  		return $res;
   }
@@ -453,6 +445,7 @@ class WaxModel{
  	public function first() {
  	  $this->limit = "1";
  	  $model = clone $this;
+ 	  var_dump($db); exit;
  	  $res = self::$db->select($model);
  	  if($res[0])
  	    $model->row = $res[0];

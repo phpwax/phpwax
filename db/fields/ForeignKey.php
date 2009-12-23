@@ -29,29 +29,19 @@ class ForeignKey extends WaxModelField {
   
   public function get() {
     $class = $this->target_model;
-    if($cache = WaxModel::get_cache($class, $this->field, $this->model->primval)) return $cache;
     $model = new $this->target_model($this->model->{$this->col_name});
-    if($model->primval) {
-      WaxModel::set_cache($class, $this->field, $this->model->primval, $model);
-      return $model;
-    } else return false;
+    if($model->primval) return $model;
+    else return false;
   }
   
   public function set($value) {
     if($value instanceof WaxModel) {
-      $this->model->{$this->col_name} = $value->{$value->primary_key};
-      return $this->model->save();
+      $this->model->{$this->col_name} = $value->primval();
+      return $this->model;
     } else {
       $this->model->{$this->col_name} = $value;
-      return $this->model->save();
+      return $this->model;
     }
-    $class = get_class($this->model);
-    WaxModel::unset_cache($class, $this->field, $this->model->{$this->col_name});
-  }
-  
-  public function save() {
-    return true;
-    //return $this->set($this->value);
   }
   
   public function get_choices() {
