@@ -15,11 +15,11 @@ class WaxModel{
   static public $db = false;
   static public $columns = array();
 
+  public $row = array();
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
   public $primary_options = array();
-  public $row = array();
   public $select_columns = array();
   public $filters = array();
 	public $group_by = false;
