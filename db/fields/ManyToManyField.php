@@ -37,7 +37,7 @@ class ManyToManyField extends WaxModelField {
       $left = $j;
       $right = $this->model;
     }
-    $join = new $this->join_model_class();
+    $join = new $this->join_model_class;
     $join->table = $this->join_table;
     $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
@@ -75,7 +75,7 @@ class ManyToManyField extends WaxModelField {
 		$this->join_model->join_condition("$target->table.$target->primary_key = ".$this->join_model->table.".".$this->join_field($target));
 		//select columns from the far side of the join, not the join table itself
 		$this->join_model->select_columns = array($target->table.".*");
-		foreach(array_diff_key($this->join_model->columns,array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
+		foreach(array_diff_key($this->join_model->columns(),array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		  
 		$cache = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target->filters)),$vals->rowset, false);
@@ -115,7 +115,7 @@ class ManyToManyField extends WaxModelField {
       if(!($ret = $this->join_model->filter(array($this->join_field($value) => $value->primval) )->first())) {
         
         $new = array($this->join_field($value)=>$value->primval, $this->join_field($this->model) => $this->model->primval);
-foreach(array_diff_key($this->join_model->columns,array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
+foreach(array_diff_key($this->join_model->columns(),array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
             $new[$col] = $value->$col;
             
         $ret = $this->join_model->create($new);
@@ -174,7 +174,8 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
   public function filter($params, $value=NULL, $operator="=") {    
     if(is_array($params)){
       foreach($params as $column => $value){
-        if(!$this->join_model->columns[$column]) return $this->__call("filter", array($params, $value, $operator));
+        $cols = $this->join_model->columns();
+        if(!$cols[$column]) return $this->__call("filter", array($params, $value, $operator));
       }
       $this->join_model->filter($params, $value, $operator);
   		WaxModel::unset_cache(get_class($this->model), $this->field);
