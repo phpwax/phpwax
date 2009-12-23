@@ -120,7 +120,7 @@ class  WaxSqliteAdapter extends WaxDbAdapter {
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required
 
-    foreach($model->columns as $model_col=>$model_col_setup) {
+    foreach($model->columns() as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;
       $col_exists = false;

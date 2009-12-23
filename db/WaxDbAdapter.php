@@ -283,7 +283,7 @@ abstract class WaxDbAdapter {
       foreach($model->$filter_name as $filter) {
         if(is_array($filter)) {
           //add table name if it's a column
-          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; 
+          if(in_array($filter["name"],array_keys($model->columns()))) $sql.= "`$model->table`."; 
           $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
           if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
           else $params[]=$filter["value"];
@@ -352,7 +352,7 @@ abstract class WaxDbAdapter {
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required		
-    foreach($model->columns as $model_col=>$model_col_setup) {
+    foreach($model->columns() as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;
       $col_exists = false;
