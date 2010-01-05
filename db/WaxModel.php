@@ -100,7 +100,7 @@ class WaxModel{
  
  	public function define($column, $type, $options=array()) {
  	  if(function_exists("get_called_class")) {
- 	    $class= get_called_class();
+ 	    $class = get_class($this);
  	    $class::$column_maps[$column] = array($type, $options);
  	  } else $this->columns[$column] = array($type, $options);
  	}
