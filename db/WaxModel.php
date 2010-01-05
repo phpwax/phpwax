@@ -16,7 +16,7 @@ class WaxModel{
   static public $column_maps = array();
 
   public $row = array();
-  public $columns = array()
+  public $columns = array();
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
