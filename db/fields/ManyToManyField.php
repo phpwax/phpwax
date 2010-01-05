@@ -61,8 +61,8 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get($filters = false) {
-    if(!$this->model->primval) $this->model->row[$this->field] = new WaxModelAssociation($this->model, new $this->target_model, array(), $this->field);
-    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
+    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
+    if(!$this->model->primval) $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
     $target = new $this->target_model;
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
@@ -78,7 +78,7 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
+		return new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
   }
   
   private function lazy_load($target_model) {   
@@ -87,7 +87,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
+    return new WaxModelCollection(get_class($this->model), get_class($target_model), $ids);
   }
   
   
@@ -100,11 +100,10 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function set($value) {
     if($value instanceof WaxModel) {
-      $this->model->{$this->field}->add(new WaxRecordset($value,$value->row));
+      $this->model->{$this->field}->add(new WaxRecordset($value,(array)$value->pk()));
     } elseif($value instanceof WaxRecordset) {
       $this->model->{$this->field}->add($value);
     }
-    print_r($this->model); exit;
   }
   /**
    * this unset / delete function removes any link between the origin and target
