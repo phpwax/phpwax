@@ -19,15 +19,14 @@ abstract class WaxDbAdapter {
 	public $data_types = array(
 	    'string'          => "varchar",
 	    'text'            => "longtext",
-	    
 	    'date'            => "date",
 	    'time'            => 'time',
 	    'date_and_time'   => "datetime",
-	    
 	    'integer'         => "int",
 	    'decimal'         => "decimal",
 	    'float'           => "float"
   );
+  
   
   public $operators = array(
     "="=>     " = ",

@@ -13,10 +13,9 @@ class WaxModel{
   static public $adapter = false;
   static public $db_settings = false;
   static public $db = false;
-  static public $column_maps = array();
 
   public $row = array();
-  public $columns = array()
+  public $columns = array();
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
@@ -34,6 +33,7 @@ class WaxModel{
   public $identifier = false;
   static public $object_cache = array();
 	public $is_paginated = false;
+	  
 	//joins
 	public $is_left_joined = false;
 	public $left_join_target = false;
@@ -99,10 +99,7 @@ class WaxModel{
   }
  
  	public function define($column, $type, $options=array()) {
- 	  if(function_exists("get_called_class")) {
- 	    $class= get_called_class();
- 	    $class::$column_maps[$column] = array($type, $options);
- 	  } else $this->columns[$column] = array($type, $options);
+ 	  $this->columns[$column] = array($type, $options);
  	}
 
  	public function add_error($field, $message) {
@@ -198,10 +195,7 @@ class WaxModel{
   }
   
   public function columns() {
-    if(function_exists("get_called_class")) {
- 	    $class= get_called_class();
- 	    return $class::$column_maps;
- 	  } else return $this->columns;
+    return $this->columns;
   }
 
   static public function get_cache($model, $field, $id, $transform = true) {
@@ -308,7 +302,7 @@ class WaxModel{
  	public function save() {
  	  $this->before_save();
  	  foreach($this->columns() as $col=>$setup) $this->get_col($col)->save();
- 	  if(!$this->validate) return false;
+ 	  if(!$this->validate()) return false;
     if($this->primval()) $res = $this->update();
     else $res = $this->insert();
  		$res->after_save();
@@ -512,14 +506,18 @@ class WaxModel{
  	}
 
  	/**
- 	 * primval() function
+ 	 * primval() function - superseded by snappier pk()
  	 *
  	 * @return mixed
  	 * simple helper to return the value of the primary key
  	 **/
- 	public function primval() {
+ 	public function primval() {return $this->pk();}
+ 	
+  public function pk() {
     return $this->{$this->primary_key};
   }
+  
+
 
   /**
    * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField

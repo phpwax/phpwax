@@ -52,16 +52,7 @@ class HasManyField extends WaxModelField {
   }
   
   public function set($value) {
-    if($value instanceof $this->target_model){
-      $value->{$this->join_field} = $this->model->primval();
-      $value->save();
-    }
-    if($value instanceof WaxRecordset) {
-      foreach($value as $row){
-        $row->{$this->join_field} = $this->model->primval();
-        $row->save();
-      }
-    }
+    $this->model->row[$this->field]=$value;
   }
   
   public function unlink($value = false) {
