@@ -31,17 +31,9 @@ class ManyToManyField extends WaxModelField {
   }
 
   public function setup_join_model() {
-    $j = new $this->target_model;
-    if(strnatcmp($this->model->table, $j->table) <0) {
-      $left = $this->model;
-      $right = $j;
-    } else {
-      $left = $j;
-      $right = $this->model;
-    }
     $join = new $this->join_model_class;
+    $join->init($this->model, new $this->target_model);
     $join->table = $this->join_table;
-    $join->init($left, $right);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     if($this->join_order) $this->join_model->order($this->join_order); 
   }
@@ -62,10 +54,7 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function get() {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->primval) {  
-      $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
-      return $this->model->row[$this->field];
-    }
+    if(!$this->model->pk()) return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
     $target = new $this->target_model;
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
@@ -81,16 +70,16 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
+		return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
   }
   
-  private function lazy_load($target_model) {   
+  private function lazy_load($target) {   
     $left_field = $this->model->table."_".$this->model->primary_key;
-    $right_field = $target_model->table."_".$target_model->primary_key;
+    $right_field = $target->table."_".$target->primary_key;
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return new WaxModelCollection(get_class($this->model), get_class($target_model), $ids);
+    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $ids);
   }
   
   
@@ -103,9 +92,10 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function set($value) {
     if($value instanceof WaxModel) {
-      $this->get()->add(new WaxRecordset($value,(array)$value->pk()));
-    } elseif($value instanceof WaxRecordset) {
       $this->get()->add($value);
+    }elseif($value instanceof WaxRecordset) {
+      $existing = $this->get();
+      foreach($value as $val) $existing->add($val);
     }
   }
   /**

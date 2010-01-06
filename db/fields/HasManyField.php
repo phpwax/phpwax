@@ -36,11 +36,8 @@ class HasManyField extends WaxModelField {
   }
   
   public function eager_load($target) {
-		$cache = WaxModel::get_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, false);
-		if(is_array($cache)) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-		WaxModel::set_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, $vals->rowset);
-		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
+    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
   }
   
   public function lazy_load($target) {
@@ -48,9 +45,18 @@ class HasManyField extends WaxModelField {
     foreach($target->rows() as $row) {
       $ids[]=$row[$target->primary_key];
     }
-    return new WaxModelAssociation($this->model, $target, $ids, $this->field);
+    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $ids);
   }
   
+  public function set($value) {
+    if($value instanceof WaxModel) {
+      $this->get()->add($value);
+    }elseif($value instanceof WaxRecordset) {
+      $existing = $this->get();
+      foreach($value as $val) $existing->add($val);
+    }
+  }
+
   public function unlink($value = false) {
     if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($value instanceof $this->target_model){
