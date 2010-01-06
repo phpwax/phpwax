@@ -36,6 +36,9 @@ class WaxModelCollection extends WaxRecordset {
     }
   }
 
-  
+  public function __call($name, $args) {
+    $this->model = new $this->target_model;
+    parent::_call($name, $args);
+  }
   
 }

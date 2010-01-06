@@ -72,9 +72,9 @@ abstract class WaxDbAdapter {
 
   
   public function insert(WaxModel $model) {
-    foreach($model->associations() as $column => $data)
-      if(!$model->row[$column]->pk())
-        $model->row[$column]->save();
+    foreach($model->associations() as $column => $data) {
+      if(!$model->row[$column]->pk()) $model->row[$column]->save();
+    }
     $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
     return $model;
