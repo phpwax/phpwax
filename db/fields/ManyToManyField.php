@@ -62,7 +62,10 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function get($filters = false) {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->primval) $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
+    if(!$this->model->primval) {  
+      $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
+      return $this->model->row[$this->field];
+    }
     $target = new $this->target_model;
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
