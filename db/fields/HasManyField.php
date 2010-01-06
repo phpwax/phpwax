@@ -51,10 +51,6 @@ class HasManyField extends WaxModelField {
     return new WaxModelAssociation($this->model, $target, $ids, $this->field);
   }
   
-  public function set($value) {
-    $this->model->row[$this->field]=$value;
-  }
-  
   public function unlink($value = false) {
     if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($value instanceof $this->target_model){
