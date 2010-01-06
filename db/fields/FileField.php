@@ -7,6 +7,7 @@
  **/
 class FileField extends WaxModelField {
   
+  public $maxlength = "255";
 	//default name
 	public $col_name;
 	//extra file values
