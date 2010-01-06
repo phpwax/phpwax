@@ -29,16 +29,6 @@ class ForeignKey extends WaxModelField {
     else return false;
   }
   
-  public function set($value) {
-    if($value instanceof WaxModel) {
-      $this->model->row[$this->col_name][] = &$value;
-      return $this->model;
-    } else {
-      $this->model->{$this->col_name} = $value;
-      return $this->model;
-    }
-  }
-  
   public function get_choices() {
     if($this->choices && $this->choices instanceof WaxRecordset) {
       foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
