@@ -72,11 +72,20 @@ abstract class WaxDbAdapter {
 
   
   public function insert(WaxModel $model) {
+    //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
     foreach($model->associations() as $column => $data)
-      if(!$model->row[$column]->pk())
+      if($model->row[$column] instanceof WaxModel && !$model->row[$column]->pk())
         $model->row[$column]->save();
+
+    //then, save the actual model
     $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
+
+    //last, save associations that need the primary key of this model after it has been saved, i.e. HasMany and ManyToMany
+    foreach($model->associations() as $column => $data)
+      if($model->row[$column] instanceof WaxModelCollection && !$model->row[$column]->pk())
+        $model->row[$column]->save_assocations($model->pk());
+
     return $model;
 	}
   
