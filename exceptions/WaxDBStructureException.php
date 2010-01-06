@@ -6,7 +6,7 @@
  **/
 class WaxDBStructureException extends WaxSqlException {
   
-  public $help = "<p>Your tried to access a database property that doesn't exist. We tried syncing your database
+  public $help = "<p>You tried to access a database property that doesn't exist. We tried syncing your database
   but it doesn't seem to have worked.
   </p><p>Check that your database models are setup correctly.</p>";
   
