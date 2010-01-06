@@ -68,8 +68,8 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   
   public function count() {return count($this->rowset);}
   
-  public function add(WaxRecordset $records) {
-    $this->rowset = array_merge($this->rowset, $records->rowset);
+  public function add(WaxModel $model) {
+    $this->rowset[] = $model->row;
   }
   
   public function __call($method, $args) {

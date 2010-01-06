@@ -95,9 +95,10 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function set($value) {
     if($value instanceof WaxModel) {
-      $this->get()->add(new WaxRecordset($value,(array)$value->pk()));
-    } elseif($value instanceof WaxRecordset) {
       $this->get()->add($value);
+    }elseif($value instanceof WaxRecordset) {
+      $existing = $this->get();
+      foreach($value as $val) $existing->add($val);
     }
   }
   /**
