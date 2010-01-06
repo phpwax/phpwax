@@ -16,6 +16,7 @@ class WaxModel{
 
   public $row = array();
   public $columns = array();
+  public $associations = array();
   public $table = false;
   public $primary_key="id";
   public $primary_type = "AutoField";
@@ -523,11 +524,10 @@ class WaxModel{
    * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField
    */
   public function associations(){
+    if($this->associations) return $this->associations;
     $ret = array();
-    foreach($this->columns() as $column => $data){
-      $type = $data[0];
-      if($type == "HasManyField" || $type == "ManyToManyField") $ret[$column] = $data;
-    }
+    foreach($this->columns() as $column => $data) if($this->get_col($column)->is_association) $ret[$column] = $data;
+    $this->associations = $ret;
     return $ret;
   }
 
