@@ -170,20 +170,21 @@ class ManyToManyField extends WaxModelField {
     return $this->choices;
   }
   
-  public function save_assocations(){
-    /*if(!$this->model->pk()) $this->model->save();
-    $target = new $this->target_model;
-    foreach($this->rowset as $row){
-      if(!$row[$target->primary_key]){
-        $target->row = $row;
-        $target->save();
-      }
+  /**
+   * this is used to defer writing of associations to the database adapter
+   * i.e. this will only be run if this field's parent model is saved
+   */
+  public function save_assocations($model_pk, &$rowset){
+    foreach($rowset as $index => $row){
+      $target = new $this->target_model;
+      $target->row = &$rowset[$index];
+      if(!$target->pk()) $target->save();
+      
+      $join_model = clone $this->join_model;
+      $join_model->{$this->join_field($this->model)} = $model_pk;
+      $join_model->{$this->join_field($target)} = $target->pk();
+      $join_model->save();
     }
-    foreach($this->rowset as $row){
-      $through_model->row = $row;
-      $through_model->save();
-    }
-    }*/
   }
 
 	/**
