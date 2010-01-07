@@ -70,8 +70,8 @@ class HasManyField extends WaxModelField {
   public function save_assocations($model_pk, &$rowset){
     $target = new $this->target_model;
     foreach($rowset as $index => $row){
-      $rowset[$index][$this->join_field] = $model_pk;
       $target->row = &$rowset[$index];
+      $target->{$this->join_field} = $model_pk;
       $target->save();
     }
   }
