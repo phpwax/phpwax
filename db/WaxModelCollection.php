@@ -6,22 +6,20 @@
 class WaxModelCollection extends WaxRecordset {
   
   public $originating_model;
+  public $field;
   public $target_model;
-  public $through_model;
-  public $through_table;
-  public $rowset;
 
-  public function __construct($originating_model, $target_model, $rowset, $through_model = false, $through_table = false) {
-    $this->rowset = $rowset;
+  public function __construct($originating_model, $field, $target_model, $rowset) {
     $this->originating_model = $originating_model;
+    $this->field = $field;
     $this->target_model = $target_model;
+    $this->rowset = $rowset;
   }
   
   public function offsetGet($offset) {
     if(is_numeric($this->rowset[$offset])){
       if(!$this->current_object){
-        $model = $this->target_model;
-        $this->current_object = new $model($this->rowset[$offset]);
+        $this->current_object = new $this->target_model($this->rowset[$offset]);
       }
       return $this->current_object;
     }else{
@@ -32,28 +30,9 @@ class WaxModelCollection extends WaxRecordset {
     }
   }
   
-  /**
-   * saves unsaved rows in the set, and for ManyToMany saves the join table rows too
-   *
-   * @return void
-   * @author Sheldon Els
-   */
-  public function save_assocations($originating_model_primary_key){
-    $originating_model = new $this->originating_model;
-    $target_model = new $this->target_model;
-    foreach($this->rowset as $row)
-      if(!$row[$target_model->primary_key]){
-        $target_model->row = $row;
-        $target_model->save();
-      }
-    if($this->through_model){
-      $through_model = new $this->through_model;
-      $this->through_model->init($originating_model,$target_model);
-      if($this->through_table) $through_model->table = $this->through_table;
-      foreach($this->rowset as $row){
-        $through_model->row = $row;
-        $through_model->save();
-      }
-    }
+  public function __call($method, $args) {
+    $model = new $this->originating_model;
+    return call_user_func_array(array($model->get_col($this->field), $method), $args);
   }
+
 }

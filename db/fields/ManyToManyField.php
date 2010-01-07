@@ -47,14 +47,17 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->disallow_sync = false;
    	$this->join_model->syncdb();
   }
-    
+  
+  private function create_collection($rowset = array()){
+    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  }
   /**
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
   public function get() {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
     $target = new $this->target_model;
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
@@ -70,7 +73,7 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
+		return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
   }
   
   private function lazy_load($target) {   
@@ -79,7 +82,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $ids);
+    return $this->model->row[$this->field] = $this->create_collection($ids);
   }
   
   
@@ -165,6 +168,22 @@ class ManyToManyField extends WaxModelField {
     return $this->choices;
   }
   
+  public function save_assocations(){
+    /*if(!$this->model->pk()) $this->model->save();
+    $target = new $this->target_model;
+    foreach($this->rowset as $row){
+      if(!$row[$target->primary_key]){
+        $target->row = $row;
+        $target->save();
+      }
+    }
+    foreach($this->rowset as $row){
+      $through_model->row = $row;
+      $through_model->save();
+    }
+    }*/
+  }
+
 	/**
 	 * super smart __call method - passes off calls to the target model (deletes etc)
 	 * @param string $method 
