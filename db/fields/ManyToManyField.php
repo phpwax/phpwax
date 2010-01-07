@@ -32,8 +32,8 @@ class ManyToManyField extends WaxModelField {
 
   public function setup_join_model() {
     $join = new $this->join_model_class;
-    $join->init($this->model, new $this->target_model);
     $join->table = $this->join_table;
+    $join->init($this->model, new $this->target_model);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     if($this->join_order) $this->join_model->order($this->join_order); 
   }
