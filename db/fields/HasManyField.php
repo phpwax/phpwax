@@ -67,11 +67,11 @@ class HasManyField extends WaxModelField {
    * this is used to defer writing of associations to the database adapter
    * i.e. this will only be run if this field's parent model is saved
    */
-  public function save_assocations($model_pk){
+  public function save_assocations($model_pk, &$rowset){
     $target = new $this->target_model;
-    foreach($this->rowset as $row){
-      $row[$this->join_field] = $model_pk;
-      $target->row = $row;
+    foreach($rowset as $index => $row){
+      $rowset[$index][$this->join_field] = $model_pk;
+      $target->row = &$rowset[$index];
       $target->save();
     }
   }
