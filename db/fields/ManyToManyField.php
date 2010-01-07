@@ -55,10 +55,12 @@ class ManyToManyField extends WaxModelField {
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
-  public function get() {
+  public function get($filters = false) {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
     if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
     $target = new $this->target_model;
+    if($filters) $target->filter($filters);
+    if($this->join_order) $target->order($this->join_order);
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
   }
