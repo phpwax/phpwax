@@ -72,19 +72,25 @@ abstract class WaxDbAdapter {
 
   
   public function insert(WaxModel $model) {
+    foreach($model->row as $column => $value)
+      if($value instanceof WaxModelCollection)
+        $external_row[$column] = $value;
+      else
+        $internal_row[$column] = $value;
+    
+    $model_internal_only = clone $model;
+    $model_internal_only->row = $internal_row;
+
     //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
-    foreach($model->associations() as $column => $data)
-      if($model->row[$column] instanceof WaxModel && !$model->row[$column]->pk())
-        $model->row[$column]->save();
+    foreach($internal_row as $row_data) if($row_data instanceof WaxModel && !$row_data->pk()) $row_data->save();
 
     //then, save the actual model
-    $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
+    $stmt = $this->exec($this->prepare($this->insert_sql($model_internal_only)), $model_internal_only->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
 
-    //last, save associations that need the primary key of this model after it has been saved, i.e. HasMany and ManyToMany
-    foreach($model->associations() as $column => $data)
-      if($model->row[$column] instanceof WaxModelCollection && !$model->row[$column]->pk())
-        $model->row[$column]->save_assocations($model->pk());
+    //last, save external columns that need the primary key of this model after it has been saved
+    foreach((array)$external_row as $column => $value)
+      $value->save_assocations($model->pk(), &$value->rowset);
 
     return $model;
 	}

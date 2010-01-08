@@ -32,8 +32,8 @@ class ManyToManyField extends WaxModelField {
 
   public function setup_join_model() {
     $join = new $this->join_model_class;
-    $join->init($this->model, new $this->target_model);
     $join->table = $this->join_table;
+    $join->init($this->model, new $this->target_model);
     $this->join_model = $join->filter(array($this->join_field($this->model) => $this->model->primval));
     if($this->join_order) $this->join_model->order($this->join_order); 
   }
@@ -47,15 +47,20 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->disallow_sync = false;
    	$this->join_model->syncdb();
   }
-    
+  
+  private function create_collection($rowset = array()){
+    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  }
   /**
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
-  public function get() {
+  public function get($filters = false) {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->target_model, array());
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
     $target = new $this->target_model;
+    if($filters) $target->filter($filters);
+    if($this->join_order) $target->order($this->join_order);
     if($this->eager_loading) return $this->eager_load($target);
     if(!$this->eager_loading) return $this->lazy_load($target);
   }
@@ -70,7 +75,7 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
+		return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
   }
   
   private function lazy_load($target) {   
@@ -79,7 +84,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $ids);
+    return $this->model->row[$this->field] = $this->create_collection($ids);
   }
   
   
@@ -165,6 +170,23 @@ class ManyToManyField extends WaxModelField {
     return $this->choices;
   }
   
+  /**
+   * this is used to defer writing of associations to the database adapter
+   * i.e. this will only be run if this field's parent model is saved
+   */
+  public function save_assocations($model_pk, &$rowset){
+    foreach($rowset as $index => $row){
+      $target = new $this->target_model;
+      $target->row = &$rowset[$index];
+      if(!$target->pk()) $target->save();
+      
+      $join_model = clone $this->join_model;
+      $join_model->{$this->join_field($this->model)} = $model_pk;
+      $join_model->{$this->join_field($target)} = $target->pk();
+      $join_model->save();
+    }
+  }
+
 	/**
 	 * super smart __call method - passes off calls to the target model (deletes etc)
 	 * @param string $method 

@@ -27,7 +27,13 @@ class HasManyField extends WaxModelField {
     return true;
   }
   
+  private function create_collection($rowset = array()){
+    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  }
+
   public function get($filters = false) {
+    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
     $target = new $this->target_model;
     if($filters) $target->filter($filters);
     if($this->join_order) $target->order($this->join_order);
@@ -37,7 +43,7 @@ class HasManyField extends WaxModelField {
   
   public function eager_load($target) {
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $vals->rowset);
+    return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
   }
   
   public function lazy_load($target) {
@@ -45,7 +51,7 @@ class HasManyField extends WaxModelField {
     foreach($target->rows() as $row) {
       $ids[]=$row[$target->primary_key];
     }
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), get_class($target), $ids);
+    return $this->model->row[$this->field] = $this->create_collection($ids);
   }
   
   public function set($value) {
@@ -54,6 +60,19 @@ class HasManyField extends WaxModelField {
     }elseif($value instanceof WaxRecordset) {
       $existing = $this->get();
       foreach($value as $val) $existing->add($val);
+    }
+  }
+
+  /**
+   * this is used to defer writing of associations to the database adapter
+   * i.e. this will only be run if this field's parent model is saved
+   */
+  public function save_assocations($model_pk, &$rowset){
+    $target = new $this->target_model;
+    foreach($rowset as $index => $row){
+      $target->row = &$rowset[$index];
+      $target->{$this->join_field} = $model_pk;
+      $target->save();
     }
   }
 
