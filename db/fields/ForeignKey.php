@@ -48,10 +48,4 @@ class ForeignKey extends WaxModelField {
     return $this->choices;
   }
   
-  public function __get($name) {
-    if($name == "value") return $this->model->{$this->col_name};
-    return parent::__get($name);
-  }
-
-
 } 
