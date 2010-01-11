@@ -170,13 +170,6 @@ class WaxController
     return WaxApplication::is_public_method($object, $method);
   }
   
-  public function is_viewable($path, $format="html"){
-  	$file_path = VIEW_DIR . $path . ".". $format;
-  	if(is_readable($file_path)) return true;
-  	else return false;
-  }
-
-
 	/**
  	 *	In the abstract class this remains empty. It is overridden by the controller,
 	 *	any commands will be run by all actions prior to running the action.
