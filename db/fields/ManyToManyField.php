@@ -48,16 +48,18 @@ class ManyToManyField extends WaxModelField {
    	$this->join_model->syncdb();
   }
   
-  private function create_collection($rowset = array()){
-    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  private function create_association($target = false, $rowset = array()){
+    if(!$target) $target = new $this->target_model;
+    return new WaxModelAssociation($this->model, $target, $rowset, $this->field);
   }
+
   /**
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
   public function get($filters = false) {
-    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
+    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_association();
     $target = new $this->target_model;
     if($filters) $target->filter($filters);
     if($this->join_order) $target->order($this->join_order);
@@ -75,7 +77,7 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
+		return $this->model->row[$this->field] = $this->create_association($target, $vals->rowset);
   }
   
   private function lazy_load($target) {   
@@ -84,7 +86,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = $this->create_collection($ids);
+    return $this->model->row[$this->field] = $this->create_association($target, $ids);
   }
   
   

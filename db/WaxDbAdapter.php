@@ -73,7 +73,7 @@ abstract class WaxDbAdapter {
   
   public function insert(WaxModel $model) {
     foreach($model->row as $column => $value)
-      if($value instanceof WaxModelCollection)
+      if($value instanceof WaxModelAssociation)
         $external_row[$column] = $value;
       else
         $internal_row[$column] = $value;
