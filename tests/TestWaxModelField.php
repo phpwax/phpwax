@@ -117,6 +117,8 @@ class TestWaxModelField extends WXTestCase {
       $model2 = $this->model->create($this->get_fixture("user2"));
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
+      $model->save();
+      $model2->save();
       $this->assertEqual($owner->examples->count(), 2);
     }
     
@@ -127,6 +129,7 @@ class TestWaxModelField extends WXTestCase {
       $editor->examples = $model;
       $editor->examples = $model2;
       $this->assertEqual($editor->examples->count(), 2);
+      $editor->save();
       $this->assertEqual($editor->examples->filter(array("email" => "test1@test.com"))->all()->count(), 1);
       $model3 = $this->model->create($this->get_fixture("user3"));
       $this->assertEqual($editor->examples->filter(array("email" => "test3@test.com"))->all()->count(), 0);
