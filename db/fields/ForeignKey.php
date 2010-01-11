@@ -28,10 +28,10 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    if($this->model->row[$this->col_name] instanceof WaxModel) return parent::get();
+    if(($row_data = parent::get()) instanceof WaxModel) return $row_data;
     else{
-      $model = new $this->target_model(parent::get());
-      if($model->pk()) return $model;
+      $model = new $this->target_model;
+      return $model->filter($model->primary_key, $row_data);
     }
     return false;
   }
