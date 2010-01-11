@@ -94,7 +94,6 @@ class ManyToManyField extends WaxModelField {
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
 	 *  - loops each wax model (or element in recordset)
 	 *  - creates a new record on the join table for each
-	 *  - clears the cache (so that any 'gets' are accurate)
 	 * @param mixed $value - waxmodel or waxrecordset
 	 */	
   public function set($value) {
@@ -107,13 +106,11 @@ class ManyToManyField extends WaxModelField {
   }
   /**
    * this unset / delete function removes any link between the origin and target
-   * again the cache is cleared so any 'get' calls return accurate data
    * @param string $model 
    */
 	public function delete($model = false){return $this->unlink($model);}
   public function unlink($model = false) {
     if(!$this->model->primval) return $this->join_model; //if we don't know what to unlink from we can't unlink anything, just do nothing and return
-    WaxModel::unset_cache(get_class($this->model), $this->field);
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
     $links = new $this->target_model;
     if($model instanceof WaxRecordset) {
@@ -149,7 +146,6 @@ class ManyToManyField extends WaxModelField {
         if(!$cols[$column]) return $this->__call("filter", array($params, $value, $operator));
       }
       $this->join_model->filter($params, $value, $operator);
-  		WaxModel::unset_cache(get_class($this->model), $this->field);
       return $this->get();
     }else return $this->__call("filter", array($params, $value, $operator));
   }
