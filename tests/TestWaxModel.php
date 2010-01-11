@@ -167,7 +167,7 @@ class TestWaxModel extends WXTestCase {
       $this->assertTrue($res4->equals($res3));
     }
     
-    public function test_copy(){
+    /*public function test_copy(){
       $res1 = $this->model->create($this->get_fixture("user1"));
       
       $prop = new ExampleProperty();
@@ -187,5 +187,5 @@ class TestWaxModel extends WXTestCase {
       
       $this->assertTrue($res1->primval() != $res3->primval());
       $this->assertTrue($res1->equals($res3));
-    }
+    }*/
 }
