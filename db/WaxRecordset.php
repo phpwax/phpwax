@@ -72,6 +72,12 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
     $this->rowset[] = $model->row;
   }
   
+  public function remove(WaxModel $model) {
+    print_r($model->row);
+    print_r($this->rowset); exit;
+    array_slice($this->rowset,array_search($model->row,$this->rowset),1);
+  }
+  
   public function __call($method, $args) {
     return call_user_func_array(array($this->model, $method), $args);
   }
