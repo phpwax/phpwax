@@ -134,6 +134,7 @@ class TestWaxModelField extends WXTestCase {
     
     public function test_has_many_with_filters(){
       $owner = $this->model_owner->create(array("name"=>"Master"));
+      $owner->save();
       $model = $this->model->create($this->get_fixture("user1"));
       $model2 = $this->model->create($this->get_fixture("user2"));
       $model->example_owner = $owner;
@@ -150,11 +151,12 @@ class TestWaxModelField extends WXTestCase {
       $model->propertiesLazy = $prop1;
       $model->propertiesEager = $prop2;
 
-      $this->assertIsA($model->propertiesLazy, "WaxModelAssociation");
+      $this->assertIsA($model->propertiesLazy, "WaxModelCollection");
       $this->assertIsA($model->propertiesLazy[0], "ExampleProperty");
+      $this->dump($model->propertiesLazy[0]->examples->all());
       $this->assertIsA($model->propertiesLazy[0]->examples[0], "Example");
       
-      $this->assertIsA($model->propertiesEager, "WaxModelAssociation");
+      $this->assertIsA($model->propertiesEager, "WaxModelCollection");
       $this->assertIsA($model->propertiesEager[0], "ExampleProperty");
       $this->assertIsA($model->propertiesEager[0]->examples[0], "Example");
       

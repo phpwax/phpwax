@@ -23,10 +23,19 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
+    if($this->model->row[$this->field] instanceof WaxModel) return $this->model->row[$this->field];
     $class = $this->target_model;
     $model = new $this->target_model($this->model->{$this->col_name});
     if($model->primval) return $model;
     else return false;
+  }
+  
+  public function set($value) {
+    $this->model->row[$this->col_name]=$value;
+ 	  //$value->define($this->table, "ForeignKey", array("col_name" => $this->table));
+    //$ret = $value->{$this->table}->get(); 
+    print_r($value); exit;
+    $test = &$this->model;
   }
   
   public function get_choices() {

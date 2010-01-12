@@ -264,7 +264,6 @@ class WaxModel{
  	public function __get($name) {
  	  $cols = $this->columns();
     if(array_key_exists($name, $cols)) {
-      if(WaxModelField::$skip_field_delegation_cache[$cols[$name][0]]["get"]) return $this->row[$name];
       $field = $this->get_col($name);
       return $field->get();
     }

@@ -58,6 +58,7 @@ class WaxModelField {
   public function value() {return $this->get();}
   
   public function set($value) {
+    $value->{$this->model->table} = $this->model->pk();
     $this->model->row[$this->col_name]=$value;
   }
   

@@ -34,5 +34,6 @@ class WaxModelCollection extends WaxRecordset {
     $model = new $this->originating_model;
     return call_user_func_array(array($model->get_col($this->field), $method), $args);
   }
+  
 
 }
