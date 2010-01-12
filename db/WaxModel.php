@@ -613,5 +613,4 @@ class WaxModel{
  	public function before_delete() {}
  	public function after_delete() {}
 
-
 }

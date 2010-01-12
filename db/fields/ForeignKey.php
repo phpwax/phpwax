@@ -32,9 +32,7 @@ class ForeignKey extends WaxModelField {
   
   public function set($value) {
     $this->model->row[$this->col_name]=$value;
- 	  //$value->define($this->table, "ForeignKey", array("col_name" => $this->table));
-    //$ret = $value->{$this->table}->get(); 
-    print_r($value); exit;
+ 	  $value->define($this->table, "ForeignKey", array("col_name" => $this->table));
     $test = &$this->model;
   }
   
