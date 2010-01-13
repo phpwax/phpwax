@@ -27,13 +27,14 @@ class HasManyField extends WaxModelField {
     return true;
   }
   
-  private function create_collection($rowset = array()){
-    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  private function create_association($target = false, $rowset = array()){
+    if(!$target) $target = new $this->target_model;
+    return new WaxModelAssociation($this->model, $target, $rowset, $this->field);
   }
 
   public function get($filters = false) {
-    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
+    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_association();
     $target = new $this->target_model;
     if($filters) $target->filter($filters);
     if($this->join_order) $target->order($this->join_order);
@@ -43,15 +44,13 @@ class HasManyField extends WaxModelField {
   
   public function eager_load($target) {
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-    return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
+    return $this->model->row[$this->field] = $this->create_association($target, $vals->rowset);
   }
   
   public function lazy_load($target) {
-    $target->filter(array($this->join_field=>$this->model->primval));
-    foreach($target->rows() as $row) {
-      $ids[]=$row[$target->primary_key];
-    }
-    return $this->model->row[$this->field] = $this->create_collection($ids);
+    $target->filter(array($this->join_field => $this->model->primval));
+    foreach($target->rows() as $row) $ids[] = $row[$target->primary_key];
+    return $this->model->row[$this->field] = $this->create_association($target, $ids);
   }
   
   public function set($value) {
@@ -79,15 +78,11 @@ class HasManyField extends WaxModelField {
   public function unlink($value = false) {
     if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($value instanceof $this->target_model){
+      if($this->model->row[$this->field] instanceof WaxModelAssociation) $this->model->row[$this->field]->remove($value);
       $value->{$this->join_field} = 0;
       $value->save();
     }
-    if($value instanceof WaxRecordset) {
-      foreach($value as $row){
-        $row->{$this->join_field} = 0;
-        $row->save();
-      }
-    }
+    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
   }
   
   public function save() {
@@ -120,7 +115,7 @@ class HasManyField extends WaxModelField {
   
   public function __call($method, $args) {
     $model = new $this->target_model();
-    $model->filter(array($this->join_field=>$this->model->primval));
+    $model->filter($this->join_field,$this->model->primval);
 
     return call_user_func_array(array($model, $method), $args);
   }

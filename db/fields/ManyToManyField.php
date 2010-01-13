@@ -48,16 +48,18 @@ class ManyToManyField extends WaxModelField {
    	$this->join_model->syncdb();
   }
   
-  private function create_collection($rowset = array()){
-    return new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $rowset);
+  private function create_association($target = false, $rowset = array()){
+    if(!$target) $target = new $this->target_model;
+    return new WaxModelAssociation($this->model, $target, $rowset, $this->field);
   }
+
   /**
 	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
 	 * @return WaxModelAssociation
 	 */	
   public function get($filters = false) {
-    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_collection();
+    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
+    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_association();
     $target = new $this->target_model;
     if($filters) $target->filter($filters);
     if($this->join_order) $target->order($this->join_order);
@@ -75,7 +77,7 @@ class ManyToManyField extends WaxModelField {
 		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
 		$vals = $this->join_model->all();
 		$this->loaded = true;
-		return $this->model->row[$this->field] = $this->create_collection($vals->rowset);
+		return $this->model->row[$this->field] = $this->create_association($target, $vals->rowset);
   }
   
   private function lazy_load($target) {   
@@ -84,7 +86,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = $this->create_collection($ids);
+    return $this->model->row[$this->field] = $this->create_association($target, $ids);
   }
   
   
@@ -92,7 +94,6 @@ class ManyToManyField extends WaxModelField {
 	 * clever little function that sets values across the join so $origin->many_to_many = $value works like:
 	 *  - loops each wax model (or element in recordset)
 	 *  - creates a new record on the join table for each
-	 *  - clears the cache (so that any 'gets' are accurate)
 	 * @param mixed $value - waxmodel or waxrecordset
 	 */	
   public function set($value) {
@@ -105,13 +106,11 @@ class ManyToManyField extends WaxModelField {
   }
   /**
    * this unset / delete function removes any link between the origin and target
-   * again the cache is cleared so any 'get' calls return accurate data
    * @param string $model 
    */
 	public function delete($model = false){return $this->unlink($model);}
   public function unlink($model = false) {
     if(!$this->model->primval) return $this->join_model; //if we don't know what to unlink from we can't unlink anything, just do nothing and return
-    WaxModel::unset_cache(get_class($this->model), $this->field);
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
     $links = new $this->target_model;
     if($model instanceof WaxRecordset) {
@@ -147,7 +146,6 @@ class ManyToManyField extends WaxModelField {
         if(!$cols[$column]) return $this->__call("filter", array($params, $value, $operator));
       }
       $this->join_model->filter($params, $value, $operator);
-  		WaxModel::unset_cache(get_class($this->model), $this->field);
       return $this->get();
     }else return $this->__call("filter", array($params, $value, $operator));
   }

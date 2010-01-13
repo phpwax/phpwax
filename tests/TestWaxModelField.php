@@ -105,6 +105,10 @@ class TestWaxModelField extends WXTestCase {
       $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
       $this->assertEqual("Master", $model->example_owner->name);
+      $model->save();
+      $model2 = $this->model->filter("email","test1@test.com")->first();
+      $this->assertEqual("test1", $model2->username);
+      $this->assertEqual("Master", $model2->example_owner->name);
     }
     
     public function test_has_many() {
@@ -113,6 +117,8 @@ class TestWaxModelField extends WXTestCase {
       $model2 = $this->model->create($this->get_fixture("user2"));
       $model->example_owner = $owner;
       $model2->example_owner = $owner;
+      $model->save();
+      $model2->save();
       $this->assertEqual($owner->examples->count(), 2);
     }
     

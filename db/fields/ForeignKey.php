@@ -16,6 +16,11 @@ class ForeignKey extends WaxModelField {
   
   public function setup() {
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
+    // Overrides naming of field to model_id if col_name is not explicitly set
+    if($this->col_name == $this->field){
+      $link = new $this->target_model;
+      $this->col_name = Inflections::underscore($this->target_model)."_".$link->primary_key;
+    }
   }
 
   public function validate() {
@@ -23,11 +28,12 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    if($this->model->row[$this->field] instanceof WaxModel) return $this->model->row[$this->field];
-    $class = $this->target_model;
-    $model = new $this->target_model($this->model->{$this->col_name});
-    if($model->primval) return $model;
-    else return false;
+    if(($row_data = parent::get()) instanceof WaxModel) return $row_data;
+    else{
+      $model = new $this->target_model;
+      return $model->filter($model->primary_key, $row_data);
+    }
+    return false;
   }
   
   public function set($value) {
@@ -48,10 +54,4 @@ class ForeignKey extends WaxModelField {
     return $this->choices;
   }
   
-  public function __get($name) {
-    if($name == "value") return $this->model->{$this->col_name};
-    return parent::__get($name);
-  }
-
-
 } 
