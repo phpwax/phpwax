@@ -289,7 +289,7 @@ class WaxModel{
    *  @return  primary key of class
    */
  	public function __toString() {
-    return $this->{$this->primary_key};
+    return (string)$this->{$this->primary_key};
   }
 
 
