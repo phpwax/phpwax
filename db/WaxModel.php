@@ -537,16 +537,19 @@ class WaxModel{
    * @return Boolean, true if the models match, false if they don't (per column matching)
    */
   public function equals(WaxModel $model){
-    $skip_cols = array($this->primary_key => false);
-    if(array_diff_key($this->row, $skip_cols) != array_diff_key($model->row, $skip_cols)) return false;
-    foreach($this->associations() as $assoc => $data){
-      $this_assoc = $this->$assoc->rowset;
-      $model_assoc = $model->$assoc->rowset;
-      sort($this_assoc);
-      sort($model_assoc);
-      if($this_assoc != $model_assoc) return false;
+    $skip_cols = array($this->primary_key);
+    $equals = true;
+    foreach($this->columns as $col=>$params) {
+      if(in_array($col, $skip_cols)) $equals = true;
+      elseif(array_key_exists($col, $this->associations())) {
+        if($this->$col instanceof WaxModel && $this->$col->equals($model->$col)) $equals = true;
+        elseif($this->$col instanceof WaxRecordset && $this->$col->rowset == $model->$col->rowset) $equals = true;
+        else return false;
+      } 
+      elseif($this->$col == $model->$col) $equals = true;
+      else return false;
     }
-    return true;
+    return $equals;
   }
 
   /**

@@ -129,7 +129,7 @@ class TestWaxModel extends WXTestCase {
       $res2 = $this->model->create($this->get_fixture("user1"));
       $res3 = $this->model->create($this->get_fixture("user2"));
       $res4 = $this->model->create($this->get_fixture("user2"));
-      
+
       $this->assertTrue($res1->equals($res2));
       $this->assertTrue($res2->equals($res1));
       $this->assertFalse($res1->equals($res3));
