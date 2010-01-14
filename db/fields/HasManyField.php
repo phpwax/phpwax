@@ -27,38 +27,18 @@ class HasManyField extends WaxModelField {
     return true;
   }
   
-  private function create_association($target = false, $rowset = array()){
-    if(!$target) $target = new $this->target_model;
-    return new WaxModelAssociation($this->model, $target, $rowset, $this->field);
-  }
-
-  public function get($filters = false) {
-    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_association();
-    $target = new $this->target_model;
-    if($filters) $target->filter($filters);
-    if($this->join_order) $target->order($this->join_order);
-    if($this->eager_loading) return $this->eager_load($target);
-    return $this->lazy_load($target);
-  }
-  
-  public function eager_load($target) {
-    $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-    return $this->model->row[$this->field] = $this->create_association($target, $vals->rowset);
-  }
-  
-  public function lazy_load($target) {
-    $target->filter(array($this->join_field => $this->model->primval));
-    foreach($target->rows() as $row) $ids[] = $row[$target->primary_key];
-    return $this->model->row[$this->field] = $this->create_association($target, $ids);
+  public function get() {
+    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
+    if($this->model->pk()) $constraints = array($this->join_field => $this->model->pk());
+    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $constraints, $this->eager_loading);
   }
   
   public function set($value) {
-    if($value instanceof WaxModel) {
+    if($value instanceof WaxRecordset)
+      foreach($value as $val) $this->set($val);
+    elseif($value instanceof WaxModel){
       $this->get()->add($value);
-    }elseif($value instanceof WaxRecordset) {
-      $existing = $this->get();
-      foreach($value as $val) $existing->add($val);
+      $value->row[$this->join_field] = &$this->model;
     }
   }
 
@@ -66,13 +46,14 @@ class HasManyField extends WaxModelField {
    * this is used to defer writing of associations to the database adapter
    * i.e. this will only be run if this field's parent model is saved
    */
-  public function save_assocations($model_pk, &$rowset){
+  public function save_assocations($model_pk, &$collection){
     $target = new $this->target_model;
-    foreach($rowset as $index => $row){
-      $target->row = &$rowset[$index];
+    foreach($collection->rowset as $index => $row){
+      $target->row = &$collection->rowset[$index];
       $target->{$this->join_field} = $model_pk;
       $target->save();
     }
+    $collection->constraints = array($this->join_field => $model_pk);
   }
 
   public function unlink($value = false) {
@@ -114,8 +95,9 @@ class HasManyField extends WaxModelField {
   }
   
   public function __call($method, $args) {
+    $collection = array_pop($args);
     $model = new $this->target_model();
-    $model->filter($this->join_field,$this->model->primval);
+    if($this->model->primval()) $model->filter($this->join_field, $this->model->primval());
 
     return call_user_func_array(array($model, $method), $args);
   }

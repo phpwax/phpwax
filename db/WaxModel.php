@@ -436,7 +436,7 @@ class WaxModel{
 
 
  	public function all() {
- 	  return new WaxRecordset($this, self::$db->select($this));
+ 	  return new WaxRecordset($this, $this->rows());
  	}
 
  	public function rows() {

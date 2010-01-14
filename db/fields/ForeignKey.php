@@ -36,6 +36,15 @@ class ForeignKey extends WaxModelField {
     return false;
   }
   
+  public function set($value){
+    parent::set($value);
+    if($value instanceof WaxModel){
+      foreach($value->columns as $column => $data) if($data[1]["join_field"] == $this->col_name) $opposite_field = $column;
+      if(!$opposite_field) $opposite_field = Inflections::underscore(get_class($this->model));
+      $value->$opposite_field = &$this->model;
+    }
+  }
+  
   public function get_choices() {
     if($this->choices && $this->choices instanceof WaxRecordset) {
       foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
