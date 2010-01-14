@@ -73,7 +73,7 @@ abstract class WaxDbAdapter {
   
   public function insert(WaxModel $model) {
     foreach($model->row as $column => $value)
-      if($value instanceof WaxModelAssociation)
+      if($value instanceof WaxModelCollection)
         $external_row[$column] = $value;
       else
         $internal_row[$column] = $value;
@@ -90,14 +90,14 @@ abstract class WaxDbAdapter {
 
     //last, save external columns that need the primary key of this model after it has been saved
     foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk(), &$value->rowset);
+      $value->save_assocations($model->pk());
 
     return $model;
 	}
   
   public function update(WaxModel $model) {
     foreach($model->row as $column => $value)
-      if($value instanceof WaxModelAssociation)
+      if($value instanceof WaxModelCollection)
         $external_row[$column] = $value;
       else
         $internal_row[$column] = $value;
@@ -113,7 +113,7 @@ abstract class WaxDbAdapter {
 
     //last, save external columns that need the primary key of this model after it has been saved
     foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk(), &$value->rowset);
+      $value->save_assocations($model->pk());
 
     return $model;
   }
