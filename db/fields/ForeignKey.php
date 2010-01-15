@@ -37,10 +37,11 @@ class ForeignKey extends WaxModelField {
   }
   
   public function set($value){
-    parent::set($value);
+    $this->model->row[$this->col_name]=$value;
     if($value instanceof WaxModel){
       foreach($value->columns as $column => $data) if($data[1]["join_field"] == $this->col_name) $opposite_field = $column;
       if(!$opposite_field) $opposite_field = Inflections::underscore(get_class($this->model));
+      echo $opposite_field;
       $value->$opposite_field = &$this->model;
     }
   }

@@ -101,6 +101,7 @@ class TestWaxModelField extends WXTestCase {
     
     public function test_foreign_key() {
       $owner = $this->model_owner->create(array("name"=>"Master"));
+      
       $model = $this->model->create($this->get_fixture("user1"));
       $model->example_owner = $owner;
       $this->assertEqual("test1", $model->username);
@@ -108,8 +109,8 @@ class TestWaxModelField extends WXTestCase {
       $model->save();
       $model2 = $this->model->filter("email","test1@test.com")->first();
       $this->assertEqual("test1", $model2->username);
-      print_r($model2->example_owner); exit;
       $this->assertEqual("Master", $model2->example_owner->name);
+      exit;
     }
     
     public function test_has_many() {
