@@ -34,19 +34,8 @@ class WaxModel{
   public $identifier = false;
   static public $object_cache = array();
 	public $is_paginated = false;
-	  
-	//joins
 	public $is_left_joined = false;
-	public $left_join_target = false;
-	public $left_join_table_name = false;
-	public $join_conditions = false;
-
-
-	/** interface vars **/
-	public $cache_enabled = false;
-  public $cache_lifetime = 600;
-  public $cache_engine = "Memory";
-  public $cache = false;
+	  
 
   /**
    *  constructor
@@ -264,7 +253,7 @@ class WaxModel{
  	public function __get($name) {
  	  $cols = $this->columns();
     if(array_key_exists($name, $cols)) {
-      $field = $this->get_col($name);
+      $field = $this->get_col($name);   	  
       return $field->get();
     }
     elseif(method_exists($this, $name)) return $this->{$name}();

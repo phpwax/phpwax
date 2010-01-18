@@ -17,5 +17,10 @@ class WaxModelProxy {
     return WaxModelManager::get($this->key);
   }
   
+  public function __call($method, $args) {
+    $model = $this->get();
+    return call_user_func_array(array($model, $method), $args);
+  }
+  
   
 }

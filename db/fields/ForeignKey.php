@@ -28,7 +28,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function get() {
-    if(($row_data = parent::get()) instanceof WaxModel) return $row_data;
+    if(($row_data = parent::get()) instanceof WaxModelProxy) return $row_data->get();
     else{
       $model = new $this->target_model;
       return $model->filter($model->primary_key, $row_data);
@@ -37,12 +37,15 @@ class ForeignKey extends WaxModelField {
   }
   
   public function set($value){
-    $this->model->row[$this->col_name]=$value;
-    if($value instanceof WaxModel){
-      foreach($value->columns as $column => $data) if($data[1]["join_field"] == $this->col_name) $opposite_field = $column;
-      if(!$opposite_field) $opposite_field = Inflections::underscore(get_class($this->model));
-      echo $opposite_field;
-      $value->$opposite_field = &$this->model;
+    $this->model->row[$this->col_name]=new WaxModelProxy($value);
+    
+    /* Set a reference to this model in the opposite side of the join */
+    foreach($value->columns as $column => $data) {
+      if($data[1]["join_field"] == $this->col_name) $opposite_field = $column;
+    }
+    if(!$opposite_field) {
+      $opposite_field = Inflections::underscore(get_class($this->model));
+      $value->$opposite_field = new WaxModelProxy($this->model);
     }
   }
   

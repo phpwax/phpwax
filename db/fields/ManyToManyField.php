@@ -49,8 +49,7 @@ class ManyToManyField extends WaxModelField {
   }
   
   private function create_association($target = false, $rowset = array()){
-    if(!$target) $target = new $this->target_model;
-    return new WaxModelAssociation($this->model, $target, $rowset, $this->field);
+    return new WaxModelCollection($this->model, $this->field,$this->target_model,$rowset);
   }
 
   /**
@@ -58,27 +57,12 @@ class ManyToManyField extends WaxModelField {
 	 * @return WaxModelAssociation
 	 */	
   public function get($filters = false) {
-    if($this->model->row[$this->field] instanceof WaxModelAssociation) return $this->model->row[$this->field];
-    if(!$this->model->pk()) return $this->model->row[$this->field] = $this->create_association();
     $target = new $this->target_model;
-    if($filters) $target->filter($filters);
-    if($this->join_order) $target->order($this->join_order);
-    if($this->eager_loading) return $this->eager_load($target);
-    if(!$this->eager_loading) return $this->lazy_load($target);
+    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
+    if($this->model->pk()) $constraints = array($this->join_field => $this->model->pk());
+    return $this->lazy_load($target);
   }
 
-
-  private function eager_load($target) {
-		$this->join_model->left_join($target);
-		$this->join_model->join_condition("$target->table.$target->primary_key = ".$this->join_model->table.".".$this->join_field($target));
-		//select columns from the far side of the join, not the join table itself
-		$this->join_model->select_columns = array($target->table.".*");
-		foreach(array_diff_key($this->join_model->columns(),array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
-		  $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
-		$vals = $this->join_model->all();
-		$this->loaded = true;
-		return $this->model->row[$this->field] = $this->create_association($target, $vals->rowset);
-  }
   
   private function lazy_load($target) {   
     $left_field = $this->model->table."_".$this->model->primary_key;
@@ -86,7 +70,7 @@ class ManyToManyField extends WaxModelField {
     $this->join_model->select_columns=$right_field;
     $ids = array();
     foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = $this->create_association($target, $ids);
+    return $this->model->row[$this->field] = $this->create_association($target,$ids);
   }
   
   
@@ -97,11 +81,11 @@ class ManyToManyField extends WaxModelField {
 	 * @param mixed $value - waxmodel or waxrecordset
 	 */	
   public function set($value) {
-    if($value instanceof WaxModel) {
+    if($value instanceof WaxRecordset)
+      foreach($value as $val) $this->set($val);
+    elseif($value instanceof WaxModel){
       $this->get()->add($value);
-    }elseif($value instanceof WaxRecordset) {
-      $existing = $this->get();
-      foreach($value as $val) $existing->add($val);
+      $value->row[$this->join_field] = &$this->model;
     }
   }
   /**
@@ -193,13 +177,9 @@ class ManyToManyField extends WaxModelField {
 	 */	
   public function __call($method, $args) {
     $assoc = $this->get();
-    $model = clone $assoc->target_model;
-    if($this->eager_loading){
-      $key = $model->primary_key;
-      foreach((array) $assoc->rowset as $row) $filter_args[$key][] = $row[$key];
-    }else $filter_args = array($model->primary_key=>$assoc->rowset);
-    if($assoc->rowset) $model->filter($filter_args);
-    else $model->filter("1 = 2");
+    $model = $assoc->originating_model->get();
+    if($assoc->rowset) $model->filter(array($model->primary_key=>$assoc->rowset));
+    print_r($model); exit;
     return call_user_func_array(array($model, $method), $args);
   }
 

@@ -30,7 +30,7 @@ class HasManyField extends WaxModelField {
   public function get() {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
     if($this->model->pk()) $constraints = array($this->join_field => $this->model->pk());
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->field, $this->target_model, $constraints, $this->eager_loading);
+    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->field, $this->target_model);
   }
   
   public function set($value) {
