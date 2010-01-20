@@ -9,34 +9,6 @@ class ManyToManyField extends HasManyField {
   
   public $join_model_class = "WaxModelJoin";
 	public $join_table = false; //this chap means that you can pass any name for the join table in on define()
-
-  
-  
-
-  /**
-	 * Reads the load strategy from the setup and delegates either to eager_load or lazy load
-	 * @return WaxModelAssociation
-	 */	
-  public function get($filters = false) {
-    $target = new $this->target_model;
-    if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
-    if($this->model->pk()) $constraints = array($this->join_field => $this->model->pk());
-    return $this->lazy_load($target);
-  }
-
-  
-  protected function lazy_load($target) {   
-    $left_field = $this->model->table."_".$this->model->primary_key;
-    $right_field = $target->table."_".$target->primary_key;
-    $this->join_model->select_columns=$right_field;
-    $ids = array();
-    foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
-    return $this->model->row[$this->field] = $this->create_association($target,$ids);
-  }
-  
-  protected function eager_load() {
-    
-  }
   
   
 	/**
