@@ -39,7 +39,7 @@ class HasManyField extends WaxModelField {
       foreach($value as $val) $this->set($val);
     elseif($value instanceof WaxModel){
       $this->get()->add($value);
-      $value->row[$this->join_field] = &$this->model;
+      $value->row[$this->join_field] = new WaxModelProxy($this->model);
     }
   }
   
