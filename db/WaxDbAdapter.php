@@ -82,15 +82,19 @@ abstract class WaxDbAdapter {
     $model_internal_only->row = $internal_row;
 
     //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
-    foreach($internal_row as $row_data) if($row_data instanceof WaxModel && !$row_data->pk()) $row_data->save();
+    foreach($internal_row as $row_data) if(($row_data instanceof WaxModelProxy || $row_data instanceof WaxModel) && !$row_data->pk()) $row_data->save();
 
     //then, save the actual model
     $stmt = $this->exec($this->prepare($this->insert_sql($model_internal_only)), $model_internal_only->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
 
     //last, save external columns that need the primary key of this model after it has been saved
-    foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk());
+    foreach((array)$external_row as $collection){
+      foreach($collection as $target){
+        $collection->prepare_join_save($target);
+        $target->save();
+      }
+    }
 
     return $model;
 	}
@@ -106,13 +110,18 @@ abstract class WaxDbAdapter {
     $model_internal_only->row = $internal_row;
 
     //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
-    foreach($internal_row as $row_data) if($row_data instanceof WaxModel && !$row_data->pk()) $row_data->save();
+    foreach($internal_row as $row_data) if(($row_data instanceof WaxModelProxy || $row_data instanceof WaxModel) && !$row_data->pk()) $row_data->save();
 
     //then, save the actual model
     $this->exec($this->prepare($this->update_sql($model_internal_only)), $model_internal_only->row);
 
     //last, save external columns that need the primary key of this model after it has been saved
-    foreach((array)$external_row as $column => $value) $value->save_assocations();
+    foreach((array)$external_row as $collection){
+      foreach($collection as $target){
+        $collection->prepare_join_save($target);
+        $target->save();
+      }
+    }
 
     return $model;
   }
