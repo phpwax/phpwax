@@ -53,6 +53,7 @@ class WaxModelCollection extends WaxRecordset {
   }
   
   public function add(WaxModel $model) {
+    $this->load();
     $this->rowset[] = new WaxModelProxy($model);
   }
   
