@@ -7,14 +7,14 @@ class WaxModelCollection extends WaxRecordset {
   
   public $originating_model;
   public $field;
-  public $target_model;
+  public $model; // Target Model
   public $rowset = false;
 
 
-  public function __construct($originating_model, $field, $target_model, $rowset=false) {
+  public function __construct($originating_model, $field, $model, $rowset=false) {
     $this->originating_model = new WaxModelProxy($originating_model);
     $this->field = $field;
-    $this->target_model = $target_model;
+    $this->model = $model;
     if($rowset){ 
       $this->rowset = $rowset;
     }
@@ -23,7 +23,8 @@ class WaxModelCollection extends WaxRecordset {
   
   public function offsetGet($offset) {
     $this->load();
-    return $this->rowset[$offset]->get();
+    if($this->rowset instanceof WaxModelProxy) return $this->rowset[$offset]->get();
+    else return parent::offsetGet($offset);
   }
   
   public function offsetExists($offset) {
@@ -36,7 +37,7 @@ class WaxModelCollection extends WaxRecordset {
   }
   
   public function valid() {
-    $this->load();
+    $this->load();   
     return parent::valid();
   }
   
@@ -56,10 +57,10 @@ class WaxModelCollection extends WaxRecordset {
   }
   
   public function load() {
-    if($rowset !== false) return true;
-    $target = new $this->target_model;
-    $target->filter($this->field,$this->originating_model->get()->pk());
-    $this->rowset = $target->rows();
+    if($this->rowset !== false) return true;
+    $field = $this->originating_model->get()->get_col($this->field)->join_field;
+    $this->model->filter($field,$this->originating_model->get()->pk());
+    $this->rowset = $this->model->rows();
   }
   
   
