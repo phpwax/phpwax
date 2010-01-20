@@ -48,14 +48,16 @@ class WaxModelCollection extends WaxRecordset {
   
   
   public function __call($method, $args) {
-    $model = $this->originating_model->get();
-    return call_user_func_array(array($model->get_col($this->field), $method), $args);
+    $col = $this->originating_model->get()->get_col($this->field);
+    return call_user_func_array(array($col, $method), $args);
   }
   
   public function add(WaxModel $model) {
     $this->load();
-    foreach($this->rowset as $index => $row) if($row[$model->primary_key] == $model->pk()) $reassign = $index;
-    $this->rowset[$reassign] = new WaxModelProxy($model);
+    //reassigning so that changes in the model reflect correctly
+    foreach($this as $index => $row) if($row->{$model->primary_key} && ($row->{$model->primary_key} == $model->pk())) $reassign = $index;
+    if($reassign) $this->rowset[$reassign] = new WaxModelProxy($model);
+    else $this->rowset[] = new WaxModelProxy($model);
   }
   
   public function load() {

@@ -42,20 +42,14 @@ class HasManyField extends WaxModelField {
       $value->row[$this->join_field] = &$this->model;
     }
   }
-
-
+  
   /**
-   * this is used to defer writing of associations to the database adapter
-   * i.e. this will only be run if this field's parent model is saved
+   * the adapter will call this for each model in a collection before saving them
+   * this essentially defines the way we store this field, by setting join_field on the target model
    */
-  public function save_assocations($model_pk, &$collection){
-    $target = new $this->target_model;
-    foreach($collection->rowset as $index => $row){
-      $target->row = &$collection->rowset[$index];
-      $target->{$this->join_field} = $model_pk;
-      $target->save();
-    }
-    $collection->constraints = array($this->join_field => $model_pk);
+  public function prepare_join_save($target){
+    $target->{$this->join_field} = $this->model->pk();
+    return $target;
   }
 
   public function unlink($value = false) {
@@ -65,7 +59,15 @@ class HasManyField extends WaxModelField {
   public function save() {}
 
   public function before_sync() {
-      //rewrite this function
+    echo "<br><br>trying to sync for join: target: $this->target_model field: $this->field model: ".get_class($this->model);
+    $target = new $this->target_model;
+    foreach($target->columns as $col => $data)
+      if($target->get_col($col)->col_name == $this->join_field) $join_field_already_defined = true;
+    
+    if(!$join_field_already_defined){
+      $target->define($this->join_field, "ForeignKey", array("col_name" => $this->join_field, "target_model" => get_class($this->model)));
+      $target->syncdb();
+    }
   }
   
   public function create($attributes) {

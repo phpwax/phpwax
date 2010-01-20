@@ -68,52 +68,61 @@ abstract class WaxDbAdapter {
 		return $pdo;
   }
 
-  
-
-  
-  public function insert(WaxModel $model) {
+  protected function split_up_cols($model){
     foreach($model->row as $column => $value)
       if($value instanceof WaxModelCollection)
-        $external_row[$column] = $value;
+        $joins[$column] = $value;
       else
-        $internal_row[$column] = $value;
+        $row_without_joins[$column] = $value;
     
-    $model_internal_only = clone $model;
-    $model_internal_only->row = $internal_row;
+    $model_without_joins = clone $model;
+    $model_without_joins->row = $row_without_joins;
+    
+    return array($model_without_joins, $joins);
+  }
+
+  protected function save_foreign_key_targets($row){
+    foreach($row as $row_data)
+      if(($row_data instanceof WaxModelProxy || $row_data instanceof WaxModel) && !$row_data->pk())
+        $row_data->save();
+  }
+  
+  protected function save_joins($collections){
+    foreach((array)$collections as $collection){
+      foreach($collection as $model){
+        $model = $collection->prepare_join_save($model);
+        $model->save();
+      }
+    }
+  }
+  
+  public function insert(WaxModel $model) {
+    list($model_without_joins, $joins) = $this->split_up_cols($model);
 
     //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
-    foreach($internal_row as $row_data) if($row_data instanceof WaxModel && !$row_data->pk()) $row_data->save();
+    $this->save_foreign_key_targets($model_without_joins->row);
 
     //then, save the actual model
-    $stmt = $this->exec($this->prepare($this->insert_sql($model_internal_only)), $model_internal_only->row);
+    $stmt = $this->exec($this->prepare($this->insert_sql($model_without_joins)), $model_without_joins->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
 
     //last, save external columns that need the primary key of this model after it has been saved
-    foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk());
+    $this->save_joins($joins);
 
     return $model;
 	}
   
   public function update(WaxModel $model) {
-    foreach($model->row as $column => $value)
-      if($value instanceof WaxModelCollection)
-        $external_row[$column] = $value;
-      else
-        $internal_row[$column] = $value;
-    
-    $model_internal_only = clone $model;
-    $model_internal_only->row = $internal_row;
+    list($model_without_joins, $joins) = $this->split_up_cols($model);
 
     //first, save ForeignKeys before saving the actual model, so that we have a proper primary key to save into our new model
-    foreach($internal_row as $row_data) if($row_data instanceof WaxModel && !$row_data->pk()) $row_data->save();
+    $this->save_foreign_key_targets($model_without_joins->row);
 
     //then, save the actual model
-    $this->exec($this->prepare($this->update_sql($model_internal_only)), $model_internal_only->row);
+    $this->exec($this->prepare($this->update_sql($model_without_joins)), $model_without_joins->row);
 
     //last, save external columns that need the primary key of this model after it has been saved
-    foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk());
+    $this->save_joins($joins);
 
     return $model;
   }

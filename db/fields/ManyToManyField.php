@@ -54,7 +54,7 @@ class ManyToManyField extends HasManyField {
     foreach($j->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
     return $this->choices;
   }
-  
+  public function before_sync() {}
   /**
    * this is used to defer writing of associations to the database adapter
    * i.e. this will only be run if this field's parent model is saved
