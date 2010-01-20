@@ -59,7 +59,6 @@ class HasManyField extends WaxModelField {
   public function save() {}
 
   public function before_sync() {
-    echo "<br><br>trying to sync for join: target: $this->target_model field: $this->field model: ".get_class($this->model);
     $target = new $this->target_model;
     foreach($target->columns as $col => $data)
       if($target->get_col($col)->col_name == $this->join_field) $join_field_already_defined = true;
