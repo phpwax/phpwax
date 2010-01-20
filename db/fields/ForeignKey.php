@@ -37,7 +37,7 @@ class ForeignKey extends WaxModelField {
   }
   
   public function set($value){
-    $this->model->row[$this->col_name]=new WaxModelProxy($value);
+    $this->model->row[$this->col_name] = new WaxModelProxy($value);
     
     /* Set a reference to this model in the opposite side of the join */
     foreach($value->columns as $column => $data) {
