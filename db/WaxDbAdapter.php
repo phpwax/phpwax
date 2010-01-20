@@ -69,6 +69,7 @@ abstract class WaxDbAdapter {
   }
 
   protected function split_up_cols($model){
+    $joins = array();
     foreach($model->row as $column => $value)
       if($value instanceof WaxModelCollection)
         $joins[$column] = $value;
@@ -88,10 +89,19 @@ abstract class WaxDbAdapter {
   }
   
   protected function save_joins($collections){
-    foreach((array)$collections as $collection){
-      foreach($collection as $model){
-        $model = $collection->prepare_join_save($model);
-        $model->save();
+    foreach($collections as $collection){
+      $target = new $collection->model;
+      $model = $collection->originating_model->get();
+      $col = $model->get_col($collection->field)->join_field;
+      $this->exec($this->prepare("UPDATE $target->table SET $col = NULL WHERE $col = ?"), array($model->pk()));
+      $params = array();
+      foreach($collection as $coll_model){
+        if(!$coll_model->pk()) $coll_model->save();
+        $params[] = $coll_model->pk();
+      }
+      if(count($params)){
+        array_unshift($params, $model->pk());
+        $this->exec($this->prepare("UPDATE $target->table SET $col = ? WHERE $col IN(" . rtrim(str_repeat("?,", count($params) - 1),",") . ")"), $params);
       }
     }
   }
