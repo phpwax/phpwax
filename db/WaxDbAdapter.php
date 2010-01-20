@@ -112,8 +112,7 @@ abstract class WaxDbAdapter {
     $this->exec($this->prepare($this->update_sql($model_internal_only)), $model_internal_only->row);
 
     //last, save external columns that need the primary key of this model after it has been saved
-    foreach((array)$external_row as $column => $value)
-      $value->save_assocations($model->pk());
+    foreach((array)$external_row as $column => $value) $value->save_assocations();
 
     return $model;
   }
