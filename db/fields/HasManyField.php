@@ -53,7 +53,12 @@ class HasManyField extends WaxModelField {
   }
 
   public function unlink($value = false) {
-      //rewrite this function
+    if($value === false) $this->unlink($this->get()); //if nothing gets passed in to unlink then unlink everything
+    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
+    if($value instanceof $this->target_model) {
+      $this->get()->remove($value);
+      $value->{$this->join_field} = 0;
+    }
   }
   
   public function save() {}
