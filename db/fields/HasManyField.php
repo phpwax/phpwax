@@ -43,8 +43,13 @@ class HasManyField extends WaxModelField {
     }
   }
   
+  /**
+   * the adapter will call this for each model in a collection before saving them
+   * this essentially defines the way we store this field, by setting join_field on the target model
+   */
   public function prepare_join_save($target){
     $target->{$this->join_field} = $this->model->pk();
+    return $target;
   }
 
   public function unlink($value = false) {

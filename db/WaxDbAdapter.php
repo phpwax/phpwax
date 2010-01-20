@@ -91,7 +91,7 @@ abstract class WaxDbAdapter {
     //last, save external columns that need the primary key of this model after it has been saved
     foreach((array)$external_row as $collection){
       foreach($collection as $target){
-        $collection->prepare_join_save($target);
+        $target = $collection->prepare_join_save($target);
         $target->save();
       }
     }
@@ -118,7 +118,7 @@ abstract class WaxDbAdapter {
     //last, save external columns that need the primary key of this model after it has been saved
     foreach((array)$external_row as $collection){
       foreach($collection as $target){
-        $collection->prepare_join_save($target);
+        $target = $collection->prepare_join_save($target);
         $target->save();
       }
     }
