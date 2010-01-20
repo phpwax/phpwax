@@ -15,6 +15,7 @@ class HasManyField extends WaxModelField {
   public $widget = "MultipleSelectInput";
 	public $join_order = false; //specify order of the returned joined objects
   public $data_type = "integer";
+  public $loaded = false;
   
   public function setup() {
     $this->col_name = false;
@@ -30,7 +31,7 @@ class HasManyField extends WaxModelField {
   public function get() {
     if($this->model->row[$this->field] instanceof WaxModelCollection) return $this->model->row[$this->field];
     if($this->model->pk()) $constraints = array($this->join_field => $this->model->pk());
-    return $this->model->row[$this->field] = new WaxModelCollection(get_class($this->model), $this->field, $this->target_model);
+    return $this->model->row[$this->field] = new WaxModelCollection($this->model, $this->field, $this->target_model);
   }
   
   public function set($value) {
@@ -41,6 +42,7 @@ class HasManyField extends WaxModelField {
       $value->row[$this->join_field] = &$this->model;
     }
   }
+
 
   /**
    * this is used to defer writing of associations to the database adapter
@@ -57,27 +59,13 @@ class HasManyField extends WaxModelField {
   }
 
   public function unlink($value = false) {
-    if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
-    if($value instanceof $this->target_model){
-      if($this->model->row[$this->field] instanceof WaxModelAssociation) $this->model->row[$this->field]->remove($value);
-      $value->{$this->join_field} = 0;
-      $value->save();
-    }
-    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
+      //rewrite this function
   }
   
-  public function save() {
-    return true;
-  }
+  public function save() {}
 
   public function before_sync() {
-    if($this->target_model != get_class($this->model)){
-      //define a foreign key in the target model and sync that model
-      $target_model = get_class($this->model);
-   	  $link = new $this->target_model;
-   	  $link->define($this->join_field, "ForeignKey", array("col_name" => $this->join_field, "target_model" => $target_model));
-   	  $link->syncdb();
-    }
+      //rewrite this function
   }
   
   public function create($attributes) {
@@ -94,11 +82,14 @@ class HasManyField extends WaxModelField {
     return $this->choices;
   }
   
+  protected function create_association($target = false, $rowset = array()){
+     return new WaxModelCollection($this->model, $this->field,$this->target_model,$rowset);
+   }
+  
   public function __call($method, $args) {
-    $collection = array_pop($args);
+    return call_user_func_array(array($this->get(), $method), $args);
     $model = new $this->target_model();
-    if($this->model->primval()) $model->filter($this->join_field, $this->model->primval());
-
+    if($this->model->pk()) $model->filter($this->join_field, $this->model->pk());
     return call_user_func_array(array($model, $method), $args);
   }
 

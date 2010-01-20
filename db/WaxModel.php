@@ -423,7 +423,8 @@ class WaxModel{
   }
 
 
- 	public function all() {
+ 	public function all($select_cols = false) {
+ 	  if($select_cols && is_array($select_cols)) $this->select_columns = $select_cols;
  	  return new WaxRecordset($this, $this->rows());
  	}
 
