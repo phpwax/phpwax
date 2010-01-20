@@ -23,7 +23,7 @@ class WaxModelCollection extends WaxRecordset {
   
   public function offsetGet($offset) {
     $this->load();
-    if($this->rowset instanceof WaxModelProxy) return $this->rowset[$offset]->get();
+    if($this->rowset[$offset] instanceof WaxModelProxy) return $this->rowset[$offset]->get();
     else return parent::offsetGet($offset);
   }
   
@@ -53,6 +53,7 @@ class WaxModelCollection extends WaxRecordset {
   }
   
   public function add(WaxModel $model) {
+    $this->load();
     $this->rowset[] = new WaxModelProxy($model);
   }
   
