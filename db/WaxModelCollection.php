@@ -54,7 +54,8 @@ class WaxModelCollection extends WaxRecordset {
   
   public function add(WaxModel $model) {
     $this->load();
-    $this->rowset[] = new WaxModelProxy($model);
+    foreach($this->rowset as $row) if($row[$model->primary_key] == $model->pk()) $do_nothing = true;
+    if(!$do_nothing) $this->rowset[] = new WaxModelProxy($model);
   }
   
   public function load() {
