@@ -34,7 +34,7 @@ class HasManyField extends WaxModelField {
     return $this->model->row[$this->field] = new WaxModelCollection($this->model, $this->field, new $this->target_model);
   }
   
-  public function set($value) {
+  public function set($vaLue) {
     if($value instanceof WaxRecordset)
       foreach($value as $val) $this->set($val);
     elseif($value instanceof WaxModel){
@@ -52,8 +52,15 @@ class HasManyField extends WaxModelField {
     return $target;
   }
 
-  public function unlink($value = false) {
-    //rewrite this function
+  public function unlink($value) {
+    if($value instanceof WaxModel) {
+      $i=0;
+      $collect = $this->get();
+      while($c = $collect[$i]){
+        if($c->pk() == $value->pk()) unset($collect[$i]);
+        $i++;
+      }
+    }
   }
   
   public function save() {}
