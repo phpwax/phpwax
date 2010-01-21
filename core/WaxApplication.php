@@ -1,7 +1,4 @@
 <?php
-/**
- * 	@package PHP-Wax
- */
 
 /**
 	* 	@package PHP-Wax
@@ -11,8 +8,6 @@
   *   In making this decision it will consult the application configuration for guidance.
   *   It's also this lovely class's job to provide a limited amount of wiring to the rest of
   *   the application and setup some kind of Database Connection if required.
-  *
-  *   
   *
   */
   

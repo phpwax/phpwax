@@ -39,20 +39,21 @@ class  WaxMongoAdapter extends WaxDbAdapter {
     return $query;
   }
   
-  public function check_id(WaxModel &$model) {
-    if(!$model->{$model->primary_key} && $model->row["_id"] instanceof MongoId) {
-      $model->{$model->primary_key} == (string)$model->row["_id"];
-      return true;
+  public function write_pk(WaxModel $model, $rowset) {
+    foreach($rowset as &$row) {
+      if(!isset($row[$model->primary_key])) {
+        $row[$model->primary_key] = (string)$row["_id"];
+      }
     }
-    $key = new MongoId();
-    $model->{$model->primary_key} = (string)$key;
+    return $rowset;
   }
   
   
   public function select(WaxModel $model) {
     $res = $this->db->{$model->table}->find($this->build_filters($model));
     if($model->limit) $res->limit($model->limit);
-    return array_values(iterator_to_array($res));
+    $result = array_values(iterator_to_array($res));
+    return $this->write_pk($model, $result);
   }
   
   public function insert(WaxModel $model) {
@@ -60,9 +61,13 @@ class  WaxMongoAdapter extends WaxDbAdapter {
   }
   
   public function update(WaxModel $model) {
-    $this->check_id($model);
-    $this->db->{$model->table}->save(&$model->row);
+    //list($model_without_joins, $joins) = $this->split_up_cols($model);
+    $this->db->{$model->table}->save($model->row);
     return $model;
+  }
+  
+  public function save_associations(WaxModel $model) {
+    
   }
 	
 	

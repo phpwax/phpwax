@@ -29,49 +29,6 @@ if(function_exists('date_default_timezone_set')){
   else date_default_timezone_set(PHPWAX_TIMEZONE);
 }
 
-/**
- * check cache
- *
- */
-function auto_loader_check_cache(){
-  
-  $cache_location = CACHE_DIR .'layout/';
-  $image_cache_location = CACHE_DIR.'images/';
-  include_once FRAMEWORK_DIR .'/utilities/Session.php';
-  include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-  include_once FRAMEWORK_DIR .'/utilities/Config.php';
-  include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-  include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
-  include_once FRAMEWORK_DIR .'/utilities/File.php';  
-  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
-  
-  /** CHECK LAYOUT CACHE **/
-  if($config = Config::get('layout_cache')){    
-    if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
-    else $cache = new WaxCacheLoader('File', $cache_location);
-    if($content = $cache->layout_cache_loader($config)){
-      $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-      $pos = strrpos($url_details['path'], ".");
-      $ext = substr($url_details['path'],$pos+1); 
-      if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
-      header("wax-cache: true");
-      echo $content;
-      exit;
-    }
-  }  
-  /** ALSO CHECK FOR IMAGES **/
-  if($img_config = Config::get('image_cache') && substr_count($_SERVER['REQUEST_URI'], 'show_image')){
-    if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader('Image', $image_cache_location, $img_config['lifetime']);
-    else $cache = new WaxCacheLoader('Image', $image_cache_location);
-    if($cache->valid($img_config)) File::display_image($cache->identifier);
-  }  
-  
-  return false;
-}	
-
-
 function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
@@ -185,7 +142,6 @@ class AutoLoader
 	}
 	
 	static public function autoregister_plugins() {
-	  if(defined('AUTOREGISTER_PLUGINS')) return false;
 	  if(is_readable(PLUGIN_DIR)){
 	    $plugins = scandir(PLUGIN_DIR);
 	    sort($plugins);
@@ -288,24 +244,18 @@ class AutoLoader
 		self::register_helpers();
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );
-		WaxEvent::run("wax.init");
+		WaxEvent::run("wax.initialised");
 	}
 	/**
 	 *	Includes the necessary files and instantiates the application.
 	 *	@access public
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
-	  //if(!defined('ENV')) define('ENV', $environment);	
 		$app=new WaxApplication($full_app);
 	}
 
-	/**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
-
-	static public function include_dir($directory, $force = false) {
-	  return self::recursive_register($directory, "framework", $force);
-	}
 	
 }
-auto_loader_check_cache();
+
 Autoloader::initialise();
 
