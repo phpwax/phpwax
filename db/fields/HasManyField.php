@@ -39,7 +39,7 @@ class HasManyField extends WaxModelField {
       foreach($value as $val) $this->set($val);
     elseif($value instanceof WaxModel){
       $this->get()->add($value);
-      $value->row[$this->join_field] = &$this->model;
+      $value->row[$this->join_field] = new WaxModelProxy($this->model);
     }
   }
   
@@ -52,21 +52,18 @@ class HasManyField extends WaxModelField {
     return $target;
   }
 
-  public function unlink($value) {
-    if($value instanceof WaxModel) {
-      $i=0;
-      $collect = $this->get();
-      while($c = $collect[$i]){
-        if($c->pk() == $value->pk()) unset($collect[$i]);
-        $i++;
-      }
+  public function unlink($value = false) {
+    if($value === false) $this->unlink($this->get()); //if nothing gets passed in to unlink then unlink everything
+    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
+    if($value instanceof $this->target_model) {
+      $this->get()->remove($value);
+      $value->{$this->join_field} = 0;
     }
   }
   
   public function save() {}
 
   public function before_sync() {
-    echo "<br><br>trying to sync for join: target: $this->target_model field: $this->field model: ".get_class($this->model);
     $target = new $this->target_model;
     foreach($target->columns as $col => $data)
       if($target->get_col($col)->col_name == $this->join_field) $join_field_already_defined = true;
