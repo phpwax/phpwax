@@ -102,7 +102,7 @@ class WaxApplication {
 	  $controller->use_format = WaxUrl::get("format");
 	  
     WaxEvent::run("wax.controller_global", $controller);
-	  $controller->controller_global();
+	  $controller->controller_global();	  
 
     WaxEvent::run("wax.before_filter", $controller);
 	  $controller->run_filters("before");
@@ -123,7 +123,7 @@ class WaxApplication {
 		}
 		WaxEvent::run("wax.after_filter", $controller);
 		$controller->run_filters("after");		
-		$controller->content_for_layout = $controller->render_view();
+		$controller->content_for_layout = $controller->render_view();	  
 
     WaxEvent::run("wax.pre_render", $this->response);
 		if($content = $controller->render_layout()) $this->response->write($content);

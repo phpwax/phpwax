@@ -164,7 +164,7 @@ class WXHelpers {
      *  @return string The generated tag, followed by "\n"
      *  @uses tag_options()
      */
-    protected function tag($name, $options = array(), $open = false) {
+    public function tag($name, $options = array(), $open = false) {
       $html = "<$name ";
       $html .= $this->tag_options($options);
       $html .= $open ? ">" : " />";

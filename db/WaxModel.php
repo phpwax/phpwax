@@ -307,10 +307,17 @@ class WaxModel{
  	    if(!$field->is_association) $this->get_col($col)->save();
  	    else $associations[]=$field;
  	  }
- 	  if(!$this->validate) return false;
  	  if($this->persistent) {
- 	    if($this->primval) $res = $this->update();
- 	    else $res = $this->insert();
+ 	    if($this->primval) {
+ 	      $this->before_update();
+        if(!$this->validate) return false;
+ 	      $res = $this->update();
+      }
+ 	    else {
+ 	      $this->before_insert();
+        if(!$this->validate) return false;
+ 	      $res = $this->insert();
+ 	    }
  		}
  		foreach($associations as $assoc) $assoc->save();
  		$res->after_save();
@@ -410,14 +417,12 @@ class WaxModel{
 
 
   public function update( $id_list = array() ) {
-    $this->before_update();
     $res = self::$db->update($this);
     $res->after_update();
     return $res;
   }
 
   public function insert() {
-    $this->before_insert();
     $res = self::$db->insert($this);
     $this->row = $res->row;
     $this->after_insert();
