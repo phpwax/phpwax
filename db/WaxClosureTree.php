@@ -32,7 +32,6 @@ class WaxClosureTree extends WaxModel {
 		$res->clear();
 		$res->left_join($this->closure_table());
 		$res->join_condition("$this->table.$this->primary_key = ancestor_id");
-		$res->select_columns = array($this->table.".*");
 		$res->order("depth");
     $res->filter("descendant_id",$this->primval());
     if($depth !== null) $this->limit($depth + 1);
@@ -55,7 +54,6 @@ class WaxClosureTree extends WaxModel {
 		$res->clear();
 		$res->left_join($this->closure_table());
 		$res->join_condition("$this->table.$this->primary_key = descendant_id");
-		$res->select_columns = array($this->table.".*");
 		$res->order("depth");
 		$res->filter("ancestor_id",$this->primval());
     if($depth !== null) $this->filter("depth",$depth,"<=");
@@ -126,16 +124,15 @@ class WaxClosureTree extends WaxModel {
         $link = $this->closure_table();
         $link->ancestor = $ancestor;
         $link->descendant = $descendant;
-        $link->depth = $ancestor->depth + $descendant->depth;
+        $link->depth = $ancestor->depth + $descendant->depth + 1;
+        if($link->descendant_id == 4) print_r($descendants);
         $link->save();
       }
     }
     foreach($descendants as $desc){
       $desc->level = $desc->level + $desc->depth;
-      print_r($desc); flush();
       $desc->save();
     }
-    exit;
   }
   
 
