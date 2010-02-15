@@ -90,7 +90,7 @@ class WaxValidate {
     $primary_key = $this->object->model->primval();
     $model= new $class; 
     if($primary_key) $model->filter($primary_field, $primary_key, "!=");
-    if($model->filter($field, $value)->first()) $this->add_error($this->label, sprintf($this->messages["unique"], $this->label));
+    if(strlen($value) && $model->filter($field, $value)->first()) $this->add_error($this->label, sprintf($this->messages["unique"], $this->label));
   }
   
   

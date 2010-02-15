@@ -298,7 +298,7 @@ class WXHelpers {
       else $links[] = $this->content_tag("span", $prev_content_disabled, array("class"=>"disabled"));
     if(!$recordset->is_current($page)) $links[] = link_to($page, $this->paginate_url($param,$page));
     else $links[] = $this->content_tag("span", $page, array("class"=>"disabled current"));
-    if($recordset->total_pages > ($window*2)+1 && $recordset->current_page-$window > 2 ) $links[]="<span>&#8230;.</span>";
+    if($recordset->total_pages > ($window*2)+1 && $recordset->current_page-$window > 2 ) $links[]="<span class='window'>&#8230;.</span>";
     if($recordset->total_pages < ($window*2)+1) {
       $win_start = 2; $win_end = $recordset->total_pages - 1;
     } elseif($recordset->current_page <= $window) {
@@ -317,7 +317,7 @@ class WXHelpers {
       if(!$recordset->is_current($i)) $links[] = link_to($i, $this->paginate_url($param,$i));
       else $links[] = $this->content_tag("span", $i, array("class"=>"disabled current"));
     }
-    if($recordset->total_pages- $recordset->current_page-1 > $window) $links[]="<span>&#8230;.</span>";
+    if($recordset->total_pages- $recordset->current_page-1 > $window) $links[]="<span class='window'>&#8230;.</span>";
     if(!$recordset->is_current($recordset->total_pages)) $links[] = link_to($recordset->total_pages, $this->paginate_url($param,$recordset->total_pages));
     else $links[] = $this->content_tag("span", $recordset->total_pages, array("class"=>"disabled current"));
     if($next_content && !$recordset->is_last($recordset->current_page)) $links[]=link_to($next_content, $this->paginate_url($param,$recordset->next_page()));

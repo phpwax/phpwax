@@ -149,6 +149,7 @@ class WaxController
 		if($this->use_view=="_default") $this->use_view = $this->action;
 
     $view = new WaxTemplate($this);
+       
     foreach(Autoloader::view_paths("user") as $path) {
       $view->add_path($path.rtrim($this->controller,"/")."/".$this->use_view);
       $view->add_path($path."shared/".$this->use_view);
@@ -159,6 +160,7 @@ class WaxController
       $view->add_path($path.get_parent_class($this)."/".$this->use_view);
       $view->add_path($path."shared/".$this->use_view);
     }
+
     ob_end_clean();
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
