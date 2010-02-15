@@ -80,6 +80,7 @@ class WaxModel{
  	} 	
   
   static public function find($finder, $params = array()) {
+    if(!function_exists("get_called_class")) return false;
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
     $mod = new $class;
