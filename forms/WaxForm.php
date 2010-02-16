@@ -117,6 +117,11 @@ class WaxForm implements Iterator {
    public function valid() {
      return $this->handler->valid();
    }
+   
+   
+   public function __call($method, $args) {
+     return call_user_func_array(array($this->handler, $method), $args);
+   }
 
   
 

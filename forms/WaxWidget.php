@@ -49,6 +49,7 @@ class WaxWidget{
     if($this->bound_data instanceof WaxModelField) {
       $this->validations = array_merge($this->bound_data->validations, $this->validations);
     }    
+    if(count($this->validations)) $this->add_class("validate");
     foreach($this->validations as $valid) {
       $this->add_class("valid-$valid");
     }
