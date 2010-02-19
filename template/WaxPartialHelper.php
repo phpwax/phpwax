@@ -52,11 +52,10 @@ class WaxPartialHelper extends WXHelpers {
         $partial = substr($path, strrpos($path, "/")+1);
       	$path = substr($path, 0, strrpos($path, "/")+1);
       	$path = $path.$partial;
-      } else $partial = $path; {
-      	if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();
-      }
+      } else $partial = $path;
+      if(is_array($extra_vals)) foreach($extra_vals as $var=>$val) $p_controller->{$var}=$val;      	
+      if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();
       $p_controller->use_view = $path;
-      if(is_array($extra_vals)) foreach($extra_vals as $var=>$val) $p_controller->{$var}=$val;
   		$partial = $p_controller->render_view();
   	}
     return $partial;
