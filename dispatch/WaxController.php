@@ -33,6 +33,9 @@ class WaxController
 	  if($application) {
 	    $this->application = $application;
 	    $this->response = $this->application->response;
+    } else {
+      $this->application = new WaxApplication(false);
+	    $this->response = $this->application->response;
     }
 	  $this->init();    
   }
@@ -52,7 +55,6 @@ class WaxController
 	 *	@param string $route
  	 */   
   protected function redirect_to($options, $protocol="http://") {
-    
     switch(true) {
       case is_array($options):
         $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);

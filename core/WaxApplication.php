@@ -33,6 +33,9 @@ class WaxApplication {
 	  $this->setup_environment();	
 	  $this->initialise_database();
 	  if($delegate) $this->execute();
+	  else {
+	    $this->response = new WaxResponse;
+	  }
   }
 
 
