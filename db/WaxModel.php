@@ -144,8 +144,8 @@ class WaxModel{
  	 * @return WaxRecordset Object
  	 */
 
- 	public function search($text, $columns = array()) {
- 	  $res = self::$db->search($this, $text, $columns);
+ 	public function search($text, $columns = array(), $relevance=0) {
+ 	  $res = self::$db->search($this, $text, $columns, $relevance);
     return $res;
  	}
 

@@ -305,7 +305,7 @@ abstract class WaxDbAdapter {
    * @return $this
    */
   
-  public function search(WaxModel $model, $text, $columns=array()) {
+  public function search(WaxModel $model, $text, $columns=array(), $relevance_floor=0) {
     // First up try to add the fulltext index. Do nothing if errors
     $cols = array_keys($columns);
     $index_name = implode("_", $cols);
@@ -323,7 +323,7 @@ abstract class WaxDbAdapter {
     $model->select_columns = rtrim($model->select_columns, "+");
     $model->select_columns .= ") AS relevance ";
     $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
-    $model->having = "relevance > 0";
+    $model->having = "relevance > ".$relevance_floor;
     $model->order = "relevance DESC";
     // Add an arbitrary limit to force found_rows to run
     if(!$model->limit) $model->limit(1000);

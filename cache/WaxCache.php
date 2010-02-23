@@ -22,6 +22,7 @@ class WaxCache {
 	    if($store) $this->store=ucfirst($store);
 	    if($this->store == "default") $this->store= ucfirst(Config::get("cache_engine"));
 	  }
+	  //if($this->store == "File") $this->store="Filesystem";
 	  if(is_array($store)) $options = $store;
 	  $class = "WaxCache".$this->store;
 	  $this->engine = new $class($label, $options);
