@@ -235,7 +235,7 @@ class Profiler {
     WaxEvent::add("wax.post_request", function(){Profiler::marker("Request Processed");});
     WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
     WaxEvent::add("wax.pre_render", function(){Profiler::marker("View Parsed");});
-    WaxEvent::add("wax.post_render", function(){Profiler::marker("View Rendered");});
+    WaxEvent::add("wax.post_render", function(){Profiler::marker("Response Ready");});
 
     WaxEvent::add("wax.post_render", function(){
       if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
