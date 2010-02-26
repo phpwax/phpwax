@@ -97,7 +97,7 @@ class WaxApplication {
 	  
 	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
 
-	  WaxEvent::run("wax.controller", $controller);
+	  WaxEvent::run("wax.controller", $delegate);
 		$controller = new $delegate($this);	      
     $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");

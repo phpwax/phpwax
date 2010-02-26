@@ -60,7 +60,7 @@ class WaxPartialHelper extends WXHelpers {
       $p_controller->use_view = $path;
   		$partial = $p_controller->render_view();
   	}
-  	WaxEvent::run("wax.partial_render", $partial);
+  	WaxEvent::run("wax.partial_render", $path);
     return $partial;
   }
   

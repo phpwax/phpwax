@@ -11,7 +11,7 @@
 class WaxEvent {
   
   // Event callbacks
-	private static $events = array();
+	public static $events = array();
 
 	// Cache of events that have been run
 	private static $has_run = array();

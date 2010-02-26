@@ -10,6 +10,9 @@ class Profiler {
 	// Collected benchmarks
 	public static $_marks = array();
 	public static $markers = array();
+	
+	// Current Benchmark: Allows state for nested or sequential start/stops
+	public static $current_benchmark = array();
 
 	/**
 	 * Starts a new benchmark and returns a unique token.
@@ -48,10 +51,11 @@ class Profiler {
 	 * @param   string  token
 	 * @return  void
 	 */
-	public static function stop($token) {
+	public static function stop($token, $data=false) {
 		// Stop the benchmark
 		Profiler::$_marks[$token]['stop_time']   = microtime(TRUE);
 		Profiler::$_marks[$token]['stop_memory'] = memory_get_usage();
+		Profiler::$_marks[$token]['post_data'] =$data;
 	}
 
 	/**
@@ -172,6 +176,9 @@ class Profiler {
 
 			// Amount of memory in bytes
 			$mark['stop_memory'] - $mark['start_memory'],
+			// Data attached to benchmark
+			$mark['data'],
+			$mark['post_data']
 		);
 	}
 	
@@ -199,17 +206,25 @@ class Profiler {
     
     /*** Setup Benchmarking on database queries ****/
     WaxEvent::add("wax.db_query", function(){
-      $benchmark = Profiler::start("Application", "Database Queries");
-      WaxEvent::add("wax.db_query_end", function() use($benchmark) {Profiler::stop($benchmark);});
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::$data->queryString);
     });
+    WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     
     WaxEvent::add("wax.partial", function(){
-      $benchmark = Profiler::start("Application", "Partials");
-      WaxEvent::add("wax.partial_render", function() use($benchmark) {Profiler::stop($benchmark);});
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::$data);
+    });
+    WaxEvent::add("wax.partial_render", function() {
+      Profiler::stop(array_pop(Profiler::$current_benchmark), WaxEvent::$data);
     });
     
+    
     WaxEvent::add("wax.controller", function(){
-      $benchmark = Profiler::start("Application", "Controller");
+      $benchmark = Profiler::start("Application", "Controller Setup", WaxEvent::$data);
+      WaxEvent::add("wax.controller_init", function() use($benchmark) {Profiler::stop($benchmark);});
+    });
+    
+    WaxEvent::add("wax.controller_global", function(){
+      $benchmark = Profiler::start("Application", "Action Process", WaxEvent::$data->action);
       WaxEvent::add("wax.pre_render", function() use($benchmark) {Profiler::stop($benchmark);});
     });
     
@@ -221,8 +236,9 @@ class Profiler {
     WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
     WaxEvent::add("wax.pre_render", function(){Profiler::marker("View Parsed");});
     WaxEvent::add("wax.post_render", function(){Profiler::marker("View Rendered");});
-    
+
     WaxEvent::add("wax.post_render", function(){
+      if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
       $profile_view= new WaxTemplate();
       $profile_view->add_path(FRAMEWORK_DIR."/template/builtin/profile");
       $profile = $profile_view->parse();

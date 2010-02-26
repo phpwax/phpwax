@@ -1,5 +1,6 @@
 <style>
-table.profiler { width: 90%; margin: 50px auto; border-collapse: collapse; }
+.profile_output {background:#ececec;padding:50px 0;}
+table.profiler { width: 90%; margin: 15px auto; border-collapse: collapse; }
 	table.profiler th,
 	table.profiler td { padding: 0.2em 0.4em; background: #fff; border: solid 1px #ccc; text-align: left; font-weight: normal; font-size: 1em; color: #111; vertical-align: top; }
 	table.profiler tr.group th { font-size: 1.4em; background: #222; color: #eee; border-color: #222; }
@@ -13,8 +14,9 @@ table.profiler { width: 90%; margin: 50px auto; border-collapse: collapse; }
 	table.profiler tr.time td { border-bottom: 0; }
 	table.profiler tr.memory td { border-top: none; }
 	table.profiler tr.final th.name { background: #222; color: #fff; }
+	table.profiler tr.mark td.data {font-size:10px;padding-left:15px;}
 	.profile_output {display:none;}
-	.profile_output:target {display:block;}
+  .profile_output:target {display:block;}
 </style>
 <div class="profile_output" id="profile">
   <?foreach(Profiler::groups() as $group => $benchmarks):?>
@@ -41,7 +43,7 @@ table.profiler { width: 90%; margin: 50px auto; border-collapse: collapse; }
     			<?endforeach?>
     		</tr>
   		<?endforeach ?>
-  		
+
   	</table>
   <?endforeach?>
   <?$markers = Profiler::marker_stats()?>
@@ -59,4 +61,29 @@ table.profiler { width: 90%; margin: 50px auto; border-collapse: collapse; }
   		</tr>
     <?endforeach?>
   </table>
+  
+  <table class="profiler">
+	  <tr class="group"><th class="name" colspan="5">In Depth Profile</th></tr>
+	  <tr class="headers">
+		  <th class="name" colspan="3">Operation</th>
+		  <th class="name">Time</th>
+		  <th class="name">Memory</th>
+		</tr>
+		<?foreach($benchmarks as $name => $tokens):?>
+		  <?$stats = Profiler::stats($tokens); ?>
+		  <tr class="mark time">
+  			<th class="name" colspan="3"><? echo $name, ' (', count($tokens), ')' ?></th>
+  			<td class="min"><?php echo number_format($stats["total"]['time'] *1000,0), ' ', 'ms' ?></td>
+  			<td class="min"><?php echo number_format($stats["total"]['memory'] /1024,0), ' ', 'kb' ?></td>
+  		</tr>
+		  <?foreach($tokens as $token):?>
+  	    <?$stats = Profiler::total($token)?>
+  	    <tr class="mark">
+  	      <td colspan="3" class="data"><?=$stats[2]?></td>
+  	      <td class="average"><?php echo number_format($stats[0]*1000,0), ' ', 'ms' ?></td>
+  	      <td class="average"><?php echo number_format($stats[1] /1024,0), ' ', 'kb' ?></td>
+  	    </tr>
+  	  <?endforeach?>
+  	<?endforeach?>
+		
 </div>
