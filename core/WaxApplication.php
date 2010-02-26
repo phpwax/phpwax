@@ -96,9 +96,9 @@ class WaxApplication {
 	  $this->response = new WaxResponse;
 	  
 	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
-		$controller = new $delegate($this);
+
 	  WaxEvent::run("wax.controller", $controller);
-	      
+		$controller = new $delegate($this);	      
     $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");
 	  $controller->route_array = explode("/", WaxUrl::$original_route);
