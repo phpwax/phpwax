@@ -23,6 +23,7 @@ class WaxPartialHelper extends WXHelpers {
    */
   
   public function partial($path, $extra_vals=array(), $format="html") {
+    WaxEvent::run("wax.partial", $path);
 		$controller = WaxUrl::route_controller($path, $extra_vals);
 		if($extra_vals instanceof WaxTemplate) {
 		  if(!$controller) $controller = $extra_vals->controller;  		
@@ -53,11 +54,13 @@ class WaxPartialHelper extends WXHelpers {
       	$path = substr($path, 0, strrpos($path, "/")+1);
       	$path = $path.$partial;
       } else $partial = $path;
-      if(is_array($extra_vals)) foreach($extra_vals as $var=>$val) $p_controller->{$var}=$val;      	
-      if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();
+      
+      if(is_array($extra_vals)) foreach($extra_vals as $var=>$val) $p_controller->{$var}=$val;
+      if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();            
       $p_controller->use_view = $path;
   		$partial = $p_controller->render_view();
   	}
+  	WaxEvent::run("wax.partial_render", $partial);
     return $partial;
   }
   
