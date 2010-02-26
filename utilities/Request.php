@@ -28,20 +28,29 @@ class Request {
 	}
 	
 	
-	public function get($name) {
+	public function get($name, $clean=false) {
 	  self::init();
+	  if($clean) {
+	    $vals = filter_var_array(self::$get, FILTER_SANITIZE_SPECIAL_CHARS);
+	    return $vals[$name];
+	  }
 	  return self::$get[$name];
 	}
 	
-	public function post($name) {
+	public function post($name, $clean=false) {
 	  self::init();
+	  if($clean) {
+	    $vals = filter_var_array(self::$post, FILTER_SANITIZE_SPECIAL_CHARS);
+	    return $vals[$name];
+	  }
 	  return self::$post[$name];
 	}
 	
-	public function param($name) {
+	public function param($name, $clean = false) {
 	  self::init();
 	  return self::$params[$name];
 	}
+	
 
 
 }
