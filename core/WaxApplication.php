@@ -96,9 +96,15 @@ class WaxApplication {
 	  $this->response = new WaxResponse;
 	  
 	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
-
-	  WaxEvent::run("wax.controller", $delegate);
-		$controller = new $delegate($this);	      
+    $controller = new $delegate($this);
+	  WaxEvent::run("wax.controller", $controller);
+	  WaxEvent::run("wax.pre_render", $controller);
+	  if($controller->render !==false) $this->execute_controller(&$controller);    
+		WaxEvent::run("wax.post_render", $this->response);
+		$this->response->execute();
+  }
+  
+  public function execute_controller($controller) {	      
     $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");
 	  $controller->route_array = explode("/", WaxUrl::$original_route);
@@ -106,7 +112,6 @@ class WaxApplication {
 	  
     WaxEvent::run("wax.controller_global", $controller);
 	  $controller->controller_global();	  
-
     WaxEvent::run("wax.before_filter", $controller);
 	  $controller->run_filters("before");
 	  if(!$this->is_public_method($controller, $controller->action)) {
@@ -124,17 +129,15 @@ class WaxApplication {
 		  WaxEvent::run("wax.action", $controller);
 		  $controller->{$controller->action}();
 		}
+		
 		WaxEvent::run("wax.after_filter", $controller);
 		$controller->run_filters("after");		
-		$controller->content_for_layout = $controller->render_view();	  
-
-    WaxEvent::run("wax.pre_render", $this->response);
+		$controller->content_for_layout = $controller->render_view();
+		WaxEvent::run("wax.layout", $controller);
+	  
 		if($content = $controller->render_layout()) $this->response->write($content);
 		elseif($controller->content_for_layout) $this->response->write($controller->content_for_layout);
-		else $this->response->write("");
-		WaxEvent::run("wax.post_render", $this->response);
-		$this->response->execute();
-		WaxEvent::run("wax.end");
+		else $this->response->write(""); 
   }
   
   /******* Application Helper Methods *********/
