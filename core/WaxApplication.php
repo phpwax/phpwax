@@ -30,12 +30,11 @@ class WaxApplication {
     */
 
 	function __construct($delegate) {
-	  $this->setup_environment();	
+    WaxEvent::run("wax.start");
+    $this->setup_environment();	
 	  $this->initialise_database();
 	  if($delegate) $this->execute();
-	  else {
-	    $this->response = new WaxResponse;
-	  }
+	  else $this->response = new WaxResponse;
   }
 
 
@@ -117,6 +116,7 @@ class WaxApplication {
 	  if(!$this->is_public_method($controller, $controller->action)) {
 	    if($this->is_public_method($controller, Inflections::underscore($controller->action))) {
 	      $underscore_action = Inflections::underscore($controller->action);
+	      WaxEvent::run("wax.action", $controller);
 	      $controller->{$underscore_action}();
 	    } elseif(method_exists($controller, 'method_missing') ) {
 			  $controller->method_missing();
