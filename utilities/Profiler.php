@@ -218,11 +218,11 @@ class Profiler {
     
     
     
-    WaxEvent::add("wax.start", function(){Profiler::marker("Application Start");});
-    WaxEvent::add("wax.init", function(){Profiler::marker("Application Initialised");});
+    WaxEvent::add("wax.start", function(){Profiler::marker("Application Initialised");});
     WaxEvent::add("wax.post_request", function(){Profiler::marker("Request Processed");});
     WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
-    WaxEvent::add("wax.pre_render", function(){Profiler::marker("View Parsed");});
+    WaxEvent::add("wax.action", function(){Profiler::marker("Action Ready");});
+    WaxEvent::add("wax.layout", function(){Profiler::marker("View Parsed");});
     WaxEvent::add("wax.post_render", function(){Profiler::marker("Response Ready");});
 
     WaxEvent::add("wax.post_render", function(){

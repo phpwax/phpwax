@@ -5,8 +5,7 @@
 $priority_array = array(
   "db/WaxRecordset.php",
   "exceptions/WaxSqlException.php",
-  "template/WaxTemplate.php",
-  "helpers/FormHelper.php"
+  "template/WaxTemplate.php"
 );
 $ignore_dirs = array("tests", "testing");
 $compile_to = dirname(__FILE__)."/wax.php";
