@@ -131,17 +131,14 @@ abstract class WaxDbAdapter {
       $this->sql_without_limit = $sql;
       $sql.= $this->limit($model);
     }
-    //$key = "querycache/".md5($sql.implode(",",$params));
-    //$cache = new WaxCache($key);
-    //if($ret = $cache->get()) return unserialize($ret);
-    //else {
-      $stmt = $this->prepare($sql);
-      $this->exec($stmt, $params);
-      $this->row_count_query($model);
-		  $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		  //$cache->set(serialize($res));
-		  return $res;
-	  //}
+
+    $stmt = $this->prepare($sql);
+    WaxEvent::run("wax.db_query",$stmt);
+    $this->exec($stmt, $params);
+    $this->row_count_query($model);
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    WaxEvent::run("wax.db_query_end",$stmt);
+		return $res;
   }
   
   public function prepare($sql) {
@@ -159,7 +156,6 @@ abstract class WaxDbAdapter {
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
       WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
-      WaxEvent::run("wax.db_query",$pdo_statement);
       if(count($bindings)) WaxLog::log("info", "[DB] Values:".join($bindings,",") );
 			$pdo_statement->execute($bindings);
 		} catch(PDOException $e) {
@@ -193,7 +189,6 @@ abstract class WaxDbAdapter {
 		    if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
 		  }
 		}
-		WaxEvent::run("wax.db_query_end",$pdo_statement);
 		return $pdo_statement;
   }
   
