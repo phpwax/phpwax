@@ -38,8 +38,7 @@ class WaxController
 	    $this->application = $application;
 	    $this->response = $this->application->response;
     } else {
-      $this->application = new WaxApplication(false);
-	    $this->response = $this->application->response;
+	    $this->response = new WaxResponse;
     }
 	  $this->init();    
   }
