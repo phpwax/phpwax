@@ -161,6 +161,7 @@ class WaxTemplate implements Cacheable{
 			}
 	  }
 		extract((array)$this);
+
 		if(!is_readable($view_file)) throw new WaxException("Unable to find ".$this->template_paths[0].".".$suffix, "Missing Template File", print_r($this->template_paths, 1));
 		
 		if(!include($view_file)) throw new WaxUserException("PHP parse error in $view_file");
