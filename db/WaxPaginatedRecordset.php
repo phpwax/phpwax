@@ -47,6 +47,14 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		}
 		return $ids;
 	}
+	
+	/*** Forces the rowset to load, reducing subsequent database calls */
+	public function eager_load() {
+	  $full_rows = $this->model->filter($this->model->primary_key, $this->rowset)->all();
+	  $this->rowset = $full_rows->rowset;
+	  return $this;
+	}
+	
 	/**
 	 * use the count value passed in to work out total number of pages
 	 * @param string $count 
