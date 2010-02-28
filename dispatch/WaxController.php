@@ -8,6 +8,7 @@
 
 class WaxController
 {
+  protected $class_name='';
   
   // A reference to the master application object
   public $application = false;
@@ -19,13 +20,16 @@ class WaxController
   public $use_layout='application';
   public $use_view="_default";
   public $use_format="html";
-  protected $class_name='';
   public $referrer;
 	public $use_plugin=false;
 	public $shared_plugin=false;
 	public $plugin_share = 'shared';
 	public $filters = array(); 
 	public $plugins = array();
+	
+	// Flag which can be set to false to render nothing
+	public $render = true;
+	
   //with this you can override the cache settings and turn it of on the application level ignoring the config
   public $use_cache = true;
 
@@ -157,7 +161,7 @@ class WaxController
 	 *	@return string
  	 */
   public function render_layout() {
-		if(!$this->use_layout) return false;
+		if(!$this->use_layout) return "";
     $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
 
