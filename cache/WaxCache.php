@@ -58,6 +58,10 @@ class WaxCache {
 	  $this->engine->key = $key;
 	}
 	
+	public function get_key() {
+	  return $this->engine->key;
+	}
+	
   
 
 
