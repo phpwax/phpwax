@@ -52,8 +52,10 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
       return new $model($this->rowset[$offset]);
     }else{
       if(!$this->rowset[$offset]) return false;
+      if($this->rowset[$offset] instanceof WaxModel) return $this->rowset[$offset];
       $obj = clone $this->model;
       $obj->row = $this->rowset[$offset];
+      $this->rowset[$offset] = &$obj;
       return $obj;
     }
   }
