@@ -229,7 +229,7 @@ class Profiler {
       if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
       $profile_view = new WaxTemplate;
       $profile_view->add_path(FRAMEWORK_DIR."/template/builtin/profile");
-      WaxEvent::$data->body .= $profile_view->parse();
+      WaxEvent::$data->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::$data->body);
     });
     
   }
