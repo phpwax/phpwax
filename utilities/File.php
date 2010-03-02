@@ -51,7 +51,7 @@ class File {
 	  * @param $width The width of the new image
 	  * @return bool
 	  */
-	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false) {
+	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false, $target_format=false) {
 		if(!self::is_image($source)) return false;
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
@@ -66,8 +66,11 @@ class File {
 	  if($ratio == 1) $command = "cp ".escapeshellarg($source)." ".escapeshellarg($destination);
 		elseif($overwrite) {
 			$command="mogrify ".escapeshellarg($source)." -limit area 30 -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
+  		if($target_format) $command .= " -format $target_format";
 		} else {
-			$command="convert ".escapeshellarg($source)." -limit area 30 -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality."  $destination";
+			$command="convert ".escapeshellarg($source)." -limit area 30 -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
+  		if($target_format) $command .= " -format $target_format";
+  		$command .= "  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
