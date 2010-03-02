@@ -50,7 +50,7 @@ class WaxPaginatedRecordset extends WaxRecordset {
 	
 	/*** Forces the rowset to load, reducing subsequent database calls */
 	public function eager_load() {
-	  $full_rows = $this->model->filter($this->model->primary_key, $this->rowset)->all();
+	  $full_rows = $this->model->filter($this->model->primary_key, $this->rowset)->limit(false)->all();
 	  $this->rowset = $full_rows->rowset;
 	  return $this;
 	}
