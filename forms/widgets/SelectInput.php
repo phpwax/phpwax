@@ -17,22 +17,29 @@ class SelectInput extends WaxWidget {
   public $class = "input_field select_field";
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<select %s>%s</select>';
-
   
   public function tag_content() {
     $output = "";
+    if($is_assoc = $this->value instanceOf WaxModelAssociation){
+      $primary_key = $this->value->target_model->primary_key;
+      if(isset($this->value->rowset[0][$primary_key])) foreach($this->value->rowset as $row) $rowset[]=$row[$primary_key];
+      else $rowset = $this->value->rowset;      
+    }
     $choice = '<option value="%s"%s>%s</option>';
     if(!$this->choices) $this->choices = $this->get_choices();
     $this->map_choices();
-    foreach($this->choices as $value=>$option) {
+    foreach($this->choices as $value=>$option) {      
       $sel = "";
-			if(is_numeric($this->value) && (int)$this->value==(int)$value) $sel = ' selected="selected"';
+      if($is_assoc){
+        if(in_array($value, $rowset)) $sel = ' selected="selected"';
+			}elseif(is_numeric($this->value) && (int)$this->value==(int)$value) $sel = ' selected="selected"';
 			elseif( (string)$this->value==(string) $value) $sel = ' selected="selected"';
       $output .= sprintf($choice, $value, $sel, $option);
     }
     return $output;
   }
   
+
   public function get_choices(){
     return $this->bound_data->get_choices();
   }
