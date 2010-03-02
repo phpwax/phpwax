@@ -44,7 +44,7 @@ class Config
 	}
 	
 	static public function init_php() {
-	  eval(file_get_contents(CONFIG_DIR."config.php"));
+	  include( CONFIG_DIR."config.php" );
 	}
 	
 	/**
