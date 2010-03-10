@@ -86,16 +86,18 @@ class WaxModel{
     $mod = new $class;
     foreach($params as $method=>$args) {
       $mod->$method($args);
-    }
+    }    
     switch($finder) {
-      case 'all': $mod = new $class;
+      case 'all':
         return $mod->all();
         break;
-      case 'first': $mod = new $class;
+      case 'first':
         return $mod->first();
         break;
     }
   }
+  
+
  
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
