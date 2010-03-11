@@ -81,6 +81,8 @@ class WaxEmail
      * @var int
      */
     public $WordWrap          = 0;
+    
+    public $use_layout = false;
 
 
     
@@ -1020,17 +1022,28 @@ class WaxEmail
 				if(is_readable($path.".html")) $html = $view_path->parse();
 				if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
 			}
-			
+						
      	if($html && $txt) {
         $this->is_html(true);
         $this->body=$html;
         $this->alt_body = $txt;
       } elseif($html) {
         $this->is_html(true);
-        $this->body=$html;
+        $this->content_for_layout = $html;
+        if($content = $this->render_layout()) $this->body=$content;
+        else $this->body = $this->content_for_layout;
       } elseif(!$html && $txt) {
         $this->body = $txt;
       }
+    }
+    
+    public function render_layout() {
+      if(!$this->use_layout) return false;
+      $this->use_format = "html";
+      $layout = new WaxTemplate($this);
+      $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
+      ob_end_clean();
+  	  return $layout->parse($this->use_format);      
     }
     
     public function __call($name, $args) {
