@@ -98,7 +98,7 @@ class File {
     
     $dst = imagecreatetruecolor($newwidth, $newheight);
     $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-    
+    imagesavealpha($img, true);
     switch($image_type) {
       case 1: $src = imagegif($dst,$destination); break;
       case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
