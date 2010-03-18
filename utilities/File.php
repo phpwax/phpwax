@@ -98,6 +98,7 @@ class File {
     
     $dst = imagecreatetruecolor($newwidth, $newheight);
     $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+    imagealphablending($dst, false);
     imagesavealpha($dst, true);
     switch($image_type) {
       case 1: $src = imagegif($dst,$destination); break;
