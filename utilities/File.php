@@ -79,6 +79,7 @@ class File {
 	
 	static public function gd_resize_image($source, $destination, $r_width, $overwrite=false, $force_width=false) {
 	  list($width, $height, $image_type) = getimagesize($source);
+	  if(!$width) return false;
     $r = $width / $height;
     $r_height = $r_width;
     if ($r_width/$r_height > $r) {
@@ -97,9 +98,11 @@ class File {
     }
     
     $dst = imagecreatetruecolor($newwidth, $newheight);
-    $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-    imagealphablending($dst, false);
     imagesavealpha($dst, true);
+    $trans_colour = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+    imagefill($dst, 0, 0, $trans_colour);
+    $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
     switch($image_type) {
       case 1: $src = imagegif($dst,$destination); break;
       case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
