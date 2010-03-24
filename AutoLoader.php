@@ -257,7 +257,7 @@ class AutoLoader
 	static public function register_helpers($classes = array()) {
 	  if(!count($classes)) $classes = get_declared_classes();
 	  foreach((array)$classes as $class) {
-	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers") {
+	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class=="Inflections") {
 	      foreach(get_class_methods($class) as $method) {
 	        if(substr($method,0,1)!="_" && !function_exists($method)) WaxCodeGenerator::new_helper_wrapper($class, $method);
 	      }
