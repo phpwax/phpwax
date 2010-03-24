@@ -5,7 +5,7 @@
  * @author Ross Riley
  * @package PHP-Wax
  **/
-class Inflections 
+class Inflections extends WaxHelpers
 {
   
   public function camelize($underscored_word, $upper_first=false) {

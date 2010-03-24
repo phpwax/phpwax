@@ -1,6 +1,6 @@
 <?php
 
-class RequestHelper extends WXHelpers {
+class RequestHelper extends WaxHelpers {
   
   
   public function get($name, $clean=false) {
@@ -19,7 +19,9 @@ class RequestHelper extends WXHelpers {
     return Request::filter(Request::param($name));
   }
   
-  
+  public function url($options) {
+    return WaxUrl::build_url($options);
+  }
   
   
 }

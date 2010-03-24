@@ -105,6 +105,21 @@ class WaxUrl {
   }
   
   
+  /**
+   *  Builds a url based on the current route.
+   *  Takes an optional array of options to override the current.
+   *
+   * @return string
+   **/
+  
+  static public function build_url($options = array()) {
+    $url = array();
+    if($options["controller"]) $url[]=$options["controller"]; else $url[]=rtrim(self::$params["controller"],"/");
+    if($options["action"]) $url[]=$options["action"]; elseif(self::$params["action"]) $url[]=self::$params["action"];
+    if($options["id"]) $url[]=$options["id"]; elseif(self::$params["id"]) $url[]=self::$params["id"];
+    return "/".join("/",$url);
+  }
+  
   
   
   
