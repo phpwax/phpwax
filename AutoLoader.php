@@ -42,15 +42,17 @@ function auto_loader_check_cache(){
   include_once FRAMEWORK_DIR .'/utilities/Config.php';
   include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
   include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+ 	include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
   include_once FRAMEWORK_DIR .'/utilities/File.php';  
   $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   
   /** CHECK LAYOUT CACHE **/
-  if($config = Config::get('layout_cache')){    
-    if(isset($config['lifetime'])) $cache = new WaxCacheLoader('File', $cache_location, $config['lifetime']);
-    else $cache = new WaxCacheLoader('File', $cache_location);
+  if($config = Config::get('layout_cache')){ 
+		if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
+		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php'; 
+    if(isset($config['lifetime'])) $cache = new WaxCacheLoader($config['engine'], $cache_location, $config['lifetime']);
+    else $cache = new WaxCacheLoader($config['engine'], $cache_location);
     Session::start(); //start session before checking cache, to support caching by session data
     if($content = $cache->layout_cache_loader($config)){
       $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -64,6 +66,8 @@ function auto_loader_check_cache(){
   }  
   /** ALSO CHECK FOR IMAGES **/
   if($img_config = Config::get('image_cache') && substr_count($_SERVER['REQUEST_URI'], 'show_image')){
+		if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php'; 
+		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
     if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader('Image', $image_cache_location, $img_config['lifetime']);
     else $cache = new WaxCacheLoader('Image', $image_cache_location);
     if($cache->valid($img_config)) File::display_image($cache->identifier);
