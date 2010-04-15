@@ -57,7 +57,7 @@ class WaxCacheFile implements CacheEngine{
 	  $str = $this->dir.$prefix;
 	  $data = $_SESSION[Session::get_hash()];
 		unset($data['referrer']);
-		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
+		$uri = md5(preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']));
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.str_replace(" ", "-",$uri);    
 	  
