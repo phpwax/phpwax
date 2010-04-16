@@ -19,7 +19,7 @@ class WaxCacheMemcache implements CacheEngine{
   public function __construct($key, $options=array()) {
     $this->key = $key;
     $this->memcache = new Memcache;
-    foreach($options as $k=>$options) $this->$k = $option;
+    foreach($options as $k=>$option) $this->$k = $option;
     $this->memcache->connect($this->server, $this->port) or $this->memcache = false;
   }
 	
