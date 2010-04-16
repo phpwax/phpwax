@@ -10,7 +10,7 @@
 class WaxCacheMemcache implements CacheEngine{
   
   public $key = false;
-  public $server = "127.0.0.1";
+  public $server = "localhost";
   public $port = "11211";
   public $memcache = false;
   public $lifetime = 3600;
