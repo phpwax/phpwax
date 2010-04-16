@@ -10,7 +10,7 @@
 class WaxCacheMemcache implements CacheEngine{
   
   public $key = false;
-  public $server = "localhost";
+  public $server = "127.0.0.1";
   public $port = "11211";
   public $memcache = false;
   public $lifetime = 3600;
@@ -29,8 +29,8 @@ class WaxCacheMemcache implements CacheEngine{
 	}
 	
 	public function set($value) {
-	  if($this->is_namespaced()) $this->memcache->set($this->namespaced_key(), $value, $this->lifetime);
-    else $this->memcache->set($this->key, $value, 0,$this->lifetime);
+	  if($this->is_namespaced()) return $this->memcache->set($this->namespaced_key(), $value,0, $this->lifetime);
+    else return $this->memcache->set($this->key, $value, 0,$this->lifetime);
 	}
 	
 	public function expire($query=false) {
