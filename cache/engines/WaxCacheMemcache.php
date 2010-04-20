@@ -19,7 +19,7 @@ class WaxCacheMemcache implements CacheEngine{
   public function __construct($key, $options=array()) {
     $this->key = $key;
     $this->memcache = new Memcache;
-    foreach($options as $k=>$options) $this->$k = $option;
+    foreach($options as $k=>$option) $this->$k = $option;
     $this->memcache->connect($this->server, $this->port) or $this->memcache = false;
   }
 	
@@ -29,8 +29,8 @@ class WaxCacheMemcache implements CacheEngine{
 	}
 	
 	public function set($value) {
-	  if($this->is_namespaced()) $this->memcache->set($this->namespaced_key(), $value, $this->lifetime);
-    else $this->memcache->set($this->key, $value, 0,$this->lifetime);
+	  if($this->is_namespaced()) return $this->memcache->set($this->namespaced_key(), $value,0, $this->lifetime);
+    else return $this->memcache->set($this->key, $value, 0,$this->lifetime);
 	}
 	
 	public function expire($query=false) {
