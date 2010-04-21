@@ -40,7 +40,7 @@ class WaxException extends Exception {
   		mail($email, self::$email_subject_on_error, $this->cli_error_message);
 	  }
 	  if($location = self::$redirect_on_error) {
-  	  error_log($this->cli_error_message);
+  	  WaxLog::log("error", $this->cli_error_message);
       if(!self::$double_redirect) {
   	    self::$double_redirect = true;
         header("HTTP/1.1 500 Application Error",1, 500);  
