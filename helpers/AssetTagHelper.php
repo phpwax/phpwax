@@ -112,6 +112,13 @@ class AssetTagHelper extends WXHelpers {
     } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
     return $ret;
   }
+
+	protected function git_revision(){
+		$rev = "?r=";
+		$path = WAX_ROOT.".git/refs/heads/newcouk";
+		if(is_readable($path)) $rev .= substr(file_get_contents($path),0,8);
+		return $rev;
+	}
   
   protected function image_path($source) {
     return $this->compute_public_path($source, 'images', 'png');
