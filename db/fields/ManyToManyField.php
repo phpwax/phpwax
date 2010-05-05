@@ -110,19 +110,17 @@ class ManyToManyField extends WaxModelField {
     if(!$this->model->primval){
       throw new WXException("ManyToMany set before Model Save", "Cannot set ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
       return;
-    }
-    if($value instanceof WaxModel) {
+    }elseif($value instanceof WaxModel) {
       if(!($ret = $this->join_model->filter(array($this->join_field($value) => $value->primval) )->first())) {
         
         $new = array($this->join_field($value)=>$value->primval, $this->join_field($this->model) => $this->model->primval);
-foreach(array_diff_key($this->join_model->columns,array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
+				foreach(array_diff_key($this->join_model->columns,array($this->join_model->primary_key=>false,$this->join_model->left_field=>false,$this->join_model->right_field=>false)) as $col => $col_options)
             $new[$col] = $value->$col;
             
         $ret = $this->join_model->create($new);
       }
-    }
-    if(is_array($value) && !count($value)) $this->delete();
-    if($value instanceof WaxRecordset || is_array($value)) {
+    }elseif(is_array($value) && !count($value)) $this->delete();
+    elseif($value instanceof WaxRecordset || is_array($value)) {
       /*** Tentatively changing behaviour assigning will now replace, hence the initial delete ***/
       $this->delete();
       foreach($value as $join) {
@@ -130,7 +128,9 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
         $rowset[] = $new_join->row;
       }
    	  $ret = new WaxRecordset(new $this->join_model_class, $rowset);
-    }
+    }elseif($target = new $this->target_model(intval($value))){
+			$this->set($target);
+		}
     WaxModel::unset_cache(get_class($this->model), $this->field);
     return $ret;
   }
