@@ -35,7 +35,14 @@ class WaxBoundForm implements iterator {
  	      else $associations[$name] = $el;
       }
     }
-    foreach($associations as $name=>$el) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+		$this->bound_to_model->save();
+    foreach($associations as $name=>$el) {
+			if($el->bound_data instanceOf ManyToManyField){
+				foreach($el->handle_post($this->post_data[$name]) as $value)
+					$this->bound_to_model->{$name} = $value;
+			}else $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+		}
+		
     $this->validate();
     if($this->is_valid()){
       if($res = $this->bound_to_model->save()) return $res;
