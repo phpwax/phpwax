@@ -492,11 +492,13 @@ class WaxModel{
 		}
 
 		if($assoc_fields){
-			$this->save();
-			foreach((array)$assoc_fields as $k=>$v) {
-				if(is_array($v)) foreach($v as $j) $this->$k=$j;
-				else $this->$k=$v;
+			if($this->save()){
+				foreach((array)$assoc_fields as $k=>$v) {
+					if(is_array($v)) foreach($v as $j) $this->$k=$j;
+					else $this->$k=$v;
+				}
 			}
+			
 		}
 		return $this;
 	}
