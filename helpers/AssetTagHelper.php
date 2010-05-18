@@ -112,6 +112,14 @@ class AssetTagHelper extends WXHelpers {
     } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
     return $ret;
   }
+
+	protected function git_revision(){
+		$rev = "";
+		if(!$branch = Config::get('repo_branch')) $branch = "master";
+		$path = WAX_ROOT.".git/refs/heads/".$branch;
+		if(is_readable($path) && is_file($path)) $rev = "?r=".substr(file_get_contents($path),0,8);
+		return $rev;
+	}
   
   protected function image_path($source) {
     return $this->compute_public_path($source, 'images', 'png');
@@ -136,7 +144,7 @@ class AssetTagHelper extends WXHelpers {
 				$source = $source.".".$ext;
 			}
     }
-    return $source;
+    return $source.$this->git_revision();
   }
     
 }
