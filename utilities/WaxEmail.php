@@ -221,7 +221,9 @@ class WaxEmail
      * @return bool
      */
     function MailSend($header, $body) {
-			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header)) {
+      $header = preg_replace('#(?<!\r)\n#si', "\r\n", $header); 
+      //$additional_parameters = "-f".$this->HeaderLine("Return-Path",$this->sender);
+			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
         return true;
 			} else {
 				throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
@@ -385,10 +387,11 @@ class WaxEmail
         $this->boundary[2] = "b2_" . $uniq_id;
 
         $result .= $this->HeaderLine("Date", $this->RFCDate());
-        if($this->sender == "")
-            $result .= $this->HeaderLine("Return-Path", trim($this->from));
-        else
-            $result .= $this->HeaderLine("Return-Path", trim($this->sender));
+        if($this->sender == "") $result .= $this->HeaderLine("Return-Path", trim($this->from));
+        else {
+          $result .= $this->HeaderLine("Return-Path", trim($this->sender));
+          $result .= $this->HeaderLine("Sender", trim($this->sender));
+        }
         
         // To be created automatically by mail()
         if($intercept = Config::get("email_intercept")) {
@@ -448,7 +451,6 @@ class WaxEmail
                 $result .= $this->TextLine("\tboundary=\"" . $this->boundary[1] . '"');
                 break;
         }
-
 
         return $result;
     }
