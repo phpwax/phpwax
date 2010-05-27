@@ -132,7 +132,7 @@ class WaxTreeModel extends WaxModel {
 		  $path_to_root[] = $lookup[$current_id];
 		  $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
 		}
-		return $this->root_path = new WaxRecordSet($this, $path_to_root);
+		return $this->root_path = new WaxRecordset($this, $path_to_root);
   }
   
   public function path_from_root(){
