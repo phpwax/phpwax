@@ -136,7 +136,7 @@ class WaxTreeModel extends WaxModel {
   }
   
   public function path_from_root(){
-    return new WaxRecordset(clone $this, array_reverse($this->path_to_root()->rowset));
+    return new WaxRecordset(clone $this, array_reverse((array)$this->path_to_root()->rowset));
   }
   /**
    * returns a numeric representation of this objects depth in the tree
