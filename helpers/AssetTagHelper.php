@@ -95,6 +95,17 @@ class AssetTagHelper extends WXHelpers {
     return $this->tag("img", $options);
   }
   
+	public function git_revision(){
+		$rev = "";
+		if(!$rev = Config::get('GIT_HEAD')){
+			if(!$branch = Config::get('repo_branch')) $branch = "master";
+			$path = WAX_ROOT.".git/refs/heads/".$branch;
+			if(is_readable($path) && is_file($path)) $rev = "?r=".substr(file_get_contents($path),0,8);
+			Config::set('GIT_HEAD', $rev);
+		}
+		return $rev;
+	}
+  
   protected function image_path($source) {
     return $this->compute_public_path($source, 'images', 'png');
   }
