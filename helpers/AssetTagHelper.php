@@ -96,20 +96,22 @@ class AssetTagHelper extends WXHelpers {
   }
   
   public function js_bundle($name, $options = array()) {
-    if(ENV=="development") {
+		$build_file = '/javascripts/build/'.$name.'_combined';
+    if(ENV=="development" || !is_readable(PUBLIC_DIR.trim($build_file,"/").".js")) {
       foreach(glob(PUBLIC_DIR."javascripts/$name/*.js") as $file){
         $ret .= $this->javascript_include_tag("/javascripts/$name/".basename($file), $options);
       }
-    } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined", $options);
+    }else $ret = $this->javascript_include_tag($build_file, $options);
     return $ret;
   }
   
   public function css_bundle($name, $options=array()) {
-    if(ENV=="development") {
+		$build_file = '/stylesheets/build/'.$name.'_combined';
+    if(ENV=="development" || !is_readable(PUBLIC_DIR.trim($build_file,"/").".css")) {
       foreach(glob(PUBLIC_DIR."stylesheets/$name/*.css") as $file){
         $ret .= $this->stylesheet_link_tag("/stylesheets/$name/".basename($file), $options);
       }
-    } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
+    } else $ret = $this->stylesheet_link_tag("/stylesheets/build/{$name}_combined", $options);
     return $ret;
   }
 
