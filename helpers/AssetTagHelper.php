@@ -25,7 +25,7 @@ class AssetTagHelper extends WXHelpers {
   public function serve_asset($type, $namespace, $filename) {
     if($server = self::$asset_server) $source .= "http://".$server;
     $source .= "/$type/$namespace/$filename";
-    return $source;
+    return $source.$this->git_revision();
   }
   
   public function javascript_asset($namespace, $filename, $options=array()) {
