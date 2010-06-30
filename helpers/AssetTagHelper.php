@@ -115,9 +115,12 @@ class AssetTagHelper extends WXHelpers {
 
 	public function git_revision(){
 		$rev = "";
-		if(!$branch = Config::get('repo_branch')) $branch = "master";
-		$path = WAX_ROOT.".git/refs/heads/".$branch;
-		if(is_readable($path) && is_file($path)) $rev = "?r=".substr(file_get_contents($path),0,8);
+		if(!$rev = Config::get('GIT_HEAD')){
+			if(!$branch = Config::get('repo_branch')) $branch = "master";
+			$path = WAX_ROOT.".git/refs/heads/".$branch;
+			if(is_readable($path) && is_file($path)) $rev = "?r=".substr(file_get_contents($path),0,8);
+			Config::set('GIT_HEAD', $rev);
+		}
 		return $rev;
 	}
   
