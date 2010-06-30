@@ -129,7 +129,7 @@ class AssetTagHelper extends WXHelpers {
 				$source = $source.".".$ext;
 			}
     }
-    return $source;
+    return $source.$this->git_revision();
   }
     
 }
