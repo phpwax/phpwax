@@ -32,19 +32,23 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
   }
 	
 	public function get() {
-	  return unserialize($this->memcache->get($this->identifier));
+	  if($this->memcache) return unserialize($this->memcache->get($this->identifier));
+		else return false;
 	}
 	
-	public function set($value) {
-		$this->set_meta();
-	  $this->memcache->set($this->identifier, $value, 0, 0);
+	public function set($value) {		
+	  if($this->memcache){
+			$this->memcache->set($this->identifier, $value, 0, 0);
+			$this->set_meta();
+		}
 	}
 	public function set_meta(){
 		$data = array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST));
-		$this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, 0);
+		if($this->memcache) $this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, 0);
 	}
 	public function get_meta(){
-		return $this->memcache->get($this->identifier.$this->meta_suffix);
+		if($this->memcache) return unserialize($this->memcache->get($this->identifier.$this->meta_suffix));
+		else return array(); 
 	}
 	
 	public function valid() {
@@ -59,7 +63,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 	}
 	
 	public function expire() {
-	  if($this->identifier) $this->memcache->delete($this->identifier);
+	  if($this->identifier && $this->memcache) $this->memcache->delete($this->identifier);
 	}
 	
 	public function file() {
