@@ -5,11 +5,15 @@ class WaxRegenFileCache{
 		$config = unserialize(file_get_contents($data_file));
 		$post = unserialize($config['post']);
 		$url = $this->parse_location($config['location']);
-		if(count($post)==0 && ($content = $this->curl($url) ) ){
-			file_put_contents($config['ident'], $content);
-			$config['time'] = time();
-			$config['regen'] = date("Y-m-d H:i:s");			
-			file_put_contents($data_file, serialize($config));
+		if(count($post)==0){
+			touch($config['lock']);
+			if($content = $this->curl($url) ){
+				file_put_contents($config['ident'], $content);
+				$config['time'] = time();
+				$config['regen'] = date("Y-m-d H:i:s");			
+				file_put_contents($data_file, serialize($config));				
+			}
+			unlink($config['lock']);
 		}
 	}
 	
