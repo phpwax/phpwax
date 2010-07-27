@@ -32,7 +32,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
   }
 	
 	public function get() {
-	  if($this->memcache) return unserialize($this->memcache->get($this->identifier));
+	  if($this->memcache && ($content = $this->valid()) ) return $content ;
 		else return false;
 	}
 	
