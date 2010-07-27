@@ -40,7 +40,7 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		if(is_readable($this->identifier.$this->meta_suffix)) return unserialize(file_get_contents($this->identifier.$this->meta_suffix));
 	}
 	public function set_meta(){
-		file_put_contents($this->identifier.$this->meta_suffix, serialize(array('file'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST)) ));
+		file_put_contents($this->identifier.$this->meta_suffix, serialize(array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST)) ));
 		chmod($this->identifier.$this->meta_suffix, 0777);
 	}
 
