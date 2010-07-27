@@ -37,7 +37,7 @@ class WaxRegenMemcacheCache{
 
 
 if(isset($argv)){
-	 $cache = new WaxRegenFileCache($argv[1], $argv[2], $argv[3]);
+	 $cache = new WaxRegenMemcacheCache($argv[1], $argv[2], $argv[3]);
 }
 
 ?>
