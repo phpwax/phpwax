@@ -32,7 +32,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
   }
 	
 	public function get() {
-	  if($this->memcache && ($content = $this->valid()) ) return $content ;
+	  if($this->memcache && ($content = $this->valid()) ) return $content;
 		else return false;
 	}
 	
@@ -52,7 +52,8 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 	}
 	
 	public function valid() {
-	  if((!$return = $this->get()) || $_GET['no-wax-cache']) return false;
+	  if(!$this->memcache || $_GET['no-wax-cache']) return false;
+		$return = $this->memcache->get($this->identifier);
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
 		if(($age > $this->lifetime) && !$_GET['no-wax-cache']){
