@@ -37,11 +37,11 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 	
 	public function set($value) {
 		$this->set_meta();
-	  $this->memcache->set($this->identifier, $value, 0, $this->lifetime);
+	  $this->memcache->set($this->identifier, $value, 0, 0);
 	}
 	public function set_meta(){
 		$data = array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST));
-		$this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, $this->lifetime);
+		$this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, 0);
 	}
 	public function get_meta(){
 		return $this->memcache->set($this->identifier.$this->meta_suffix);
