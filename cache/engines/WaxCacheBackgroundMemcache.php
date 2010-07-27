@@ -15,6 +15,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
   public $marker = '';
   public $suffix = 'cache';
 	public $meta_suffix = "-meta-";
+	public $lock_suffix = "-lock-";	
 
 	public $server = "localhost";
   public $port = "11211";
@@ -42,8 +43,14 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 			$this->set_meta();
 		}
 	}
+	
+	public function locked(){
+		if($this->memcache && $this->memcache->get($this->identifier.$this->lock_suffix)) return true;
+		else return false;
+	}
+	
 	public function set_meta(){
-		$data = array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST));
+		$data = array('lock'=>$this->identifier.$this->lock_suffix, 'ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST));
 		if($this->memcache) $this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, 0);
 	}
 	public function get_meta(){
@@ -56,7 +63,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 		$return = $this->memcache->get($this->identifier);
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
-		if(($age > $this->lifetime) && !$_GET['no-wax-cache']){
+		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
 			$cmd = "php ".dirname(__FILE__)."/WaxRegenMemcacheCache.php ".$this->identifier.$this->meta_suffix." {$this->server} {$this->port} &";
 			exec($cmd, $output, $result);
 		}
