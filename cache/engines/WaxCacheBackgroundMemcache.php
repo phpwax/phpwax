@@ -44,7 +44,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 		$this->memcache->set($this->identifier.$this->meta_suffix, serialize($data), 0, 0);
 	}
 	public function get_meta(){
-		return $this->memcache->set($this->identifier.$this->meta_suffix);
+		return $this->memcache->get($this->identifier.$this->meta_suffix);
 	}
 	
 	public function valid() {
