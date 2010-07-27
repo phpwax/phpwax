@@ -28,7 +28,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
     else $this->indentifier = $this->make_identifier($_SERVER['HTTP_HOST']);
     if($suffix) $this->suffix = $suffix;
 		$this->memcache = new Memcache;
-		$this->memcache->connect($this->server, $this->port) or $this->memcache = false;
+		if(!$connected = $this->memcache->connect($this->server, $this->port)) $this->memcache = false;
   }
 	
 	public function get() {
