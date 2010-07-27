@@ -16,6 +16,7 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
   public $suffix = 'cache';
   public $source=false;
 	public $meta_suffix ='--META--';
+	public $lock_suffix ='--LOCK--';
 
 	public function set($value) {
 		$this->set_meta();
@@ -29,18 +30,23 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		$return = file_get_contents($this->identifier);
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
-		if(($age > $this->lifetime) && !$_GET['no-wax-cache']){
+		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
 			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." &";
 			exec($cmd, $output, $result);
 		}
 		return $return;
+	}
+	
+	public function locked(){
+		if(is_readable($this->identifier.$this->lock_suffix)) return true;
+		else return false;
 	}
 
 	public function get_meta(){
 		if(is_readable($this->identifier.$this->meta_suffix)) return unserialize(file_get_contents($this->identifier.$this->meta_suffix));
 	}
 	public function set_meta(){
-		file_put_contents($this->identifier.$this->meta_suffix, serialize(array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST)) ));
+		file_put_contents($this->identifier.$this->meta_suffix, serialize(array('ident'=>$this->identifier,'location'=>"http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 'time'=>time(), 'post'=>serialize($_POST), 'lock'=>$this->identifier.$this->lock_suffix) ));
 		chmod($this->identifier.$this->meta_suffix, 0777);
 	}
 
