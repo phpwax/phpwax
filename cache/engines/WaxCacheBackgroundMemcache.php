@@ -10,7 +10,7 @@
 class WaxCacheBackgroundMemcache implements CacheEngine{
 
   public $identifier = false;
-  public $lifetime = false;  
+  public $lifetime = 100;  
   public $dir = false;
   public $marker = '';
   public $suffix = 'cache';
