@@ -21,7 +21,7 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
   public $memcache = false;
   
   public function __construct($prefix=false, $lifetime=0, $suffix='cache', $identifier=false) {
-		$this->lifetime = 0; //force this to 0, so always fetches from memcache
+		$this->lifetime = $lifetime; 
     if($prefix) $this->prefix = $dir;
     else $this->prefix = 'mc-';
     if($identifier) $this->identifier = $identifier;
