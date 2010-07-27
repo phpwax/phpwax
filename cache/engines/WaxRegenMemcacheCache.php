@@ -9,7 +9,7 @@ class WaxRegenMemcacheCache{
 		$post = unserialize($config['post']);
 		$url = $this->parse_location($config['location']);
 		if(count($post)==0 && ($content = $this->curl($url) ) ){
-			$this->memcache->replace($config['ident'], $content, false, 0);
+			$this->memcache->replace($config['ident'], $content."<!--testing-->", false, 0);
 			$config['time'] = time();
 			$config['regen'] = date("Y-m-d H:i:s");			
 			$this->memcache->replace($meta_key, serialize($config), false, 0);
