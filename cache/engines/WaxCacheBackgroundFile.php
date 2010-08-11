@@ -57,7 +57,7 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		unset($sess['referrer']);
 		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
-    if(strlen($uri)) $str.='-'.str_replace("nowaxcache1", "", str_replace(" ", "-",$uri));
+    if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
     if(count($data)) $str .= "-data-".md5(serialize($data));
     if(count($_GET)){
