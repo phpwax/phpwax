@@ -9,7 +9,7 @@ class WaxUnboundForm implements iterator {
   
   public function __construct($model, $post_data, $options) {
     foreach($options as $k=>$v) $this->{$k} = $v;
-    if(!$post_data && $this->form_prefix) $this->post_data = $_POST[$this->form_prefix];
+    if(!$post_data && $this->form_prefix) $this->post_data = $_REQUEST[$this->form_prefix];
     elseif(!$post_data) $this->post_data = $_POST;
   }
   

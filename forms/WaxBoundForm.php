@@ -11,7 +11,7 @@ class WaxBoundForm implements iterator {
   public function __construct($model, $post_data, $options=array()) {
     foreach($options as $k=>$v) $this->{$k} = $v;
     if(!$this->prefix) $this->prefix = $model->table; 
-    if(!$post_data &&  $_POST[$this->prefix]) $this->post_data = $_POST[$this->prefix];
+    if(!$post_data &&  $_REQUEST[$this->prefix]) $this->post_data = $_REQUEST[$this->prefix];
     $this->bound_to_model = $model;
     foreach($model->columns as $column=>$options) {
       $element = $model->get_col($column);
