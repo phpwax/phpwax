@@ -504,7 +504,7 @@ class WaxModel{
 
 
  	public function is_posted() {
- 		if(is_array($_POST[$this->table])) {
+ 		if(is_array($_REQUEST[$this->table])) {
  			return true;
  		} else {
  			return false;

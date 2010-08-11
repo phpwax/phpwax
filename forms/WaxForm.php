@@ -89,7 +89,7 @@ class WaxForm implements Iterator {
    }
    
    public function get($name) {
-     return $this->handler->$name->handle_post(post($name));
+     return $this->handler->$name->handle_post(Request::param($name));
    }
    
    public function setup(){}
