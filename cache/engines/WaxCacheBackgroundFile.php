@@ -31,8 +31,8 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
 		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
-			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." &";
-			exec($cmd, $output, $result);
+			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." > /dev/null &";
+			exec($cmd);
 		}
 		return $return;
 	}

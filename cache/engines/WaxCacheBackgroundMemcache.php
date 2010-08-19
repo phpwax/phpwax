@@ -64,8 +64,8 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
 		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
-			$cmd = "php ".dirname(__FILE__)."/WaxRegenMemcacheCache.php ".$this->identifier.$this->meta_suffix." {$this->server} {$this->port} &";
-			exec($cmd, $output, $result);
+			$cmd = "php ".dirname(__FILE__)."/WaxRegenMemcacheCache.php ".$this->identifier.$this->meta_suffix." {$this->server} {$this->port} > /dev/null &";
+			exec($cmd);
 		}
 		return $return;
 	}
