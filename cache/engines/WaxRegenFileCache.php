@@ -9,9 +9,10 @@ class WaxRegenFileCache{
 			touch($config['lock']);
 			if($content = $this->curl($url) ){
 			  $start = strpos($content, "<");
+			  if($start !== false) $content = substr($content, $start);
 			  $end = strrpos($content, ">");
-			  
-				file_put_contents($config['ident'], $start.":".$end);
+			  if($end !== false) $content = substr($content, 0, $end);
+				file_put_contents($config['ident'], $content);
 				$config['time'] = time();
 				$config['regen'] = date("Y-m-d H:i:s");
 				file_put_contents($data_file, serialize($config));
