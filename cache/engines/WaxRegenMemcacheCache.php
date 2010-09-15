@@ -11,9 +11,8 @@ class WaxRegenMemcacheCache{
 		if(count($post)==0 && $this->memcache){
 			$this->memcache->set($config['lock'], "lock", 0,0);
 			if($content = $this->curl($url) ){
-			  $start = strpos($content, "<");
-			  $end = strrpos($content, ">");
-				$this->memcache->replace($config['ident'], $start.":".$end, false, 0);
+			  if(($start = strpos($content, "<") !== false) && ($end = strrpos($content, ">"))) $content = substr($content, $start-1, ($end - $start));
+				$this->memcache->replace($config['ident'], $content, false, 0);
 				$config['time'] = time();
 				$config['regen'] = date("Y-m-d H:i:s");			
 				$this->memcache->replace($meta_key, serialize($config), false, 0);
