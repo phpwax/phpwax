@@ -10,7 +10,7 @@ class WaxRegenFileCache{
 			if($content = $this->curl($url) ){
 			  $start = strpos($content, "<");
 			  if($start !== false) $content = substr($content, $start);
-			  $end = strrpos($content, ">");
+			  $end = strrpos($content, ">")+1;
 			  if($end !== false) $content = substr($content, 0, $end);
 				file_put_contents($config['ident'], $content);
 				$config['time'] = time();
