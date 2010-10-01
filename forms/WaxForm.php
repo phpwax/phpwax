@@ -12,7 +12,8 @@ class WaxForm implements Iterator {
     "id"=>"",
     "action"=>"",
     "method"=>"post",
-    "class" =>"waxform"
+    "class" =>"waxform",
+    "enctype"=>"multipart/form-data"
   );
   public $submit = true;
   public $submit_text = "Submit";

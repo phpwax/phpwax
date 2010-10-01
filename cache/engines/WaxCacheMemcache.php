@@ -14,21 +14,31 @@ class WaxCacheMemcache implements CacheEngine{
   public $port = "11211";
   public $memcache = false;
   public $lifetime = 3600;
-  
+  public static $connection = false;
   
   public function __construct($key, $options=array()) {
     $this->key = $key;
     $this->memcache = new Memcache;
     foreach($options as $k=>$option) $this->$k = $option;
-    $this->memcache->connect($this->server, $this->port) or $this->memcache = false;
+    try {
+      set_error_handler(function(){
+        WaxCacheMemcache::$connection = false;
+      });
+      $con = $this->memcache->connect($this->server, $this->port);
+      if($con) self::$connection = true;
+      set_error_handler('throw_wxerror', 247 );
+    } catch (Exception $e) {}
   }
+  
 	
 	public function get() {
+	  if(!self::$connection) return false;
 	  if($this->is_namespaced()) return $this->memcache->get($this->namespaced_key());
 	  return $this->memcache->get($this->key);
 	}
 	
 	public function set($value) {
+	  if(!self::$connection) return false;
 	  if($this->is_namespaced()) return $this->memcache->set($this->namespaced_key(), $value,0, $this->lifetime);
     else return $this->memcache->set($this->key, $value, 0,$this->lifetime);
 	}

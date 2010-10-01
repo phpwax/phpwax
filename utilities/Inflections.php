@@ -68,7 +68,7 @@ class Inflections
       return $parsed;
   }
   public function to_url($words) {
-    $words = preg_replace('/([^a-z0-9A-Z\s])/', "", $words);
+    $words = preg_replace('/([^a-z0-9A-Z\s\p{L}])/u', "", $words);
     while(strpos($words, "  ")) $words = str_replace("  ", " ", $words);
     return self::dasherize($words);
   }
