@@ -35,6 +35,9 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		parent::__construct($model, $rowset);
   }
 	
+	//this here for backwards compatibility
+	public function eager_load(){ return $this; }
+	
 	/**
 	 * use the count value passed in to work out total number of pages
 	 * @param string $count 
