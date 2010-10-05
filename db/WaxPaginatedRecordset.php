@@ -30,8 +30,9 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		$this->model->offset = (($page-1) * $per_page);
 		$this->model->limit = $per_page;
 		//paginate the model
+		$rowset = $model->rows();
 		$this->set_count($model->total_without_limits);
-		parent::__construct($model, $model->rows());
+		parent::__construct($model, $rowset);
   }
 	
 	/**
