@@ -9,7 +9,7 @@
 
 class WaxRecordset implements Iterator, ArrayAccess, Countable {
 
-  protected $model = false;
+  public $model = false;
   protected $obj = false;
   protected $key = 0;
   protected $constraints = array();
