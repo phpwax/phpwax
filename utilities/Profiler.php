@@ -208,9 +208,7 @@ class Profiler {
     WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     
     WaxEvent::add("wax.partial", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::data()->path);
-      Profiler::start("Application", "Database Queries", WaxEvent::data()->path);
-      
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::data()->path);      
     });
     WaxEvent::add("wax.partial_render", function() {
       Profiler::stop(array_pop(Profiler::$current_benchmark));      
