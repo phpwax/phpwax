@@ -203,15 +203,17 @@ class Profiler {
   public function profile() {
 
     WaxEvent::add("wax.db_query", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::$data->queryString);
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::data()->queryString);
     });
     WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     
     WaxEvent::add("wax.partial", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::$data->path);
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::data()->path);
+      Profiler::start("Application", "Database Queries", WaxEvent::data()->path);
+      
     });
     WaxEvent::add("wax.partial_render", function() {
-      Profiler::stop(array_pop(Profiler::$current_benchmark));
+      Profiler::stop(array_pop(Profiler::$current_benchmark));      
     });
     
     
@@ -229,7 +231,7 @@ class Profiler {
       if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
       $profile_view = new WaxTemplate;
       $profile_view->add_path(FRAMEWORK_DIR."/template/builtin/profile");
-      WaxEvent::$data->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::$data->body);
+      WaxEvent::data()->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::data()->body);
     });
     
   }

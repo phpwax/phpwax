@@ -17,6 +17,10 @@ class WaxEvent {
 	private static $has_run = array();
 
 	// Data that can be processed during events
+	public static $data_array = array();
+	
+	
+	// This is here purely for backwards compatability
 	public static $data;
 
 	/**
@@ -159,23 +163,32 @@ class WaxEvent {
 	 * Execute all of the callbacks attached to an event.
 	 *
 	 * @param   string   event name
-	 * @param   array    data can be processed as Event::$data by the callbacks
+	 * @param   array    data can be processed as Event::$data_array by the callbacks
 	 * @return  void
 	 */
 	public static function run($name, & $data = NULL) {
 		if ( ! empty(self::$events[$name])) {
-			// So callbacks can access Event::$data
-			self::$data =& $data;
+			// So callbacks can access Event::$data_array
+			self::$data_array[] =& $data;
+			self::$data = & $data;
 			$callbacks  =  self::get($name);
 			foreach ($callbacks as $callback) call_user_func($callback);
 
 			// Do this to prevent data from getting 'stuck'
-			$clear_data = '';
-			self::$data =& $clear_data;
+			array_pop(self::$data_array);
 		}
 
 		// The event has been run!
 		self::$has_run[$name] = $name;
+	}
+	
+	/**
+	 * Get data from top of $data array stack.
+	 *
+	 * @return  mixed
+	 */
+	public function data() {
+	  return end(self::$data_array);
 	}
 
 	/**
@@ -187,7 +200,7 @@ class WaxEvent {
 	public static function has_run($name) {
 		return isset(self::$has_run[$name]);
 	}
-
+	
   	
 }
 
