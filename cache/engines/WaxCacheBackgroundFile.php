@@ -31,8 +31,8 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
 		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
-			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." &";
-			exec($cmd, $output, $result);
+			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." > /dev/null &";
+			exec($cmd);
 		}
 		return $return;
 	}
@@ -59,13 +59,14 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($data)) $str .= "-data-".md5(serialize($data));
+    if(count($data)) $str .= "-d-".md5(serialize($data));
+    if(count($sess)) $str .= "-s-".md5(serialize($sess));
     if(count($_GET)){
       $get = $_GET;
       unset($get['route'], $get['no-wax-cache']);
-      $str .= "-get-".md5(serialize($get));
+      $str .= "-g-".md5(serialize($get));
     }
-    if(count($_POST)) $str .= "-post-".md5(serialize($_POST));
+    if(count($_POST)) $str .= "-p-".md5(serialize($_POST));
     return $str;
 	}
 

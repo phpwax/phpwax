@@ -102,6 +102,7 @@ class WaxCacheLoader {
    * @return void
    */
   public function layout_cache_loader($config, $format="html"){
+    if(!session_id() && !headers_sent()) Session::start();
     $this->identifier = $this->identifier();
     return $this->valid($config, $format);
   }

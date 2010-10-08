@@ -30,30 +30,13 @@ class WaxPaginatedRecordset extends WaxRecordset {
 		$this->model->offset = (($page-1) * $per_page);
 		$this->model->limit = $per_page;
 		//paginate the model
-		$rowset = $this->paginate($model);
+		$rowset = $model->rows();
 		$this->set_count($model->total_without_limits);
 		parent::__construct($model, $rowset);
   }
-	/**
-	 * internal pagination function so it returns only 
-	 * the row, not the entire model
-	 * @param string $WaxModel 
-	 * @return array
-	 */	
-	public function paginate(WaxModel $model){
-		$rows = $model->rows();
-		foreach($rows as $row) {  		
-		  $ids[]=$row[$model->primary_key];
-		}
-		return $ids;
-	}
 	
-	/*** Forces the rowset to load, reducing subsequent database calls */
-	public function eager_load() {
-	  $full_rows = $this->model->filter($this->model->primary_key, $this->rowset)->limit(false)->all();
-	  $this->rowset = $full_rows->rowset;
-	  return $this;
-	}
+	//this here for backwards compatibility
+	public function eager_load(){ return $this; }
 	
 	/**
 	 * use the count value passed in to work out total number of pages
