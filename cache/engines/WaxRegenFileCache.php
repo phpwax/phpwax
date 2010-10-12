@@ -26,7 +26,6 @@ class WaxRegenFileCache{
 		curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($session, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($session, CURLOPT_USERAGENT, API_USER_AGENT);
 		$exec =  curl_exec($session);
 		$info = curl_getInfo($session);
 		if($info['http_code'] == 200) return $exec;
