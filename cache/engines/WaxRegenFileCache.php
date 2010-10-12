@@ -5,7 +5,7 @@ class WaxRegenFileCache{
 		$config = unserialize(file_get_contents($data_file));
 		$post = unserialize($config['post']);
 		$url = $this->parse_location($config['location']);
-		if(count($post)==0){
+		if(count($post)==0 && !is_file($config['touch'])){
 			touch($config['lock']);
 			if($content = $this->curl($url) ){
 			  $start = strpos($content, "<");
