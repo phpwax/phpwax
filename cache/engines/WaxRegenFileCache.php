@@ -5,7 +5,7 @@ class WaxRegenFileCache{
 		$config = unserialize(file_get_contents($data_file));
 		$post = unserialize($config['post']);
 		$url = $this->parse_location($config['location']);
-		if(count($post)==0){
+		if(count($post)==0 && !is_file($config['lock'])){
 			touch($config['lock']);
 			if($content = $this->curl($url) ){
 			  $start = strpos($content, "<");
@@ -17,7 +17,6 @@ class WaxRegenFileCache{
 				$config['regen'] = date("Y-m-d H:i:s");
 				file_put_contents($data_file, serialize($config));
 			}
-			unlink($config['lock']);
 		}
 	}
 
@@ -27,7 +26,6 @@ class WaxRegenFileCache{
 		curl_setopt($session, CURLOPT_HTTPHEADER, $headers);
 		curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($session, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($session, CURLOPT_USERAGENT, API_USER_AGENT);
 		$exec =  curl_exec($session);
 		$info = curl_getInfo($session);
 		if($info['http_code'] == 200) return $exec;
@@ -42,7 +40,7 @@ class WaxRegenFileCache{
 
 
 if(isset($argv)){
-	foreach($argv as $file) if(is_readable($file) && strstr($file, "tmp")) $cache = new WaxRegenFileCache($file);
+	foreach($argv as $file) if(is_readable($file) && !strstr($file, ".php")) $cache = new WaxRegenFileCache($file);
 }
 
 ?>
