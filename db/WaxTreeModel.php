@@ -9,6 +9,7 @@
 class WaxTreeModel extends WaxModel {
   static public $all_rows;
   public $parent_column;
+  public $parent_join_field;
   public $children_column;
   public $root_path = false;
   public $level = false;
@@ -18,8 +19,9 @@ class WaxTreeModel extends WaxModel {
     parent::__construct($params);
     if(!$this->parent_column) $this->parent_column = "parent";
     if(!$this->children_column) $this->children_column = "children";
-    $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_column."_".$this->primary_key, "target_model" => get_class($this)));
-    $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_column."_".$this->primary_key, "eager_loading" => true));
+    if(!$this->parent_join_field) $this->parent_join_field = $this->parent_column."_".$this->primary_key;
+    $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_join_field, "target_model" => get_class($this)));
+    $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_join_field, "eager_loading" => true));
   }
   
   /**
@@ -52,7 +54,7 @@ class WaxTreeModel extends WaxModel {
 		$tree = array();
 		foreach( $lookup as $id => $foo ){
 			$item = &$lookup[$id];
-			if( isset( $lookup[$item['parent_id']] ) ) $lookup[$item['parent_id']]['children'][] = &$item;
+			if( isset( $lookup[$item[$this->parent_join_field]] ) ) $lookup[$item[$this->parent_join_field]]['children'][] = &$item;
 			else $tree[$id] = &$item;
 			if($cutoff == $id) $cutoff = array($id => &$item);
 		}
