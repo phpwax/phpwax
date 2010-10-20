@@ -69,7 +69,7 @@ class Config
     *  @return array
     */
 	
-	public function return_config($config=null) {
+	static public function return_config($config=null) {
 		if($config=="all") return self::$config_array;
 		$config=explode("/", $config);
 		$confarray=self::$config_array;
