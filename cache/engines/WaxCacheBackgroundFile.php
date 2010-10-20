@@ -60,7 +60,6 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($data)) $str .= "-d-".md5(serialize($data));
     if(count($sess)) $str .= "-s-".md5(serialize($sess));
     if(count($_GET)){
       $get = $_GET;
@@ -74,3 +73,4 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 
 }
 
+?>
