@@ -37,7 +37,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function valid() {
-    if($this->rowset[$this->key]) return true;
+    if(isset($this->rowset[$this->key])) return true;
     return false;
   }
   
