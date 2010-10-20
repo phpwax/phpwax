@@ -23,15 +23,15 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)) file_put_contents($this->identifier, $value);
 		chmod($this->identifier, 0777);
-		if($_GET['no-wax-cache'] && is_readable($this->identifier.$this->lock_suffix)) unlink($this->identifier.$this->lock_suffix);
+		if(isset($_GET['no-wax-cache']) && is_readable($this->identifier.$this->lock_suffix)) unlink($this->identifier.$this->lock_suffix);
 	}
 
 	public function valid() {
-	  if(!is_readable($this->identifier) || $_GET['no-wax-cache']) return false;
+	  if(!is_readable($this->identifier) || isset($_GET['no-wax-cache'])) return false;
 		$return = file_get_contents($this->identifier);
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
-		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
+		if(($age > $this->lifetime) && !isset($_GET['no-wax-cache']) && !$this->locked()){
 			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." > /dev/null &";
 			exec($cmd);
 		}
