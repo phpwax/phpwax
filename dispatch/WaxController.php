@@ -34,7 +34,7 @@ class WaxController
   public $use_cache = true;
 
 	public function __construct($application=false) {
-	  if($application) {
+	  if($application instanceof WaxApplication) {
 	    $this->application = $application;
 	    $this->response = $this->application->response;
     } else {
