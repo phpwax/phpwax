@@ -49,7 +49,7 @@ function auto_loader_check_cache(){
   $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   
   /** CHECK LAYOUT CACHE **/
-  if($config = Config::get('layout_cache')){    
+  if(($config = Config::get('layout_cache')) && $config['engine']){    
 		if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
 		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';		
     if(isset($config['lifetime'])) $cache = new WaxCacheLoader($config['engine'], $cache_location, $config['lifetime']);
