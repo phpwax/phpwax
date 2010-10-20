@@ -158,6 +158,7 @@ class WaxUrl {
 	public function route_controller($input = false) {
 	  if(!$input) $route = explode("/", self::$params["route"]);
 	  else $route = explode("/", $input);
+	  $controller = false;
 	  while(count($route) >0) {
 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
 	    if(!$controller) array_pop($route);
