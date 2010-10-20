@@ -47,7 +47,7 @@ class WaxModelAssociation extends WaxRecordset {
       }
       return false;
     }else{ //normal loading
-      if($this->rowset[$this->key]) return true;
+      if(isset($this->rowset[$this->key])) return true;
       return false;
     }
   }
