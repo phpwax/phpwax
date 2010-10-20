@@ -41,7 +41,7 @@ class WaxModelField {
 
   public function __construct($column, $model, $options = array()) {
     $this->model = $model;
-    foreach($options as $option=>$val) $this->{$option} = $val;
+    foreach($options as $option=>$val) $this->$option = $val;
     if(!$this->field) $this->field = $column;
     if(!$this->table) $this->table = $this->model->table;
     if(!$this->col_name) $this->col_name = $this->field;
@@ -116,6 +116,7 @@ class WaxModelField {
  	
  	public function __set($name, $value) {
     if($name=="value") $this->set($value);
+    else $this->{$name} = $value;
  	}
  	
  	public function __get($value) {

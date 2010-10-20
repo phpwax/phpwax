@@ -1,8 +1,8 @@
 <style>
 .profile_output {background:#ececec;padding:50px 0;}
-table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse; }
+table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse;table-layout:fixed;}
 	table.profiler th,
-	table.profiler td { padding: 0.2em 0.4em; background: #fff; border: solid 1px #ccc; text-align: left; font-weight: normal; font-size: 1em; color: #111; vertical-align: top; }
+	table.profiler td { padding: 0.2em 0.4em; background: #fff; border: solid 1px #ccc; text-align: left; font-weight: normal; font-size: 1em; color: #111; vertical-align: top;overflow:hidden; }
 	table.profiler tr.group th { font-size: 1.4em; background: #222; color: #eee; border-color: #222; }
 	table.profiler tr.headers th { text-transform: lowercase; font-variant: small-caps; background: #ddd; color: #777; }
 	table.profiler tr.mark th.name { width: 70%; font-size: 1.2em; background: #fff; vertical-align: middle; }
@@ -17,7 +17,15 @@ table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse; }
 	table.profiler tr.mark td.data {font-size:10px;padding-left:15px;}
 	.profile_output {display:none;}
   .profile_output:target {display:block;}
+  .show_trace {text-transform:uppercase;font-size:9px;color:#999;}
+  .trace {display:none;background:#D0E3F0;color:white;padding:4px;}
+  .trace code {color:#333;white-space:pre;}
 </style>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $(".show_trace").click(function(){$(this).nextAll(".trace").toggle();return false;});
+  });  
+</script>
 <div class="profile_output" id="profile">
   <?foreach(Profiler::groups() as $group => $benchmarks):?>
     <table class="profiler">
@@ -77,9 +85,17 @@ table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse; }
   			<td class="min"><?php echo number_format($stats["total"]['memory'] /1024,0), ' ', 'kb' ?></td>
   		</tr>
 		  <?foreach($tokens as $token):?>
-  	    <?$stats = Profiler::total($token)?>
+  	    <?$stats = Profiler::total($token);?>
   	    <tr class="mark">
-  	      <td colspan="3" class="data"><?=$stats[2]?></td>
+  	      <td colspan="3" class="data">
+  	        <?if($stats[3]):?><a class="show_trace" href="#">[+]</a><?endif?>
+  	        <?=$stats[2]?><br>
+  	        <div class="trace">
+                <code><?foreach((array) $stats[3] as $trace):?><?if($trace["file"]):?>FILE:  <?=$trace["file"]?> (<?=$trace["line"]?>)                  
+<?endif?><?endforeach?>
+                </code>
+  	        </div>
+  	      </td>
   	      <td class="average"><?php echo number_format($stats[0]*1000,0), ' ', 'ms' ?></td>
   	      <td class="average"><?php echo number_format($stats[1] /1024,0), ' ', 'kb' ?></td>
   	    </tr>

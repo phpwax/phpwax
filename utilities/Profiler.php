@@ -21,7 +21,7 @@ class Profiler {
 	 * @param   string  benchmark name
 	 * @return  string
 	 */
-	public static function start($group, $name, $data=false) {
+	public static function start($group, $name, $data=false, $trace = false) {
 		static $counter = 0;
 
 		// Create a unique token based on the counter
@@ -39,7 +39,8 @@ class Profiler {
 			// Set the stop keys without values
 			'stop_time'    => FALSE,
 			'stop_memory'  => FALSE,
-			'data'         => $data
+			'data'         => $data,
+			'trace'        => $trace
 		);
 
 		return $token;
@@ -176,7 +177,8 @@ class Profiler {
 			// Amount of memory in bytes
 			$mark['stop_memory'] - $mark['start_memory'],
 			// Data attached to benchmark
-			$mark['data']
+			$mark['data'],
+			$mark["trace"]
 		);
 	}
 	
@@ -203,7 +205,7 @@ class Profiler {
   public function profile() {
 
     WaxEvent::add("wax.db_query", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::data()->queryString);
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::data()->queryString, debug_backtrace(false));
     });
     WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     

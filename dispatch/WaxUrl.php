@@ -112,7 +112,7 @@ class WaxUrl {
    * @return string
    **/
   
-  static public function build_url($options = array()) {
+  static public function build($options = array()) {
     $url = array();
     if($options["controller"]) $url[]=$options["controller"]; else $url[]=rtrim(self::$params["controller"],"/");
     if($options["action"]) $url[]=$options["action"]; elseif(self::$params["action"]) $url[]=self::$params["action"];
@@ -120,7 +120,7 @@ class WaxUrl {
     return "/".join("/",$url);
   }
   
-  
+  static public function build_url($options = array()) {return self::build($options);}
   
   
   /**
