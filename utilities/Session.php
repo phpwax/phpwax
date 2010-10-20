@@ -44,7 +44,8 @@ class Session {
     }
 
     static function get_hash() {
-      $key = session_id().($ua = ($_SERVER['HTTP_USER_AGENT'])?$ua: "");
+      if(!$ua = $_SERVER['HTTP_USER_AGENT']) $ua = "";
+      $key = session_id().$ua;
       return md5($key);
     }
     
