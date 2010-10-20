@@ -171,7 +171,7 @@ class WaxUrl {
     return false;
 	}
 	
-	protected function is_controller($test) {
+	protected static function is_controller($test) {
 	  if(class_exists(Inflections::slashcamelize($test, true)."Controller", false)) return true;
 	  $path = "";
 	  if(strpos($test, "/")) {
