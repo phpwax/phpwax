@@ -131,7 +131,7 @@ class WaxTreeModel extends WaxModel {
 		}
 		$path_to_root = array();
 		$current_id = $this->primval();
-		if(array_key_exists($lookup[$current_id])){
+		if(isset($lookup[$current_id])){
 		  while($lookup[$current_id]){
 		    $path_to_root[] = $lookup[$current_id];
 		    $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
