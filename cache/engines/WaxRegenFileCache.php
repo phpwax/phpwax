@@ -17,7 +17,7 @@ class WaxRegenFileCache{
 				$config['regen'] = date("Y-m-d H:i:s");
 				file_put_contents($data_file, serialize($config));
 			}
-			unlink($config['lock']);
+			if(is_file($config['lock'])) unlink($config['lock']);
 		}
 	}
 
