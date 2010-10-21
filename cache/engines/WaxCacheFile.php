@@ -31,7 +31,10 @@ class WaxCacheFile implements CacheEngine{
 	
 	public function set($value) {
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
-	  if($this->identifier && !is_readable($this->identifier)) file_put_contents($this->identifier, $value); 
+	  if($this->identifier && !is_readable($this->identifier)){
+	    file_put_contents($this->identifier, $value); 
+	    chmod($this->identifier, 0777);
+    }
 	}
 	
 	public function valid() {
