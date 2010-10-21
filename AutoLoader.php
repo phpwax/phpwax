@@ -61,6 +61,7 @@ function auto_loader_check_cache(){
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
       header("wax-cache: true");
       header("wax-cache-eng: ".$config['engine']);
+      header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
       echo $content;
       exit;
     }
