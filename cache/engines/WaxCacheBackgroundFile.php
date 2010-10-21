@@ -50,24 +50,7 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		chmod($this->identifier.$this->meta_suffix, 0777);
 	}
 
-	public function make_identifier($prefix=false){
-	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
-	  $str = $this->dir.$prefix;
-	  $sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
-		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
-    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
-    if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($sess)) $str .= "-s-".md5(serialize($sess));
-    if(count($_GET)){
-      $get = $_GET;
-      unset($get['route'], $get['no-wax-cache']);
-      $str .= "-g-".md5(serialize($get));
-    }
-    if(count($_POST)) $str .= "-p-".md5(serialize($_POST));
-    return $str;
-	}
 
 
 }
