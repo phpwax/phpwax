@@ -23,7 +23,6 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)) file_put_contents($this->identifier, $value);
 		chmod($this->identifier, 0777);
-		if(isset($_GET['no-wax-cache']) && is_readable($this->identifier.$this->lock_suffix)) unlink($this->identifier.$this->lock_suffix);
 	}
 
 	public function valid() {
