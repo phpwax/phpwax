@@ -60,6 +60,7 @@ function auto_loader_check_cache(){
       $ext = substr($url_details['path'],$pos+1); 
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
       header("wax-cache: true");
+      header("wax-cache-eng: ".$config['engine']);
       echo $content;
       exit;
     }
