@@ -35,7 +35,6 @@ class WaxCacheFile implements CacheEngine{
 	}
 
 	public function set($value) {
-	  
     if(!$this->identifier) $this->identifier = $this->make_identifier();
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)){	    
@@ -94,7 +93,7 @@ class WaxCacheFile implements CacheEngine{
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($sess)) $str .= "-s-".md5(serialize($sess));
+    if(count($sess) && !$this->config['disable_sessions']) $str .= "-s-".md5(serialize($sess));
     if(count($_GET)){
       $get = $_GET;
       unset($get['route'], $get['no-wax-cache']);
