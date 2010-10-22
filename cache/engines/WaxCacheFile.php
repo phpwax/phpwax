@@ -46,12 +46,8 @@ class WaxCacheFile implements CacheEngine{
 
 	public function valid() {
 	  if(!$this->identifier) $this->identifier = $this->make_identifier();
-	  //check for files in wrong places..
-	  if($this->namespace && !is_readable($this->identifier)){
-	    $old = str_replace($this->namespace, "", $this->indentifier);
-	    if(is_readable($old) && !is_readable($this->identifier)) $this->identifier = $old;
-	  }
-	  if(!is_readable($this->identifier)) return false;
+	  
+	  if(!is_readable($this->identifier) || isset($_REQUEST['no-wax-cache'])) return false;
 	  if($this->lifetime == "forever") return file_get_contents($this->identifier);
 	  $mtime = filemtime($this->identifier);	  
 	  if((time() - $mtime) < $this->lifetime){
