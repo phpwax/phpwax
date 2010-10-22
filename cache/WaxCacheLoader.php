@@ -35,8 +35,8 @@ class WaxCacheLoader {
 	public function identifier(){
 	  if(!$this->identifier){
 		  $class = 'WaxCache'.$this->engine_type;
-      $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
-      $this->identifier =  $this->engine->make_identifier();
+      if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+      $this->identifier =  $this->engine->identifier = $this->engine->make_identifier();
     }
     return $this->identifier;
 	}
@@ -77,8 +77,8 @@ class WaxCacheLoader {
 
   public function get(){
     $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime,$this->suffix, $this->identifier);
-    return $engine->get();
+    if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+    return $this->engine->get();
   }
 
   public function set($value){
@@ -96,7 +96,8 @@ class WaxCacheLoader {
   public function valid($config, $format="html"){
     $class = 'WaxCache'.$this->engine_type;
     if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
-    if(!$this->excluded($config) && $this->included($config) && ($res = $this->engine->get())) return $res;
+    
+    if(!$this->excluded($config) && $this->included($config) && ($res = $this->engine->get()) ) return $res;
     else return false;
   }
 

@@ -24,13 +24,13 @@ class WaxCacheFile implements CacheEngine{
     if($dir) $this->dir = $dir;
     else $this->dir = CACHE_DIR;
     if($identifier) $this->identifier = $identifier;
-    else $this->indentifier = $this->make_identifier($_SERVER['HTTP_HOST']);
+    else $this->identifier = $this->make_identifier($_SERVER['HTTP_HOST']);
     if($suffix) $this->suffix = $suffix;
     
   }
 
 	public function get() {
-	  if($content = $this->valid()) return $content . $this->marker;
+	  if($content = $this->valid()) return $content;
 	  else return false;
 	}
 
@@ -49,12 +49,12 @@ class WaxCacheFile implements CacheEngine{
 	  //check for files in wrong places..
 	  if($this->namespace && !is_readable($this->identifier)){
 	    $old = str_replace($this->namespace, "", $this->indentifier);
-	    if(is_readable($old) && !is_readable($this->identifier)) copy($old, $this->identifier);
+	    if(is_readable($old) && !is_readable($this->identifier)) $this->identifier = $old;
 	  }
 	  if(!is_readable($this->identifier)) return false;
 	  if($this->lifetime == "forever") return file_get_contents($this->identifier);
-	  $mtime = filemtime($this->identifier);
-	  if(time() > $mtime + $this->lifetime){
+	  $mtime = filemtime($this->identifier);	  
+	  if((time() - $mtime) < $this->lifetime){
 	    $this->expire();
 	    return false;
 	  }else return file_get_contents($this->identifier);
