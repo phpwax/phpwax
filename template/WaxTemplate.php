@@ -149,8 +149,6 @@ class WaxTemplate implements Cacheable{
 	  if($cache_object = $this->cache_enabled($parse_as)){
 	    //change the suffix if not html - so .xml files etc cache seperately
 	    if($suffix != "html") $cache_object->suffix = $suffix.'.cache';
-	    else $cache_object->marker = '<!-- from cache -->';
-	  
 	    if($this->cached($cache_object, $parse_as) ) return $this->cached($cache_object, $parse_as);	    
     }
     
@@ -191,6 +189,7 @@ class WaxTemplate implements Cacheable{
 	  else return $model->get();
 	}
   public function cache_set($model, $value){
+
     $model->set($value);
   }
   public function cache_enabled($type){
@@ -199,9 +198,8 @@ class WaxTemplate implements Cacheable{
       $cache_config = Config::get($check);
       $cache_engine = $cache_config['engine'];
       if(isset($cache_config['lifetime'])) $cache_lifetime = $this->cache_config['lifetime'];
-      $cache_object = new WaxCacheLoader($cache_engine, CACHE_DIR.$type."/", $cache_lifetime);          
-      $cache_object->config = $cache_config;
-      $cache_object->identifier = $cache_object->identifier();
+      $cache_object = new WaxCacheLoader($cache_config, CACHE_DIR.$type."/", $cache_lifetime);
+      $cache_object->identifier = $cache_object->identifier();      
       return $cache_object;
     }else return false;
   }
