@@ -35,6 +35,7 @@ class WaxCacheFile implements CacheEngine{
 	}
 
 	public function set($value) {
+	  
     if(!$this->identifier) $this->identifier = $this->make_identifier();
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)){	    
@@ -44,7 +45,13 @@ class WaxCacheFile implements CacheEngine{
 	}
 
 	public function valid() {
-	  if(!is_readable($this->identifier) ) return false;
+	  if(!$this->identifier) $this->identifier = $this->make_identifier();
+	  //check for files in wrong places..
+	  if($this->namespace && !is_readable($this->identifier)){
+	    $old = str_replace($this->namespace, "", $this->indentifier);
+	    if(is_readable($old) && !is_readable($this->identifier)) copy($old, $this->identifier);
+	  }
+	  if(!is_readable($this->identifier)) return false;
 	  if($this->lifetime == "forever") return file_get_contents($this->identifier);
 	  $mtime = filemtime($this->identifier);
 	  if(time() > $mtime + $this->lifetime){
