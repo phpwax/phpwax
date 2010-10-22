@@ -10,29 +10,33 @@
 class WaxCacheLoader {
 
 	public $lifetime = 3600;
-	public $config = array();
+	public $config=array();
 	public $engine_type = 'File';
+	public $engine=false;
 	public $suffix = 'cache';
 	public $dir = false;
   public $identifier = false;
   public $enabled= true;
 
 
-  public function __construct($engine="File",$dir="", $lifetime=3600, $format='html'){
-    if($engine) $this->engine_type = $engine;
-    if($dir) $this->dir = $dir;
-    else $this->dir = CACHE_DIR;
+  public function __construct($config=false, $dir="", $old=false, $format='html'){
+    if(is_array($config)) foreach($config as $k=>$v) $this->config[$k] = $v;
+    elseif(is_string($config)) $this->config['engine_type'] = $this->engine_type = $config;
+
+    if($dir) $this->config['dir'] = $this->dir = $dir;
+    else $this->config['dir'] = $this->dir = CACHE_DIR;
 
     $this->lifetime = $lifetime;
     if(!is_readable($this->dir)) mkdir($this->dir, 0777, true);
     $this->suffix = $format.'.'.$this->suffix;
+    
   }
 
 	public function identifier(){
 	  if(!$this->identifier){
 		  $class = 'WaxCache'.$this->engine_type;
-      $engine = new $class($this->dir, $this->lifetime, $this->suffix);
-      $this->identifier =  $engine->make_identifier();
+      $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+      $this->identifier =  $this->engine->make_identifier();
     }
     return $this->identifier;
 	}
@@ -79,20 +83,20 @@ class WaxCacheLoader {
 
   public function set($value){
     $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
-    return $engine->set($value);
+    if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+    return $this->engine->set($value);
   }
 
   public function expire(){
     $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix,$this->identifier);
-    return $engine->expire();
+    if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+    return $this->engine->expire();
   }
 
   public function valid($config, $format="html"){
     $class = 'WaxCache'.$this->engine_type;
-    $engine = new $class($this->dir, $this->lifetime, $this->suffix, $this->identifier);
-    if(!$this->excluded($config) && $this->included($config) && $engine->get()) return $engine->get();
+    if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+    if(!$this->excluded($config) && $this->included($config) && ($res = $this->engine->get())) return $res;
     else return false;
   }
 
