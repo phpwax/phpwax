@@ -26,6 +26,8 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 	}
 
 	public function valid() {
+	  if(!$this->identifier) $this->identifier = $this->make_identifier();
+	  
 	  if(!is_readable($this->identifier) || isset($_GET['no-wax-cache'])) return false;
 		$return = file_get_contents($this->identifier);
 		$meta = $this->get_meta();
