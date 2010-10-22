@@ -35,13 +35,6 @@ class WaxCacheFile implements CacheEngine{
 	}
 
 	public function set($value) {
-	  $namespace = $this->get_namespace($this->config, $_SERVER['REQUEST_URI']);
-	  $dir = $this->dir;
-	  if($namespace) $dir .= $namespace;
-	  if($namespace && !is_readable($dir)){
-      mkdir($dir, 0777, true);
-      chmod($dir, 0777);
-    }
     if(!$this->identifier) $this->identifier = $this->make_identifier();
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)){	    
@@ -79,13 +72,17 @@ class WaxCacheFile implements CacheEngine{
 		    if(count($found) && count($found[0])) $namespace = array_shift($found[0]);
 		  }
 		  if($namespace) $namespace = trim($namespace, "/")."/";
+		  if($namespace && !is_readable($this->dir.$namespace)){
+        mkdir($this->dir.$namespace, 0777, true);
+        chmod($this->dir.$namespace, 0777);
+      }
     }
     return $namespace;
   }
 
 	public function make_identifier($prefix=false){
 	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
-		$namespace = $this->get_namespace($this->config, $_SERVER['REQUEST_URI']);		
+		$this->namespace = $namespace = $this->get_namespace($this->config, $_SERVER['REQUEST_URI']);		
 		$str = $this->dir.$namespace.$prefix;
 	  $sess = $_SESSION[Session::get_hash()];
 		unset($sess['referrer']);
