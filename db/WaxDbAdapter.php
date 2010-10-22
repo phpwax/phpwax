@@ -270,8 +270,8 @@ abstract class WaxDbAdapter {
   }
   public function group($model) {if($model->group_by) return " GROUP BY {$model->group_by}"; }
   public function having($model) {if($model->having) return " HAVING {$model->having}";  }
-  public function order($model) {if($model->order) return " ORDER BY {$model->order}";}
-  public function limit($model) {if($model->limit) return " LIMIT {$model->offset}, {$model->limit}";}
+  public function order($model) {if($model->_order) return " ORDER BY {$model->_order}";}
+  public function limit($model) {if($model->_limit) return " LIMIT {$model->_offset}, {$model->_limit}";}
   
   public function filter_sql($model, $filter_name = "filters") {
     $params = array();
@@ -321,9 +321,9 @@ abstract class WaxDbAdapter {
     $model->select_columns .= ") AS relevance ";
     $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
     $model->having = "relevance > ".$relevance_floor;
-    $model->order = "relevance DESC";
+    $model->_order = "relevance DESC";
     // Add an arbitrary limit to force found_rows to run
-    if(!$model->limit) $model->limit(1000);
+    if(!$model->_limit) $model->limit(1000);
     return $model;
   }
   

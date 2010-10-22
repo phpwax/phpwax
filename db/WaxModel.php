@@ -23,9 +23,9 @@ class WaxModel{
   public $filters = array();
 	public $group_by = false;
 	public $having = false;
-  public $order = false;
-  public $limit = false;
-  public $offset = "0";
+  public $_order = false;
+  public $_limit = false;
+  public $_offset = "0";
   public $sql = false;
   public $errors = array();
   public $persistent = true;
@@ -167,9 +167,9 @@ class WaxModel{
 
  	public function clear() {
     $this->filters = array();
-    $this->order = false;
-    $this->limit = false;
-    $this->offset = "0";
+    $this->_order = false;
+    $this->_limit = false;
+    $this->_offset = "0";
     $this->sql = false;
 		$this->is_paginated = false;
 		$this->is_left_joined = false;
@@ -342,7 +342,7 @@ class WaxModel{
   }
 
  	public function order($order_by){
-		$this->order = $order_by;
+		$this->_order = $order_by;
 		return $this;
 	}
 
@@ -357,11 +357,11 @@ class WaxModel{
 	}
 
 	public function offset($offset){
-		$this->offset = $offset;
+		$this->_offset = $offset;
 		return $this;
 	}
 	public function limit($limit){
-		$this->limit = $limit;
+		$this->_limit = $limit;
 		return $this;
 	}
 	public function group($group_by){
@@ -459,7 +459,7 @@ class WaxModel{
 
 
  	public function first() {
- 	  $this->limit = "1";
+ 	  $this->_limit = "1";
  	  $model = clone $this;
  	  $res = self::$db->select($model);
  	  if($res[0])
