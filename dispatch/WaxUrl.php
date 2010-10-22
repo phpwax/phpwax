@@ -155,9 +155,10 @@ class WaxUrl {
     *  Checks whether a file exists for the named controller
     *  @return boolean      If file exists true
     */
-	public function route_controller($input = false) {
+	public static function route_controller($input = false) {
 	  if(!$input) $route = explode("/", self::$params["route"]);
 	  else $route = explode("/", $input);
+	  $controller = false;
 	  while(count($route) >0) {
 	    if(self::is_controller(join("/",$route))) {$controller = join("/",$route); break;}
 	    if(!$controller) array_pop($route);
@@ -170,7 +171,7 @@ class WaxUrl {
     return false;
 	}
 	
-	protected function is_controller($test) {
+	protected static function is_controller($test) {
 	  if(class_exists(Inflections::slashcamelize($test, true)."Controller", false)) return true;
 	  $path = "";
 	  if(strpos($test, "/")) {
@@ -183,7 +184,7 @@ class WaxUrl {
 		return false;
 	}
 	
-  protected function force_defaults() {
+  protected static function force_defaults() {
     if(!self::$params["controller"]) self::$params["controller"]=self::$defaults["controller"];
     if(!self::$params["action"]) self::$params["action"]=self::$defaults["action"];
   }

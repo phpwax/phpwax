@@ -44,8 +44,12 @@ class WaxCacheMemcache implements CacheEngine{
 	}
 	
 	public function expire($query=false) {
-	  if(!$query) $this->memcache->delete($this->key);
+	  if(!$query) $this->memcache->delete($this->key,0);
 	  else $this->memcache->increment($query);
+	}
+	public function expire_namespace($key){
+	  $key = $this->namespaced_key();
+	  $this->expire($key);
 	}
 	
 	public function key_path($full_key) {

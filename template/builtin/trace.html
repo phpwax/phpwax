@@ -34,7 +34,7 @@
     </div>
     <div id="instructions">
       <pre>
-        <p><?=$e->getTraceAsString()?></p>
+        <p><?=htmlentities($e->getTraceAsString())?></p>
         <code>
 In File:  <?=$e->getFile()?>
 

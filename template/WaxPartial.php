@@ -38,7 +38,7 @@ class WaxPartial {
 	  foreach($this->data->template_paths as $pathdir) {
 	    $view->add_path(substr($pathdir,0,strrpos($pathdir, "/"))."/".$this->path);
 	  }	
-    foreach($this->data as $var=>$val) if(!$view->{$var}) $view->{$var}=$val;
+    if(property_exists($this, "data")) foreach($this->data as $var=>$val) if(!$view->{$var}) $view->{$var}=$val;
 		$this->output = $view->parse($this->format, "partial");
 	}
 	

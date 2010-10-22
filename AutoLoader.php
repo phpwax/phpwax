@@ -46,7 +46,7 @@ function auto_loader_check_cache(){
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
   include_once FRAMEWORK_DIR .'/utilities/File.php';  
-  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
+  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   
   /** CHECK LAYOUT CACHE **/
   if(($config = Config::get('layout_cache')) && $config['engine']){    
@@ -60,6 +60,8 @@ function auto_loader_check_cache(){
       $ext = substr($url_details['path'],$pos+1); 
       if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
       header("wax-cache: true");
+      header("wax-cache-eng: ".$config['engine']);
+      header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
       echo $content;
       exit;
     }

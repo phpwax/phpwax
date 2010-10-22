@@ -44,8 +44,9 @@ class Session {
     }
 
     static function get_hash() {
-        $key = session_id().$_SERVER['HTTP_USER_AGENT'];
-        return md5($key);
+      if(!$ua = $_SERVER['HTTP_USER_AGENT']) $ua = "";
+      $key = session_id().$ua;
+      return md5($key);
     }
     
 	static function is_bot() {

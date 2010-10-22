@@ -23,15 +23,14 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 	  //only save cache if the file doesnt exist already - ie so the file mod time isnt always reset
 	  if($this->identifier && !is_readable($this->identifier)) file_put_contents($this->identifier, $value);
 		chmod($this->identifier, 0777);
-		if($_GET['no-wax-cache'] && is_readable($this->identifier.$this->lock_suffix)) unlink($this->identifier.$this->lock_suffix);
 	}
 
 	public function valid() {
-	  if(!is_readable($this->identifier) || $_GET['no-wax-cache']) return false;
+	  if(!is_readable($this->identifier) || isset($_GET['no-wax-cache'])) return false;
 		$return = file_get_contents($this->identifier);
 		$meta = $this->get_meta();
 	  $age = time() - $meta['time'];
-		if(($age > $this->lifetime) && !$_GET['no-wax-cache'] && !$this->locked()){
+		if(($age > $this->lifetime) && !isset($_GET['no-wax-cache']) && !$this->locked() && $this->lifetime != "forever"){
 			$cmd = "php ".dirname(__FILE__)."/WaxRegenFileCache.php ".$this->identifier.$this->meta_suffix." > /dev/null &";
 			exec($cmd);
 		}
@@ -51,26 +50,9 @@ class WaxCacheBackgroundFile extends WaxCacheFile implements CacheEngine{
 		chmod($this->identifier.$this->meta_suffix, 0777);
 	}
 
-	public function make_identifier($prefix=false){
-	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
-	  $str = $this->dir.$prefix;
-	  $sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
-		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
-    while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
-    if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($data)) $str .= "-d-".md5(serialize($data));
-    if(count($sess)) $str .= "-s-".md5(serialize($sess));
-    if(count($_GET)){
-      $get = $_GET;
-      unset($get['route'], $get['no-wax-cache']);
-      $str .= "-g-".md5(serialize($get));
-    }
-    if(count($_POST)) $str .= "-p-".md5(serialize($_POST));
-    return $str;
-	}
 
 
 }
 
+?>

@@ -38,7 +38,7 @@ class WaxModelAssociation extends WaxRecordset {
   }
   
   public function valid() {
-    if(is_numeric($this->rowset[$this->key])){ //lazy loading
+    if(isset($this->rowset[$this->key]) && is_numeric($this->rowset[$this->key])){ //lazy loading
       $model = get_class($this->target_model);
       while($this->key < count($this->rowset)){
         $this->current_object = new $model($this->rowset[$this->key]);
@@ -47,7 +47,7 @@ class WaxModelAssociation extends WaxRecordset {
       }
       return false;
     }else{ //normal loading
-      if($this->rowset[$this->key]) return true;
+      if(isset($this->rowset[$this->key])) return true;
       return false;
     }
   }

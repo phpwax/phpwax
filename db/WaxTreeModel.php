@@ -142,11 +142,14 @@ class WaxTreeModel extends WaxModel {
 		foreach( self::$all_rows as $item ){
 			$lookup[$item['id']] = $item;
 		}
+		$path_to_root = array();
 		$current_id = $this->primval();
-		while($lookup[$current_id]){
-		  $path_to_root[] = $lookup[$current_id];
-		  $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
-		}
+		if(array_key_exists($current_id, $lookup)){
+		  while($lookup[$current_id]){
+		    $path_to_root[] = $lookup[$current_id];
+		    $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
+		  }
+	  }
 		return $this->root_path = new WaxRecordset($this, $path_to_root);
   }
   
