@@ -55,6 +55,22 @@ class WaxCacheFile implements CacheEngine{
 	  return $this->identifier;
 	}
 	
+
+  public function get_namespace($config, $uri){
+    $url = trim($uri, "/");
+    $namespace = false;
+    if($config && is_array($config) && $config['namespace']){
+		  $regexes = $config['namespace'];
+		  while(!$namespace && count($regexes)){
+		    $test = array_pop($regexes);
+		    preg_match_all($test, $url, $found);
+		    if(count($found) && count($found[0])) $namespace = array_shift($found[0]);
+		  }
+		  if($namespace) $namespace = trim($namespace, "/")."/";
+    }
+    return $namespace;
+  }
+
 	public function make_identifier($prefix=false){
 	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
 	  $str = $this->dir.$prefix;
