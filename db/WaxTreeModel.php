@@ -10,6 +10,7 @@ class WaxTreeModel extends WaxModel {
   static public $all_rows;
   public $parent_column;
   public $parent_join_field;
+  public $join_order = false;
   public $children_column;
   public $root_path = false;
   public $level = false;
@@ -54,12 +55,24 @@ class WaxTreeModel extends WaxModel {
 		$tree = array();
 		foreach( $lookup as $id => $foo ){
 			$item = &$lookup[$id];
-			if( isset( $lookup[$item[$this->parent_join_field]] ) ) $lookup[$item[$this->parent_join_field]]['children'][] = &$item;
+			if($this->join_order && isset( $lookup[$item[$this->parent_join_field]] )) $lookup[$item[$this->parent_join_field]]['children'][$item[$this->join_order]] = &$item;
+			elseif( isset( $lookup[$item[$this->parent_join_field]] ) ) $lookup[$item[$this->parent_join_field]]['children'][] = &$item;
 			else $tree[$id] = &$item;
 			if($cutoff == $id) $cutoff = array($id => &$item);
-		}
+		}		  
+		$this->recursive_tree_sort($tree);
 		if($cutoff) $tree = $cutoff;
 		return array_values($tree);
+	}
+	
+	public function recursive_tree_sort(&$tree) {
+	  foreach($tree as &$it){
+	    if(count($it["children"])){ 
+		    ksort($it["children"]); 
+		    $it["children"]=array_values($it["children"]);
+		    $this->recursive_tree_sort($it["children"]);
+		  }
+	  }
 	}
 
   protected function cache_object(){
