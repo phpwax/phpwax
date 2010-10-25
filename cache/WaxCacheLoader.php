@@ -9,30 +9,28 @@
  */
 class WaxCacheLoader {
 
-	public $lifetime = 3600;
 	public $config=array();
 	public $engine_type = 'File';
 	public $engine=false;
 	public $suffix = 'cache';
-	public $dir = false;
   public $identifier = false;
   public $enabled= true;
 
 
   public function __construct($config=false, $dir="", $old=false, $format='html'){
-    if(is_array($config)) foreach($config as $k=>$v) $this->$k = $this->config[$k] = $v;
+    if(is_array($config)) foreach($config as $k=>$v) $this->config[$k] = $v;
     elseif(is_string($config)) $this->config['engine'] = $this->engine_type = $config;
     
-    if($dir) $this->config['dir'] = $this->dir = $dir;
-    else $this->config['dir'] = $this->dir = CACHE_DIR;
+    if($dir) $this->config['dir'] = $dir;
+    else $this->config['dir'] = CACHE_DIR;
     if($this->config['engine']) $this->engine_type = $this->config['engine'];
-    if(!is_readable($this->dir)) mkdir($this->dir, 0777, true);    
+    if(!is_readable($this->config['dir'])) mkdir($this->config['dir'], 0777, true);    
   }
 
 	public function identifier(){
 	  if(!$this->identifier){
 		  $class = 'WaxCache'.$this->engine_type;
-      if(!$this->engine) $this->engine = new $class($this->dir, $this->lifetime, $this->suffix, false, $this->config);
+      if(!$this->engine) $this->engine = new $class($this->config['dir'], $this->config['lifetime'], $this->suffix, false, $this->config);
       $this->identifier =  $this->engine->identifier = $this->engine->make_identifier();
     }
     return $this->identifier;
