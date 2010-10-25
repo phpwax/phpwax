@@ -20,13 +20,12 @@ class WaxCacheLoader {
 
 
   public function __construct($config=false, $dir="", $old=false, $format='html'){
-    if(is_array($config)) foreach($config as $k=>$v) $this->config[$k] = $v;
+    if(is_array($config)) foreach($config as $k=>$v) $this->$k = $this->config[$k] = $v;
     elseif(is_string($config)) $this->config['engine'] = $this->engine_type = $config;
     
     if($dir) $this->config['dir'] = $this->dir = $dir;
     else $this->config['dir'] = $this->dir = CACHE_DIR;
     if($this->config['engine']) $this->engine_type = $this->config['engine'];
-    $this->lifetime = $lifetime;
     if(!is_readable($this->dir)) mkdir($this->dir, 0777, true);    
   }
 
