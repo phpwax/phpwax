@@ -79,6 +79,17 @@ class WaxTestMode{
     if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) define('ENV', 'test');
   }
 }
+/**
+ * set the date & time values
+ */
+class WaxDateTime{
+  public function set_defaults(){
+    if(function_exists('date_default_timezone_set')){
+      if(!defined('PHPWAX_TIMEZONE')) date_default_timezone_set('Europe/London');
+      else date_default_timezone_set(PHPWAX_TIMEZONE);
+    }
+  }
+}
 
 /**
  * MAIN AUTOLOADER
