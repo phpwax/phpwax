@@ -119,6 +119,8 @@ class AutoLoader{
   public static $loaded_classes = array('AutoLoader');
   
   public static $controller_paths = array();
+  
+  public static $view_registry = array();
 
   //array of all plugins inside the plugin folder
   public static $plugins = array();
@@ -203,10 +205,20 @@ class AutoLoader{
     }
   }
 
+  public static function view_paths($type=false){
+    if($type) return AutoLoader::$view_registry[$type];
+    $views= array();
+    foreach(AutoLoader::$view_registry as $k=>$paths) foreach($paths as $i=>$v) $views[]=$v;
+    return $views;
+  }
+  public static function register_views($path = false, $type="user"){
+    if(!$path) $path = VIEW_DIR;
+    AutoLoader::$view_registry[$type][] = $path;
+  }
   /**
    * globalise the helper functions
    */
-  static public function register_helpers($classes = array()) {
+  public static function register_helpers($classes = array()) {
 	  if(!count($classes)) $classes = get_declared_classes();
 	  foreach((array)$classes as $class) {
 	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class=="Inflections") {
@@ -240,11 +252,13 @@ class AutoLoader{
     WaxEvent::run("wax.start");
     //check for plugins
     AutoLoader::plugins();
+    AutoLoader::register_views();
     //force loading of inflections
     AutoLoader::include_from_registry("Inflections");
     AutoLoader::include_from_registry("WXHelpers");
     AutoLoader::register_helpers();
-
+    
+    
     WaxEvent::run("wax.init");
   }
 
@@ -287,6 +301,7 @@ AutoLoader::$pre_functions = array(
  * Standard locations to register all files from
  */
 AutoLoader::$registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR", "PLUGIN_DIR");
+
 
 
 /**
