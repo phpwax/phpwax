@@ -152,7 +152,7 @@ class AutoLoader{
     }
   }
   public static function controller_paths(){
-    return AutoLoader::$controller_paths;
+    return AutoLoader::$controller_paths;    
   }
   /**
    * loop over all registered directories and add the files to the class listing
@@ -165,11 +165,11 @@ class AutoLoader{
         $dir = new RecursiveIteratorIterator(new WaxRecursiveDirectoryIterator($d), true);
         foreach($dir as $file){          
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
-            $path = str_replace($fn, "", $file->getPathName());
+            $path = $file->getPathName();
             $classname = basename($fn, ".php");
-            if(!AutoLoader::$registered_classes[$classname]) AutoLoader::$registered_classes[$classname] = $file->getPathName();
+            if(!AutoLoader::$registered_classes[$classname]) AutoLoader::$registered_classes[$classname] = $path;
             //check for this being a controller
-            if(strstr($classname, "Controller") && !AutoLoader::$controller_paths[$path]) AutoLoader::$controller_paths[$path] = $path;
+            if(strstr($path, "/controller/")) AutoLoader::$controller_paths = array_unique(array_merge(AutoLoader::$controller_paths, array(substr($path,0,strrpos($path, "/controller/")+12) ) ));
           }
         }
       }
