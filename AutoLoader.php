@@ -281,7 +281,7 @@ AutoLoader::$wax_constants = array(
  * Load in the 2 default mapping functions used previously
  */
 AutoLoader::$pre_functions = array(
-                                    'wax/AutoLoader.php' => array('WaxCacheTrigger'=> array('layout', 'image'), 'WaxTestMode'=>array('active'))
+                                    'wax/AutoLoader.php' => array('WaxDateTime'=>array('set_defaults'), 'WaxCacheTrigger'=> array('layout', 'image'), 'WaxTestMode'=>array('active'))
                                   );
 /**
  * Standard locations to register all files from
