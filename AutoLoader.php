@@ -106,6 +106,8 @@ class AutoLoader{
   public static $registry_directories = array();
   public static $registered_classes = array();
   public static $loaded_classes = array('AutoLoader');
+  
+  public static $controller_paths = array();
 
   //array of all plugins inside the plugin folder
   public static $plugins = array();
@@ -149,6 +151,9 @@ class AutoLoader{
       }
     }
   }
+  public static function controller_paths(){
+    return AutoLoader::$controller_paths;
+  }
   /**
    * loop over all registered directories and add the files to the class listing
    */
@@ -158,10 +163,13 @@ class AutoLoader{
       if($constant) $d = constant($d);
       if(is_readable($d) && is_dir($d)){
         $dir = new RecursiveIteratorIterator(new WaxRecursiveDirectoryIterator($d), true);
-        foreach($dir as $file){
+        foreach($dir as $file){          
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
+            $path = str_replace($fn, "", $file->getPathName());
             $classname = basename($fn, ".php");
             if(!AutoLoader::$registered_classes[$classname]) AutoLoader::$registered_classes[$classname] = $file->getPathName();
+            //check for this being a controller
+            if(strstr($classname, "Controller") && !AutoLoader::$controller_paths[$path]) AutoLoader::$controller_paths[$path] = $path;
           }
         }
       }
