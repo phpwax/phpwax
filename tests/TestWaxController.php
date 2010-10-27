@@ -1,8 +1,8 @@
 <?php
 
-class TestController extends WXControllerBase {}
+class TestController extends WaxController {}
 
-class TestWXControllerBase extends WXTestCase 
+class TestWaxController extends WXTestCase 
 {
     public function setUp() {
       $this->cont = new TestController();
