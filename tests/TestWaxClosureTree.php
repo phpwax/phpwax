@@ -5,7 +5,7 @@ class ClosureTreeExample extends WaxClosureTree {
   }
 }
 
-class TestWaxTreeModel extends WXTestCase {
+class TestWaxClosureTree extends WXTestCase {
     public function setUp() {
       $this->model = new ClosureTreeExample;
       $this->model->syncdb();
