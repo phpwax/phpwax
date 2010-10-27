@@ -1,100 +1,14 @@
 <?php
 /**
-	*  This file sets up the application.
-	*  Sets up constants for the main file locations.
-  *  @package PHP-Wax
-	*/
+ *  This file sets up the application.
+ *  Sets up constants for the main file locations.
+ *  @package PHP-Wax
+ */
 
 /**
- *	Defines application level constants
+ * Custom iterator - excludes any git files, hidden config files etc
  */
-if(!defined("WAX_START_TIME")) define("WAX_START_TIME",microtime(TRUE));
-if(!defined("WAX_START_MEMORY")) define("WAX_START_MEMORY",memory_get_usage());
-if(!defined("APP_DIR")) define('APP_DIR', WAX_ROOT . "app/");
-if(!defined("MODEL_DIR")) define('MODEL_DIR' , WAX_ROOT.'app/model/');
-if(!defined("CONTROLLER_DIR")) define('CONTROLLER_DIR', WAX_ROOT.'app/controller/');
-if(!defined("FORMS_DIR")) define('FORMS_DIR', WAX_ROOT.'app/forms/');
-if(!defined("CONFIG_DIR")) define('CONFIG_DIR' , WAX_ROOT.'app/config/');
-if(!defined("VIEW_DIR")) define('VIEW_DIR', WAX_ROOT.'app/view/');
-if(!defined("APP_LIB_DIR")) define('APP_LIB_DIR', WAX_ROOT.'app/lib/');
-if(!defined("CACHE_DIR")) define('CACHE_DIR', WAX_ROOT.'tmp/cache/');
-if(!defined("LOG_DIR")) define('LOG_DIR', WAX_ROOT.'tmp/log/');
-if(!defined("SESSION_DIR")) define('SESSION_DIR', WAX_ROOT.'tmp/session/');
-if(!defined("PUBLIC_DIR")) define('PUBLIC_DIR', WAX_ROOT.'public/');
-if(!defined("SCRIPT_DIR")) define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
-if(!defined("STYLE_DIR")) define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
-if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
-if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
-if(function_exists('date_default_timezone_set')){
-  if(!defined('PHPWAX_TIMEZONE')) date_default_timezone_set('Europe/London');
-  else date_default_timezone_set(PHPWAX_TIMEZONE);
-}
-
-/**
- * check cache
- *
- */
-function auto_loader_check_cache(){
-  
-  $cache_location = CACHE_DIR .'layout/';
-  $image_cache_location = CACHE_DIR.'images/';
-  include_once FRAMEWORK_DIR .'/utilities/Session.php';
-  include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-  include_once FRAMEWORK_DIR .'/utilities/Config.php';
-  include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-  include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
-  include_once FRAMEWORK_DIR .'/utilities/File.php';  
-  $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
-  
-  /** CHECK LAYOUT CACHE **/
-  if(($config = Config::get('layout_cache')) && $config['engine']){
-    if($_REQUEST['no-wax-cache']) return false;
-		if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
-		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';		
-    $cache = new WaxCacheLoader($config, $cache_location);
-
-    if($content = $cache->layout_cache_loader($config)){
-      $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-      $pos = strrpos($url_details['path'], ".");
-      $ext = substr($url_details['path'],$pos+1); 
-      if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
-      header("wax-cache: true");
-      header("wax-cache-eng: ".$config['engine']);
-      header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
-      echo $content;
-      exit;
-    }
-  }  
-  /** ALSO CHECK FOR IMAGES **/
-  if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
-		if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php'; 
-		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
-    if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader($img_config['engine'], $image_cache_location, $img_config['lifetime']);
-    else $cache = new WaxCacheLoader('Image', $image_cache_location);
-    if($cache->valid($img_config)) File::display_image($cache->identifier);
-  }  
-  
-  return false;
-}	
-
-
-function __autoload($class_name) {
-  AutoLoader::include_from_registry($class_name);
-}
-
-function throw_wxexception($e) {
-	$exc = new WXException($e->getMessage(), "Application Error");
-}
-
-function throw_wxerror($code, $error) {
-	$exc = new WXException($error, "Application Error $code");
-}
-
-
 class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
-  
   public function hasChildren() {
     if(substr($this->getFilename(),0,1)==".") return false;
     else return parent::hasChildren();
@@ -102,166 +16,178 @@ class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
 }
 
 /**
- *	A simple static class to Preload php files and commence the application.
- *  It manages a registry of PHP files and includes them according to hierarchy.
- *  All file inclusion is done 'just in time' meaning that file load overhead is avoided.
- *	@package PHP-Wax
- *	@static
+ * WaxCacheTrigger to look for cache triggers - legacy
  */
-class AutoLoader
-{
-/**
- *	@access public
- *	@param string $dir The directory to include 
- */
-  static $plugin_array=array();
-  static $plugin_asset_types = array('images'=>"images", 'javascripts'=>"javascripts", 'stylesheets'=>"stylesheets");
-  /**
-   *  The registry allows classes to be registered in a central location.
-   *  A responsibility chain then decides upon include order.
-   *  Format $registry = array("responsibility"=>array("ClassName", "path/to/file"))
-   */
-  static public $registry = array();
-  static public $registry_chain = array("user", "application", "plugin", "framework");
-  static public $controller_registry = array();
-  static public $view_registry = array();
-  
-  static public function add_asset_type($key, $type){
-    self::$plugin_asset_types[$key] = $type;
-  }
-  static public function register($responsibility, $class, $path) {
-    self::$registry[$responsibility][$class]=$path;
-  }
-  
-  static public function register_controller_path($responsibility, $path) {
-    self::$controller_registry[$responsibility][]=$path;
-  }
-  static public function register_view_path($responsibility, $path) {
-    self::$view_registry[$responsibility][]=$path;
-  }
-  
-  static public function include_from_registry($class_name) {
-    foreach(self::$registry_chain as $responsibility) {
-      if(isset(self::$registry[$responsibility]) && array_key_exists($class_name, self::$registry[$responsibility])) {
-        if(require_once(self::$registry[$responsibility][$class_name]) ) { return true; }
+class WaxCacheTrigger{
+  public static $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
+  public static $yaml = true;
+
+  public function layout(){
+    $cache_location = CACHE_DIR .'layout/';
+    include_once FRAMEWORK_DIR .'/utilities/Session.php';
+    if(WaxCacheTrigger::$yaml) include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
+    include_once FRAMEWORK_DIR .'/utilities/Config.php';
+    include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+    include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+    include_once FRAMEWORK_DIR .'/utilities/File.php';
+
+    if(($config = Config::get('layout_cache')) && $config['engine']){
+      if($_REQUEST['no-wax-cache']) return false;
+  		if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php';
+  		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';
+      $cache = new WaxCacheLoader($config, $cache_location);
+
+      if($content = $cache->layout_cache_loader($config)){
+        $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+        $pos = strrpos($url_details['path'], ".");
+        $ext = substr($url_details['path'],$pos+1);
+        if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
+        header("wax-cache: true");
+        header("wax-cache-eng: ".$config['engine']);
+        header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
+        echo $content;
+        exit;
       }
     }
-   	throw new WaxDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
-	}
-	
-	static public function controller_paths($resp=false) {
-	  if($resp) return self::$controller_registry[$resp];
-	  foreach(self::$controller_registry as $responsibility) {
-      foreach($responsibility as $path) $paths[]=$path;
+  }
+
+  public function image(){
+    $image_cache_location = CACHE_DIR .'images/';
+    include_once FRAMEWORK_DIR .'/utilities/Session.php';
+    if(WaxCacheTrigger::$yaml) include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
+    include_once FRAMEWORK_DIR .'/utilities/Config.php';
+    include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+    include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
+    include_once FRAMEWORK_DIR .'/utilities/File.php';
+    if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
+  		if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php';
+  		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
+      if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader($img_config['engine'], $image_cache_location, $img_config['lifetime']);
+      else $cache = new WaxCacheLoader('Image', $image_cache_location);
+      if($cache->valid($img_config)) File::display_image($cache->identifier);
     }
-    return $paths;
-	}
-	static public function view_paths($resp = false) {
-	  if($resp) return self::$view_registry[$resp];
-	  foreach(self::$view_registry as $responsibility) {
-      foreach($responsibility as $path) $paths[]=$path;
+  }
+}
+/**
+ * Check if this is a test client
+ */
+class WaxTestMode{
+  public function active(){
+    if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) define('ENV', 'test');
+  }
+}
+
+/**
+ * MAIN AUTOLOADER
+ */
+class AutoLoader{
+
+  /**
+   * list of all constants to create should look like - sorted by keys
+   * - CONSTANT_NAME => array('parent'=>PARENT_CONSTANT, 'value'=>$VALUE, 'function'=>function_name, 'params'=>params_to_pass_to_function);
+   */
+  public static $wax_constants = array();
+  /**
+   * ini file to look for and the results
+   */
+  public static $ini_file = "ini.php";
+  public static $inis = array();
+  /**
+   * list of functions that can be called as a pre hook key array - ie remapping certain urls for the cms, adding in cache, etc
+   * First key is the path to the file, that has an array of classes which is an array of functions
+   * /path/to/file/from/wax_root => array('class_name_1'=> array('func_1', 'func_to_call_2'), 'class_name_2'=>array('func_3'))
+   */
+  public static $pre_functions = array();
+  //class registry info
+  public static $register_file_ext = ".php";
+  public static $registry_directories = array();
+  public static $registered_classes = array();
+  public static $loaded_classes = array('AutoLoader');
+
+  //array of all plugins inside the plugin folder
+  public static $plugins = array();
+  public static $plugin_setup_file = "setup.php";
+  /**
+   * register all the constants
+   */
+  public static function constants(){
+    foreach(AutoLoader::$wax_constants as $name=>$info){
+      $value = false;
+      $parent = ($info['parent']) ? constant($info['parent']) : "";
+      if($info['value']) $value = $info['value'];
+      elseif($info['function'] && $info['params']) $value = call_user_func($info['function'], $info['params']);
+      elseif($info['function']) $value = call_user_func($info['function']);
+      if(!defined($name)) define($name, $parent.$value);
     }
-    return $paths;
-	}
-	
-	static public function include_plugin($plugin) {
-	  self::recursive_register(PLUGIN_DIR.$plugin."/lib", "plugin");
-	  self::recursive_register(PLUGIN_DIR.$plugin."/resources/app/controller", "plugin");
-	  self::register_controller_path("plugin", PLUGIN_DIR.$plugin."/lib/controller/");
-	  self::register_controller_path("plugin", PLUGIN_DIR.$plugin."/resources/app/controller/");
-	  self::register_view_path("plugin", PLUGIN_DIR.$plugin."/view/");
-		$setup = PLUGIN_DIR.$plugin."/setup.php";
-		self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
-		if(is_readable($setup)) include_once($setup);
-	}
-	
-	static public function plugin_installed($plugin) {
-		return is_readable(PLUGIN_DIR.$plugin);
-	}
-	
-	static public function detect_inis(){
-	  if(is_readable(PLUGIN_DIR)){
-	    foreach(glob(PLUGIN_DIR.'*') as $file){
-	      if(is_dir($file) && is_readable($file) && is_readable($file."/ini.php")) include $file."/ini.php";
-	    }
-	  }
-	}
-	
-	static public function autoregister_plugins() {
-	  if(defined('AUTOREGISTER_PLUGINS')) return false;
-	  if(is_readable(PLUGIN_DIR)){
+  }
+  /**
+   * register & include the inis
+   */
+  public static function inis(){
+    $dir = new RecursiveIteratorIterator( $dirit = new WaxRecursiveDirectoryIterator(PLUGIN_DIR), true);
+    foreach($dir as $file){
+      if(basename($file->getFilename()) ==  AutoLoader::$ini_file){
+        AutoLoader::$inis[] = $file;
+        include_once $file;
+      }
+    }
+  }
+  /**
+   * Run over the pre init hooks - cache would a good one
+   */
+  public static function pre_init_hooks(){
+    foreach(AutoLoader::$pre_functions as $path=>$classes){
+      if(is_readable(WAX_ROOT.$path)){
+        include_once WAX_ROOT.$path;
+        foreach($classes as $class=>$functions){
+          $obj = new $class;
+          foreach($functions as $func) $obj->$func();
+        }
+      }
+    }
+  }
+  /**
+   * loop over all registered directories and add the files to the class listing
+   */
+  public static function register($registry = false, $constant=true){
+    if(!$registry) $registry = AutoLoader::$registry_directories;
+    foreach($registry as $d){
+      if($constant) $d = constant($d);
+      if(is_readable($d) && is_dir($d)){
+        $dir = new RecursiveIteratorIterator(new WaxRecursiveDirectoryIterator($d), true);
+        foreach($dir as $file){
+          if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
+            $classname = basename($fn, ".php");
+            if(!AutoLoader::$registered_classes[$classname]) AutoLoader::$registered_classes[$classname] = $file->getPathName();
+          }
+        }
+      }
+    }
+  }
+
+  public static function plugins(){
+    if(is_readable(PLUGIN_DIR)){
 	    $plugins = scandir(PLUGIN_DIR);
 	    sort($plugins);
 	    foreach($plugins as $plugin) {
-	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
+	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){
+	        //add to plugins list
+	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin;
+	        //add classes to register
+	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/"), false);
+	        if(is_file(PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file)) include_once PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file;
+	      }
 	    }
     }
   }
-	
-	static public function detect_assets() {
-	  self::register("framework", "File", FRAMEWORK_DIR."/utilities/File.php");
-	  if(!isset($_GET["route"])) return false;
-	  $temp_route = $_GET["route"];
-	  $_temp_route= preg_replace("/[^a-zA-Z0-9_\-\.]/", "", $temp_route);
-	  while(strpos($temp_route, "..")) $temp_route= str_replace("..", ".", $temp_route);
-	  $asset_paths = explode("/", $_GET["route"]);
-	  if(in_array($asset_paths[0], self::$plugin_asset_types)) {
-	    $plugins = scandir(PLUGIN_DIR);
-	    $type = array_shift($asset_paths);
-  	  rsort($plugins);
-  	  foreach($plugins as $plugin) {
-  	    if(!is_file($plugin) && substr($plugin,0,1) != "."){
-	        $path = PLUGIN_DIR.$plugin."/resources/public/".$type."/".implode("/", $asset_paths);
-	        $mime = File::mime_map($path);
-	        if(is_readable($path)){
-	          $mime = File::mime_map($path);
-	          switch($type){
-	            case "images": File::display_image($path);break;
-	            default: File::display_asset($path, $mime); break;
-            }
-          }
-        }
-  	  }
-	  }
-	}
-	
-	static public function recursive_register($directory, $type, $force = false) {
-	  if(!is_dir($directory)||substr($directory,0,1)==".") { return false; }
-	  $dir = new RecursiveIteratorIterator(
-		            $dirit = new WaxRecursiveDirectoryIterator($directory), true);
-		foreach ( $dir as $file ) {
-		  if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==".php") {
-		    if($force){
-		      require_once($file->getPathName());
-	      }else{
-  		    $classname = basename($fn, ".php");
-  			  self::register($type, $classname, $file->getPathName());
-		    }
-			}	
-		}
-	}
-	
-	static public function detect_test_mode() {
-	  if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) {
-	    define('ENV', 'test');
-	  }
-	}
-	
-	static public function detect_environments() {
-	  if(!is_array(Config::get("environments"))) return false;
-	  if($_SERVER['HOSTNAME']) $addr = gethostbyname($_SERVER['HOSTNAME']);
-	  elseif($_SERVER['SERVER_ADDR']) $addr = $_SERVER['SERVER_ADDR'];
-	  if($envs= Config::get("environments")) {
-	    foreach($envs as $env=>$range) {
-  	    $range = "/".str_replace(".", "\.", $range)."/";
-  	    if(preg_match($range, $addr) && !defined($env) ) {
-  	      define('ENV', $env);
-  	    } 
-  	  }
-	  }
-	}
 
-	static public function register_helpers($classes = array()) {
+  /**
+   * globalise the helper functions
+   */
+  static public function register_helpers($classes = array()) {
 	  if(!count($classes)) $classes = get_declared_classes();
 	  foreach((array)$classes as $class) {
 	    if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class=="Inflections") {
@@ -272,42 +198,86 @@ class AutoLoader
 	  }
 	}
 
-	static public function initialise() {	
-	  self::detect_inis();
-		self::detect_assets();
-	  self::detect_test_mode();
-	  self::recursive_register(APP_LIB_DIR, "user");
-	  self::recursive_register(MODEL_DIR, "application");
-	  self::recursive_register(CONTROLLER_DIR, "application");
-	  self::recursive_register(FORMS_DIR, "application");
-		self::recursive_register(FRAMEWORK_DIR, "framework");
-		WaxEvent::run("wax.start");
-		self::register_controller_path("user", CONTROLLER_DIR);
-		self::register_view_path("user", VIEW_DIR);
-		self::autoregister_plugins();
-		self::include_from_registry('Inflections');  // Bit of a hack -- forces the inflector functions to load
-		self::include_from_registry('WXHelpers');  // Bit of a hack -- forces the helper functions to load
-		self::register_helpers();
-		set_exception_handler('throw_wxexception');
-		set_error_handler('throw_wxerror', 247 );
-		WaxEvent::run("wax.init");
-	}
-	/**
-	 *	Includes the necessary files and instantiates the application.
-	 *	@access public
-	 */	
-	static public function run_application($environment="development", $full_app=true) {
-	  //if(!defined('ENV')) define('ENV', $environment);	
+  public static function include_from_registry($class){
+    if(AutoLoader::$registered_classes[$class] && !AutoLoader::$loaded_classes[$class]){
+      include AutoLoader::$registered_classes[$class];
+      AutoLoader::$loaded_classes[$class] = AutoLoader::$registered_classes[$class];
+    }elseif(!AutoLoader::$registered_classes[$class]){
+      print_r(AutoLoader::$registered_classes);
+      throw new Exception("$class no found");
+    }
+  }
+
+  /**
+   * Main function
+   */
+  public static function initialise(){
+    AutoLoader::constants();
+    AutoLoader::inis();
+    //lets you do caching & remapping
+    AutoLoader::pre_init_hooks();
+    //load in all the files
+    AutoLoader::register();
+    WaxEvent::run("wax.start");
+    //check for plugins
+    AutoLoader::plugins();
+    //force loading of inflections
+    AutoLoader::include_from_registry("Inflections");
+    AutoLoader::include_from_registry("WXHelpers");
+    AutoLoader::register_helpers();
+
+    WaxEvent::run("wax.init");
+  }
+
+  static public function run_application($environment="development", $full_app=true) {
+	  //if(!defined('ENV')) define('ENV', $environment);
 		$app=new WaxApplication($full_app);
 	}
 
-	/**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
-
-	static public function include_dir($directory, $force = false) {
-	  return self::recursive_register($directory, "framework", $force);
-	}
-	
 }
-auto_loader_check_cache();
-Autoloader::initialise();
 
+/**
+ * load the static array with default constants that applications use
+ */
+AutoLoader::$wax_constants = array(
+                                    'WAX_START_TIME' => array('function'=>'microtime', 'params'=>true),
+                                    'WAX_START_MEMORY' => array('function'=>'memory_get_usage'),
+                                    'APP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'app/'),
+                                    'MODEL_DIR' => array('parent'=>'APP_DIR', 'value'=>'model/'),
+                                    'CONTROLLER_DIR' => array('parent'=>'APP_DIR', 'value'=>'controller/'),
+                                    'FORMS_DIR' => array('parent'=>'APP_DIR', 'value'=>'forms/'),
+                                    'CONFIG_DIR' => array('parent'=>'APP_DIR', 'value'=>'config/'),
+                                    'VIEW_DIR' => array('parent'=>'APP_DIR', 'value'=>'view/'),
+                                    'APP_LIB_DIR' => array('parent'=>'APP_DIR', 'value'=>'lib/'),
+                                    'TMP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'tmp/'),
+                                    'CACHE_DIR' => array('parent'=>'TMP_DIR', 'value'=>'cache/'),
+                                    'LOG_DIR' => array('parent'=>'TMP_DIR', 'value'=>'log/'),
+                                    'SESSION_DIR' => array('parent'=>'TMP_DIR', 'value'=>'session/'),
+                                    'PUBLIC_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'public/'),
+                                    'SCRIPT_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'javascripts/'),
+                                    'STYLE_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'stylesheets/'),
+                                    'PLUGIN_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'plugins/')
+                                    );
+/**
+ * Load in the 2 default mapping functions used previously
+ */
+AutoLoader::$pre_functions = array(
+                                    'wax/AutoLoader.php' => array('WaxCacheTrigger'=> array('layout', 'image'), 'WaxTestMode'=>array('active'))
+                                  );
+/**
+ * Standard locations to register all files from
+ */
+AutoLoader::$registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR", "PLUGIN_DIR");
+
+
+/**
+ *
+ */
+function __autoload($class_name) {
+  AutoLoader::include_from_registry($class_name);
+}
+
+//run the initialise!
+AutoLoader::initialise();
+
+?>
