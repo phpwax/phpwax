@@ -21,17 +21,21 @@ class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
 class WaxCacheTrigger{
   public static $mime_types = array("json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   public static $yaml = true;
-
-  public function layout(){
+  
+  public function __construct(){
     $cache_location = CACHE_DIR .'layout/';
+    $image_cache_location = CACHE_DIR .'images/';
     include_once FRAMEWORK_DIR .'/utilities/Session.php';
     if(WaxCacheTrigger::$yaml) include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
     include_once FRAMEWORK_DIR .'/utilities/Config.php';
     include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
     include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
     include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
     include_once FRAMEWORK_DIR .'/utilities/File.php';
-
+  }
+  
+  public function layout(){   
     if(($config = Config::get('layout_cache')) && $config['engine']){
       if($_REQUEST['no-wax-cache']) return false;
   		if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php';
@@ -53,15 +57,6 @@ class WaxCacheTrigger{
   }
 
   public function image(){
-    $image_cache_location = CACHE_DIR .'images/';
-    include_once FRAMEWORK_DIR .'/utilities/Session.php';
-    if(WaxCacheTrigger::$yaml) include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-    include_once FRAMEWORK_DIR .'/utilities/Config.php';
-    include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-    include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
-    include_once FRAMEWORK_DIR .'/utilities/File.php';
     if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
   		if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php';
   		else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
