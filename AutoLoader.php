@@ -4,7 +4,6 @@
  *  Sets up constants for the main file locations.
  *  @package PHP-Wax
  */
-
 /**
  * Custom iterator - excludes any git files, hidden config files etc
  */
@@ -85,7 +84,6 @@ class WaxDateTime{
     }
   }
 }
-
 /**
  *
  */
@@ -145,17 +143,15 @@ class AutoLoader{
   public static $registry_directories = array();
   public static $registered_classes = array();
   public static $loaded_classes = array('AutoLoader');
-  
+  //paths to all the folders containing controllers
   public static $controller_paths = array();
-  
+  //all folders containing views
   public static $view_registry = array();
-
   //array of all plugins inside the plugin folder
   public static $plugins = array();
   public static $plugin_setup_file = "setup.php";
-  /**
-   * register all the constants
-   */
+
+  //register all the constants
   public static function constants(){
     foreach(AutoLoader::$wax_constants as $name=>$info){
       $value = false;
@@ -192,6 +188,7 @@ class AutoLoader{
       }
     }
   }
+  
   public static function controller_paths(){
     return AutoLoader::$controller_paths;    
   }
@@ -216,17 +213,16 @@ class AutoLoader{
       }
     }
   }
-
+  //scans over the plugins top level folders and adds them to the stacks
   public static function plugins(){
     if(is_readable(PLUGIN_DIR)){
 	    $plugins = scandir(PLUGIN_DIR);
 	    sort($plugins);
 	    foreach($plugins as $plugin) {
-	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){
-	        //add to plugins list
-	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin;
-	        //add classes to register
-	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/"), false);
+	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){ //if it looks like a plugin
+	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin; //add to the main array
+	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/"), false); //register all the php classes
+	        AutoLoader::$view_registry["plugin"][] = PLUGIN_DIR.$plugin."/view/"; //add the view dir to the stack
 	        if(is_file(PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file)) include_once PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file;
 	      }
 	    }
@@ -243,9 +239,7 @@ class AutoLoader{
     if(!$path) $path = VIEW_DIR;
     AutoLoader::$view_registry[$type][] = $path;
   }
-  /**
-   * globalise the helper functions
-   */
+  //globalise the helper functions
   public static function register_helpers($classes = array()) {
 	  if(!count($classes)) $classes = get_declared_classes();
 	  foreach((array)$classes as $class) {
@@ -256,40 +250,34 @@ class AutoLoader{
 	    }
 	  }
 	}
-
+  //magic function that loads the class in
   public static function include_from_registry($class){
     if(AutoLoader::$registered_classes[$class] && !AutoLoader::$loaded_classes[$class]){
       include AutoLoader::$registered_classes[$class];
       AutoLoader::$loaded_classes[$class] = AutoLoader::$registered_classes[$class];
     }elseif(!AutoLoader::$registered_classes[$class]){
-      print_r(AutoLoader::$registered_classes);
       throw new Exception("$class no found");
     }
   }
 
   /**
-   * Main function
+   * MAIN FUNCTION
    */
   public static function initialise(){
     AutoLoader::constants();
     AutoLoader::inis();
-    //lets you do caching & remapping
     AutoLoader::pre_init_hooks();
-    //load in all the files
     AutoLoader::register();
     WaxEvent::run("wax.start");
-    //check for plugins
     AutoLoader::plugins();
     AutoLoader::register_views();
     //force loading of inflections
     AutoLoader::include_from_registry("Inflections");
     AutoLoader::include_from_registry("WXHelpers");
-    AutoLoader::register_helpers();
-    
-    
+    AutoLoader::register_helpers();    
     WaxEvent::run("wax.init");
   }
-
+// 
   static public function run_application($environment="development", $full_app=true) {
 	  //if(!defined('ENV')) define('ENV', $environment);
 		$app=new WaxApplication($full_app);
@@ -323,7 +311,12 @@ AutoLoader::$wax_constants = array(
  * Load in the 2 default mapping functions used previously
  */
 AutoLoader::$pre_functions = array(
-                                    'wax/AutoLoader.php' => array('WaxDateTime'=>array('set_defaults'), 'WaxCacheTrigger'=> array('layout', 'image'), 'WaxTestMode'=>array('active'))
+                                    'wax/AutoLoader.php' => array(
+                                                                'WaxDateTime'=>array('set_defaults'), 
+                                                                'WaxCacheTrigger'=> array('layout', 'image'), 
+                                                                'WaxTestMode'=>array('active'),
+                                                                'WaxPluginResources'=>array('rewrite')
+                                                                )
                                   );
 /**
  * Standard locations to register all files from
