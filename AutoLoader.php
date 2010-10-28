@@ -286,7 +286,7 @@ class AutoLoader{
   }
 
   //legacy function
-  public static add_asset_type($key, $type){
+  public static function add_asset_type($key, $type){
     WaxPluginResources::$plugin_asset_types[$key]=$type;
   }
   
