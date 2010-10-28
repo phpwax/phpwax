@@ -126,10 +126,6 @@ class WaxClosureTree extends WaxModel {
         $link->save();
       }
     }
-    foreach($descendants as $desc){
-      $desc->level = $desc->level + $desc->depth;
-      $desc->save();
-    }
   }
   
 
@@ -145,7 +141,6 @@ class WaxClosureTree extends WaxModel {
    * returns true if the node has a parent, and false if not
    */
   public function is_root() {
-    return ($this->level === 0);
   }
 
   /**
