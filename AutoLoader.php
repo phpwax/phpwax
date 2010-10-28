@@ -285,8 +285,13 @@ class AutoLoader{
     }
   }
 
+  //legacy function
+  public static add_asset_type($key, $type){
+    WaxPluginResources::$plugin_asset_types[$key]=$type;
+  }
+  
   /**
-   * MAIN FUNCTION
+   * MAIN FUNCTIONS
    */
   public static function initialise(){
     AutoLoader::constants();
@@ -302,7 +307,7 @@ class AutoLoader{
     AutoLoader::register_helpers();    
     WaxEvent::run("wax.init");
   }
-// 
+  
   static public function run_application($environment="development", $full_app=true) {
 	  //if(!defined('ENV')) define('ENV', $environment);
 		$app=new WaxApplication($full_app);
