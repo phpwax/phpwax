@@ -54,28 +54,20 @@ class HasManyField extends WaxModelField {
   public function set($value) {
     if($value instanceof $this->target_model){
       $value->{$this->join_field} = $this->model->primval();
+      $value->_col_names[$this->join_field] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
       $value->save();
     }
-    if($value instanceof WaxRecordset) {
-      foreach($value as $row){
-        $row->{$this->join_field} = $this->model->primval();
-        $row->save();
-      }
-    }
+    if($value instanceof WaxRecordset) foreach($value as $row) $this->set($row);
   }
   
   public function unlink($value = false) {
     if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
     if($value instanceof $this->target_model){
       $value->{$this->join_field} = 0;
+      $value->_col_names[$this->join_field] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
       $value->save();
     }
-    if($value instanceof WaxRecordset) {
-      foreach($value as $row){
-        $row->{$this->join_field} = 0;
-        $row->save();
-      }
-    }
+    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
   }
   
   public function save() {
