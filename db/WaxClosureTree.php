@@ -9,17 +9,12 @@
 class WaxClosureTree extends WaxModel {
   public $closure_table_class = "WaxClosureTable";
   
- 	function __construct($params=null) {
-    parent::__construct($params);
-    $this->define("pre_order","IntegerField");
-    $this->define("level","IntegerField");
-  }
   /**
    * returns an empty closure table model
    */
-  private function closure_table(){
-    $closure_table = new $this->closure_table_class(null,get_class($this));
-    $closure_table->table = $this->table."_closure_table";
+  public function closure_table(){
+    $closure_table = new $this->closure_table_class;
+    $closure_table->init($this);
     return $closure_table;
   }
   
@@ -173,12 +168,6 @@ class WaxClosureTree extends WaxModel {
     $this->closure_table()->syncdb();
   }
   
-  public function before_insert(){
-    $max_pre_order = clone $this;
-    $max_pre_order = $max_pre_order->clear()->order("pre_order DESC")->first()->pre_order;
-    $this->pre_order = $max_pre_order + 1;
-    $this->level = 0;
-  }
   /**
    * close each entry over itself
    */
