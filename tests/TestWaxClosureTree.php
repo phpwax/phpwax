@@ -13,6 +13,7 @@ class TestWaxClosureTree extends WXTestCase {
 
     public function tearDown() {
       WaxModel::$db->drop_table($this->model->table);
+      WaxModel::$db->drop_table($this->model->closure_table()->table);
     }
 
     public function test_parent() {
