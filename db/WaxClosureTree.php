@@ -53,7 +53,8 @@ class WaxClosureTree extends WaxModel {
 		$res->join_condition("$this->table.$this->primary_key = descendant_id");
 		$res->order("depth");
 		$res->filter("ancestor_id",$this->primval());
-    if($depth !== null) $this->filter("depth",$depth,"<=");
+		$res->select_columns = array($res->table.".*");
+    if($depth !== null) $res->filter("depth",$depth,"<=");
     return $res->all();
   }
 
