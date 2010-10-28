@@ -123,7 +123,6 @@ class WaxClosureTree extends WaxModel {
         $link->ancestor = $ancestor;
         $link->descendant = $descendant;
         $link->depth = $ancestor->depth + $descendant->depth + 1;
-        if($link->descendant_id == 4) print_r($descendants);
         $link->save();
       }
     }
