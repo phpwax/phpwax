@@ -103,16 +103,17 @@ class WaxClosureTree extends WaxModel {
   /**
    * reattach a subtree to a new node
    */
-  private function reparent(WaxClosureTree $new_parent, WaxClosureTree $subtree_root){
-    //first isolate the subtree, removing all descendants of the root node from all ancestors of it's current parent
-    //interestingly, taking out this step turns this into a graphing engine with no specific heirarchy
-    if(!$subtree_root->is_root()){
-      $ancestors = $subtree_root->ancestors();
-      array_pop($ancestors);
-      $this->closure_table()->filter("ancestor",$ancestors)->filter("descendants",$subtree_root->descendants())->delete();
-    }
+  private function reparent(WaxClosureTree $new_parent){
+    $ancestors = $this->ancestors();
+    $ancestor_ids = array();
+    foreach($ancestors as $asc) $ancestor_ids[] = $asc->id;
     
-    $descendants = $subtree_root->descendants();
+    $descendants = $this->descendants();
+    $descendant_ids = array();
+    foreach($descendants as $des) $descendant_ids[] = $des->id;
+
+    //first isolate the subtree, removing links from all ancestors to all descendants
+    if($ancestor_ids && $$ancestor_ids) $closure = $this->closure_table()->filter("ancestor_id", $ancestor_ids)->filter("descendant_id", $$ancestor_ids)->delete();
     
     //add each descendant to each ancestor
     //INSERT INTO CLOSURE_TABLE cross product of $new_parent->ancestors() and $this->descendants()
