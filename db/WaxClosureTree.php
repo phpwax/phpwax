@@ -62,9 +62,9 @@ class WaxClosureTree extends WaxModel {
    * returns the direct children of the current node
    */
   public function children(){
-    $res = $this->descendants(1); //fetch 1 depth of descendants
-    array_shift($res); //drop off itself
-    return $res;
+    $ret = $this->descendants($this->level+1);
+    array_shift($ret->rowset);
+    return $ret;
   }
   
   /**
