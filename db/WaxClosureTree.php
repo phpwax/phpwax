@@ -38,7 +38,8 @@ class WaxClosureTree extends WaxModel {
    * returns the parent of the current node
    */
   public function parent(){
-    return $this->ancestors(1)->end();
+    $ret = $this->ancestors(2);
+    return $ret[$ret->count() - 1];
   }
 
   /**
