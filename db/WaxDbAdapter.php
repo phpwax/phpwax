@@ -79,7 +79,7 @@ abstract class WaxDbAdapter {
 	}
   
   public function update(WaxModel $model) {
-    $this->exec($this->prepare($this->update_sql($model)), $model->row);
+    $this->exec($this->prepare($this->update_sql($model)), array_intersect_key($model->row, $model->_col_names));
     $id = $model->primval;
     return $model;
   }
@@ -229,7 +229,7 @@ abstract class WaxDbAdapter {
 	}
 
   public function update_sql($model) {
-    return "UPDATE `{$model->table}` SET ".$this->update_values($model->row).
+    return "UPDATE `{$model->table}` SET ".$this->update_values(array_intersect_key($model->row, $model->_col_names)).
       " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}";
   }
    

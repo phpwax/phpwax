@@ -38,6 +38,7 @@ class WaxModel{
 	public $left_join_table_name = false;
 	public $join_conditions = false;
 	public $cols = array();
+	public $_col_names = array();
 
 
 	/** interface vars **/
@@ -306,6 +307,7 @@ class WaxModel{
  	  $associations = array();
  	  foreach($this->columns as $col=>$setup) {
  	    $field = $this->get_col($col);
+ 	    $this->_col_names[$field->col_name] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
  	    if(!$field->is_association) $this->get_col($col)->save();
  	    else $associations[]=$field;
  	  }

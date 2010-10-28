@@ -83,9 +83,9 @@ class WaxCLI {
     define("ENV", "test");
     $this->app_setup();
     define("CLI_ENV", true);
-    if((!include 'simpletest/unit_tester.php') 
-      || (!include 'simpletest/mock_objects.php')
-      || (!include 'simpletest/reporter.php')
+    if((!include_once 'simpletest/unit_tester.php')
+      || (!include_once 'simpletest/mock_objects.php')
+      || (!include_once 'simpletest/reporter.php')
       ) {
       throw new WaxDependencyException("Simpletest library required. Install it somewhere in the include path", "Simpletest Dependency Failure");
     }
