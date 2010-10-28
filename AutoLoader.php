@@ -126,7 +126,25 @@ class AutoLoader{
    * list of all constants to create should look like - sorted by keys
    * - CONSTANT_NAME => array('parent'=>PARENT_CONSTANT, 'value'=>$VALUE, 'function'=>function_name, 'params'=>params_to_pass_to_function);
    */
-  public static $wax_constants = array();
+  public static $wax_constants =  array(
+                                       'WAX_START_TIME' => array('function'=>'microtime', 'params'=>true),
+                                       'WAX_START_MEMORY' => array('function'=>'memory_get_usage'),
+                                       'APP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'app/'),
+                                       'MODEL_DIR' => array('parent'=>'APP_DIR', 'value'=>'model/'),
+                                       'CONTROLLER_DIR' => array('parent'=>'APP_DIR', 'value'=>'controller/'),
+                                       'FORMS_DIR' => array('parent'=>'APP_DIR', 'value'=>'forms/'),
+                                       'CONFIG_DIR' => array('parent'=>'APP_DIR', 'value'=>'config/'),
+                                       'VIEW_DIR' => array('parent'=>'APP_DIR', 'value'=>'view/'),
+                                       'APP_LIB_DIR' => array('parent'=>'APP_DIR', 'value'=>'lib/'),
+                                       'TMP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'tmp/'),
+                                       'CACHE_DIR' => array('parent'=>'TMP_DIR', 'value'=>'cache/'),
+                                       'LOG_DIR' => array('parent'=>'TMP_DIR', 'value'=>'log/'),
+                                       'SESSION_DIR' => array('parent'=>'TMP_DIR', 'value'=>'session/'),
+                                       'PUBLIC_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'public/'),
+                                       'SCRIPT_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'javascripts/'),
+                                       'STYLE_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'stylesheets/'),
+                                       'PLUGIN_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'plugins/')
+                                       );
   /**
    * ini file to look for and the results
    */
@@ -137,10 +155,17 @@ class AutoLoader{
    * First key is the path to the file, that has an array of classes which is an array of functions
    * /path/to/file/from/wax_root => array('class_name_1'=> array('func_1', 'func_to_call_2'), 'class_name_2'=>array('func_3'))
    */
-  public static $pre_functions = array();
+  public static $pre_functions = array(
+                                      'wax/AutoLoader.php' => array(
+                                                                  'WaxDateTime'=>array('set_defaults'), 
+                                                                  'WaxCacheTrigger'=> array('layout', 'image'), 
+                                                                  'WaxTestMode'=>array('active'),
+                                                                  'WaxPluginResources'=>array('rewrite')
+                                                                  )
+                                    );
   //class registry info
   public static $register_file_ext = ".php";
-  public static $registry_directories = array();
+  public static $registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR", "PLUGIN_DIR");
   public static $registered_classes = array();
   public static $loaded_classes = array('AutoLoader');
   //paths to all the folders containing controllers
@@ -284,45 +309,6 @@ class AutoLoader{
 	}
 
 }
-
-/**
- * load the static array with default constants that applications use
- */
-AutoLoader::$wax_constants = array(
-                                    'WAX_START_TIME' => array('function'=>'microtime', 'params'=>true),
-                                    'WAX_START_MEMORY' => array('function'=>'memory_get_usage'),
-                                    'APP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'app/'),
-                                    'MODEL_DIR' => array('parent'=>'APP_DIR', 'value'=>'model/'),
-                                    'CONTROLLER_DIR' => array('parent'=>'APP_DIR', 'value'=>'controller/'),
-                                    'FORMS_DIR' => array('parent'=>'APP_DIR', 'value'=>'forms/'),
-                                    'CONFIG_DIR' => array('parent'=>'APP_DIR', 'value'=>'config/'),
-                                    'VIEW_DIR' => array('parent'=>'APP_DIR', 'value'=>'view/'),
-                                    'APP_LIB_DIR' => array('parent'=>'APP_DIR', 'value'=>'lib/'),
-                                    'TMP_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'tmp/'),
-                                    'CACHE_DIR' => array('parent'=>'TMP_DIR', 'value'=>'cache/'),
-                                    'LOG_DIR' => array('parent'=>'TMP_DIR', 'value'=>'log/'),
-                                    'SESSION_DIR' => array('parent'=>'TMP_DIR', 'value'=>'session/'),
-                                    'PUBLIC_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'public/'),
-                                    'SCRIPT_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'javascripts/'),
-                                    'STYLE_DIR' => array('parent'=>'PUBLIC_DIR', 'value'=>'stylesheets/'),
-                                    'PLUGIN_DIR' => array('parent'=>'WAX_ROOT', 'value'=>'plugins/')
-                                    );
-/**
- * Load in the 2 default mapping functions used previously
- */
-AutoLoader::$pre_functions = array(
-                                    'wax/AutoLoader.php' => array(
-                                                                'WaxDateTime'=>array('set_defaults'), 
-                                                                'WaxCacheTrigger'=> array('layout', 'image'), 
-                                                                'WaxTestMode'=>array('active'),
-                                                                'WaxPluginResources'=>array('rewrite')
-                                                                )
-                                  );
-/**
- * Standard locations to register all files from
- */
-AutoLoader::$registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR", "PLUGIN_DIR");
-
 
 
 /**
