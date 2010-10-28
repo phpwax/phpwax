@@ -219,6 +219,7 @@ class AutoLoader{
   }
   /**
    * loop over all registered directories and add the files to the class listing
+   * will also add to controller list as well
    */
   public static function register($registry = false, $constant=true){
     if(!$registry) $registry = AutoLoader::$registry_directories;
