@@ -9,7 +9,7 @@
 
 class WaxRecordset implements Iterator, ArrayAccess, Countable {
 
-  protected $model = false;
+  public $model = false;
   protected $obj = false;
   protected $key = 0;
   protected $constraints = array();
@@ -73,5 +73,6 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   public function __call($method, $args) {
     return call_user_func_array(array($this->model, $method), $args);
   }
+  
   
 }
