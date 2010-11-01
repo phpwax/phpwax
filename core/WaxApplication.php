@@ -1,7 +1,7 @@
 <?php
 
 /**
-	*  @package PHP-Wax
+	*  @package PHP-Wax  
   *  This is essentially a FrontController whose job in life
   *  is to parse the request and delegate the job to another 
   *  controller that cares.
@@ -35,7 +35,7 @@ class WaxApplication {
 
 
   /**
-	 *	Instantiates a config object and constructs the route.
+	 *	Instantiates a config object and constructs the route.  
 	 *  @access private  
    *  @return void  
    **/

@@ -102,11 +102,11 @@ class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
 }
 
 /**
- *	A simple static class to Preload php files and commence the application.
- *  It manages a registry of PHP files and includes them according to hierarchy.
- *  All file inclusion is done 'just in time' meaning that file load overhead is avoided.
- *	@package PHP-Wax
- *	@static
+ * A simple static class to Preload php files and commence the application.
+ * It manages a registry of PHP files and includes them according to hierarchy.
+ * All file inclusion is done 'just in time' meaning that file load overhead is avoided.
+ * @package PHP-Wax
+ * @static
  */
 class AutoLoader
 {
@@ -293,8 +293,8 @@ class AutoLoader
 		WaxEvent::run("wax.init");
 	}
 	/**
-	 *	Includes the necessary files and instantiates the application.
-	 *	@access public
+	 * Includes the necessary files and instantiates the application.
+	 * @access public
 	 */	
 	static public function run_application($environment="development", $full_app=true) {
 	  //if(!defined('ENV')) define('ENV', $environment);	

@@ -1,15 +1,10 @@
 <?php
-/**
- * 
- *
- * @author Ross Riley
- * @package PHP-Wax
- **/
+
 
 /**
  * Route construction class
  *
- * @package PHP-Wax
+ * @package PHP-Wax  
  * @author Ross Riley
  * 
  * This class allows urls to be mapped specifically to controllers actions and variables
@@ -40,20 +35,25 @@ class WaxUrl {
   static public $original_route = false;
   
   /**
-   *  Can be called from anywhere in the application. Maps a url to a particular outcome.
    * 
-   *  Some examples.....
-   *  WaxUrl::map(":controller/:action/:id") 
-   *    - A default if no outcome is specified the variables after the colon are named with the values
+   *  This method Can be called from anywhere in the application. Maps a url to a particular outcome.
+   * 
+   *###  URL Mapping Examples
    *
-   *  WaxUrl::map(":controller/:action/:id", array("controller"=>"blog"))
-   *    - A catch-all controller anything that can't find a controller will be mapped to the blog controller
+   *  `WaxUrl::map(":controller/:action/:id")`  
+   *  A default if no outcome is specified the variables 
+   *  after the colon are named with the values
    *
-   *  WaxUrl:map("", array("controller"=>"page"))
-   *    - Maps an empty url to a default controller - default action will be index but this can also be overwritten
+   *  `WaxUrl::map(":controller/:action/:id", array("controller"=>"blog"))`  
+   *  A catch-all controller anything that can't find a controller will 
+   *  be mapped to the blog controller.
    *
-   *  WaxUrl::map("tags/:tags*", array("controller"=>"tags", "action"=>"show"))
-   *    - Looks for trigger pattern and then returns an array of the named parameter
+   *  `WaxUrl:map("", array("controller"=>"page"))`  
+   *  Maps an empty url to a default controller - default action will 
+   *  be index but this can also be overwritten
+   *
+   *  `WaxUrl::map("tags/:tags*", array("controller"=>"tags", "action"=>"show"))`
+   *  Looks for trigger pattern and then returns an array of the named parameter
    *
    *
    * @return void

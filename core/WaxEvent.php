@@ -152,8 +152,7 @@ class WaxEvent {
   		self::$events[$name] = array();
   	} elseif (isset(self::$events[$name])) {
   		// Loop through each of the event callbacks and compare it to the
-  		// callback requested for removal. The callback is removed if it
-  		// matches.
+  		// callback requested for removal. The callback is removed if it matches.
   		foreach (self::$events[$name] as $i => $event_callback) {
   			if ($callback === $event_callback) unset(self::$events[$name][$i]);
   		}

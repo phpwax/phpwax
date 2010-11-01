@@ -215,8 +215,9 @@ abstract class WaxDbAdapter {
   
   
   /* Handles date comparison replaces parameters with db specifics */
+  // Not Yet implemented
   public function date($query) {
-    $query = preg_replace("//");
+
   }
   
   
