@@ -1,14 +1,18 @@
 <?php
+/**
+ * 	@package PHP-Wax
+ */
 
 /**
-	*  @package PHP-Wax  
-  *  This is essentially a FrontController whose job in life
-  *  is to parse the request and delegate the job to another 
-  *  controller that cares.
+	* 	@package PHP-Wax
+  *   This is essentially a FrontController whose job in life
+  *   is to parse the request and delegate the job to another controller that cares.
   *
-  *  In making this decision it will consult the application configuration for guidance.
-  *  It's also this lovely class's job to provide a limited amount of wiring to the rest of
-  *  the application and setup some kind of Database Connection if required.
+  *   In making this decision it will consult the application configuration for guidance.
+  *   It's also this lovely class's job to provide a limited amount of wiring to the rest of
+  *   the application and setup some kind of Database Connection if required.
+  *
+  *   
   *
   */
   
@@ -25,7 +29,7 @@ class WaxApplication {
     *
     */
 
-	public function __construct($delegate) {
+	function __construct($delegate) {
     WaxEvent::run("wax.start");
     $this->setup_environment();	
 	  $this->initialise_database();
@@ -35,11 +39,10 @@ class WaxApplication {
 
 
   /**
-	 *	Instantiates a config object and constructs the route.  
-	 *  @access private  
-   *  @return void  
-   **/
-   
+	 *	Instantiates a config object and constructs the route.
+	 *  @access private
+   *  @return void
+   */
 	private function setup_environment() {
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["SERVER_NAME"]);
@@ -55,7 +58,7 @@ class WaxApplication {
 		  define("ENV", "production");
 		} else Config::set_environment('development');
 			  
-		//  Looks for an environment specific file inside app/config 
+		/*  Looks for an environment specific file inside app/config */
 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
 		WaxLog::log("info", "Detected environment $addr and loaded ".ENV);
 	  
@@ -66,11 +69,12 @@ class WaxApplication {
 	 *  It then passes this information to the ActiveRecord object.
 	 *
 	 *  A few defaults are allowed in case you are too lazy to specify.
-	 *  Dbtype defaults to *mysql*
-	 *  Host defaults to *localhost*
-	 *  Port defaults to *3306*
+	 *  Dbtype defaults to mysql
+	 *  Host defaults to localhost
+	 *  Port defaults to 3306
+	 *  
 	 *
-	 *  @access private  
+	 *  @access private
    *  @return void
    */
   
@@ -82,12 +86,7 @@ class WaxApplication {
   }
 	
 
-  /**
-	 *	The main application method, triggers all application events.
-	 *  Delegates response handling to WaxResponse.
-   *
-   **/
-   
+  
   public function execute() {
     Session::start();
     WaxEvent::run("wax.request");
@@ -103,13 +102,6 @@ class WaxApplication {
 		WaxEvent::run("wax.post_render", $this->response);
 		$this->response->execute();
   }
-  
-  
-  /**
-	 *	Takes the controller and triggers the relevant action.
-	 *  @param WaxController $controller
-   *
-   **/
   
   public function execute_controller($controller) {	      
     $controller->controller = WaxUrl::get("controller");
@@ -148,13 +140,13 @@ class WaxApplication {
 		else $this->response->write(""); 
   }
   
-  //### Application Helper Methods
-  
+  /******* Application Helper Methods *********/
+
+
   /**
    *  Surely it's self-documenting?.
 	 *	@return bool
- 	 **/
- 	 
+ 	 */
 	public static function is_public_method($object, $method) {
     if(!method_exists($object, $method)) return false;
     $this_method = new ReflectionMethod($object, $method);
@@ -165,3 +157,5 @@ class WaxApplication {
 
 }
 
+
+?>

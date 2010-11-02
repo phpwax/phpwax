@@ -17,7 +17,7 @@ class WaxBoundForm implements iterator {
       $element = $model->get_col($column);
       $widget_name = $element->widget;
       $widget = new $widget_name($column, $element);
-      if($element->editable) $this->elements[$column] = $widget;
+      $this->elements[$column] = $widget;
     }
   }
   
