@@ -105,6 +105,7 @@ class WaxModelField {
     $validator->validate();
     if($validator->is_valid() && (!$this->errors)) return true;
     else $this->errors = array_merge($this->errors,$validator->errors);
+    print_r($this->errors); exit;
     return false;
   }
   
@@ -123,7 +124,7 @@ class WaxModelField {
  	  if($value =="value") return $this->output();
  	  else if($value =="name") return $this->table."[".$this->field."]";
     else if($value =="id") return $this->table."_{$this->field}";
-    else if($this->model instanceof WaxModel) return $this->model->$value;
+    else if($this->model instanceof WaxModel && array_key_exists($value,$this->model->row)) return $this->model->$value;
  	}
   
   public function setup_skip_delegation_cache(){
