@@ -225,8 +225,7 @@ class AutoLoader{
     foreach($registry as $d){
       if($constant) $d = constant($d);
       if(is_readable($d) && is_dir($d) && substr($directory,0,1)!="."){
-        $dir = new RecursiveIteratorIterator(new WaxRecursiveDirectoryIterator($d), true);
-        $dir = new RegexIterator(new RecursiveIteratorIterator(new WaxRecursiveDirectoryIterator($d), true), '/php$/i');
+        $dir = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($d), true), '/php$/i');
         foreach($dir as $file){          
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
             $path = $file->getPathName();
