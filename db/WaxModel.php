@@ -601,6 +601,20 @@ class WaxModel{
       return $field->get($args[0]);
     }
   }
+  
+  public static function __callStatic($func, $args) {
+    $finder = explode("by", $func);
+    $what=explode("and", $finder[1]);
+    foreach($what as $key=>$val) $what[$key]= trim($val, "_");
+
+    if( $args ) {
+      if(count($what)==2) $filter["filter"] = array($what[0]=>$args[0], $what[1], $args[1]);
+    	else $filter["filter"] = array($what[0]=>$args[0]) ;
+
+    	if($finder[0]=="find_all_") return self::find("all", $filter);
+      else return self::find("first", $filter);
+    }
+  }
 
   public function __clone() {
   	$this->setup();

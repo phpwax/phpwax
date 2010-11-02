@@ -215,8 +215,9 @@ abstract class WaxDbAdapter {
   
   
   /* Handles date comparison replaces parameters with db specifics */
+  // Not Yet implemented
   public function date($query) {
-    $query = preg_replace("//");
+
   }
   
   
@@ -348,7 +349,7 @@ abstract class WaxDbAdapter {
     
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
-    // Map definitions to database - create or alter if required		
+    // Map definitions to database - create or alter if required	
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;

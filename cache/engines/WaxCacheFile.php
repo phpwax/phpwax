@@ -64,7 +64,8 @@ class WaxCacheFile implements CacheEngine{
 	}
 
   public function get_namespace($config, $uri){
-    $url = trim($uri, "/");
+    if(!$pos = strpos($uri, "?")) $pos = strlen($uri);
+    $url = trim(substr($uri, 0, $pos), "/");
     $namespace = false;
     if($config && is_array($config) && $config['namespace']){
 		  $regexes = $config['namespace'];
