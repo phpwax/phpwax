@@ -165,7 +165,7 @@ class AutoLoader{
                                     );
   //class registry info
   public static $register_file_ext = ".php";
-  public static $registry_directories = array("APP_DIR", "PLUGIN_DIR", "FRAMEWORK_DIR");
+  public static $registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR");
   public static $registered_classes = array();
   public static $loaded_classes = array('AutoLoader');
   //paths to all the folders containing controllers
