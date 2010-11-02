@@ -191,11 +191,10 @@ class AutoLoader{
    * register & include the inis
    */
   public static function inis(){
-    $dir = new RecursiveIteratorIterator( $dirit = new WaxRecursiveDirectoryIterator(PLUGIN_DIR), true);
-    foreach($dir as $file){
-      if(basename($file->getFilename()) ==  AutoLoader::$ini_file){
-        AutoLoader::$inis[] = $file;
-        include_once $file;
+    foreach(scandir(PLUGIN_DIR) as $item){
+      if(is_dir(PLUGIN_DIR.$item) && is_readable(PLUGIN_DIR.$item) && is_readable(PLUGIN_DIR.$item."/".AutoLoader::$ini_file) && is_file(PLUGIN_DIR.$item."/".AutoLoader::$ini_file)){
+        AutoLoader::$inis[] = PLUGIN_DIR.$item."/".AutoLoader::$ini_file;
+        include_once PLUGIN_DIR.$item."/".AutoLoader::$ini_file;
       }
     }
   }
