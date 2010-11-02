@@ -224,7 +224,7 @@ class AutoLoader{
     if(!$registry) $registry = AutoLoader::$registry_directories;
     foreach($registry as $d){
       if($constant) $d = constant($d);
-      if(is_readable($d) && is_dir($d) ){
+      if(is_readable($d) && is_dir($d)){
         $dir = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($d), true), '/php$/i');
         foreach($dir as $file){          
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
@@ -247,6 +247,7 @@ class AutoLoader{
 	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){ //if it looks like a plugin
 	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin; //add to the main array
 	        AutoLoader::$view_registry["plugin"][] = PLUGIN_DIR.$plugin."/view/"; //add the view dir to the stack
+	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/lib", PLUGIN_DIR.$plugin."/resources/app/controller"), false);
 	        if(is_file(PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file)) include_once PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file;
 	      }
 	    }
