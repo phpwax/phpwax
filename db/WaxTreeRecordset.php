@@ -9,7 +9,7 @@
 
 class WaxTreeRecordset extends WaxRecordset implements RecursiveIterator {
   
-  public $model = false;
+  protected $model = false;
   protected $obj = false;
   protected $constraints = array();
   public $key = 0;
