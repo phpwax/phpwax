@@ -9,6 +9,11 @@
 class WaxClosureTree extends WaxModel {
   public $closure_table_class = "WaxClosureTable";
   
+  function __construct($params){
+    parent::__construct($params);
+    $this->define("level","IntegerField");
+  }
+
   /**
    * returns an empty closure table model
    */
