@@ -4,46 +4,45 @@
  */
 
 /**
-	*	An class to handle database authentication.
-	* Can be extended to check access via a flat file or any other method.
- 	* @package PHP-Wax
+  * An class to handle database authentication.
+  * Can be extended to check access via a flat file or any other method.
+  * @package PHP-Wax
   */
-class WaxAuthDb
-{
+class WaxAuthDb {
 
 
   /**
-	 *	Stores the current user id.
-	 *  Used as a test to see if a user is logged in.
-	 *	@access protected
-	 *	@var int
-	 */
- 	public $user_field = "username";
- 	public $password_field = "password";  
+   *  Stores the current user id.
+   *  Used as a test to see if a user is logged in.
+   *  @access protected
+   *  @var int
+   */
+  public $user_field = "username";
+  public $password_field = "password";  
   protected $session_key = "loggedin_user";
- 	protected $user_id=null;
+  protected $user_id=null;
   protected $user_object=null;
-	protected $db_table = "user";
-	protected $user_class = false;
+  protected $db_table = "user";
+  protected $user_class = false;
   protected $encrypt=false;
   protected $salt=false;
-	protected $algorithm = "md5";
+  protected $algorithm = "md5";
 
-	function __construct($options=array()) {
-		if(is_string($options["encrypt"]) || is_numeric($options["encrypt"])){
-			$this->encrypt = true;
-			if($options['salt']) $this->salt = $options["salt"];
-		}elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
-		
-	  if(isset($options["db_table"])) $this->db_table=$options["db_table"];
-	  if(isset($options["user_class"])) $this->user_class=$options["user_class"];
-	  if(isset($options["salt"])) $this->salt=$options["salt"];
-	  if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
-	  if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
-	  if(isset($options["session_key"])) $this->session_key=$options["session_key"];
-		if(isset($options["algorithm"])) $this->algorithm=$options["algorithm"];
-	  $this->setup_user();
-	}
+  function __construct($options=array()) {
+    if(is_string($options["encrypt"]) || is_numeric($options["encrypt"])){
+      $this->encrypt = true;
+      if($options['salt']) $this->salt = $options["salt"];
+    }elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+
+    if(isset($options["db_table"])) $this->db_table=$options["db_table"];
+    if(isset($options["user_class"])) $this->user_class=$options["user_class"];
+    if(isset($options["salt"])) $this->salt=$options["salt"];
+    if(isset($options["user_field"])) $this->user_field=$options["user_field"];	
+    if(isset($options["password_field"])) $this->password_field=$options["password_field"];		
+    if(isset($options["session_key"])) $this->session_key=$options["session_key"];
+    if(isset($options["algorithm"])) $this->algorithm=$options["algorithm"];
+    $this->setup_user();
+  }
 	
 	/**
 	 *	Sees if a loggedin_user is set in the session.
