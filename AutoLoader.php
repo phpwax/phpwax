@@ -246,7 +246,6 @@ class AutoLoader{
 	    foreach($plugins as $plugin) {
 	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){ //if it looks like a plugin
 	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin; //add to the main array
-	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/"), false); //register all the php classes
 	        AutoLoader::$view_registry["plugin"][] = PLUGIN_DIR.$plugin."/view/"; //add the view dir to the stack
 	        if(is_file(PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file)) include_once PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file;
 	      }
