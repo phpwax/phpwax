@@ -230,7 +230,7 @@ class AutoLoader{
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
             $path = $file->getPathName();
             $classname = basename($fn, ".php");
-            if(!AutoLoader::$registered_classes[$classname]) AutoLoader::$registered_classes[$classname] = $path;
+            AutoLoader::$registered_classes[$classname] = $path;
             //check for this being a controller
             if(strstr($path, "/controller/")) AutoLoader::$controller_paths = array_unique(array_merge(AutoLoader::$controller_paths, array(substr($path,0,strrpos($path, "/controller/")+12) ) ));
           }
