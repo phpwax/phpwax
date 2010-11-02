@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>DateSelectInput.php</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="layout.css" />
+  <style>
+    /*--------------------- Layout and Typography ----------------------------*/
+body { font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, FreeSerif, serif; font-size: 15px; line-height: 22px; color: #252519; margin: 0; padding: 0;
+}
+a { color: #261a3b;
+} a:visited { color: #261a3b; }
+p { margin: 0 0 15px 0;
+}
+h1, h2, h3, h4, h5, h6 { margin: 40px 0 15px 0;
+} h3, h4, h5, h6 { margin-top: 20px; }
+#container { position: relative;
+}
+#background { position: fixed; top: 0; left: 575px; right: 0; bottom: 0; background: #f5f5ff; border-left: 1px solid #e5e5ee; z-index: -1;
+}
+#jump_to, #jump_page { background: white; -webkit-box-shadow: 0 0 25px #777; -moz-box-shadow: 0 0 25px #777; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomleft: 5px; font: 10px Arial; text-transform: uppercase; cursor: pointer; text-align: right;
+}
+#jump_to, #jump_wrapper { position: fixed; right: 0; top: 0; padding: 5px 10px;
+} #jump_wrapper { padding: 0; display: none; } #jump_to:hover #jump_wrapper { display: block; } #jump_page { padding: 5px 0 3px; margin: 0 0 25px 25px; overflow:hidden; } #jump_page .source { display: block; padding: 5px 10px; text-decoration: none; border-top: 1px solid #eee; float:left; min-width:180px; text-align:left; text-transform:none; font-size:11px; } #jump_page .source:hover { background: #f5f5ff; } #jump_page .source:first-child { }
+table td { border: 0; outline: 0;
+} td.docs, th.docs { max-width: 450px; min-width: 450px; min-height: 5px; padding: 10px 25px 1px 50px; overflow-x: hidden; vertical-align: top; text-align: left; } .docs pre { margin: 15px 0 15px; padding-left: 15px; } .docs p tt, .docs p code { background: #f8f8ff; border: 1px solid #dedede; font-size: 12px; padding: 0 0.2em; } .pilwrap { position: relative; } .pilcrow { font: 12px Arial; text-decoration: none; color: #454545; position: absolute; top: 3px; left: -20px; padding: 1px 2px; opacity: 0; -webkit-transition: opacity 0.2s linear; } td.docs:hover .pilcrow { opacity: 1; } td.code, th.code { padding: 14px 15px 16px 25px; width: 100%; vertical-align: top; background: #f5f5ff; border-left: 1px solid #e5e5ee; } pre, tt, code { font-size: 12px; line-height: 18px; font-family: Monaco, Consolas, "Lucida Console", monospace; margin: 0; padding: 0; } /*---------------------- Syntax Highlighting -----------------------------*/
+td.linenos { background-color: #f0f0f0; padding-right: 10px; }
+span.lineno { background-color: #f0f0f0; padding: 0 5px 0 5px; }
+body .hll { background-color: #ffffcc }
+body .c { color: #408080; font-style: italic } /* Comment */
+body .err { border: 1px solid #FF0000 } /* Error */
+body .k { color: #954121 } /* Keyword */
+body .o { color: #666666 } /* Operator */
+body .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+body .cp { color: #BC7A00 } /* Comment.Preproc */
+body .c1 { color: #408080; font-style: italic } /* Comment.Single */
+body .cs { color: #408080; font-style: italic } /* Comment.Special */
+body .gd { color: #A00000 } /* Generic.Deleted */
+body .ge { font-style: italic } /* Generic.Emph */
+body .gr { color: #FF0000 } /* Generic.Error */
+body .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+body .gi { color: #00A000 } /* Generic.Inserted */
+body .go { color: #808080 } /* Generic.Output */
+body .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+body .gs { font-weight: bold } /* Generic.Strong */
+body .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+body .gt { color: #0040D0 } /* Generic.Traceback */
+body .kc { color: #954121 } /* Keyword.Constant */
+body .kd { color: #954121; font-weight: bold } /* Keyword.Declaration */
+body .kn { color: #954121; font-weight: bold } /* Keyword.Namespace */
+body .kp { color: #954121 } /* Keyword.Pseudo */
+body .kr { color: #954121; font-weight: bold } /* Keyword.Reserved */
+body .kt { color: #B00040 } /* Keyword.Type */
+body .m { color: #666666 } /* Literal.Number */
+body .s { color: #219161 } /* Literal.String */
+body .na { color: #7D9029 } /* Name.Attribute */
+body .nb { color: #954121 } /* Name.Builtin */
+body .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+body .no { color: #880000 } /* Name.Constant */
+body .nd { color: #AA22FF } /* Name.Decorator */
+body .ni { color: #999999; font-weight: bold } /* Name.Entity */
+body .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+body .nf { color: #0000FF } /* Name.Function */
+body .nl { color: #A0A000 } /* Name.Label */
+body .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+body .nt { color: #954121; font-weight: bold } /* Name.Tag */
+body .nv { color: #19469D } /* Name.Variable */
+body .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+body .w { color: #bbbbbb } /* Text.Whitespace */
+body .mf { color: #666666 } /* Literal.Number.Float */
+body .mh { color: #666666 } /* Literal.Number.Hex */
+body .mi { color: #666666 } /* Literal.Number.Integer */
+body .mo { color: #666666 } /* Literal.Number.Oct */
+body .sb { color: #219161 } /* Literal.String.Backtick */
+body .sc { color: #219161 } /* Literal.String.Char */
+body .sd { color: #219161; font-style: italic } /* Literal.String.Doc */
+body .s2 { color: #219161 } /* Literal.String.Double */
+body .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+body .sh { color: #219161 } /* Literal.String.Heredoc */
+body .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+body .sx { color: #954121 } /* Literal.String.Other */
+body .sr { color: #BB6688 } /* Literal.String.Regex */
+body .s1 { color: #219161 } /* Literal.String.Single */
+body .ss { color: #19469D } /* Literal.String.Symbol */
+body .bp { color: #954121 } /* Name.Builtin.Pseudo */
+body .vc { color: #19469D } /* Name.Variable.Class */
+body .vg { color: #19469D } /* Name.Variable.Global */
+body .vi { color: #19469D } /* Name.Variable.Instance */
+body .il { color: #666666 } /* Literal.Number.Integer.Long */ /********** PHP Comment Additions ********/
+td.docs .docparam {color:#DB251A;font-weight:bold;}
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+          <div id="jump_to">
+        Jump To &hellip;
+        <div id="jump_wrapper">
+          <div id="jump_page">
+                                        <a class="source" href="../../auth/WaxAuthDb.html">
+                              WaxAuthDb.php              </a>
+                                        <a class="source" href="../..//AutoLoader.html">
+                              AutoLoader.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheBackgroundFile.html">
+                              WaxCacheBackgroundFile.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheBackgroundMemcache.html">
+                              WaxCacheBackgroundMemcache.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheFile.html">
+                              WaxCacheFile.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheFilesystem.html">
+                              WaxCacheFilesystem.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheImage.html">
+                              WaxCacheImage.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheMemcache.html">
+                              WaxCacheMemcache.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxCacheMemory.html">
+                              WaxCacheMemory.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxRegenFileCache.html">
+                              WaxRegenFileCache.php              </a>
+                                        <a class="source" href="../../cache/engines/WaxRegenMemcacheCache.html">
+                              WaxRegenMemcacheCache.php              </a>
+                                        <a class="source" href="../../cache/WaxCache.html">
+                              WaxCache.php              </a>
+                                        <a class="source" href="../../cache/WaxCacheHelper.html">
+                              WaxCacheHelper.php              </a>
+                                        <a class="source" href="../../cache/WaxCacheLoader.html">
+                              WaxCacheLoader.php              </a>
+                                        <a class="source" href="../../core/WaxApplication.html">
+                              WaxApplication.php              </a>
+                                        <a class="source" href="../../core/WaxEvent.html">
+                              WaxEvent.php              </a>
+                                        <a class="source" href="../../db/adapters/WaxMysqlAdapter.html">
+                              WaxMysqlAdapter.php              </a>
+                                        <a class="source" href="../../db/adapters/WaxSqliteAdapter.html">
+                              WaxSqliteAdapter.php              </a>
+                                        <a class="source" href="../../db/fields/AutoField.html">
+                              AutoField.php              </a>
+                                        <a class="source" href="../../db/fields/BooleanField.html">
+                              BooleanField.php              </a>
+                                        <a class="source" href="../../db/fields/CharField.html">
+                              CharField.php              </a>
+                                        <a class="source" href="../../db/fields/DateTimeField.html">
+                              DateTimeField.php              </a>
+                                        <a class="source" href="../../db/fields/EmailField.html">
+                              EmailField.php              </a>
+                                        <a class="source" href="../../db/fields/FileField.html">
+                              FileField.php              </a>
+                                        <a class="source" href="../../db/fields/FloatField.html">
+                              FloatField.php              </a>
+                                        <a class="source" href="../../db/fields/ForeignKey.html">
+                              ForeignKey.php              </a>
+                                        <a class="source" href="../../db/fields/HasManyField.html">
+                              HasManyField.php              </a>
+                                        <a class="source" href="../../db/fields/IntegerField.html">
+                              IntegerField.php              </a>
+                                        <a class="source" href="../../db/fields/ManyToManyField.html">
+                              ManyToManyField.php              </a>
+                                        <a class="source" href="../../db/fields/PasswordField.html">
+                              PasswordField.php              </a>
+                                        <a class="source" href="../../db/fields/TextField.html">
+                              TextField.php              </a>
+                                        <a class="source" href="../../db/WaxDbAdapter.html">
+                              WaxDbAdapter.php              </a>
+                                        <a class="source" href="../../db/WaxModel.html">
+                              WaxModel.php              </a>
+                                        <a class="source" href="../../db/WaxModelAssociation.html">
+                              WaxModelAssociation.php              </a>
+                                        <a class="source" href="../../db/WaxModelField.html">
+                              WaxModelField.php              </a>
+                                        <a class="source" href="../../db/WaxModelJoin.html">
+                              WaxModelJoin.php              </a>
+                                        <a class="source" href="../../db/WaxModelOrderedJoin.html">
+                              WaxModelOrderedJoin.php              </a>
+                                        <a class="source" href="../../db/WaxPaginatedRecordset.html">
+                              WaxPaginatedRecordset.php              </a>
+                                        <a class="source" href="../../db/WaxRecordset.html">
+                              WaxRecordset.php              </a>
+                                        <a class="source" href="../../db/WaxTreeModel.html">
+                              WaxTreeModel.php              </a>
+                                        <a class="source" href="../../db/WaxTreeRecordset.html">
+                              WaxTreeRecordset.php              </a>
+                                        <a class="source" href="../../dispatch/WaxController.html">
+                              WaxController.php              </a>
+                                        <a class="source" href="../../dispatch/WaxResponse.html">
+                              WaxResponse.php              </a>
+                                        <a class="source" href="../../dispatch/WaxUrl.html">
+                              WaxUrl.php              </a>
+                                        <a class="source" href="../../exceptions/MaintenanceException.html">
+                              MaintenanceException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxDbException.html">
+                              WaxDbException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxDBStructureException.html">
+                              WaxDBStructureException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxDependencyException.html">
+                              WaxDependencyException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxEmailException.html">
+                              WaxEmailException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxException.html">
+                              WaxException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxPermissionsException.html">
+                              WaxPermissionsException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxSqlException.html">
+                              WaxSqlException.php              </a>
+                                        <a class="source" href="../../exceptions/WaxUserException.html">
+                              WaxUserException.php              </a>
+                                        <a class="source" href="../../exceptions/WXException.html">
+                              WXException.php              </a>
+                                        <a class="source" href="../../exceptions/WXRoutingException.html">
+                              WXRoutingException.php              </a>
+                                        <a class="source" href="../../forms/WaxBoundForm.html">
+                              WaxBoundForm.php              </a>
+                                        <a class="source" href="../../forms/WaxForm.html">
+                              WaxForm.php              </a>
+                                        <a class="source" href="../../forms/WaxRecordsetForm.html">
+                              WaxRecordsetForm.php              </a>
+                                        <a class="source" href="../../forms/WaxUnboundForm.html">
+                              WaxUnboundForm.php              </a>
+                                        <a class="source" href="../../forms/WaxValidate.html">
+                              WaxValidate.php              </a>
+                                        <a class="source" href="../../forms/WaxWidget.html">
+                              WaxWidget.php              </a>
+                                        <a class="source" href="../../forms/widgets/CheckboxInput.html">
+                              CheckboxInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/CountrySelectInput.html">
+                              CountrySelectInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/DateInput.html">
+                              DateInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/DateSelectInput.html">
+                              DateSelectInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/FileInput.html">
+                              FileInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/HiddenInput.html">
+                              HiddenInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/ImageSubmitInput.html">
+                              ImageSubmitInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/MultipleSelectInput.html">
+                              MultipleSelectInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/PasswordInput.html">
+                              PasswordInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/SelectInput.html">
+                              SelectInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/SubmitInput.html">
+                              SubmitInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/TextareaInput.html">
+                              TextareaInput.php              </a>
+                                        <a class="source" href="../../forms/widgets/TextInput.html">
+                              TextInput.php              </a>
+                                        <a class="source" href="../../helpers/AssetTagHelper.html">
+                              AssetTagHelper.php              </a>
+                                        <a class="source" href="../../helpers/deprecated/FormBuilderHelper.html">
+                              FormBuilderHelper.php              </a>
+                                        <a class="source" href="../../helpers/deprecated/FormHelper.html">
+                              FormHelper.php              </a>
+                                        <a class="source" href="../../helpers/deprecated/FormOptionsHelper.html">
+                              FormOptionsHelper.php              </a>
+                                        <a class="source" href="../../helpers/deprecated/FormTagHelper.html">
+                              FormTagHelper.php              </a>
+                                        <a class="source" href="../../helpers/RequestHelper.html">
+                              RequestHelper.php              </a>
+                                        <a class="source" href="../../helpers/UrlHelper.html">
+                              UrlHelper.php              </a>
+                                        <a class="source" href="../../helpers/WXHelpers.html">
+                              WXHelpers.php              </a>
+                                        <a class="source" href="../../interfaces/Cacheable.html">
+                              Cacheable.php              </a>
+                                        <a class="source" href="../../interfaces/CacheEngine.html">
+                              CacheEngine.php              </a>
+                                        <a class="source" href="../../template/WaxPartial.html">
+                              WaxPartial.php              </a>
+                                        <a class="source" href="../../template/WaxPartialHelper.html">
+                              WaxPartialHelper.php              </a>
+                                        <a class="source" href="../../template/WaxTemplate.html">
+                              WaxTemplate.php              </a>
+                                        <a class="source" href="../../testing/WXTestCase.html">
+                              WXTestCase.php              </a>
+                                        <a class="source" href="../../testing/WXWebTestCase.html">
+                              WXWebTestCase.php              </a>
+                                        <a class="source" href="../../tests/TestConfig.html">
+                              TestConfig.php              </a>
+                                        <a class="source" href="../../tests/TestInflections.html">
+                              TestInflections.php              </a>
+                                        <a class="source" href="../../tests/TestPaginatedRecordset.html">
+                              TestPaginatedRecordset.php              </a>
+                                        <a class="source" href="../../tests/TestRequest.html">
+                              TestRequest.php              </a>
+                                        <a class="source" href="../../tests/TestWaxAuthDb.html">
+                              TestWaxAuthDb.php              </a>
+                                        <a class="source" href="../../tests/TestWaxController.html">
+                              TestWaxController.php              </a>
+                                        <a class="source" href="../../tests/TestWaxModel.html">
+                              TestWaxModel.php              </a>
+                                        <a class="source" href="../../tests/TestWaxModelField.html">
+                              TestWaxModelField.php              </a>
+                                        <a class="source" href="../../tests/TestWaxTreeModel.html">
+                              TestWaxTreeModel.php              </a>
+                                        <a class="source" href="../../tests/TestWaxUrl.html">
+                              TestWaxUrl.php              </a>
+                                        <a class="source" href="../../tests/TestWXEmail.html">
+                              TestWXEmail.php              </a>
+                                        <a class="source" href="../../utilities/Config.html">
+                              Config.php              </a>
+                                        <a class="source" href="../../utilities/deprecated/WXEmail.html">
+                              WXEmail.php              </a>
+                                        <a class="source" href="../../utilities/deprecated/WXScripts.html">
+                              WXScripts.php              </a>
+                                        <a class="source" href="../../utilities/File.html">
+                              File.php              </a>
+                                        <a class="source" href="../../utilities/Inflections.html">
+                              Inflections.php              </a>
+                                        <a class="source" href="../../utilities/Profiler.html">
+                              Profiler.php              </a>
+                                        <a class="source" href="../../utilities/Request.html">
+                              Request.php              </a>
+                                        <a class="source" href="../../utilities/Session.html">
+                              Session.php              </a>
+                                        <a class="source" href="../../utilities/Spyc.html">
+                              Spyc.php              </a>
+                                        <a class="source" href="../../utilities/WaxCLI.html">
+                              WaxCLI.php              </a>
+                                        <a class="source" href="../../utilities/WaxCodeGenerator.html">
+                              WaxCodeGenerator.php              </a>
+                                        <a class="source" href="../../utilities/WaxEmail.html">
+                              WaxEmail.php              </a>
+                                        <a class="source" href="../../utilities/WaxLog.html">
+                              WaxLog.php              </a>
+                      </div>
+        </div>
+      </div>
+        <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              DateSelectInput.php            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+                  <tr id="section-0">
+            <td class="docs">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-0">&#182;</a>
+              </div>
+              <p>Date Select Input Widget class
+ Presents a date as a collection of three select inputs
+<em class='docparam'>@package</em> PHP-Wax</p>
+            </td>
+            <td class="code">
+              <div class="highlight"><pre><span class="k">class</span> <span class="nc">DateSelectInput</span> <span class="k">extends</span> <span class="nx">TextInput</span> <span class="p">{</span>
+
+  <span class="k">public</span> <span class="nv">$type</span><span class="o">=</span><span class="s2">&quot;hidden&quot;</span><span class="p">;</span>
+  <span class="k">public</span> <span class="nv">$class</span> <span class="o">=</span> <span class="s2">&quot;input_field hidden_field&quot;</span><span class="p">;</span>
+  
+
+
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">make_select_dropdowns</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> <span class="nv">$i</span><span class="o">&lt;=</span><span class="m">31</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$i</span> <span class="o">=</span> <span class="nb">str_pad</span><span class="p">(</span><span class="nv">$i</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="nx">STR_PAD_LEFT</span><span class="p">);</span>
+      <span class="nv">$day</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="o">=</span><span class="nv">$i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="m">1</span><span class="p">;</span> <span class="nv">$i</span><span class="o">&lt;=</span><span class="m">12</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$i</span> <span class="o">=</span> <span class="nb">str_pad</span><span class="p">(</span><span class="nv">$i</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="nx">STR_PAD_LEFT</span><span class="p">);</span>
+      <span class="nv">$timestamp</span> <span class="o">=</span> <span class="nb">mktime</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="nv">$i</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2005</span><span class="p">);</span>
+      <span class="nv">$month</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="o">=</span><span class="nb">date</span><span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="nv">$timestamp</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="nv">$i</span> <span class="o">=</span> <span class="m">1900</span><span class="p">;</span> <span class="nv">$i</span><span class="o">&lt;=</span><span class="m">2030</span><span class="p">;</span> <span class="nv">$i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$year</span><span class="p">[</span><span class="nv">$i</span><span class="p">]</span><span class="o">=</span><span class="nv">$i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nv">$choice</span> <span class="o">=</span> <span class="s1">&#39;&lt;option value=&quot;%s&quot;%s&gt;%s&lt;/option&gt;&#39;</span><span class="p">;</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s1">&#39;&lt;select id=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="o">.</span><span class="s1">&#39;_day&quot; name=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="o">.</span><span class="s1">&#39;[day]&quot; class=&quot;date_select_day&quot;&gt;&#39;</span><span class="p">;</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="nv">$day</span> <span class="k">as</span> <span class="nv">$k</span><span class="o">=&gt;</span><span class="nv">$v</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$sel</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="nb">date</span><span class="p">(</span><span class="s2">&quot;j&quot;</span><span class="p">,</span><span class="nb">strtotime</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">value</span><span class="p">))</span><span class="o">==</span><span class="nv">$k</span><span class="p">)</span> <span class="nv">$sel</span> <span class="o">=</span> <span class="s1">&#39; selected=&quot;selected&quot;&#39;</span><span class="p">;</span>
+      <span class="nv">$output</span><span class="o">.=</span><span class="nb">sprintf</span><span class="p">(</span><span class="nv">$choice</span><span class="p">,</span> <span class="nv">$k</span><span class="p">,</span> <span class="nv">$sel</span><span class="p">,</span> <span class="nv">$v</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s2">&quot;&lt;/select&gt;&quot;</span><span class="p">;</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s1">&#39;&lt;select id=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="o">.</span><span class="s1">&#39;_month&quot; name=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="o">.</span><span class="s1">&#39;[month]&quot; class=&quot;date_select_month&quot;&gt;&#39;</span><span class="p">;</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="nv">$month</span> <span class="k">as</span> <span class="nv">$k</span><span class="o">=&gt;</span><span class="nv">$v</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$sel</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="nb">date</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">,</span><span class="nb">strtotime</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">value</span><span class="p">))</span><span class="o">==</span><span class="nv">$k</span><span class="p">)</span> <span class="nv">$sel</span> <span class="o">=</span> <span class="s1">&#39; selected=&quot;selected&quot;&#39;</span><span class="p">;</span>
+      <span class="nv">$output</span><span class="o">.=</span><span class="nb">sprintf</span><span class="p">(</span><span class="nv">$choice</span><span class="p">,</span> <span class="nv">$k</span><span class="p">,</span> <span class="nv">$sel</span><span class="p">,</span> <span class="nv">$v</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s2">&quot;&lt;/select&gt;&quot;</span><span class="p">;</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s1">&#39;&lt;select id=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="o">.</span><span class="s1">&#39;_year&quot; name=&quot;&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">name</span><span class="o">.</span><span class="s1">&#39;[year]&quot; class=&quot;date_select_year&quot;&gt;&#39;</span><span class="p">;</span>
+    <span class="k">foreach</span><span class="p">(</span><span class="nv">$year</span> <span class="k">as</span> <span class="nv">$k</span><span class="o">=&gt;</span><span class="nv">$v</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$sel</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="k">if</span><span class="p">(</span><span class="nb">date</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">,</span><span class="nb">strtotime</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">value</span><span class="p">))</span><span class="o">==</span><span class="nv">$k</span><span class="p">)</span> <span class="nv">$sel</span> <span class="o">=</span> <span class="s1">&#39; selected=&quot;selected&quot;&#39;</span><span class="p">;</span>
+      <span class="nv">$output</span><span class="o">.=</span><span class="nb">sprintf</span><span class="p">(</span><span class="nv">$choice</span><span class="p">,</span> <span class="nv">$k</span><span class="p">,</span> <span class="nv">$sel</span><span class="p">,</span> <span class="nv">$v</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nv">$output</span><span class="o">.=</span><span class="s2">&quot;&lt;/select&gt;&quot;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nv">$output</span><span class="p">;</span>
+  <span class="p">}</span>
+  
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">after_tag</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">make_select_dropdowns</span><span class="p">();</span>
+  <span class="p">}</span>
+  
+  <span class="k">public</span> <span class="k">function</span> <span class="nf">handle_post</span><span class="p">(</span><span class="nv">$val</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">date</span><span class="p">(</span><span class="s2">&quot;Y-m-d H:i:s&quot;</span><span class="p">,</span> <span class="nb">strtotime</span><span class="p">(</span><span class="nv">$val</span><span class="p">[</span><span class="s2">&quot;month&quot;</span><span class="p">]</span><span class="o">.</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="nv">$val</span><span class="p">[</span><span class="s2">&quot;day&quot;</span><span class="p">]</span><span class="o">.</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="nv">$val</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]));</span>
+  <span class="p">}</span>
+
+<span class="p">}</span></pre></div>            </td>
+          </tr>
+                  <tr id="section-1">
+            <td class="docs">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>END class</p>
+            </td>
+            <td class="code">
+              <div class="highlight"><pre></pre></div></pre></div>            </td>
+          </tr>
+              </tbody>
+    </table>
+  </div>
+</body>
+</html>
