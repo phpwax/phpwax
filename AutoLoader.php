@@ -224,7 +224,7 @@ class AutoLoader{
     if(!$registry) $registry = AutoLoader::$registry_directories;
     foreach($registry as $d){
       if($constant) $d = constant($d);
-      if(is_readable($d) && is_dir($d) && substr($directory,0,1)!="."){
+      if(is_readable($d) && is_dir($d) ){
         $dir = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($d), true), '/php$/i');
         foreach($dir as $file){          
           if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
