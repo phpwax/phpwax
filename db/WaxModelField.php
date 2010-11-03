@@ -105,7 +105,6 @@ class WaxModelField {
     $validator->validate();
     if($validator->is_valid() && (!$this->errors)) return true;
     else $this->errors = array_merge($this->errors,$validator->errors);
-    print_r($this->errors); exit;
     return false;
   }
   
