@@ -4,15 +4,6 @@
  *  Sets up constants for the main file locations.
  *  @package PHP-Wax
  */
-/**
- * Custom iterator - excludes any git files, hidden config files etc
- */
-class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
-  public function hasChildren() {
-    if(substr($this->getFilename(),0,1)==".") return false;
-    else return parent::hasChildren();
-  }
-}
 
 /**
  * WaxCacheTrigger to look for cache triggers - legacy
@@ -165,7 +156,7 @@ class AutoLoader{
                                     );
   //class registry info
   public static $register_file_ext = ".php";
-  public static $registry_directories = array("APP_LIB_DIR", "MODEL_DIR", "CONTROLLER_DIR", "FORMS_DIR", "FRAMEWORK_DIR", "CONTROLLER_DIR");
+  public static $registry_directories = array("APP_DIR","FRAMEWORK_DIR","PLUGIN_DIR");
   public static $registered_classes = array();
   public static $loaded_classes = array('AutoLoader');
   //paths to all the folders containing controllers
@@ -225,18 +216,17 @@ class AutoLoader{
     foreach($registry as $d){
       if($constant) $d = constant($d);
       if(is_readable($d) && is_dir($d)){
-        $dir = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($d), true), '/php$/i');
-        foreach($dir as $file){          
-          if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==AutoLoader::$register_file_ext){
-            $path = $file->getPathName();
-            $classname = basename($fn, ".php");
-            AutoLoader::$registered_classes[$classname] = $path;
-            //check for this being a controller
-            if(strstr($path, "/controller/")) AutoLoader::$controller_paths = array_unique(array_merge(AutoLoader::$controller_paths, array(substr($path,0,strrpos($path, "/controller/")+12) ) ));
-          }
+        $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d), '#(?<!/)\.php$|^[^\.]*$#i'), true); //the god maker
+        foreach($dir as $file){
+          $path = $file->getPathName();
+          $classname = basename($path, ".php");
+          AutoLoader::$registered_classes[$classname] = $path;
+          // check for this being a controller
+          if(strpos($path, "/controller/") !== false) AutoLoader::$controller_paths[] = substr($path,0,strrpos($path, "/controller/")+12);
         }
       }
     }
+    AutoLoader::$controller_paths = array_unique(AutoLoader::$controller_paths);
   }
   //scans over the plugins top level folders and adds them to the stacks
   public static function plugins(){
@@ -247,7 +237,6 @@ class AutoLoader{
 	      if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != "."){ //if it looks like a plugin
 	        AutoLoader::$plugins[$plugin] = PLUGIN_DIR.$plugin; //add to the main array
 	        AutoLoader::$view_registry["plugin"][] = PLUGIN_DIR.$plugin."/view/"; //add the view dir to the stack
-	        AutoLoader::register(array(PLUGIN_DIR.$plugin."/lib", PLUGIN_DIR.$plugin."/resources/app/controller"), false);
 	        if(is_file(PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file)) include_once PLUGIN_DIR.$plugin."/".AutoLoader::$plugin_setup_file;
 	      }
 	    }
