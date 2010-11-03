@@ -293,7 +293,9 @@ class AutoLoader{
     //force loading of inflections
     AutoLoader::include_from_registry("Inflections");
     AutoLoader::include_from_registry("WXHelpers");
-    AutoLoader::register_helpers();    
+    AutoLoader::register_helpers();
+    set_exception_handler('throw_wxexception');
+		set_error_handler('throw_wxerror', 247 );  
     WaxEvent::run("wax.init");
   }
   
@@ -311,6 +313,9 @@ class AutoLoader{
 function __autoload($class_name) {
   AutoLoader::include_from_registry($class_name);
 }
+function throw_wxexception($e) {$exc = new WaxException($e->getMessage(), "Application Error");}
+
+function throw_wxerror($code, $error) {$exc = new WaxException($error, "Application Error $code");}
 
 //run the initialise!
 AutoLoader::initialise();
