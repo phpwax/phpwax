@@ -219,7 +219,7 @@ class AutoLoader{
         $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d), '#(?<!/)\.php$|^[^\.]*$#i'), true); //the god maker
         foreach($dir as $file){
           $path = $file->getPathName();
-          $classname = basename($path, ".php");
+          $classname = basename($path, AutoLoader::$register_file_ext);
           AutoLoader::$registered_classes[$classname] = $path;
           // check for this being a controller
           if(strpos($path, "/controller/") !== false) AutoLoader::$controller_paths[] = substr($path,0,strrpos($path, "/controller/")+12);
