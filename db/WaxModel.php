@@ -84,10 +84,13 @@ class WaxModel{
   static public function find($finder, $params = array()) {
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
-    $mod = new $class;
-    foreach($params as $method=>$args) {
-      $mod->$method($args);
-    }    
+    if(is_array($params)) {
+      $mod = new $class;
+      foreach($params as $method=>$args) {
+        $mod->$method($args);
+      }
+    } elseif(is_string($params)) $mod = new $class($params);
+    
     switch($finder) {
       case 'all':
         return $mod->all();
