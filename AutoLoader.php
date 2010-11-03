@@ -216,7 +216,7 @@ class AutoLoader{
     foreach($registry as $d){
       if($constant) $d = constant($d);
       if(is_readable($d) && is_dir($d)){
-        $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d), '#(?<!/)\.php$|^[^\.]*$#i'), true); //the god maker
+        $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.php$|^[^\.]*$#i'), true); //the god maker
         foreach($dir as $file){
           $path = $file->getPathName();
           $classname = basename($path, AutoLoader::$register_file_ext);
