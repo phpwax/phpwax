@@ -123,7 +123,7 @@ class WaxModelField {
  	  if($value =="value") return $this->output();
  	  else if($value =="name") return $this->table."[".$this->field."]";
     else if($value =="id") return $this->table."_{$this->field}";
-    else if($this->model instanceof WaxModel) return $this->model->$value;
+    else if($this->model instanceof WaxModel && array_key_exists($value,$this->model->row)) return $this->model->$value;
  	}
   
   public function setup_skip_delegation_cache(){

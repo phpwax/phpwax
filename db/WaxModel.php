@@ -81,13 +81,20 @@ class WaxModel{
 	  }
  	} 	
   
-  static public function find($finder, $params = array()) {
+  static public function find($finder, $params = array(), $scope_params = false) {
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
-    $mod = new $class;
-    foreach($params as $method=>$args) {
-      $mod->$method($args);
-    }    
+    if(is_array($params)) {
+      $mod = new $class;
+      foreach($params as $method=>$args) {
+        $mod->$method($args);
+      }
+    } elseif(is_string($params)) {
+      $mod = new $class($params);
+      foreach($scope_params as $method=>$args) {
+        $mod->$method($args);
+      }
+    }
     switch($finder) {
       case 'all':
         return $mod->all();
@@ -602,6 +609,20 @@ class WaxModel{
     if(array_key_exists($func, $this->columns)) {
       $field = $this->get_col($func);
       return $field->get($args[0]);
+    }
+  }
+  
+  public static function __callStatic($func, $args) {
+    $finder = explode("by", $func);
+    $what=explode("and", $finder[1]);
+    foreach($what as $key=>$val) $what[$key]= trim($val, "_");
+
+    if( $args ) {
+      if(count($what)==2) $filter["filter"] = array($what[0]=>$args[0], $what[1], $args[1]);
+    	else $filter["filter"] = array($what[0]=>$args[0]) ;
+
+    	if($finder[0]=="find_all_") return self::find("all", $filter);
+      else return self::find("first", $filter);
     }
   }
 

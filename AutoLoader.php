@@ -85,11 +85,11 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($e) {
-	$exc = new WXException($e->getMessage(), "Application Error");
+	$exc = new WaxException($e->getMessage(), "Application Error");
 }
 
 function throw_wxerror($code, $error) {
-	$exc = new WXException($error, "Application Error $code");
+	$exc = new WaxException($error, "Application Error $code");
 }
 
 
