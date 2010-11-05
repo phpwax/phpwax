@@ -212,7 +212,6 @@ class AutoLoader
   	  foreach($plugins as $plugin) {
   	    if(!is_file($plugin) && substr($plugin,0,1) != "."){
 	        $path = PLUGIN_DIR.$plugin."/resources/public/".$type."/".implode("/", $asset_paths);
-	        $mime = File::mime_map($path);
 	        if(is_readable($path)){
 	          $mime = File::mime_map($path);
 	          switch($type){
