@@ -28,6 +28,7 @@ class WaxForm implements Iterator {
   public function __construct($model = false, $post_data = false, $options=array()) {
     if(is_array($model)) $options = $model;
     if($model instanceof WaxModel) $this->handler = new WaxBoundForm($model, $post_data, $options);
+    elseif($model instanceof WaxRecordset) $this->handler = new WaxRecordsetForm($model, $post_data, $options);
     else $this->handler = new WaxUnboundForm($model, $post_data, array_merge($options, array('form_prefix'=>$this->form_prefix)) );
 		if($this->form_prefix) $this->handler->form_prefix = $this->form_prefix;
     $this->setup();
@@ -41,8 +42,8 @@ class WaxForm implements Iterator {
   public function add($name, $field_type, $settings=array()) {$this->add_element($name, $field_type, $settings);}
  
   /*** Handler Methods - Get Passed on to the form handler */
-  public function render() {
-
+  public function render($options = array()) {
+    foreach($options as $set=>$val) $this->attributes[$set]=$val;
     foreach($this->handler->elements as $element) $output .= $element->render(array('prefix'=>$this->form_prefix));
     if($this->submit === true) {
       $sub = new SubmitInput($this->submit_text, array("prefix"=>$this->form_prefix));

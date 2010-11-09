@@ -84,13 +84,17 @@ class WaxWidget{
     $out ="";
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");
-    if($this->show_label) $out .= sprintf($this->label_template, $this->output_id(), $this->label);
+    if($this->show_label) $out .= $this->label();
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->errors && $this->inline_errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
     $out .= $this->after_tag();
     return $out;
+  }
+  
+  public function label() {
+    return sprintf($this->label_template, $this->output_id(), $this->label);
   }
   
   public function attribute($name, $value) {
@@ -160,4 +164,4 @@ class WaxWidget{
 
 
 
-} // END class 
+} // END class

@@ -35,13 +35,9 @@ class WaxTreeModel extends WaxModel {
    */
 	public function tree(){
 		$model_class = get_class($this);
-		if(false) {
-			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $cache_tree), RecursiveIteratorIterator::SELF_FIRST );
-		}else{
-			$new_tree = $this->build_tree();
-			$this->cached_tree_set(serialize($new_tree));
-			return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
-		}
+		$new_tree = $this->build_tree();
+		$this->cached_tree_set(serialize($new_tree));
+		return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
 	}
   
 	public function build_tree() {
@@ -59,7 +55,7 @@ class WaxTreeModel extends WaxModel {
 			elseif( isset( $lookup[$item[$this->parent_join_field]] ) ) $lookup[$item[$this->parent_join_field]]['children'][] = &$item;
 			else $tree[$id] = &$item;
 			if($cutoff == $id) $cutoff = array($id => &$item);
-		}		  
+		}
 		$this->recursive_tree_sort($tree);
 		if($cutoff) $tree = $cutoff;
 		return array_values($tree);
@@ -216,11 +212,11 @@ class WaxTreeModel extends WaxModel {
   public function siblings() {
     $class=get_class($this);
     $tree = new $class;
-    return $tree->filter(array("parent_id"=>$this->parent_id, $this->primary_key." NOT"=>array($this->primval())))->all();
+    return $tree->filter(array($this->parent_join_field=>$this->{$this->parent_join_field}, $this->primary_key." NOT"=>array($this->primval())))->all();
   }
   
   public function before_save(){
-    if($this->primval) foreach($this->tree() as $node) if($this->parent_id == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
+    if($this->primval) foreach($this->tree() as $node) if($this->{$this->parent_join_field} == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
   }
   
   public function syncdb(){
