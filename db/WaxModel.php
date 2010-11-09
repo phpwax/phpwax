@@ -81,7 +81,7 @@ class WaxModel{
 	  }
  	} 	
   
-  static public function find($finder, $params = array(), $scope_params = false) {
+  static public function find($finder, $params = array(), $scope_params = array()) {
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
     if(is_array($params)) {
