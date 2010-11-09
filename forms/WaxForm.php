@@ -42,8 +42,8 @@ class WaxForm implements Iterator {
   public function add($name, $field_type, $settings=array()) {$this->add_element($name, $field_type, $settings);}
  
   /*** Handler Methods - Get Passed on to the form handler */
-  public function render() {
-
+  public function render($options = array()) {
+    foreach($options as $set=>$val) $this->attributes[$set]=$val;
     foreach($this->handler->elements as $element) $output .= $element->render(array('prefix'=>$this->form_prefix));
     if($this->submit === true) {
       $sub = new SubmitInput($this->submit_text, array("prefix"=>$this->form_prefix));
