@@ -135,7 +135,8 @@ class WaxValidate {
   }
   
   protected function valid_datetime() {
-    return $this->valid_format("datetime");
+    if($this->object->required === true) return $this->valid_format("datetime");
+    else return true;
   }
   
   protected function valid_required() {
