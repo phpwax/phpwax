@@ -21,6 +21,7 @@ class Session {
     $session_name= "wxsession",
     $session_no_cookies = 0,
 		$user_messages=array();
+		$check_valid = true;
 
 	static function get($key) {
   	if(self::is_valid_host() && isset($_SESSION[self::get_hash()][$key])) {
@@ -36,6 +37,7 @@ class Session {
   }
 
     static function is_valid_host() {
+      if(!self::$check_valid) return true;
         if(($_SERVER['REMOTE_ADDR'] == self::$ip) &&
            $_SERVER['HTTP_USER_AGENT'] == self::$user_agent) {
             return true;
