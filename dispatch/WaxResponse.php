@@ -68,7 +68,7 @@ class WaxResponse {
     }
     echo $this->body();
     WaxEvent::run("wax.end");
-    exit;
+    //exit;
   }
   	
 }
