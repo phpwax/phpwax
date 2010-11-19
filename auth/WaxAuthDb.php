@@ -120,22 +120,17 @@ class WaxAuthDb {
     if($result->primval) {
       $this->user_object = $result;
       $this->user_id = $result->primval;
-      $this->persist();
       return true;
     }
     return false;
   }
   
-  public function persist() {
+  function __destruct() {
     if($this->user_id) {
       Session::set($this->session_key, $this->user_id);
     } else {
       Session::unset_var($this->session_key);
     }
-  }
-  
-  function __destruct() {
-    $this->persist();
   }
 	
 }
