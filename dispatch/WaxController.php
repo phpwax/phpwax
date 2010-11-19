@@ -80,6 +80,7 @@ class WaxController
         break;
     }
     $this->response->execute();
+    exit;
   }
 
 	public function run_filters($when) {

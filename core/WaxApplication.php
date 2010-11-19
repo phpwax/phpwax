@@ -99,7 +99,7 @@ class WaxApplication {
     $controller = new $delegate($this);
 	  WaxEvent::run("wax.controller", $controller);
 	  WaxEvent::run("wax.pre_render", $controller);
-	  if($controller->render !==false) $this->execute_controller(&$controller);    
+	  if($controller->render !==false) $this->execute_controller($controller);    
 		WaxEvent::run("wax.post_render", $this->response);
 		$this->response->execute();
   }
@@ -111,7 +111,7 @@ class WaxApplication {
    *
    **/
   
-  public function execute_controller($controller) {	      
+  public function execute_controller(&$controller) {	      
     $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");
 	  $controller->route_array = explode("/", trim(WaxUrl::$original_route,"/"));
