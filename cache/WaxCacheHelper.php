@@ -20,7 +20,7 @@ class WaxCacheHelper extends WXHelpers {
   public function cache_start($label) {
     global $cache;
     global $cache_reading;
-    $cache = new WaxCache($this->make_id($label));
+    $cache = new WaxCache($this->make_id($label), "filesystem");
     ob_start();  
     if($cache->get()) {
       $cache_reading = true;
