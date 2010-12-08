@@ -96,7 +96,7 @@ class AssetTagHelper extends WXHelpers {
   }
   
   public function js_bundle($name, $options = array()) {
-    if(ENV=="development") {
+    if(ENV=="development" || defined("NO_JS_BUNDLE")) {
       foreach(glob(PUBLIC_DIR."javascripts/$name/*.js") as $file){
         $ret .= $this->javascript_include_tag("/javascripts/$name/".basename($file), $options);
       }
@@ -105,7 +105,7 @@ class AssetTagHelper extends WXHelpers {
   }
   
   public function css_bundle($name, $options=array()) {
-    if(ENV=="development") {
+    if(ENV=="development" || defined("NO_CSS_BUNDLE")) {
       foreach(glob(PUBLIC_DIR."stylesheets/$name/*.css") as $file){
         $ret .= $this->stylesheet_link_tag("/stylesheets/$name/".basename($file), $options);
       }
