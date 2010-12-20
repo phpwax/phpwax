@@ -230,8 +230,13 @@ abstract class WaxDbAdapter {
 	}
 
   public function update_sql($model) {
+    if(!$pk = $model->_update_pk) $pk = $model->row[$model->primary_key];
+    else {
+      $pk = $model->row[$model->primary_key];
+      $model->{$model->primary_key} = $model->_update_pk;
+    }
     return "UPDATE `{$model->table}` SET ".$this->update_values(array_intersect_key($model->row, $model->_col_names)).
-      " WHERE `{$model->table}`.{$model->primary_key} = {$model->row[$model->primary_key]}";
+      " WHERE `{$model->table}`.`{$model->primary_key}` = `{$pk}`";
   }
    
   public function select_sql($model) {

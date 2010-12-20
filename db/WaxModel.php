@@ -39,6 +39,7 @@ class WaxModel{
 	public $join_conditions = false;
 	public $cols = array();
 	public $_col_names = array();
+	public $_update_pk = false;
 
 
 	/** interface vars **/
