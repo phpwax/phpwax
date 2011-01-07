@@ -236,7 +236,7 @@ abstract class WaxDbAdapter {
       $model->{$model->primary_key} = $model->_update_pk;
     }
     return "UPDATE `{$model->table}` SET ".$this->update_values(array_intersect_key($model->row, $model->_col_names)).
-      " WHERE `{$model->table}`.`{$model->primary_key}` = `{$pk}`";
+      " WHERE `{$model->table}`.`{$model->primary_key}` = '{$pk}'";
   }
    
   public function select_sql($model) {

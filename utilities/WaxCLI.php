@@ -169,7 +169,6 @@ class WaxCLI {
     array_shift($argv);
     array_shift($argv);
     array_shift($argv);
-    
     if(call_user_func_array($commands, $argv) ) {
       $this->add_output("...successfully ran command, and method returned true.");
     } else {

@@ -1,7 +1,12 @@
 <?php
 
 /**
- * presumes xhtml 1.0 strict
+ * WaxForm class.
+ * Allows simplified rendering and validation of forms
+ * 
+ * Forms can be bound or unbound depending on the presence of a WaxModel class being passed into the constructor.
+ * Bound forms save the validated post to an attached model.
+ *
  * @package PHP-Wax
  **/
 class WaxForm implements Iterator {
@@ -24,7 +29,11 @@ class WaxForm implements Iterator {
   public $form_tags = true;
   public $form_prefix = false;
   public $handler = false;
-   
+  
+  /**
+   *  The constructor allows switching between bound and unbound.
+   *  If $model is an instance of WaxModel the handler will be set to WaxBoundForm 
+   **/
   public function __construct($model = false, $post_data = false, $options=array()) {
     if(is_array($model)) $options = $model;
     if($model instanceof WaxModel) $this->handler = new WaxBoundForm($model, $post_data, $options);
@@ -34,11 +43,21 @@ class WaxForm implements Iterator {
     $this->setup();
   }
  
+ 
+ /**
+  * Adds an element to the form class
+  * @param $field_type is a class that will handle the rendering.
+  * @param $settings will be passed on to the new instance of $field_type
+  * @return void
+  **/
+
   public function add_element($name, $field_type, $settings=array()) {
     $this->handler->add_element($name, $field_type, $settings);
   }
 
+  // Alias for add_element
   public function define($name, $field_type, $settings=array()){$this->add_element($name, $field_type, $settings);}
+  // Alias for add_element
   public function add($name, $field_type, $settings=array()) {$this->add_element($name, $field_type, $settings);}
  
   /*** Handler Methods - Get Passed on to the form handler */

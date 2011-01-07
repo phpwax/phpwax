@@ -10,7 +10,7 @@ class WaxValidate {
   public $validations = array();
   public $label;
   public $formats = array(
-    "email"=>       '/^[_a-zA-Z0-9-\+]+(\.[_a-zA-Z0-9-\+]+)*@[a-zA-Z0-9-]+(\.[a-zA-z0-9-]+)*(\.[a-zA-Z]{2,4})$/i',
+    "email"=>       '/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-\+]+)*@[a-zA-Z0-9-]+(\.[a-zA-z0-9-]+)*(\.[a-zA-Z]{2,4})$/i',
     "datetime"=>    '/^([0-9-]{4}-[0-9]{2}-[0-9]{2}\s{1}[0-9]{2}:[0-9]{2}:[0-9]{2}|[0-9-]{4}-[0-9]{2}-[0-9]{2})$/',
     "number"=>      '/^[0-9]*/',
     "boolean"=>     '/^[0-1]?$/' 
