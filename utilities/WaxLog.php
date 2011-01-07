@@ -18,11 +18,11 @@ class WaxLog {
     ini_set("error_log",self::$log_file);
   }
   
-  static public function log($type, $output) {
+  static public function log($type, $output, $file=false) {
     self::init();
-    if(Config::get("log_".$type)) {
-      error_log("[$type] $output");
-    }
+    if($file) ini_set("error_log",LOG_DIR.$file.".log");
+    if(Config::get("log_".$type)) error_log("[$type] $output");
+    if($file) ini_set("error_log",self::$log_file);
   }
   
 

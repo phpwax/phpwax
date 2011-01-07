@@ -85,7 +85,7 @@ class WaxWidget{
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");
     if($this->show_label) $out .= $this->label();
-    $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
+    $out .= sprintf($this->template, stripslashes($this->make_attributes()), $this->tag_content());
     if($this->errors && $this->inline_errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
