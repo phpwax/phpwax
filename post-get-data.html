@@ -3,3 +3,16 @@ layout: home
 ---
 
 <h1>Accessing Post / Get Data</h1>
+
+<p>
+  You may be used to using PHP's built in global accessors to get at url and form variables. Maybe something like this:
+</p>
+<pre>
+  $page = $_GET["page"];
+  $name = $_POST["name"];
+</pre>
+<p>Whilst this is simple enough to use, if you subsequently want to output these values in your HTML you're opening yourself up to security vulnerabilities.</p>
+<p>PHP-Wax provides a couple of helper methods that will take care of sanitising these values, and they're also shorter to type.</p>
+<h2>The helpers</h2>
+<pre>$page = get("page");</pre>
+<pre>$name = post("name");</pre>
