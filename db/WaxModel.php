@@ -311,6 +311,7 @@ class WaxModel{
   *  is configured to be persistent.
   */
  	public function save() {
+ 	  WaxEvent::run("wax.model.before_save", $this);
  	  $this->before_save();
  	  $associations = array();
  	  foreach($this->columns as $col=>$setup) {
@@ -332,6 +333,7 @@ class WaxModel{
  	    }
  		}
  		foreach($associations as $assoc) $assoc->save();
+	  WaxEvent::run("wax.model.after_save", $this);
  		$res->after_save();
  		return $res;
   }
