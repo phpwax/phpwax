@@ -40,7 +40,7 @@ function auto_loader_check_cache(){
   $image_cache_location = CACHE_DIR.'images/';
   include_once FRAMEWORK_DIR .'/utilities/Session.php';
   include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-  include_once FRAMEWORK_DIR .'/config/Config.php';
+  include_once FRAMEWORK_DIR .'/utilities/Config.php';
   include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
   include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
   include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
