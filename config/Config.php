@@ -62,6 +62,20 @@ class Config
     }	
 	}
 	
+	/**
+	 * Loads a file from the config directory.
+	 * If path is absolute then load it in directly.
+	 * Detects readability and uses YAML or php where appropriate.
+	 *
+	 * @return void
+	 **/
+	static public function load($config_file) {
+	  if(strpos($config_file,"/")!==FALSE) $config_file = CONFIG_DIR.$config_file;
+	  if(substr($config_file, -3)=="yml") return self::load_yaml($config_file);
+	  if(substr($config_file, -3)=="php") return include($config_file);
+	  if(substr($config_file, -3)=="ini") Config::set(parse_ini_file($config_file));
+	}
+	
 	
 	/**
     *  The clever function. Returns the configuration array for the particular 
@@ -71,7 +85,9 @@ class Config
 	
 	static public function return_config($config=null) {
 		if($config=="all") return self::$config_array;
-		$config=explode("/", $config);
+		if(strpos($config, ".") !==false) $config=explode(".", $config);
+		else $config=explode("/", $config);
+
 		$confarray=self::$config_array;
 		foreach($config as $conf) {
   		if(!$confarray) return false;
@@ -96,9 +112,17 @@ class Config
 	static public function set($new_config, $new_value=false) {
 	  self::initialise();
 	  if(!is_array($new_config)) {
-	    $new_config = array($new_config=>$new_value);
+	    if(strpos($new_config,".")!==false) {
+	      $names = explode('.', $new_config);
+	      $new_config = array();
+        switch (count($names)) {
+          case 2: $new_config[$names[0]][$names[1]] = $new_value; break;
+        	case 3: $new_config[$names[0]][$names[1]][$names[2]] = $new_value; break;
+        	default: $new_config[$names[0]][$names[1]][$names[2]][$names[3]] = $new_value; break;
+        }
+	    } else $new_config = array($new_config=>$new_value);
 	  }
-	  self::$config_array = array_merge(self::$config_array, $new_config);
+	  self::$config_array = array_merge_recursive(self::$config_array, $new_config);
 	}
 	
 	/**
@@ -125,8 +149,9 @@ class Config
 	  self::initialise();
 	  return self::return_config($value);
 	}
+	
+
 		
 	
 }
 
-?>
