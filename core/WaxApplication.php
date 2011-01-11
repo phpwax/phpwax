@@ -17,6 +17,7 @@ class WaxApplication {
 
   public $request = false;
   public $response = false;
+  public $is_light = false;
 
   /**
     *  Step 1. Setup an environment. 
@@ -27,10 +28,10 @@ class WaxApplication {
 
 	public function __construct($delegate) {
     WaxEvent::run("wax.start");
+    if(is_subclass_of($this->delegate_candidate(), "WaxControllerLight")) {
+      $this->is_light = TRUE;
+    }
     $this->setup_environment();	
-	  $this->initialise_database();
-	  if($delegate) $this->execute();
-	  else $this->response = new WaxResponse;
   }
 
 
@@ -40,7 +41,7 @@ class WaxApplication {
    *  @return void  
    **/
    
-	private function setup_environment() {
+	private function setup_environment() {		
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["SERVER_NAME"]);
 	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
@@ -54,11 +55,13 @@ class WaxApplication {
 		  Config::set_environment('production');
 		  define("ENV", "production");
 		} else Config::set_environment('development');
-			  
-		//  Looks for an environment specific file inside app/config 
-		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
-		WaxLog::log("info", "Detected environment $addr and loaded ".ENV);
-	  
+		//  Looks for an environment specific file inside app/config or light.php for a light controller setup
+		if($this->is_light) {
+		  if(is_readable(CONFIG_DIR."light.php")) require_once(CONFIG_DIR."light.php");
+		} else {
+		  if(is_readable(CONFIG_DIR."global.php")) require_once(CONFIG_DIR."global.php");
+		  if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
+    }
   }
   
   /**
@@ -74,7 +77,7 @@ class WaxApplication {
    *  @return void
    */
   
-  private function initialise_database() {
+  public function initialise_database() {
     if($db = Config::get('db')) {
       if($db['dbtype']=="none") return false;
       WaxModel::load_adapter($db);
@@ -95,13 +98,22 @@ class WaxApplication {
 	  WaxEvent::run("wax.post_request", $this->request);
 	  $this->response = new WaxResponse;
 	  
-	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+	  $delegate = $this->delegate_candidate();
     $controller = new $delegate($this);
 	  WaxEvent::run("wax.controller", $controller);
 	  WaxEvent::run("wax.pre_render", $controller);
 	  if($controller->render !==false) $this->execute_controller($controller);    
 		WaxEvent::run("wax.post_render", $this->response);
 		$this->response->execute();
+  }
+  
+  /**
+   * Returns a delegate candidate that can handle our request
+   *
+   * @return string $controller
+   **/
+  public function delegate_candidate() {
+    return Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
   }
   
   

@@ -23,7 +23,7 @@
 class Config
 {
 	
-	static $config_array;
+	static $config_array = array();
 	static $app_yaml_file=false;
 	static $initialised = false;
 	
@@ -69,11 +69,15 @@ class Config
 	 *
 	 * @return void
 	 **/
-	static public function load($config_file) {
-	  if(strpos($config_file,"/")!==FALSE) $config_file = CONFIG_DIR.$config_file;
+	static public function load($config_file, $as=false) {
+	  if(strpos($config_file,"/")===FALSE) $config_file = CONFIG_DIR.$config_file;
 	  if(substr($config_file, -3)=="yml") return self::load_yaml($config_file);
 	  if(substr($config_file, -3)=="php") return include($config_file);
-	  if(substr($config_file, -3)=="ini") Config::set(parse_ini_file($config_file));
+	  if(substr($config_file, -3)=="ini") {
+	    $res = ConfigINI::parse($config_file, true);
+	    if($as) Config::set($as, $res);
+	    else Config::set($res);
+    }
 	}
 	
 	
@@ -109,8 +113,8 @@ class Config
     *  @return bool
     */
 	
-	static public function set($new_config, $new_value=false) {
-	  self::initialise();
+	static public function set($new_config, $new_value=false) {    
+	  //self::initialise();
 	  if(!is_array($new_config)) {
 	    if(strpos($new_config,".")!==false) {
 	      $names = explode('.', $new_config);

@@ -220,6 +220,7 @@ class Profiler {
     
     
     
+    WaxEvent::add("wax.pre_init", function(){Profiler::marker("About To Start");});
     WaxEvent::add("wax.start", function(){Profiler::marker("Application Initialised");});
     WaxEvent::add("wax.post_request", function(){Profiler::marker("Request Processed");});
     WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
@@ -231,7 +232,8 @@ class Profiler {
       if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
       $profile_view = new WaxTemplate;
       $profile_view->add_path(FRAMEWORK_DIR."/template/builtin/profile");
-      WaxEvent::data()->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::data()->body);
+      if(strpos(WaxEvent::data()->body,"</body>")===false) WaxEvent::data()->body.=$profile_view->parse();
+      else WaxEvent::data()->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::data()->body);
     });
     
   }

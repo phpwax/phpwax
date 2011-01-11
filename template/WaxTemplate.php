@@ -4,7 +4,7 @@
  * @package PHP-Wax
  * @author Ross Riley
  **/
-class WaxTemplate implements Cacheable{
+class WaxTemplate {
   
   /** interface vars **/
   public $use_cache = true;

@@ -77,7 +77,7 @@ table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse;table-
 		  <th class="name">Time</th>
 		  <th class="name">Memory</th>
 		</tr>
-		<?foreach($benchmarks as $name => $tokens):?>
+		<?foreach((array)$benchmarks as $name => $tokens):?>
 		  <?$stats = Profiler::stats($tokens); ?>
 		  <tr class="mark time">
   			<th class="name" colspan="3"><? echo $name, ' (', count($tokens), ')' ?></th>

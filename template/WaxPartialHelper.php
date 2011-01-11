@@ -35,3 +35,4 @@ class WaxPartialHelper extends WXHelpers {
 
   
 }
+Wax::register_helpers(array("WaxPartialHelper"));
