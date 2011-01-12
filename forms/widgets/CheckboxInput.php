@@ -31,7 +31,7 @@ class CheckboxInput extends TextInput {
     $out .= sprintf($this->template, $this->make_attributes(), $this->tag_content());
     if($this->label && $this->prefix) $out .= sprintf($this->label_template, $this->prefix."_".$this->name, $this->label);
     elseif($this->label) $out .= sprintf($this->label_template, $this->id, $this->label);
-    if($this->errors){
+    if($this->errors && $this->inline_errors){
       foreach($this->errors as $error) $out .= sprintf($this->error_template, $error);
     }
     $out .= $this->after_tag();
