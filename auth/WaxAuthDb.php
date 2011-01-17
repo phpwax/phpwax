@@ -25,6 +25,7 @@ class WaxAuthDb {
   protected $db_table = "user";
   protected $user_class = false;
   protected $encrypt=false;
+  protected $bcrypt=false;
   protected $salt=false;
   protected $algorithm = "md5";
 
@@ -33,6 +34,7 @@ class WaxAuthDb {
       $this->encrypt = true;
       if($options['salt']) $this->salt = $options["salt"];
     }elseif(isset($options["encrypt"])) $this->encrypt=$options["encrypt"];
+    if(isset($options["bcrypt"])) $this->bcrypt=TRUE;
 
     if(isset($options["db_table"])) $this->db_table=$options["db_table"];
     if(isset($options["user_class"])) $this->user_class=$options["user_class"];
@@ -69,6 +71,52 @@ class WaxAuthDb {
 		if($this->algorithm == "md5" && !$this->salt) return md5($password);
     else return hash_hmac($this->algorithm, $password, $this->salt);
   }
+
+
+	/**
+		* Much safer bcrypt implementation for PHP 5.3+ 
+		* Use this wherever possible, adjust iterations for extra security
+	 	*
+	 	* @return $hash 
+	 	**/
+
+	protected function safe_encrypt($password, $iterations = 8) {
+		$random = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
+	  $itoa64 = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	  if ($iterations < 4 || $iterations > 31) $iterations = 8;
+	  $salt = '$2a$';
+	  $salt .= chr(ord('0') + $iterations / 10);
+	  $salt .= chr(ord('0') + $iterations % 10);
+	  $salt .= '$';
+	  $i = 0;
+	  do {
+	      $c1 = ord($random[$i++]);
+	      $salt .= $itoa64[$c1 >> 2];
+	      $c1 = ($c1 & 0x03) << 4;
+	      if ($i >= 16) {
+	          $salt .= $itoa64[$c1];
+	          $hash = crypt($password, $salt);
+	          return strlen($hash) == 60 ? $hash : '*';
+	      }
+	      $c2 = ord($random[$i++]);
+	      $c1 |= $c2 >> 4;
+	      $salt .= $itoa64[$c1];
+	      $c1 = ($c2 & 0x0f) << 2;
+	      $c2 = ord($random[$i++]);
+	      $c1 |= $c2 >> 6;
+	      $salt .= $itoa64[$c1];
+	      $salt .= $itoa64[$c2 & 0x3f];
+	  } while (true);
+	 }
+	 
+	/**
+		* Corresponding hash check of safe_encrypt method
+	 	*
+	 	* @return boolean 
+	 	**/
+	function safe_check($password, $hash) {
+		return crypt($password, $hash) == $hash;
+	}
 
 	/**
 	 *	Logs out a user by unsetting loggedin_user variable in the session.
@@ -115,6 +163,11 @@ class WaxAuthDb {
   public function verify($username, $password) {
     $object = Inflections::camelize($this->db_table, true);
     $user = new $object;
+    if($this->bcrypt) {
+			$result = $user->filter(array($this->user_field=>$username))->first();
+			if($result->primval && $this->safe_check($result->{$this->password_field})) return TRUE;
+			else return FALSE;
+		}
     if($this->encrypt) $password = $this->encrypt($password);
     $result = $user->filter(array($this->user_field=>$username, $this->password_field=>$password))->first();
     if($result->primval) {
