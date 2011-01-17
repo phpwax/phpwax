@@ -139,10 +139,10 @@ class Wax {
       include self::$registered_classes[$class];
       self::$loaded_classes[$class] = self::$registered_classes[$class];
     }elseif(!self::$registered_classes[$class]){
-			try {
+			try {				
 				self::initialise();
-				include_once self::$registered_classes[$class];
-			} catch (Exception $e) {
+				@include_once self::$registered_classes[$class];
+			} catch (Exception $e) {				
 				throw new WaxException("Class Name - {$class} cannot be found in the registry.");
 			}
       
