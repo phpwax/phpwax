@@ -9,7 +9,7 @@
 class HiddenInput extends TextInput {
   
   public $allowable_attributes = array(
-    "name", "value", "checked", "disabled", "readonly", "type"
+    "name", "value", "checked", "disabled", "readonly", "type","id","class"
   );
 
   public $type="hidden";
