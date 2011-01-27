@@ -275,8 +275,8 @@ abstract class WaxDbAdapter {
 	  }
   }
   public function group($model) {if($model->group_by) return " GROUP BY {$model->group_by}"; }
-  public function having($model) {if($model->having) return " HAVING {$model->having}";  }
-  public function order($model) {if($model->_order) return " ORDER BY {$model->_order}";}
+  public function having($model) {if($model->having) return " HAVING `{$model->having}`";  }
+  public function order($model) {if($model->_order) return " ORDER BY `{$model->_order}`";}
   public function limit($model) {if($model->_limit) return " LIMIT {$model->_offset}, {$model->_limit}";}
   
   public function filter_sql($model, $filter_name = "filters") {
