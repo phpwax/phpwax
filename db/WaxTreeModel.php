@@ -23,6 +23,7 @@ class WaxTreeModel extends WaxModel {
     if(!$this->parent_join_field) $this->parent_join_field = $this->parent_column."_".$this->primary_key;
     $this->define($this->parent_column, "ForeignKey", array("col_name" => $this->parent_join_field, "target_model" => get_class($this)));
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_join_field, "eager_loading" => true));
+    $this->tree_setup();
   }
   
   /**
@@ -223,5 +224,8 @@ class WaxTreeModel extends WaxModel {
     if(get_class($this) == "WaxTreeModel") return;
     parent::syncdb();
   }
+  
+  public function tree_setup(){}
+  
 }
 ?>
