@@ -28,7 +28,7 @@ class FileField extends WaxModelField {
 			unset($options['allowed_extensions']);
 		}
 		$this->col_name = $column;
-		parent::__construct($column, $model, $options = array());
+		parent::__construct($column, $model, $options);
   }
 
   public function setup() {	
