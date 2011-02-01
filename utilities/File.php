@@ -8,6 +8,7 @@
 class File {
   
   static $compression_quality = "85";
+  static $resize_library = "imagemagick"; // Optionally set to 'gd'
 	
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
@@ -51,7 +52,8 @@ class File {
 	  * @param $width The width of the new image
 	  * @return bool
 	  */
-	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false, $target_format=false) {
+	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false) {
+	  if(self::$resize_library == "gd" && function_exists("imagecreatefromjpeg")) return self::gd_resize_image($source, $destination, $width, $overwrite=false, $force_width=false);
 		if(!self::is_image($source)) return false;
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
@@ -66,14 +68,49 @@ class File {
 	  if($ratio == 1) $command = "cp ".escapeshellarg($source)." ".escapeshellarg($destination);
 		elseif($overwrite) {
 			$command="mogrify ".escapeshellarg($source)." -limit area 30 -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
-  		if($target_format) $command .= " -format $target_format";
 		} else {
-			$command="convert ".escapeshellarg($source)." -limit area 30 -render -flatten -coalesce -colorspace RGB -resize {$width}x{$height} -quality ".self::$compression_quality;
-  		if($target_format) $command .= " -format $target_format";
-  		$command .= "  $destination";
+			$command="convert ".escapeshellarg($source)." -limit area 30 -coalesce -thumbnail {$width}x{$height} -density 72x72 -quality ".self::$compression_quality."  $destination";
 		}
 		system($command);
 		if(!is_file($destination)) { return false; }
+		chmod($destination, 0777);
+		return true;
+	}
+	
+	static public function gd_resize_image($source, $destination, $r_width, $overwrite=false, $force_width=false) {
+	  list($width, $height, $image_type) = getimagesize($source);
+	  if(!$width) return false;
+    $r = $width / $height;
+    $r_height = $r_width;
+    if ($r_width/$r_height > $r) {
+      $newwidth = $r_height*$r;
+      $newheight = $r_height;
+    } else {
+      $newheight = $r_width/$r;
+      $newwidth = $r_width;
+    }
+
+    switch($image_type) {
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source);  break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return '';  break;
+    }
+    
+    $dst = imagecreatetruecolor($newwidth, $newheight);
+    imagesavealpha($dst, true);
+    $trans_colour = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+    imagefill($dst, 0, 0, $trans_colour);
+    $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+
+    switch($image_type) {
+      case 1: $src = imagegif($dst,$destination); break;
+      case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
+      case 3: $src = imagepng($dst,$destination); break;
+    }
+    
+    imagedestroy($dst);
+    if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
 		return true;
 	}
