@@ -97,22 +97,27 @@ class AssetTagHelper extends WXHelpers {
   
   public function js_bundle($name, $options = array()) {
     if(ENV=="development" || defined("NO_JS_BUNDLE")) {
-      foreach(glob(PUBLIC_DIR."javascripts/$name/*.js") as $file){
-        $ret .= $this->javascript_include_tag("/javascripts/$name/".basename($file), $options);
+      $d = PUBLIC_DIR."javascripts/".$name."/";
+      $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.js$|^[^\.]*$#i'), true);
+      foreach($dir as $file){
+        $name = $file->getPathName();
+        if(is_file($name))$ret .= $this->javascript_include_tag(str_replace(PUBLIC_DIR, "", $name), $options);
       }
     } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined", $options);
     return $ret;
   }
   
   public function css_bundle($name, $options=array()) {
-    if(ENV=="development" || defined("NO_CSS_BUNDLE")) {
-      foreach(glob(PUBLIC_DIR."stylesheets/$name/*.css") as $file){
-        $ret .= $this->stylesheet_link_tag("/stylesheets/$name/".basename($file), $options);
+    if(ENV=="development") {
+      $d = PUBLIC_DIR."stylesheets/".$name."/";
+      $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.css$|^[^\.]*$#i'), true);
+      foreach($dir as $file){
+        $name = $file->getPathName();
+        if(is_file($name)) $ret .= $this->stylesheet_link_tag(str_replace(PUBLIC_DIR."stylesheets/", "", $name), $options);
       }
     } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
     return $ret;
   }
-
 	public function git_revision(){
 		$rev = "";
 		if(!$rev = Config::get('GIT_HEAD')){
