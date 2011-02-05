@@ -8,7 +8,7 @@
  * @author Ross Riley
  */
 
-class WaxCacheHelper extends WXHelpers {
+class WaxCacheHelper extends WaxHelper {
   
   public $cache = false;
 

@@ -1,6 +1,6 @@
 <?php
 
-class RequestHelper extends WXHelpers {
+class RequestHelper extends WaxHelper {
   
   
   public function get($name, $clean=false) {

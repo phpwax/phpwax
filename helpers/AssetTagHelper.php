@@ -8,7 +8,7 @@
 /**
  *  Simple Helpers to create links to images/js/css
  */
-class AssetTagHelper extends WXHelpers {
+class AssetTagHelper extends WaxHelper {
 
     /**
      *  @var string[]
@@ -21,28 +21,8 @@ class AssetTagHelper extends WXHelpers {
     $this->javascript_default_sources =	array('prototype', 'builder','effects', 'dragdrop', 'controls', 'slider');
     self::$asset_server = Config::get("assets");
   }
-  
-  public function serve_asset($type, $namespace, $filename) {
-    if($server = self::$asset_server) $source .= "http://".$server;
-    $source .= "/$type/$namespace/$filename";
-    return $source;
-  }
-  
-  public function javascript_asset($namespace, $filename, $options=array()) {
-    if(!strpos($filename, ".js")) $filename .=".js";
-    return $this->javascript_include_tag($this->serve_asset("javascripts", $namespace, $filename), $options);
-  }
-  
-  public function stylesheet_asset($namespace, $filename, $options=array()) {
-    if(!strpos($filename, ".css")) $filename .=".css";
-    return $this->stylesheet_link_tag($this->serve_asset("stylesheets", $namespace, $filename), $options);
-  }
-  
-  public function image_asset($namespace, $filename, $options=array()) {
-    return $this->image_tag($this->serve_asset("images", $namespace, $filename), $options);
-  }
 
-  public function javascript_include_tag() {
+  protected function javascript_include_tag() {
     if(func_num_args() > 0) {
       $sources = func_get_args();     
       $options = (is_array(end($sources)) ? array_pop($sources) : array());          
@@ -66,7 +46,7 @@ class AssetTagHelper extends WXHelpers {
     }
   }
   
-  public function stylesheet_link_tag() {
+  protected function stylesheet_link_tag() {
     if(func_num_args() > 0) {
       $sources = func_get_args();     
       $options = (is_array(end($sources)) ? array_pop($sources) : array());
@@ -83,17 +63,7 @@ class AssetTagHelper extends WXHelpers {
     }
   }
 
-  public function image_tag($source, $options = array()) {
-    $options['src'] = $this->image_path($source);
-    $options['alt'] = array_key_exists('alt',$options) ? $options['alt'] : ucfirst(reset($file_array = explode('.', basename($options['src']))));
-    if(isset($options['size'])) {
-      $size = explode('x', $options["size"]);         
-      $options['width'] = reset($size);
-      $options['height'] = end($size);
-      unset($options['size']);
-    }
-    return $this->tag("img", $options);
-  }
+
   
   public function js_bundle($name, $options = array()) {
     if(ENV=="development" || defined("NO_JS_BUNDLE")) {
@@ -113,10 +83,10 @@ class AssetTagHelper extends WXHelpers {
     return $ret;
   }
 
-	public function git_revision(){
+	protected function git_revision(){
 		$rev = "";
 		if(!$rev = Config::get('GIT_HEAD')){
-			$rev_ref = trim(substr(file_get_contents(WAX_ROOT.".git/HEAD"),5));
+			if(is_readable(WAX_ROOT.".git/HEAD")) $rev_ref = trim(substr(file_get_contents(WAX_ROOT.".git/HEAD"),5));
 			if(is_readable(WAX_ROOT.".git/info/refs")) {
 				$gresource = fopen(WAX_ROOT.".git/info/refs","r");
 				while (($buffer = fgets($gresource, 4096)) !== false) {

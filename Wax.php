@@ -102,10 +102,11 @@ class Wax {
     self::$registered_classes[basename($file, ".php")] = $file;
   }
   
-	public static function load($module) {
-		if(is_dir(FRAMEWORK_DIR."/".$module)) return self::register_directory(FRAMEWORK_DIR."/".$module);
+	public static function load($module, $basedir = false) {
+	  if(!$basedir) $basedir = FRAMEWORK_DIR;
+		if(is_dir($basedir."/".$module)) return self::register_directory($basedir."/".$module);
 		if(substr($module,-4)!==".php") $module .= ".php";
-		if(is_readable(FRAMEWORK_DIR."/".$module)) self::register_file(FRAMEWORK_DIR."/".$module);
+		if(is_readable($basedir."/".$module)) self::register_file($basedir."/".$module);
 	}
   
   //scans over the plugins top level folders and adds them to the stacks
@@ -180,7 +181,7 @@ class Wax {
 		Wax::load("utilities/WaxCodeGenerator");
     if(!count($classes)) $classes = get_declared_classes();
     foreach((array)$classes as $class) {
-      if(is_subclass_of($class, "WXHelpers") || $class=="WXHelpers" || $class=="Inflections" || is_subclass_of($class,"WaxHelper")) {
+      if($class=="Inflections" || is_subclass_of($class,"WaxHelper")) {
         foreach(get_class_methods($class) as $method) {
           if(substr($method,0,1)!="_" && !function_exists($method)) WaxCodeGenerator::new_helper_wrapper($class, $method);
         }
@@ -210,7 +211,7 @@ class Wax {
     self::register_directory(FRAMEWORK_DIR."/config");
     self::register_directory(APP_DIR."controller");
     self::register_file(FRAMEWORK_DIR."/utilities/Inflections.php");
-    self::register_file(FRAMEWORK_DIR."/helpers/WXHelpers.php");
+    self::register_file(FRAMEWORK_DIR."/helpers/WaxHelper.php");
     self::register_file(FRAMEWORK_DIR."/utilities/Request.php");
     self::register_file(FRAMEWORK_DIR."/utilities/Session.php");
     self::register_file(FRAMEWORK_DIR."/template/WaxTemplate.php");

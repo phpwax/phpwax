@@ -42,6 +42,7 @@ class WaxApplication {
    **/
    
 	private function setup_environment() {		
+		
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["SERVER_NAME"]);
 	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
@@ -54,14 +55,11 @@ class WaxApplication {
 		} elseif($addr) {
 		  Config::set_environment('production');
 		  define("ENV", "production");
-		} else Config::set_environment('development');
+		} else Config::set_environment('development');	  
 		//  Looks for an environment specific file inside app/config or light.php for a light controller setup
-		if($this->is_light) {
-		  if(is_readable(CONFIG_DIR."light.php")) require_once(CONFIG_DIR."light.php");
-		} else {
-		  if(is_readable(CONFIG_DIR."global.php")) require_once(CONFIG_DIR."global.php");
-		  if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
-    }
+    
+		if(is_readable(CONFIG_DIR."global.php")) require_once(CONFIG_DIR."global.php");
+		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
   }
   
   /**

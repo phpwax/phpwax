@@ -5,7 +5,7 @@
  * @package default
  */
 
-class WaxPartialHelper extends WXHelpers {
+class WaxPartialHelper extends WaxHelper {
     
   /**
    * Partial Helper Function
