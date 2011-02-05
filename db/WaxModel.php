@@ -56,6 +56,7 @@ class WaxModel{
    */
  	function __construct($params=null) {
  	  try {
+ 	    self::load_adapter(self::$db_settings);
  	    if(!self::$db && self::$adapter) self::$db = new self::$adapter(self::$db_settings);
  	  } catch (Exception $e) {
  	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
@@ -80,8 +81,8 @@ class WaxModel{
    		  $this->clear();
 	    }
 	  }
- 	} 	
-  
+ 	}
+ 	  
   static public function find($finder, $params = array(), $scope_params = array()) {
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
@@ -108,7 +109,7 @@ class WaxModel{
   
 
  
- 	static public function load_adapter($db_settings) {
+ 	static public function load_adapter($db_settings, $label="default") {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
  	  self::$adapter = $adapter;

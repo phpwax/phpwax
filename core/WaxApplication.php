@@ -78,7 +78,7 @@ class WaxApplication {
   public function initialise_database() {
     if($db = Config::get('db')) {
       if($db['dbtype']=="none") return false;
-      WaxModel::load_adapter($db);
+      WaxModel::$db_settings = $db;
     }
   }
 	
@@ -130,7 +130,6 @@ class WaxApplication {
     WaxEvent::run("wax.controller_global", $controller);
 	  $controller->controller_global();	  
     WaxEvent::run("wax.before_filter", $controller);
-	  $controller->run_filters("before");
 	  if(!$this->is_public_method($controller, $controller->action)) {
 	    if($this->is_public_method($controller, Inflections::underscore($controller->action))) {
 	      $underscore_action = Inflections::underscore($controller->action);
@@ -149,7 +148,6 @@ class WaxApplication {
 		}
 		
 		WaxEvent::run("wax.after_filter", $controller);
-		$controller->run_filters("after");		
 		$controller->content_for_layout = $controller->render_view();
 		WaxEvent::run("wax.layout", $controller);
 	  

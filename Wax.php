@@ -104,6 +104,7 @@ class Wax {
   
 	public static function load($module, $basedir = false) {
 	  if(!$basedir) $basedir = FRAMEWORK_DIR;
+	  $basedir = rtrim($basedir, "/");
 		if(is_dir($basedir."/".$module)) return self::register_directory($basedir."/".$module);
 		if(substr($module,-4)!==".php") $module .= ".php";
 		if(is_readable($basedir."/".$module)) self::register_file($basedir."/".$module);
@@ -140,14 +141,21 @@ class Wax {
       include self::$registered_classes[$class];
       self::$loaded_classes[$class] = self::$registered_classes[$class];
     }elseif(!self::$registered_classes[$class]){
-			try {				
-				self::initialise();
-				@include_once self::$registered_classes[$class];
+      Wax::load("model",APP_DIR);
+      if(!self::$registered_classes[$class]) Wax::load("lib",APP_DIR);
+      if(!self::$registered_classes[$class]) Wax::load("db");
+      if(!self::$registered_classes[$class]) Wax::load("forms");
+      if(!self::$registered_classes[$class]) Wax::load("forms",APP_DIR);
+      if(!self::$registered_classes[$class]) Wax::load("auth");
+      if(!self::$registered_classes[$class]) Wax::load("utilities");
+      if(!self::$registered_classes[$class]) self::initialise();
+      try {
+        include_once self::$registered_classes[$class];
 			} catch (Exception $e) {				
 				throw new WaxException("Class Name - {$class} cannot be found in the registry.");
 			}
-      
     }
+    if(method_exists($class, "__init")) $class::_init();
   }
   
   static public function controller_paths($resp=false) {
@@ -198,7 +206,6 @@ class Wax {
   static public function initialise() { 
     self::register();  
     self::plugins();  
-    self::register_helpers(array("AssetTagHelper","UrlHelper","WaxCacheHelper","RequestHelper","WaxPartialHelper"));    
   }
   
   public function bare_initialise() {
@@ -206,16 +213,14 @@ class Wax {
     self::constants();
     self::detect_test_mode();
     WaxEvent::run("wax.start");
-    self::register_directory(FRAMEWORK_DIR."/core");
-    self::register_directory(FRAMEWORK_DIR."/dispatch");
-    self::register_directory(FRAMEWORK_DIR."/config");
-    self::register_directory(APP_DIR."controller");
-    self::register_file(FRAMEWORK_DIR."/utilities/Inflections.php");
-    self::register_file(FRAMEWORK_DIR."/helpers/WaxHelper.php");
-    self::register_file(FRAMEWORK_DIR."/utilities/Request.php");
-    self::register_file(FRAMEWORK_DIR."/utilities/Session.php");
-    self::register_file(FRAMEWORK_DIR."/template/WaxTemplate.php");
-    self::register_helpers();
+    Wax::load("core");
+    Wax::load("dispatch");
+    Wax::load("config");
+    Wax::register_directory(APP_DIR."controller");
+    Wax::load("utilities/Session");
+    Wax::load("helpers");
+    Wax::load("template");
+    self::register_helpers(array("AssetTagHelper","RequestHelper","WaxPartialHelper"));    
     self::register_controller_path("user", CONTROLLER_DIR);
     self::register_view_path("user", VIEW_DIR);
     WaxEvent::run("wax.init"); 
@@ -229,13 +234,8 @@ class Wax {
    */ 
   static public function run_application($environment="development", $full_app=true) {
     $app=new WaxApplication($full_app);
-    if($app->is_light) {
-      $app->execute();
-    } else {
-      self::initialise();
-      $app->initialise_database();
-	    $app->execute();
-    }
+    $app->initialise_database();
+	  $app->execute();
   }
 	
 }
