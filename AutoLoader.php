@@ -29,6 +29,7 @@ function throw_wxerror($code, $error) {
 }
 
 
+
 class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
   
   public function hasChildren() {
@@ -86,6 +87,5 @@ class AutoLoader {
  
   
 }
-Wax::bare_initialise();
-
+Wax::pre_initialise();
 

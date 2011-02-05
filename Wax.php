@@ -47,10 +47,12 @@ class Wax {
   public static $inis = array();
   public static $plugins = array();
   public static $plugin_setup_file = "setup.php";
+  public static $helper_methods = array();
   
   //register all the constants
   public static function constants(){
     foreach(self::$wax_constants as $name=>$info){
+      if(defined($name)) continue;
       $value = false;
       $parent = ($info['parent']) ? constant($info['parent']) : "";
       if($info['value']) $value = $info['value'];
@@ -155,7 +157,6 @@ class Wax {
 				throw new WaxException("Class Name - {$class} cannot be found in the registry.");
 			}
     }
-    if(method_exists($class, "__init")) $class::_init();
   }
   
   static public function controller_paths($resp=false) {
@@ -184,23 +185,20 @@ class Wax {
     }
   }
 
-
-  static public function register_helpers($classes = array()) {
-		Wax::load("utilities/WaxCodeGenerator");
-    if(!count($classes)) $classes = get_declared_classes();
-    foreach((array)$classes as $class) {
-      if($class=="Inflections" || is_subclass_of($class,"WaxHelper")) {
-        foreach(get_class_methods($class) as $method) {
-          if(substr($method,0,1)!="_" && !function_exists($method)) WaxCodeGenerator::new_helper_wrapper($class, $method);
-        }
-      }
-    }
+  
+  static public function register_helper_methods($class, $methods) {
+    self::$helper_methods[$class]=$methods;
+  }
+  
+  static public function include_helper_functions() {  
+    Wax::load("utilities/WaxCodeGenerator"); 	   
+    WaxCodeGenerator::helper_wrappers(self::$helper_methods);
   }
 
-	static public function load_helper($helper) {
-		if(!self::$registered_classes[$helper]) self::load($helper);
-		self::include_from_registry($helper);
-		self::register_helpers(array($helper));
+	static public function load_helper($helpers) {
+	  foreach((array)$helpers as $helper) {
+  		self::include_from_registry($helper);
+	  }
 	}
 
   static public function initialise() { 
@@ -208,8 +206,12 @@ class Wax {
     self::plugins();  
   }
   
-  public function bare_initialise() {
-    WaxEvent::run("wax.pre_init");
+  public function pre_initialise() {
+    if(defined("WAX_PROFILE")) {
+		  Wax::load("utilities/Profiler");
+      Profiler::profile();
+		}    
+		WaxEvent::run("wax.pre_init");
     self::constants();
     self::detect_test_mode();
     WaxEvent::run("wax.start");
@@ -220,22 +222,25 @@ class Wax {
     Wax::load("utilities/Session");
     Wax::load("helpers");
     Wax::load("template");
-    self::register_helpers(array("AssetTagHelper","RequestHelper","WaxPartialHelper"));    
+        
+    self::load_helper(array("AssetTagHelper","RequestHelper","WaxPartialHelper","Inflections", "OutputHelper"));
+    self::include_helper_functions();  
     self::register_controller_path("user", CONTROLLER_DIR);
     self::register_view_path("user", VIEW_DIR);
     WaxEvent::run("wax.init"); 
 		set_exception_handler('throw_wxexception');
 		set_error_handler('throw_wxerror', 247 );  
+    
   }
   
   /**
    * Includes the necessary files and instantiates the application.
    * @access public
    */ 
-  static public function run_application($environment="development", $full_app=true) {
-    $app=new WaxApplication($full_app);
+  static public function run_application($environment="development", $full_app=true) {	  
+    $app=new WaxApplication($full_app);    
     $app->initialise_database();
-	  $app->execute();
+	  $app->execute();  
   }
 	
 }

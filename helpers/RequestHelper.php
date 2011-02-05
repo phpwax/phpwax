@@ -25,3 +25,5 @@ class RequestHelper extends WaxHelper {
   
   
 }
+
+Wax::register_helper_methods("RequestHelper", array("get","post","param","filter","url"));

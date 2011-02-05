@@ -65,11 +65,19 @@ class WaxCodeGenerator {
     return $output;
   }
   
-  static public function new_helper_wrapper($helper_class, $helper_name) {
-    $code ="\$args = func_get_args();
-  	        \$helper = new $helper_class();
-  	        return call_user_func_array(array(\$helper, '$helper_name'), \$args);";
-  	if(!function_exists($helper_name)) eval(self::add_function($helper_name, $code, ""));
+  
+  static public function helper_wrappers($wrappers) {
+    $helper_code = "";
+    foreach($wrappers as $class=>$methods) {
+      foreach($methods as $method) {
+        $code ="          \$args = func_get_args();
+      	  \$helper = new $class();
+      	  return call_user_func_array(array(\$helper, '$method'), \$args);";
+      	if(!function_exists($method->name)) $helper_code .= self::add_function($method, $code, "");
+    	}
+    }
+	  
+    eval($helper_code);
   }
    
   public function add_line($text) {

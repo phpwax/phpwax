@@ -220,8 +220,8 @@ class Profiler {
     
     
     
-    WaxEvent::add("wax.pre_init", function(){Profiler::marker("About To Start");});
-    WaxEvent::add("wax.start", function(){Profiler::marker("Application Initialised");});
+    WaxEvent::add("wax.start", function(){Profiler::marker("Request Received");});
+    WaxEvent::add("wax.init", function(){Profiler::marker("Application Initialised");});
     WaxEvent::add("wax.post_request", function(){Profiler::marker("Request Processed");});
     WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
     WaxEvent::add("wax.action", function(){Profiler::marker("Action Ready");});

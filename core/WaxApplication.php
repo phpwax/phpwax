@@ -26,11 +26,7 @@ class WaxApplication {
     *
     */
 
-	public function __construct($delegate) {
-    WaxEvent::run("wax.start");
-    if(is_subclass_of($this->delegate_candidate(), "WaxControllerLight")) {
-      $this->is_light = TRUE;
-    }
+	public function __construct($delegate) {	    	
     $this->setup_environment();	
   }
 
@@ -41,8 +37,8 @@ class WaxApplication {
    *  @return void  
    **/
    
-	private function setup_environment() {		
-		
+	private function setup_environment() {
+	  	    	    
 	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
 	  if(!$addr) $addr = gethostbyname($_SERVER["SERVER_NAME"]);
 	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
@@ -57,9 +53,8 @@ class WaxApplication {
 		  define("ENV", "production");
 		} else Config::set_environment('development');	  
 		//  Looks for an environment specific file inside app/config or light.php for a light controller setup
-    
-		if(is_readable(CONFIG_DIR."global.php")) require_once(CONFIG_DIR."global.php");
-		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
+	  
+		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");    
   }
   
   /**
@@ -76,7 +71,8 @@ class WaxApplication {
    */
   
   public function initialise_database() {
-    if($db = Config::get('db')) {
+		Wax::load("db");
+    if($db = Config::get('db')) {	
       if($db['dbtype']=="none") return false;
       WaxModel::$db_settings = $db;
     }
@@ -89,9 +85,9 @@ class WaxApplication {
    *
    **/
    
-  public function execute() {
-    Session::start();
+  public function execute() {  	  
     WaxEvent::run("wax.request");
+    Session::start();
 	  $this->request = WaxUrl::$params;
 	  WaxEvent::run("wax.post_request", $this->request);
 	  $this->response = new WaxResponse;

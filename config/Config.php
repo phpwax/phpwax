@@ -72,7 +72,7 @@ class Config
 	static public function load($config_file, $as=false) {
 	  if(strpos($config_file,"/")===FALSE) $config_file = CONFIG_DIR.$config_file;
 	  if(substr($config_file, -3)=="yml") return self::load_yaml($config_file);
-	  if(substr($config_file, -3)=="php") return include($config_file);
+	  if(substr($config_file, -3)=="php") return self::set(include($config_file));
 	  if(substr($config_file, -3)=="ini") {
 	    $res = ConfigINI::parse($config_file, true);
 	    if($as) Config::set($as, $res);

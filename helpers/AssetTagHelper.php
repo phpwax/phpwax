@@ -129,4 +129,5 @@ class AssetTagHelper extends WaxHelper {
     
 }
 
-?>
+Wax::register_helper_methods("AssetTagHelper", array("js_bundle","css_bundle"));
+

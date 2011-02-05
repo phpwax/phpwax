@@ -75,6 +75,4 @@ class Inflections
 	
 }
 
-
-
-?>
+Wax::register_helper_methods("Inflections", array("camelize","capitalize","dasherize","humanize","underscore","slashify","slashcamelize","truncate","undasherize","humanize_undasherize","to_url"));
