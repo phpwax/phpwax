@@ -30,13 +30,13 @@ class WaxResponse {
     $this->body.=$content;
   }
   
-  public function redirect($url) {
-    $this->status = "302";
+  public function redirect($url, $status="302") {
+    $this->status = $status;
     $this->headers["Location"] = $url;
   }
   
-  public function permanent_redirect($url) {
-    $this->status = "302";
+  public function permanent_redirect($url, $status="301") {
+    $this->status = $status;
     $this->headers["Location"] = $url;
   }
   
