@@ -95,25 +95,29 @@ class AssetTagHelper extends WXHelpers {
     return $this->tag("img", $options);
   }
   
-  public function js_bundle($name, $options = array()) {
+  public function js_bundle($name, $options = array(), $plugin="") {
     if(ENV=="development" || defined("NO_JS_BUNDLE")) {
-      $d = PUBLIC_DIR."javascripts/".$name."/";
+      if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
+      else $base = PUBLIC_DIR;
+      $d = $base."javascripts/".$name;
       $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.js$|^[^\.]*$#i'), true);
       foreach($dir as $file){
         $name = $file->getPathName();
-        if(is_file($name))$ret .= $this->javascript_include_tag(str_replace(PUBLIC_DIR, "", $name), $options);
+        if(is_file($name))$ret .= $this->javascript_include_tag("/".str_replace($base, "", $name), $options);
       }
     } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined", $options);
     return $ret;
   }
   
-  public function css_bundle($name, $options=array()) {
-    if(ENV=="development") {
-      $d = PUBLIC_DIR."stylesheets/".$name."/";
+  public function css_bundle($name, $options=array(), $plugin="") {
+    if(ENV=="development") {     
+      if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
+      else $base = PUBLIC_DIR;
+      $d = $base."stylesheets/".$name;       
       $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.css$|^[^\.]*$#i'), true);
       foreach($dir as $file){
         $name = $file->getPathName();
-        if(is_file($name)) $ret .= $this->stylesheet_link_tag(str_replace(PUBLIC_DIR."stylesheets/", "", $name), $options);
+        if(is_file($name)) $ret .= $this->stylesheet_link_tag("/".str_replace($base, "", $name), $options);
       }
     } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
     return $ret;
