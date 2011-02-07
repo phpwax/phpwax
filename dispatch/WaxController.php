@@ -57,7 +57,7 @@ class WaxController
 	 *	@access protected
 	 *	@param string $route
  	 */   
-  protected function redirect_to($options, $protocol="http://", $status=302) {
+  public function redirect_to($options, $protocol="http://", $status=302) {
     switch(true) {
       case is_array($options):
         $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
