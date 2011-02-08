@@ -645,13 +645,14 @@ class WaxModel{
   public function humanize($column=false){
     if(!$column){
       foreach($this->columns as $k=>$v){
-        if($v[0] != "IntegerField" && $v[0] != "AutoField"){
+        if(($v[0] != "IntegerField" && $v[0] != "AutoField") || (count($v[1]['choices']))){
           $column = $k;
           break;
         }
       }
     }
     if(($col_info = $this->columns[$column]) && ($type = $col_info[0]) && ($info = $col_info[1])){
+      if(count($info['choices']) && ($val = $this->$column)) return $info['choices'][$val];
       if($type == "DateTimeField") return date(($info['output_format'])?$info['output_format']:"jS F Y H:i", strtotime($this->$column));
       else if(($type == "ForeignKey" || $type == "ManyToManyField" || $type == "HasManyField") && ($join = $this->$column)) return $this->humanize_join($join);
     }
