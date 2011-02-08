@@ -635,6 +635,43 @@ class WaxModel{
 	}
 
 
+  /**
+   * take the column name you pass in and return a pretty version
+   * - if no column is passed, finds the first non auto/id field and uses that
+   * - from the column data try to work out the formatting; date time returns a parsed time stamp
+   * - joins recursively call itself by using the humanize_join function
+   * - if all else fails call it like a function and see what happens
+   */
+  public function humanize($column=false){
+    if(!$column){
+      foreach($this->columns as $k=>$v){
+        if($v[0] != "IntegerField" && $v[0] != "AutoField"){
+          $column = $k;
+          break;
+        }
+      }
+    }
+    if(($col_info = $this->columns[$column]) && ($type = $col_info[0]) && ($info = $col_info[1])){
+      if($type == "DateTimeField") return date(($info['output_format'])?$info['output_format']:"jS F Y H:i", strtotime($this->$column));
+      else if(($type == "ForeignKey" || $type == "ManyToManyField" || $type == "HasManyField") && ($join = $this->$column)) return $this->humanize_join($join);
+    }
+    return $this->$column();
+  }
+  /**
+   * go over the join and look for the correct column to return by calling humanize on the other side
+   */
+  protected function humanize_join($join){
+    if($join instanceOf WaxModel && $join->identifier != $join->primary_key) return $join->humanize($join->identifier);
+    else if($join instanceOf WaxModel && ($cols = $join->columns)) return $join->humanize();
+    else if($join instanceOf WaxRecordSet){
+      $str = "";
+      foreach($join as $r) $str .= $r->humanize().", ";
+      return trim($str, ", ");
+    }
+    return "";
+  }
+
+
    /**
    	*  These are left deliberately empty in the base class
    	*
