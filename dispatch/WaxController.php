@@ -146,6 +146,7 @@ class WaxController
       $view->add_path($path."shared/".$this->use_view);
       $view->add_path($path.$this->use_view);
     }
+    WaxEvent::run("wax.after_local_view_paths", $view);
 
     foreach((array)Autoloader::view_paths("plugin") as $path) {
       $view->add_path($path.get_class($this)."/".$this->use_view);
