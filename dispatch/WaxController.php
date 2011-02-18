@@ -57,7 +57,7 @@ class WaxController
 	 *	@access protected
 	 *	@param string $route
  	 */   
-  protected function redirect_to($options, $protocol="http://", $status=302) {
+  public function redirect_to($options, $protocol="http://", $status=302) {
     switch(true) {
       case is_array($options):
         $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
@@ -146,6 +146,7 @@ class WaxController
       $view->add_path($path."shared/".$this->use_view);
       $view->add_path($path.$this->use_view);
     }
+    WaxEvent::run("wax.after_local_view_paths", $view);
 
     foreach((array)Autoloader::view_paths("plugin") as $path) {
       $view->add_path($path.get_class($this)."/".$this->use_view);
