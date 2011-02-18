@@ -549,7 +549,7 @@ class WaxModel{
     $ret = array();
     foreach($this->columns as $column => $data){
       $type = $data[0];
-      if($type == "HasManyField" || $type == "ManyToManyField") $ret[$column] = $data;
+      if($type == "ManyToManyField") $ret[$column] = $data;
     }
     return $ret;
   }
