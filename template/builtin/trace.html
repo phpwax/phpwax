@@ -26,21 +26,21 @@
   <body>  
     <div id="summary">
       <h1><?=$e->error_heading?></h1>
-      <h2><?=$e->getMessage()?></h2>
+      <h2><?=$e->getMessage()?> - <?=$file?$file:$e->getFile()?> (<?=$line?$line:$e->getLine()?>)</h2>
     </div>
+    <?if($help):?>
     <div id="help">
       <h2>Further Information</h2>
       <p><?=$help?></p>
     </div>
+    <?endif?>
     <div id="instructions">
-      <pre>
-        <p><?=htmlentities($e->getTraceAsString())?></p>
-        <code>
-In File:  <?=$e->getFile()?>
-
-Line:     <?=$e->getLine()?>
-        </code>
-      </pre>
+      <h2>Stack Trace</h2>
+      <pre><?=htmlentities($e->getTraceAsString())?></pre>
+    </div>
+    <div id="variables">
+      <h2>Local Variables</h2>
+      <pre><?=print_r($vars,1)?></pre>
     </div>
     <div id="environment">
       <h2>HTTP Request, cookie and server information</h2>

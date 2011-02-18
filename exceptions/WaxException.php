@@ -7,11 +7,12 @@ class WaxException extends Exception {
   static $email_on_error=false;
   static $email_subject_on_error="Application error on production server";
 	public $div = "------------------------------------------------------------------------------------------------------\n";
-  public $help = "No further information was available";
+  public $help;
   static $replacements = array('error_message'=> '<!-- MESSAGE -->', 'error_heading'=>'<!-- HEADING -->', 'error_site'=>'<!-- SITE -->', 'error_site_name'=> '<!-- SITENAME -->');
 
-	public function __construct($message, $heading="Application Error", $context=false) {
+	public function __construct($message, $heading="Application Error", $context=false, $data = array()) {
     parent::__construct($message, $code);
+    foreach($data as $k => $v) $this->$k = $v;
     $this->error_heading = $heading;
 		if($context) $this->help = $context;
     $this->error_message = $this->format_trace($this);
@@ -24,12 +25,12 @@ class WaxException extends Exception {
   
 	public function format_trace($e, $cli=false) {
 	  if(IN_CLI =="true" || $cli) {
-	    $view= new WaxTemplate(array("e"=>$e, "help"=>$this->help));
+	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$this->vars));
 			$view->use_cache=false;
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
   		return $view->parse();
 	  }else {
-      $view= new WaxTemplate(array("e"=>$e, "help"=>$this->help));
+	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$this->vars));
 			$view->use_cache=false;
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();

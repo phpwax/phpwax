@@ -88,8 +88,8 @@ function throw_wxexception($e) {
   $exc = new WaxException($e->getMessage(), "Application Error");
 }
 
-function throw_wxerror($code, $error) {
-  $exc = new WaxException($error, "Application Error $code");
+function throw_wxerror($code, $error, $file, $line, $vars) {
+  $exc = new WaxException($error, "Application Error $code", false, array("file"=>$file, "line"=>$line, "vars"=>$vars));
 }
 
 
