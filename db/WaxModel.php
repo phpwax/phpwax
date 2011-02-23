@@ -643,7 +643,8 @@ class WaxModel{
    * - if all else fails call it like a function and see what happens
    */
   public function humanize($column=false){
-    if(!$column){
+    if(!$column && $this->identifier != $this->primary_key && $this->columns[$this->identifier][0] != "IntegerField") $column = $this->identifier;
+    elseif(!$column){
       foreach($this->columns as $k=>$v){
         if(($v[0] != "IntegerField" && $v[0] != "AutoField") || (count($v[1]['choices']))){
           $column = $k;
