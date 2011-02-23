@@ -118,7 +118,7 @@ class WaxEvent {
     	return FALSE;
     
     if ( ! in_array($callback, self::$events[$name], TRUE)) {
-    	// Replace the exisiting event with the new event
+    	// Replace the existing event with the new event
     	self::$events[$name][$key] = $callback;
     } else {
     	// Remove the existing event from the queue
