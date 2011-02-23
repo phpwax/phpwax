@@ -15,7 +15,7 @@ class MultipleSelectInput extends SelectInput {
     if(!$this->choices) $this->choices = $this->get_choices();
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
-    foreach($this->choices as $value=>$option) {
+    foreach((array)$this->choices as $value=>$option) {
       $sel = "";
       if($this->value==$value) $sel = ' selected="selected"';
       $output .= sprintf($choice, $value, $sel, $option);
