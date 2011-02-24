@@ -151,10 +151,12 @@ class WaxTemplate implements Cacheable{
 	    if($suffix != "html") $cache_object->suffix = $suffix.'.cache';
 	    if($this->cached($cache_object, $parse_as) ) return $this->cached($cache_object, $parse_as);	    
     }
-    
+    $len = "-".strlen($suffix);
 	  foreach($this->template_paths as $path) {
-	    if(is_readable($path.".".$suffix)) {
-				$view_file = $path.".".$suffix;
+	    if(substr($path, $len) == $suffix) $check = $path;
+	    else $check = $path.".".$suffix;
+	    if(is_readable($check)) {
+				$view_file = $check;
 				break;
 			}
 	  }
