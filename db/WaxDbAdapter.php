@@ -190,7 +190,7 @@ abstract class WaxDbAdapter {
 		    }
 		    break;
 		    default:
-		    WaxLog::log("error", "[DB] ". $err[2]);
+		    WaxLog::log("error", "[DB] $err[2] , SQL: ".$pdo_statement->queryString.($bindings?"\n".print_r($bindings,1):""));
 		    if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
 		  }
 		}
