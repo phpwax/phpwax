@@ -36,12 +36,14 @@
     <?endif?>
     <div id="instructions">
       <h2>Stack Trace</h2>
-      <pre><?=htmlentities($e->getTraceAsString())?></pre>
+      <pre><?=htmlentities($trace?$trace:$e->getTraceAsString())?></pre>
     </div>
+    <?if($help):?>
     <div id="variables">
       <h2>Local Variables</h2>
       <pre><?=print_r($vars,1)?></pre>
     </div>
+    <?endif?>
     <div id="environment">
       <h2>HTTP Request, cookie and server information</h2>
       <p><a href='#' onclick='document.getElementById("info").style.display="block"'>View</a></p>

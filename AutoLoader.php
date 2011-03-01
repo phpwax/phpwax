@@ -85,7 +85,7 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($e) {
-  $exc = new WaxException($e->getMessage(), "Application Error");
+  $exc = new WaxException($e->getMessage(), "Application Error", false, array("file"=>$e->getFile(), "line"=>$e->getLine(), "trace"=>$e->getTraceAsString()));
 }
 
 function throw_wxerror($code, $error, $file, $line, $vars) {
