@@ -21,9 +21,11 @@ class WaxModel{
   public $columns = array();
   public $select_columns = array();
   public $filters = array();
-	public $group_by = false;
-	public $having = false;
+  public $group_by = false;
+  public $_group_by_params = array();
+  public $having = false;
   public $_order = false;
+  public $_order_params = array();
   public $_limit = false;
   public $_offset = "0";
   public $sql = false;
@@ -353,8 +355,9 @@ class WaxModel{
     return $res;
   }
 
- 	public function order($order_by){
+ 	public function order($order_by, $order_params = array()){
 		$this->_order = $order_by;
+		$this->_order_params = $order_params;
 		return $this;
 	}
 
@@ -376,8 +379,9 @@ class WaxModel{
 		$this->_limit = $limit;
 		return $this;
 	}
-	public function group($group_by){
+	public function group($group_by, $group_params = array()){
 		$this->group_by = $group_by;
+		$this->_group_by_params = $group_params;
 		return $this;
 	}
 	public function sql($query) {
