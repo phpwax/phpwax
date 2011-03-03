@@ -91,8 +91,10 @@ abstract class WaxDbAdapter {
       if($filters["sql"]) $sql.= " WHERE ";
       $sql.=$filters["sql"];
       $params =$filters["params"];
-      $sql.= $this->order($model);
-      $sql.= $this->limit($model);
+      $order = $this->order($model);
+      $limit = $this->limit($model);
+      $sql.= (is_array($order) ? $order['sql'] : $order);
+      $sql.= (is_array($limit) ? $limit['sql'] : $limit);
     }
     return $this->exec($this->db->prepare($sql), $params);
   }
