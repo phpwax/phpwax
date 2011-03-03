@@ -279,10 +279,18 @@ abstract class WaxDbAdapter {
 		  return array("sql"=>$sql, "params"=>$conditions["params"]);
 	  }
   }
-  public function group($model) {if($model->group_by) return array("sql"=>" GROUP BY {$model->group_by}", "params"=>$model->_group_by_params); }
-  public function having($model) {if($model->having) return " HAVING {$model->having}";  }
-  public function order($model) {if($model->_order) return array("sql"=>" ORDER BY ".$model->_order, "params"=>$model->_order_params);}
-  public function limit($model) {if($model->_limit) return " LIMIT ". (int)$model->_offset . ", " . (int)$model->_limit;}
+  public function group($model){
+    if($model->group_by) return array("sql"=>" GROUP BY {$model->group_by}", "params"=>$model->_group_by_params); 
+  }
+  public function having($model){
+    if($model->having) return " HAVING {$model->having}";  
+  }
+  public function order($model){
+    if($model->_order) return array("sql"=>" ORDER BY ".$model->_order, "params"=>$model->_order_params);
+  }
+  public function limit($model){
+    if($model->_limit) return " LIMIT ". (int)$model->_offset . ", " . (int)$model->_limit;
+  }
   
   public function filter_sql($model, $filter_name = "filters") {
     $params = array();
