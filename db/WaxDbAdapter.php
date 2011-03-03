@@ -140,11 +140,12 @@ abstract class WaxDbAdapter {
     }
 
     $stmt = $this->prepare($sql);
-    WaxEvent::run("wax.db_query",$stmt);
+    $event_data = array("stmt"=>$stmt, "params"=>$params);
+    WaxEvent::run("wax.db_query",$event_data);
     $this->exec($stmt, $params);
     $this->row_count_query($model);
 		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    WaxEvent::run("wax.db_query_end",$stmt);
+    WaxEvent::run("wax.db_query_end",$event_data);
 		return $res;
   }
   
