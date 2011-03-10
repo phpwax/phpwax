@@ -370,7 +370,11 @@ class WaxModel{
 	public function dates($start, $end) {
 
 	}
-
+  public function having($condition){
+    $this->having = $condition;
+    return $this;
+  }
+  
 	public function offset($offset){
 		$this->_offset = $offset;
 		return $this;
