@@ -25,6 +25,9 @@ class WaxLog {
     if($file) ini_set("error_log",self::$log_file);
   }
   
-
+  static public function unparameterise($string, $params){
+    if(!$params) return $string;
+    return str_replace(array_fill(0, count($params), "?"), $params, $string);
+  }
 }
 

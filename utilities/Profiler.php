@@ -205,7 +205,8 @@ class Profiler {
   public function profile() {
 
     WaxEvent::add("wax.db_query", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::data()->queryString, debug_backtrace(false));
+      $data = WaxEvent::data();
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxLog::unparameterise($data['stmt']->queryString, $data['params']), debug_backtrace(false));
     });
     WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     

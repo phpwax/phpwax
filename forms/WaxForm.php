@@ -15,7 +15,6 @@ class WaxForm implements Iterator {
   //Validation & Format Options
   public $attributes = array(
     "id"=>"",
-    "action"=>"",
     "method"=>"post",
     "class" =>"waxform",
     "enctype"=>"multipart/form-data"
