@@ -9,7 +9,7 @@ class WaxWidget{
 
   public $allowable_attributes = array(
     "type", "name", "value", "checked", "disabled", "readonly", "size", "id", "class",
-    "maxlength", "src", "alt", "accesskey", "tabindex", "rows", "cols", "multiple"
+    "maxlength", "src", "alt", "accesskey", "tabindex", "rows", "cols", "multiple", 'placeholder'
   );
   
   public $defaults = array("name"=>"","editable"=>true,"value"=>"");
