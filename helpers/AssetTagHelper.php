@@ -100,6 +100,7 @@ class AssetTagHelper extends WXHelpers {
       if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
       else $base = PUBLIC_DIR;
       $d = $base."javascripts/".$name;
+      if(!is_readable($d)) return false;
       $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.js$|^[^\.]*$#i'), true);
       foreach($dir as $file){
         $name = $file->getPathName();
@@ -114,6 +115,7 @@ class AssetTagHelper extends WXHelpers {
       if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
       else $base = PUBLIC_DIR;
       $d = $base."stylesheets/".$name;       
+      if(!is_readable($d)) return false;
       $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.css$|^[^\.]*$#i'), true);
       foreach($dir as $file){
         $name = $file->getPathName();
