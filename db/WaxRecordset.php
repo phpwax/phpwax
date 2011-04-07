@@ -12,11 +12,13 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   protected $model = false;
   protected $obj = false;
   protected $key = 0;
+  private $key_map;
   protected $constraints = array();
   public $rowset;
   
   public function __construct(WaxModel $model, $rowset) {
     $this->rowset = $rowset;
+    $this->key_map = array_keys($rowset);
     $this->model = $model;
   }
   
@@ -25,11 +27,11 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function current() {
-    return $this->offsetGet($this->key);
+    return $this->offsetGet($this->key());
   }
   
   public function key() {
-    return $this->key;
+    return $this->key_map[$this->key];
   }
   
   public function rewind() {
@@ -37,7 +39,7 @@ class WaxRecordset implements Iterator, ArrayAccess, Countable {
   }
   
   public function valid() {
-    if($this->rowset[$this->key]) return true;
+    if($this->rowset[$this->key()]) return true;
     return false;
   }
   
