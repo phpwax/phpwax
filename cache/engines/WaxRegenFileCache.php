@@ -35,7 +35,7 @@ class WaxRegenFileCache{
 
 	public function parse_location($url){
 		$parsed = parse_url($url);
-		return $parsed['scheme']."://".$parsed['host'].((isset($parsed['path']))?$parsed['path']:"")."?no-wax-cache=1&".((isset($parsed['query']))?$parsed['query']:"");
+		return (isset($parsed['scheme'])?$parsed['scheme']:"")."://".(isset($parsed['host'])?$parsed['host']:"").((isset($parsed['path']))?$parsed['path']:"")."?no-wax-cache=1&".((isset($parsed['query']))?$parsed['query']:"");
 	}
 }
 
