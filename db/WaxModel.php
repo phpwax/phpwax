@@ -34,6 +34,7 @@ class WaxModel{
   public $identifier = false;
   static public $object_cache = array();
 	public $is_paginated = false;
+  public $validation_groups = array(); //active validation groups to check on validate
 	//joins
 	public $is_left_joined = false;
 	public $left_join_target = false;
