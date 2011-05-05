@@ -325,12 +325,12 @@ class WaxModel{
  	  if($this->persistent) {
  	    if($this->primval) {
  	      $this->before_update();
-        if(!$this->validate) return false;
+        if(!$this->validate()) return false;
  	      $res = $this->update();
       }
  	    else {
  	      $this->before_insert();
-        if(!$this->validate) return false;
+        if(!$this->validate()) return false;
  	      $res = $this->insert();
  	    }
  		}
