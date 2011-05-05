@@ -32,6 +32,7 @@ class WaxModelField {
   public $model = false;
   public $validator = "WaxValidate";
   public $validations = array();
+  public $validation_groups = array();
   
   public $errors = array();
   
@@ -101,7 +102,8 @@ class WaxModelField {
   public function is_valid() {
     $this->validate();
     $validator = new $this->validator($this, $this->field);
-    foreach($this->validations as $valid) $validator->add_validation($valid);
+    $active_groups = $this->model->validation_groups;
+    foreach($this->validations as $valid) if((count($active_groups) <= 0) || count(array_intersect((array)$this->validation_groups[$valid], $active_groups))) $validator->add_validation($valid);
     $validator->validate();
     if($validator->is_valid() && (!$this->errors)) return true;
     else $this->errors = array_merge($this->errors,$validator->errors);
