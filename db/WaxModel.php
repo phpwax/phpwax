@@ -127,7 +127,7 @@ class WaxModel{
 
  	public function filter($column, $value=NULL, $operator="=") {
  	  //if the var is a string, then we are asuming its a new style filter
- 	  if(is_string($column)) {
+ 	  if(!is_array($column)) {
  	    //with a value passed in this confirms its a new method of filter
  	    if($value !== NULL) {
  	      //operator sniffing
