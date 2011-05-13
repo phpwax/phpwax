@@ -153,6 +153,8 @@ class WaxController
       $view->add_path($path.get_parent_class($this)."/".$this->use_view);
       $view->add_path($path."shared/".$this->use_view);
     }
+    WaxEvent::run("wax.after_plugin_view_paths", $view);
+    
     if($this->use_format) $content = $view->parse($this->use_format, 'views');
 		else $content = $view->parse('html', 'views');
 		return $content;
@@ -166,9 +168,7 @@ class WaxController
 		if(!$this->use_layout) return "";
     $layout = new WaxTemplate($this);
     $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
-
-    $layout->add_path(PLUGIN_DIR.$this->use_plugin."/view/layouts/".$this->use_layout);
-    $layout->add_path(PLUGIN_DIR.$this->share_plugin."/view/layouts/".$this->use_layout);
+    foreach((array)Autoloader::view_paths("plugin") as $path) $layout->add_path($path."layouts/".$this->use_layout);
     ob_end_clean();
 	  return $layout->parse($this->use_format);      
   }
