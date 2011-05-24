@@ -156,6 +156,7 @@ class WaxUrl {
     *  @return boolean      If file exists true
     */
 	public static function route_controller($input = false) {
+    if(preg_match("/(.*)\.(.*)/", self::$uri, $matches) && $matches[2]) $input = $matches[1]; // drop out format to route multilevel controllers with format correctly
 	  if(!$input) $route = explode("/", self::$params["route"]);
 	  else $route = explode("/", $input);
 	  $controller = false;
