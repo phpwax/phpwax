@@ -90,7 +90,7 @@ class WaxModel{
     if(is_array($params)) {
       $mod = new $class;
       foreach($params as $method=>$args) {
-        call_user_func_array(array($mod,$method), $args);
+        $mod->$method($args);
       }
     } elseif(is_string($params)) {
       $mod = new $class($params);
