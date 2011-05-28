@@ -41,7 +41,7 @@ class File {
 	}
 	
 	static function clear_image_cache($image_id){
-		$look_for = CACHE_DIR. $image_id."_*";
+		$look_for = CACHE_DIR."images/". $image_id."_*";
 		foreach(glob($look_for) as $filename){
 			@unlink($filename);
 		}
