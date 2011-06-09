@@ -81,14 +81,13 @@ class WaxCacheBackgroundMemcache implements CacheEngine{
 	public function make_identifier($prefix=false){
 	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
 	  $str = $this->dir.$prefix;
-	  $sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
+	  Session::unset_var('referrer');
 		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
     if(count($data)) $str .= "-d-".md5(serialize($data));
-    if(count($sess)) $str .= "-s-".md5(serialize($sess));
+    if(count($sess)) $str .= "-s-".md5(serialize(Session::get()));
     if(count($_GET)){
       $get = $_GET;
       unset($get['route'], $get['no-wax-cache']);
