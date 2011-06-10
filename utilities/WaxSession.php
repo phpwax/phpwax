@@ -25,8 +25,8 @@ class WaxSession {
     //get id from request or generate an id
     if(($this->id = $_COOKIE[$this->name]) || ($this->id = Request::param($this->name))){
       //initialize data from cross-request storage
-      if(!static::$data[$this->name] && is_readable($this->file_storage()) && ($stored = unserialize(file_get_contents($this->file_storage())))){
-        if(time() < $stored['expires']) static::$data[$this->name] = $stored['data'];
+      if(!static::$data[$this->name] && ($stats = stat($this->file_storage()))){
+        if(time() < $stats[9] + $this->lifetime) static::$data[$this->name] = unserialize(file_get_contents($this->file_storage()));
         else unlink($this->file_storage());
       }
     }else $this->id = $this->safe_encrypt($_SERVER['REMOTE_ADDR'].microtime().mt_rand());
@@ -44,7 +44,7 @@ class WaxSession {
    */
   function __destruct(){
     if(!is_dir($this->file_storage_dir())) mkdir($this->file_storage_dir(), 0750, true);
-    if(static::$updated[$this->name]) file_put_contents($this->file_storage(), serialize(array("data"=>static::$data[$this->name], "expires"=>time() + $this->lifetime)));
+    if(static::$updated[$this->name]) file_put_contents($this->file_storage(), serialize(static::$data[$this->name]));
   }
   
   public function get($key){
