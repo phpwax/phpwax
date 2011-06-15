@@ -1,13 +1,23 @@
 <?php
 
 //if sessions are used, add http headers defining the cookie use. this is above the class definition since it only needs to be sent once for all sessions, not once per session.
-WaxEvent::add("wax.post_render", function(){
-  $response = WaxEvent::data();
-  $response->add_header('P3P', ' CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
-});
+if(class_exists("WaxEvent", false)){
+  WaxEvent::add("wax.post_render", function(){
+    $response = WaxEvent::data();
+    $response->add_header('P3P', ' CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
+    
+    //garbage collection
+    $cmd = "php ".__FILE__." ";
+    foreach(WaxSession::$garbage_collection_folders as $dir)
+      if(!is_readable($dir."/garbage.collect.lock"))
+        $cmd .= $dir." ";
+    
+    exec($cmd." > /dev/null &");
+  });
+}
 
 class WaxSession {
-  public static $data = array(), $updated = array();
+  public static $data = array(), $updated = array(), $garbage_collection_folders = array();
   
   public
     $bots = array('googlebot','ask jeeves','slurp','fast','scooter','zyborg','msnbot'),
@@ -26,10 +36,13 @@ class WaxSession {
     if(($this->id = $_COOKIE[$this->name]) || ($this->id = Request::param($this->name))){
       //initialize data from cross-request storage
       if(!static::$data[$this->name] && ($stats = stat($this->file_storage()))){
-        if(time() < $stats[9] + $this->lifetime) static::$data[$this->name] = unserialize(file_get_contents($this->file_storage()));
+        if(time() < $stats[9]) static::$data[$this->name] = unserialize(file_get_contents($this->file_storage()));
         else unlink($this->file_storage());
       }
     }else $this->id = $this->safe_encrypt($_SERVER['REMOTE_ADDR'].microtime().mt_rand());
+    
+    //add folder to collection of folders to be garbage collected
+    static::$garbage_collection_folders[] = $this->file_storage_dir();
     
     //set cookie on render to propogate session
     $session = $this;
@@ -44,7 +57,10 @@ class WaxSession {
    */
   function __destruct(){
     if(!is_dir($this->file_storage_dir())) mkdir($this->file_storage_dir(), 0750, true);
-    if(static::$updated[$this->name]) file_put_contents($this->file_storage(), serialize(static::$data[$this->name]));
+    if(static::$updated[$this->name]){
+      file_put_contents($this->file_storage(), serialize(static::$data[$this->name]));
+      touch($this->file_storage(), time() + $this->lifetime);
+    }
   }
   
   public function get($key){
@@ -113,4 +129,19 @@ class WaxSession {
    */
   public function start(){}
 }
+
+//when run from console directly, garbage collect. parameters are directories to be processed
+array_shift($argv);
+if($argv){
+  foreach($argv as $dir){
+    if(!is_dir($dir)) continue;
+    touch("$dir/garbage.collect.lock");
+    foreach(glob($dir) as $file){
+      if(($stats = stat($file)) && time() > $stats[9])
+        unlink($file);
+    }
+    unlink("$dir/garbage.collect.lock");
+  }
+}
+
 ?>
