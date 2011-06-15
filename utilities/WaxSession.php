@@ -8,16 +8,24 @@ if(class_exists("WaxEvent", false)){
     
     //garbage collection
     $cmd = "php ".__FILE__." ";
-    foreach(WaxSession::$garbage_collection_folders as $dir)
-      if(!is_readable($dir."/garbage.collect.lock"))
-        $cmd .= $dir." ";
-    
-    exec($cmd." > /dev/null &");
+    $run_garbage_collection = true;
+    foreach(WaxSession::$garbage_collection_folders as $dir){
+      if(($stats = stat($dir."/garbage.collect.lock")) && time() < $stats[9]){
+        $run_garbage_collection = false;
+        break;
+      }
+      $cmd .= $dir." ";
+    }
+    if($run_garbage_collection) exec($cmd." > /dev/null &");
   });
 }
 
 class WaxSession {
-  public static $data = array(), $updated = array(), $garbage_collection_folders = array();
+  public static
+    $data = array(),
+    $updated = array(),
+    $garbage_collection_folders = array(),
+    $garbage_collection_timeout = 1440;
   
   public
     $bots = array('googlebot','ask jeeves','slurp','fast','scooter','zyborg','msnbot'),
@@ -135,12 +143,12 @@ array_shift($argv);
 if($argv){
   foreach($argv as $dir){
     if(!is_dir($dir)) continue;
-    touch("$dir/garbage.collect.lock");
-    foreach(glob($dir) as $file){
+    touch("$dir/garbage.collect.lock", time() + WaxSession::$garbage_collection_timeout);
+    foreach(glob("$dir/*") as $file){
+      if($file == "$dir/garbage.collect.lock") continue;
       if(($stats = stat($file)) && time() > $stats[9])
         unlink($file);
     }
-    unlink("$dir/garbage.collect.lock");
   }
 }
 
