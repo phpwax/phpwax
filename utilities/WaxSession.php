@@ -65,10 +65,10 @@ class WaxSession {
    */
   function __destruct(){
     if(!is_dir($this->file_storage_dir())) mkdir($this->file_storage_dir(), 0750, true);
-    if(static::$updated[$this->name]){
+    if(static::$updated[$this->name])
       file_put_contents($this->file_storage(), serialize(static::$data[$this->name]));
-      touch($this->file_storage(), time() + $this->lifetime);
-    }
+    if(static::$updated[$this->name] || !$this->lifetime) //write browser close sessions on read, to update their time on every read
+      touch($this->file_storage(), time() + ($this->lifetime?$this->lifetime:(WaxSession::$garbage_collection_timeout * 10)));
   }
   
   public function get($key){
