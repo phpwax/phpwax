@@ -139,8 +139,8 @@ class WaxSession {
 }
 
 //when run from console directly, garbage collect. parameters are directories to be processed
-array_shift($argv);
 if($argv){
+  array_shift($argv);
   foreach($argv as $dir){
     if(!is_dir($dir)) continue;
     touch("$dir/garbage.collect.lock", time() + WaxSession::$garbage_collection_timeout);
