@@ -52,12 +52,12 @@ class WaxResponse {
     
   public function body() {return $this->body;}
   
-  public function set_cookie($key, $value='', $expires=false, $path=false, $domain=false, $secure=false) {
+  public function set_cookie($key, $value='', $expires=false, $path="/", $domain=false, $secure=false) {
     $cookie[] = "$key=$value";
+    $cookie[] = "Path=$path";
+    $cookie[] = "Domain=".($domain?$domain:$_SERVER['HTTP_HOST']);
+    
     if($expires) $cookie[] = "Expires=".date("D, d-M-Y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
-    if($path) $cookie[] = "Path=$path";
-    else $cookie[] = "Path=/";
-    if($domain) $cookie[] = "Domain=$domain";
     if($secure) $cookie[] = "Secure";
     
     if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
