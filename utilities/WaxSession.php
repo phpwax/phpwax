@@ -103,9 +103,8 @@ class WaxSession {
   public function file_storage(){ return $this->file_storage_dir()."/".$this->id; }
   
   protected function safe_encrypt($password, $iterations = 8) {
-    $random = '';
     $itoa64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./';
-    substr(md5(mt_rand()), 0, 16);
+    $random = substr(md5(mt_rand()), 0, 16);
     if($iterations < 4 || $iterations > 31) $iterations = 8;
     $salt = '$2a$';
     $salt .= chr(ord('0') + $iterations / 10);
