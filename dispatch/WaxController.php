@@ -45,7 +45,7 @@ class WaxController
   
   public function init(){
     $this->class_name=get_class($this);
-    $this->referrer=Session::get('referrer');
+    $this->referrer=$_SERVER['HTTP_REFERER'];
     $this->filters["before"]=array();
     $this->filters["after"]=array();
   }
