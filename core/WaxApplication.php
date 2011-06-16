@@ -89,7 +89,6 @@ class WaxApplication {
    **/
    
   public function execute() {
-    Session::start();
     WaxEvent::run("wax.request");
 	  $this->request = WaxUrl::$params;
 	  WaxEvent::run("wax.post_request", $this->request);
