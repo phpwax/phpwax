@@ -54,7 +54,7 @@ class WaxResponse {
   
   public function set_cookie($key, $value='', $expires=false, $path=false, $domain=false, $secure=false) {
     $cookie[] = "$key=$value";
-    if($expires) $cookie[] = "Expires=".date("D, d-M-y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
+    if($expires) $cookie[] = "Expires=".date("D, d-M-Y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
     if($path) $cookie[] = "Path=$path";
     else $cookie[] = "Path=/";
     if($domain) $cookie[] = "Domain=$domain";
