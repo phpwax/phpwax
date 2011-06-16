@@ -57,6 +57,7 @@ class WaxResponse {
     if($max_age) $cookie[] = "Max-Age=$max_age";
     if($expires) $cookie[] = "Expires=".date("D, d-M-y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
     if($path) $cookie[] = "Path=$path";
+    else $cookie[] = "Path=/";
     if($domain) $cookie[] = "Domain=$domain";
     if($secure) $cookie[] = "Secure";
     
