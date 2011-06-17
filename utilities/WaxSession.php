@@ -56,7 +56,7 @@ class WaxSession {
     $session = $this;
     WaxEvent::add("wax.post_render", function() use ($session) {
       $response = WaxEvent::data();
-      $response->set_cookie($session->name, $session->id, time() + $session->lifetime);
+      $response->set_cookie($session->name, $session->id, $session->lifetime?(time() + $session->lifetime):false);
     });
   }
   
