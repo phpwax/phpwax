@@ -89,7 +89,9 @@ function throw_wxexception($e) {
 }
 
 function throw_wxerror($code, $error, $file, $line, $vars) {
-  $exc = new WaxException($error, "Application Error $code", false, array("file"=>$file, "line"=>$line, "vars"=>$vars));
+  //log warnings without halting execution
+  if($code == 2) WaxLog::log("warn", "code: $code, error: $error, file: $file, line: $line");
+  else $exc = new WaxException($error, "Application Error $code", false, array("file"=>$file, "line"=>$line, "vars"=>$vars));
 }
 
 

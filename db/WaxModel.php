@@ -34,6 +34,7 @@ class WaxModel{
   public $identifier = false;
   static public $object_cache = array();
 	public $is_paginated = false;
+  public $validation_groups = array(); //active validation groups to check on validate
 	//joins
 	public $is_left_joined = false;
 	public $left_join_target = false;
@@ -90,7 +91,7 @@ class WaxModel{
     if(is_array($params)) {
       $mod = new $class;
       foreach($params as $method=>$args) {
-        call_user_func_array(array($mod,$method), $args);
+        $mod->$method($args);
       }
     } elseif(is_string($params)) {
       $mod = new $class($params);

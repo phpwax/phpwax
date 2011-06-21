@@ -52,23 +52,34 @@ class WaxResponse {
     
   public function body() {return $this->body;}
   
-  public function set_cookie($key, $value='', $max_age=false, $expires=false, $path='/', $domain=false, $secure=false) {
-    $this->headers["Set-Cookie"]="$key=$value;max_age=$max_age;expires=$expires;path=$path;domain=$domain;secure=$secure";
+  public function set_cookie($key, $value='', $max_age=false, $expires=false, $path=false, $domain=false, $secure=false) {
+    $cookie[] = "$key=$value";
+    if($max_age) $cookie[] = "Max-Age=$max_age";
+    if($expires) $cookie[] = "Expires=".date("D, d-M-y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
+    if($path) $cookie[] = "Path=$path";
+    if($domain) $cookie[] = "Domain=$domain";
+    if($secure) $cookie[] = "Secure";
+    
+    if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
+    $this->headers["Set-Cookie"][] = implode(";", $cookie);
   }
   
   public function delete_cookie($key, $path='/', $domain=false) {
-    $this->headers["Set-Cookie"] = "$key='';path=$path;domain=$domain;expires= Thu, 01-Jan-1970 00:00:00 GMT";
+    if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
+    $this->headers["Set-Cookie"][] = "$key='';path=$path;domain=$domain;expires= Thu, 01-Jan-1970 00:00:00 GMT";
   }
   
   public function execute() {
     header($this->status_map[$this->status]);
     header("X-Info: Powered By PHP-Wax");
-    foreach($this->headers as $header=>$val) {
-      header($header.":".$val);
-    }
+    foreach($this->headers as $header=>$val)
+      if(is_array($val))
+        foreach($val as $v)
+          header($header.":".$v, false);
+      else
+        header($header.":".$val, false);
     echo $this->body();
     WaxEvent::run("wax.end");
-    //exit;
   }
   	
 }
