@@ -64,9 +64,12 @@ class WaxSession {
    * write session data back to session storage on destruction
    */
   function __destruct(){
-    if(!is_dir($this->file_storage_dir())) mkdir($this->file_storage_dir(), 0750, true);
-    if(static::$updated[$this->name])
-      file_put_contents($this->file_storage(), serialize(static::$data[$this->name]));
+    if(!is_dir($this->file_storage_dir())){
+      if(!mkdir($this->file_storage_dir(), 0750, true)) throw new WaxException("Session not writable - ".$this->file_storage_dir());
+    }
+    if(static::$updated[$this->name]){
+      if(file_put_contents($this->file_storage(), serialize(static::$data[$this->name])) === false) throw new WaxException("Session not writable - ".$this->file_storage_dir());
+    }
     if(static::$updated[$this->name] || !$this->lifetime) //write browser close sessions on read, to update their time on every read
       touch($this->file_storage(), time() + ($this->lifetime?$this->lifetime:(WaxSession::$garbage_collection_timeout * 10)));
   }
