@@ -16,9 +16,14 @@ class FileField extends WaxModelField {
 	public $allowed_extensions = false;
 	public $widget = "FileInput";
 	public $messages = array(
-    "format"=>      "%s is not a valid format"
+    "format"=>      "%s is not a valid format",
+    "size_large"  =>      "image uploaded is too large (%s or less)",
+    "size_small"  =>      "%s is too small"
   );
 	public $data_type = "string";
+	
+	public $max_size = false;
+	public $min_size = false;
 
 	public function __construct($column, $model, $options = array()) {	
     if(isset($options['allowed_extensions'])){
@@ -38,6 +43,7 @@ class FileField extends WaxModelField {
 
   public function validate() {
 		$this->valid_extension();
+		$this->valid_size();
   }
 	public function valid_extension(){
 		$file = $_FILES[$this->model->table];
@@ -46,6 +52,13 @@ class FileField extends WaxModelField {
 			$ext = strtolower(substr($name, strrpos($name, ".") ));
 			if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
 		}
+	}
+	
+	public function valid_size() {
+	  $file = $_FILES[$this->model->table];
+		$error= $file['error'][$this->col_name];
+		if($error == 2) $this->add_error($this->field, sprintf($this->messages["size_large"], $this->max_size / 1024 . "kb"));
+		//if($this->min_size && $size < $this->min_size) $this->add_error($this->field, sprintf($this->messages["size"], $size));
 	}
 	/**** overides *****/
 

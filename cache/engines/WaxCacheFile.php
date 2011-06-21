@@ -87,14 +87,13 @@ class WaxCacheFile implements CacheEngine{
 	  if(!$prefix) $prefix=$_SERVER['HTTP_HOST'];
 		$this->namespace = $namespace = $this->get_namespace($this->config, $_SERVER['REQUEST_URI']);		
 		$str = $this->dir.$namespace.$prefix;
-	  $sess = $_SESSION[Session::get_hash()];
-		unset($sess['referrer']);
+	  Session::unset_var('referrer');
 		$uri = preg_replace('/([^a-z0-9A-Z\s])/', "", $_SERVER['REQUEST_URI']);
 
     while(strpos($uri, "  ")) $uri = str_replace("  ", " ", $uri);
     if(strlen($uri)) $str.='-'.md5(str_replace("nowaxcache1", "", str_replace(" ", "-",$uri)));
 
-    if(count($sess) && !$this->config['disable_sessions']) $str .= "-s-".md5(serialize($sess));
+    if(count($sess = Session::get()) && !$this->config['disable_sessions']) $str .= "-s-".md5(serialize($sess));
     if(count($_GET)){
       $get = $_GET;
       unset($get['route'], $get['no-wax-cache']);
