@@ -114,7 +114,7 @@ class WaxCLI {
 
   
   public function syncdb($argv) {
-    if($argv[1] && ($argv[1]=="test" || $argv[1] == "production")) define("ENV", $argv[1]);
+    if($argv[1]) define("ENV", $argv[1]);
     $this->app_setup();
     foreach(Autoloader::$plugin_array as $plugin) {
       Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true); 
