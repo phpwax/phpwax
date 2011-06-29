@@ -663,7 +663,7 @@ class WaxModel{
     }
     if(($col_info = $this->columns[$column]) && ($type = $col_info[0]) && ($info = $col_info[1])){
       if(count($info['choices']) && ($val = $this->$column) !== false) return $info['choices'][$val];
-      if($type == "DateTimeField") return date(($info['output_format'])?$info['output_format']:"jS F Y H:i", strtotime($this->$column));
+      if($type == "DateTimeField") return ($val = $this->$column)?date(($info['output_format'])?$info['output_format']:"jS F Y H:i", strtotime($val)):'';
       else if(($type == "ForeignKey" || $type == "ManyToManyField" || $type == "HasManyField") && ($join = $this->$column)) return $this->humanize_join($join);
     }
     return $this->$column();
