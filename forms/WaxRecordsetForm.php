@@ -31,8 +31,8 @@ class WaxRecordsetForm extends WaxBoundForm {
     }
     foreach($associations as $name=>$el) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$el->bound_data->primval][$name]);
     foreach($this->elements as $el) {
-      if(isset($this->post_data[$el->bound_data->primval])) {
-        $res[$el->primval] = $el->bound_data->model->handle_post($this->post_data[$el->primval]);
+      if(isset($this->post_data[$el->bound_data->model->primval])) {
+        $res[$el->bound_data->model->primval] = $el->bound_data->model->handle_post($this->post_data[$el->bound_data->model->primval]);
       }
     }
     $res = new WaxRecordset($this->recordset->model, $res);
