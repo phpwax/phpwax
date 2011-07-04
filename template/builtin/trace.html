@@ -38,7 +38,7 @@
       <h2>Stack Trace</h2>
       <pre><?=htmlentities($trace?$trace:$e->getTraceAsString())?></pre>
     </div>
-    <?if($help):?>
+    <?if($vars):?>
     <div id="variables">
       <h2>Local Variables</h2>
       <pre><?=print_r($vars,1)?></pre>
