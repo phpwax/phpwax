@@ -32,15 +32,15 @@ class WaxCacheMemcache implements CacheEngine{
   
 	
 	public function get() {
-	  if(!self::$connection) return false;
+	  //if(!self::$connection) return false;
 	  if($this->is_namespaced()) return $this->memcache->get($this->namespaced_key());
 	  return $this->memcache->get($this->key);
 	}
 	
 	public function set($value) {
-	  if(!self::$connection) return false;
-	  if($this->is_namespaced()) return $this->memcache->set($this->namespaced_key(), $value, $this->lifetime);
-    else return $this->memcache->set($this->key, $value,$this->lifetime);
+	  //if(!self::$connection) return false;
+	  if($this->is_namespaced()) return $this->memcache->set($this->namespaced_key(), $value,0, $this->lifetime);
+    else return $this->memcache->set($this->key, $value, 0,$this->lifetime);
 	}
 	
 	public function expire($query=false) {
