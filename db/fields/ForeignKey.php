@@ -41,7 +41,7 @@ class ForeignKey extends WaxModelField {
     if($value instanceof WaxModel) {
       $this->model->{$this->col_name} = $value->{$value->primary_key};
       return $this->model->save();
-    } else {
+    } elseif(is_numeric($value)) {
       $this->model->{$this->col_name} = $value;
       return $this->model->save();
     }
