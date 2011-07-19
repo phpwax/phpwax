@@ -36,7 +36,6 @@ class DateTimeField extends WaxModelField {
   }
 
   public function get(){
-    $time_val = strtotime($val = parent::get());
-    return ($time_val === false)?$val:date($this->output_format, $val);
+    if($val = parent::get()) return date($this->output_format, strtotime($val));
   }
 }
