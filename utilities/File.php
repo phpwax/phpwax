@@ -102,7 +102,11 @@ class File {
     $trans_colour = imagecolorallocatealpha($dst, 255, 255, 255, 127);
     imagefill($dst, 0, 0, $trans_colour);
     $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-
+    
+		return self::output_image_gd($image_type, $dst, $destination);
+	}
+  
+  static private function output_image_gd($image_type, $dst, $destination){
     switch($image_type) {
       case 1: $src = imagegif($dst,$destination); break;
       case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
