@@ -8,7 +8,7 @@
 class File {
   
   static $compression_quality = "85";
-  static $resize_library = "imagemagick"; // Optionally set to 'gd'
+  static $resize_library = "gd"; // Optionally set to 'gd'
 	
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
