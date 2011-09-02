@@ -82,7 +82,7 @@ class File {
 	  if(!$width) return false;
     $r = $width / $height;
     $r_height = $r_width;
-    if ($r_width/$r_height > $r) {
+    if ($r_width/$r_height > $r && !$force_width) {
       $newwidth = $r_height*$r;
       $newheight = $r_height;
     } else {
