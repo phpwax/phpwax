@@ -120,6 +120,7 @@ class File {
 	}
 	
 	static function rotate_image($source, $destination, $angle){
+	  if(self::$resize_library == "gd" && function_exists("imagerotate")) return self::gd_rotate_image($source, $destination, $angle);
 		if(!self::is_image($source)) return false;
 		system("cp $source $destination");
 		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";		
@@ -129,6 +130,21 @@ class File {
 		return true;
 	}
 	
+  static function gd_rotate_image($source, $destination, $angle){
+	  list($width, $height, $image_type) = getimagesize($source);
+	  
+    switch($image_type) {
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source);  break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return '';  break;
+    }
+    
+    $dst = imagerotate($src, $angle, -1);
+    
+		return self::output_image_gd($image_type, $dst, $destination);
+  }
+  
 	static function resize_image_extra($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
 		if(!self::is_image($source)) return false;
 		system("cp {$source} {$destination}");
