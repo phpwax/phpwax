@@ -116,7 +116,9 @@ class File {
   static public function smart_resize_image($source, $destination, $width, $height, $mode = "crop"){
     list($source_width, $source_height, $image_type) = getimagesize($source);
     
-    if(!($width && $height) || !function_exists("imagecopyresampled")) return false;
+    if(!$width && !$height || !function_exists("imagecopyresampled")) return false;
+    
+    if(!$height || !$width) $mode = "nocrop"; //force nocrop when specifying only 1 dimension
     
     $r_h = $height / $source_height;
     $r_w = $width / $source_width;
