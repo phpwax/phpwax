@@ -53,8 +53,8 @@ class File {
 	  * @return bool
 	  */
 	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false) {
-	  if(self::$resize_library == "gd" && function_exists("imagecreatefromjpeg")) return self::gd_resize_image($source, $destination, $width, $overwrite=false, $force_width=false);
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagecreatefromjpeg")) return self::gd_resize_image($source, $destination, $width, $overwrite=false, $force_width=false);
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
 		if($y > $x && !$force_width) {
@@ -179,8 +179,8 @@ class File {
 	}
 	
 	static function rotate_image($source, $destination, $angle){
-	  if(self::$resize_library == "gd" && function_exists("imagerotate")) return self::gd_rotate_image($source, $destination, $angle);
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagerotate")) return self::gd_rotate_image($source, $destination, $angle);
 		system("cp $source $destination");
 		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";		
 		system($command);
