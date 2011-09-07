@@ -223,12 +223,31 @@ class File {
 	
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagecopyresampled")) return self::gd_crop_image($source, $destination, $x, $y, $width, $height);
 		system("cp $source $destination");
 		$command="convert {$source} -crop ".$width."x".$height."+".$x."+".$y." +repage $destination";
 		system($command);
 		if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
 		return true;
+	}
+	
+  static function gd_crop_image($source, $destination, $x, $y, $width, $height){
+    list($source_width, $source_height, $image_type) = getimagesize($source);
+    
+    switch($image_type){
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source); break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return false; break;
+    }
+    
+    $dst = imagecreatetruecolor($width, $height);
+    imagesavealpha($dst, true);
+    imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
+    if(!imagecopyresampled($dst, $src, 0, 0, $x, $y, $width, $height, $width, $height)) return false;
+    
+    return self::output_image_gd($image_type, $dst, $destination);
 	}
 	
 	static function display_image($image) {
