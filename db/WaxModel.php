@@ -630,8 +630,8 @@ class WaxModel{
       if(count($what)==2) $filter["filter"] = array($what[0]=>$args[0], $what[1], $args[1]);
     	else $filter["filter"] = array($what[0]=>$args[0]) ;
 
-    	if($finder[0]=="find_all_") return static::find("all", $filter);
-      else return static::find("first", $filter);
+    	if($finder[0]=="find_all_") return static::find("all", array("filter"=>$filter));
+      else return static::find("first", array("filter"=>$filter));
     }
   }
 
