@@ -688,15 +688,15 @@ class WaxModel{
    	*
    	*/
 
-	public function setup() {}
- 	public function before_save() {}
- 	public function after_save() {}
- 	public function before_update() {}
- 	public function after_update() {}
- 	public function before_insert() {}
- 	public function after_insert() {}
- 	public function before_delete() {}
- 	public function after_delete() {}
+	public function setup(){WaxEvent::run("model.".get_class($this).".setup");}
+ 	public function before_save(){WaxEvent::run("model.".get_class($this).".save.before");}
+ 	public function after_save(){WaxEvent::run("model.".get_class($this).".save.after");}
+ 	public function before_update(){WaxEvent::run("model.".get_class($this).".update.before");}
+ 	public function after_update(){WaxEvent::run("model.".get_class($this).".update.after");}
+ 	public function before_insert(){WaxEvent::run("model.".get_class($this).".insert.before");}
+ 	public function after_insert(){WaxEvent::run("model.".get_class($this).".insert.after");}
+ 	public function before_delete(){WaxEvent::run("model.".get_class($this).".delete.before");}
+ 	public function after_delete(){WaxEvent::run("model.".get_class($this).".delete.after");}
 
 
 }
