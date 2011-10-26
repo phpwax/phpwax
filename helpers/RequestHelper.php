@@ -10,7 +10,9 @@ class RequestHelper extends WXHelpers {
   public function post($name) {
     return Request::post($name);
   }
-   
   
+  public function param($name) {
+    return Request::param($name);
+  }
   
 }
