@@ -541,14 +541,18 @@ class WaxModel{
  	}
 
  	/**
- 	 * primval() function
+ 	 * primval() function - superseded by snappier pk()
  	 *
  	 * @return mixed
  	 * simple helper to return the value of the primary key
  	 **/
- 	public function primval() {
+ 	public function primval() {return $this->pk();}
+ 	
+  public function pk() {
     return $this->{$this->primary_key};
   }
+  
+
 
   /**
    * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField
