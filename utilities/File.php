@@ -8,7 +8,7 @@
 class File {
   
   static $compression_quality = "85";
-  static $resize_library = "imagemagick"; // Optionally set to 'gd'
+  static $resize_library = "gd"; // Optionally set to 'gd'
 	
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
@@ -53,8 +53,8 @@ class File {
 	  * @return bool
 	  */
 	static function resize_image($source, $destination, $width, $overwrite=false, $force_width=false) {
-	  if(self::$resize_library == "gd" && function_exists("imagecreatefromjpeg")) return self::gd_resize_image($source, $destination, $width, $overwrite=false, $force_width=false);
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagecreatefromjpeg")) return self::gd_resize_image($source, $destination, $width, $overwrite=false, $force_width=false);
 		$dimensions = getimagesize($source);
 		$x = $dimensions[0]; $y=$dimensions[1];
 		if($y > $x && !$force_width) {
@@ -82,7 +82,7 @@ class File {
 	  if(!$width) return false;
     $r = $width / $height;
     $r_height = $r_width;
-    if ($r_width/$r_height > $r) {
+    if ($r_width/$r_height > $r && !$force_width) {
       $newwidth = $r_height*$r;
       $newheight = $r_height;
     } else {
@@ -102,7 +102,70 @@ class File {
     $trans_colour = imagecolorallocatealpha($dst, 255, 255, 255, 127);
     imagefill($dst, 0, 0, $trans_colour);
     $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-
+    
+		return self::output_image_gd($image_type, $dst, $destination);
+	}
+	
+  /**
+   * modes:
+   *   crop (default)   - keeps aspect ratio, fills target size, crops the rest
+   *   nocrop           - as above, but skips the cropping. 1 dimension will be longer than asked for.
+   *   small            - keeps aspect ratio. fits image in specified size. will produce blank pixels.
+   *   stretch          - ignores aspect ratio.
+   */
+  static public function smart_resize_image($source, $destination, $width, $height, $mode = "crop"){
+    list($source_width, $source_height, $image_type) = getimagesize($source);
+    
+    if(!$width && !$height || !function_exists("imagecopyresampled")) return false;
+    
+    if(!$height || !$width) $mode = "nocrop"; //force nocrop when specifying only 1 dimension
+    
+    $r_h = $height / $source_height;
+    $r_w = $width / $source_width;
+    
+    if($r_h == $r_h && $r_h == 1){
+      copy($source, $destination);
+      return true;
+    }
+    
+    //mode calculations, the clever stuff
+    if($mode == "small"){
+      if($r_h < $r_w) $width = $r_h * $source_width; //ignore target width and use the aspect ratio to work it out
+      else $height = $r_w * $source_height; //ignore target height and use the aspect ratio to work it out
+    }elseif($mode != "stretch"){ //skip messing with anything for stretch mode, this block runs for crop and aspect modes
+      if($r_h > $r_w){
+        if($mode == "nocrop") $width = $r_h * $source_width; //ignore target width and use the aspect ratio to work it out
+        else{
+          $new_source_width = $source_height * $width / $height;
+          $source_x = ($source_width - $new_source_width) / 2;
+          $source_width = $new_source_width;
+        }
+      }else{
+        if($mode == "nocrop") $height = $r_w * $source_height; //ignore target height and use the aspect ratio to work it out
+        else{
+          $new_source_height = $source_width * $height / $width;
+          $source_y = ($source_height - $new_source_height) / 2;
+          $source_height = $new_source_height;
+        }
+      }
+    }
+    
+    switch($image_type){
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source); break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return false; break;
+    }
+    
+    $dst = imagecreatetruecolor($width, $height);
+    imagesavealpha($dst, true);
+    imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
+    if(!imagecopyresampled($dst, $src, 0, 0, $source_x, $source_y, $width, $height, $source_width, $source_height)) return false;
+    
+    return self::output_image_gd($image_type, $dst, $destination);
+  }
+  
+  static private function output_image_gd($image_type, $dst, $destination){
     switch($image_type) {
       case 1: $src = imagegif($dst,$destination); break;
       case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
@@ -117,6 +180,7 @@ class File {
 	
 	static function rotate_image($source, $destination, $angle){
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagerotate")) return self::gd_rotate_image($source, $destination, $angle);
 		system("cp $source $destination");
 		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";		
 		system($command);
@@ -125,6 +189,21 @@ class File {
 		return true;
 	}
 	
+  static function gd_rotate_image($source, $destination, $angle){
+	  list($width, $height, $image_type) = getimagesize($source);
+	  
+    switch($image_type) {
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source);  break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return '';  break;
+    }
+    
+    $dst = imagerotate($src, $angle, -1);
+    
+		return self::output_image_gd($image_type, $dst, $destination);
+  }
+  
 	static function resize_image_extra($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
 		if(!self::is_image($source)) return false;
 		system("cp {$source} {$destination}");
@@ -144,12 +223,31 @@ class File {
 	
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
+	  if(self::$resize_library == "gd" && function_exists("imagecopyresampled")) return self::gd_crop_image($source, $destination, $x, $y, $width, $height);
 		system("cp $source $destination");
 		$command="convert {$source} -crop ".$width."x".$height."+".$x."+".$y." +repage $destination";
 		system($command);
 		if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
 		return true;
+	}
+	
+  static function gd_crop_image($source, $destination, $x, $y, $width, $height){
+    list($source_width, $source_height, $image_type) = getimagesize($source);
+    
+    switch($image_type){
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source); break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return false; break;
+    }
+    
+    $dst = imagecreatetruecolor($width, $height);
+    imagesavealpha($dst, true);
+    imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
+    if(!imagecopyresampled($dst, $src, 0, 0, $x, $y, $width, $height, $width, $height)) return false;
+    
+    return self::output_image_gd($image_type, $dst, $destination);
 	}
 	
 	static function display_image($image) {

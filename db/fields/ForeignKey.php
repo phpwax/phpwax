@@ -27,6 +27,11 @@ class ForeignKey extends WaxModelField {
     return true;
   }
   
+  public function setup_validations() {
+    if($this->required) $this->validations[]="required";
+    if($this->unique) $this->validations[]="model_unique";
+  }
+  
   public function get() {
     $class = $this->target_model;
     if($cache = WaxModel::get_cache($class, $this->field, $this->model->primval)) return $cache;

@@ -188,8 +188,9 @@ class WaxController
    /**
     * Added back in as this is heavily used by the cms
     */
-   public function is_viewable($path, $format="html"){
-     $file_path = VIEW_DIR . $path . ".". $format;
+   public function is_viewable($path, $format="html", $plugin=false){
+     if($plugin) $file_path = PLUGIN_DIR . $path . ".". $format;
+     else $file_path = VIEW_DIR . $path . ".". $format;
      if(is_readable($file_path)) return true;
      else return false;
    }

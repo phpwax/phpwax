@@ -12,11 +12,13 @@ class DateTimeField extends WaxModelField {
   public $maxlength = false;
   public $widget = "DateInput";
   public $output_format = "Y-m-d H:i:s";
+  public $input_format = false;
   public $save_format = "Y-m-d H:i:s";
   public $use_uk_date = false;
   public $data_type = "date_and_time";
 
   public function setup() {
+    if(!$this->input_format) $this->input_format = $this->output_format;
     if($this->model->row[$this->field]==0 && is_string($this->default)) {
       $this->model->row[$this->field] = date($this->save_format,strtotime($this->default));
     }
@@ -36,6 +38,6 @@ class DateTimeField extends WaxModelField {
   }
 
   public function get(){
-    if($val = parent::get()) return date($this->output_format, strtotime($val));
+    if($val = parent::get()) return date($this->input_format, strtotime($val));
   }
 }
