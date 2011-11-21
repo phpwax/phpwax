@@ -179,6 +179,7 @@ class WaxModel{
 
  	public function clear() {
     $this->filters = array();
+    $this->group_by = false;
     $this->_order = false;
     $this->_limit = false;
     $this->_offset = "0";
@@ -541,14 +542,18 @@ class WaxModel{
  	}
 
  	/**
- 	 * primval() function
+ 	 * primval() function - superseded by snappier pk()
  	 *
  	 * @return mixed
  	 * simple helper to return the value of the primary key
  	 **/
- 	public function primval() {
+ 	public function primval() {return $this->pk();}
+ 	
+  public function pk() {
     return $this->{$this->primary_key};
   }
+  
+
 
   /**
    * get the fields that aren't stored on the row, but are farmed out from other places, in the core wax this is HasManyField and ManyToManyField
@@ -688,15 +693,15 @@ class WaxModel{
    	*
    	*/
 
-	public function setup() {}
- 	public function before_save() {}
- 	public function after_save() {}
- 	public function before_update() {}
- 	public function after_update() {}
- 	public function before_insert() {}
- 	public function after_insert() {}
- 	public function before_delete() {}
- 	public function after_delete() {}
+	public function setup(){WaxEvent::run("model.".get_class($this).".setup");}
+ 	public function before_save(){WaxEvent::run("model.".get_class($this).".save.before");}
+ 	public function after_save(){WaxEvent::run("model.".get_class($this).".save.after");}
+ 	public function before_update(){WaxEvent::run("model.".get_class($this).".update.before");}
+ 	public function after_update(){WaxEvent::run("model.".get_class($this).".update.after");}
+ 	public function before_insert(){WaxEvent::run("model.".get_class($this).".insert.before");}
+ 	public function after_insert(){WaxEvent::run("model.".get_class($this).".insert.after");}
+ 	public function before_delete(){WaxEvent::run("model.".get_class($this).".delete.before");}
+ 	public function after_delete(){WaxEvent::run("model.".get_class($this).".delete.after");}
 
 
 }
