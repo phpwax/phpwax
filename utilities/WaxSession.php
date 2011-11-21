@@ -41,7 +41,7 @@ class WaxSession {
     foreach($data as $k => $v) $this->$k = $v;
     
     //get id from request or generate an id
-    if(($this->id = $_COOKIE[$this->name]) || ($this->id = Request::param($this->name))){
+    if(($this->id = $_COOKIE[$this->name]) || ($this->id = $_REQUEST[$this->name])){
       //initialize data from cross-request storage
       if(!static::$data[$this->name] && ($stats = stat($this->file_storage()))){
         if(time() < $stats[9]) static::$data[$this->name] = unserialize(file_get_contents($this->file_storage()));
