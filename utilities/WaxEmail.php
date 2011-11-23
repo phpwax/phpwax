@@ -1024,19 +1024,14 @@ class WaxEmail
 				if(is_readable($path.".html")) $html = $view_path->parse();
 				if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
 			}
-						
-     	if($html && $txt) {
-        $this->is_html(true);
-        $this->body=$html;
-        $this->alt_body = $txt;
-      } elseif($html) {
+      
+      if($html){
         $this->is_html(true);
         $this->content_for_layout = $html;
-        if($content = $this->render_layout()) $this->body=$content;
+        if($content = $this->render_layout()) $this->body = $content;
         else $this->body = $this->content_for_layout;
-      } elseif(!$html && $txt) {
-        $this->body = $txt;
-      }
+        if($txt) $this->alt_body = $txt;
+      }elseif($txt) $this->body = $txt;
     }
     
     public function render_layout() {

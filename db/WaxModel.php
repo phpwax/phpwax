@@ -179,6 +179,7 @@ class WaxModel{
 
  	public function clear() {
     $this->filters = array();
+    $this->group_by = false;
     $this->_order = false;
     $this->_limit = false;
     $this->_offset = "0";
