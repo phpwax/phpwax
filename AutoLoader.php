@@ -38,6 +38,8 @@ function auto_loader_check_cache(){
   
   $cache_location = CACHE_DIR .'layout/';
   $image_cache_location = CACHE_DIR.'images/';
+  include_once FRAMEWORK_DIR .'/core/WaxEvent.php';
+  include_once FRAMEWORK_DIR .'/utilities/WaxSession.php';
   include_once FRAMEWORK_DIR .'/utilities/Session.php';
   include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
   include_once FRAMEWORK_DIR .'/utilities/Config.php';

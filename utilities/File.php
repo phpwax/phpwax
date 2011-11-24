@@ -220,6 +220,21 @@ class File {
 		return true;
 	}
 	
+  static public function image_convert($source, $destination, $type = "jpeg", $quality = 75){
+    if(!function_exists("getimagesize")) return false;
+    list($source_width, $source_height, $image_type) = getimagesize($source);
+    
+    switch($image_type){
+      case 1: $src = imagecreatefromgif($source); break;
+      case 2: $src = imagecreatefromjpeg($source); break;
+      case 3: $src = imagecreatefrompng($source); break;
+      default: return false; break;
+    }
+    
+    $ret = call_user_func("image".$type, $src, $destination, $quality);
+    imagedestroy($src);
+    return $ret;
+  }
 	
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
