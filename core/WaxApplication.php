@@ -47,6 +47,9 @@ class WaxApplication {
 	  if(!preg_match($regexp, $addr)) $addr = false;
 		if(defined('ENV')) {
 		  Config::set_environment(ENV);
+		} elseif(Config::get($_SERVER["SERVER_NAME"])) {
+		  Config::set_environment($_SERVER["SERVER_NAME"]);
+		  define("ENV", $_SERVER["SERVER_NAME"]);
 		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
 		  Config::set_environment('development');
 		  define("ENV", "development");
