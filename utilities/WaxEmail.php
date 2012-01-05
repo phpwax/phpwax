@@ -221,7 +221,7 @@ class WaxEmail
      * @return bool
      */
     function MailSend($header, $body) {
-      $header = preg_replace('#(?<!\r)\n#si', "\r\n", $header); 
+      $header = preg_replace('#(?<!\r)\n#si', "\n", $header); 
       //$additional_parameters = "-f".$this->HeaderLine("Return-Path",$this->sender);
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
         return true;
