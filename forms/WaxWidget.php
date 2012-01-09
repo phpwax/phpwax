@@ -120,12 +120,12 @@ class WaxWidget{
   }
   
   public function output_name() {
-    if($this->prefix) return $this->prefix."[".$this->name."]";
+    if($this->prefix){ return $this->prefix."[".($this->col_name?$this->col_name:$this->name)."]";}
     return $this->name;
   }
   
   public function output_id() {
-    if($this->prefix) return $this->prefix."_".$this->name;
+    if($this->prefix) return $this->prefix."_".($this->col_name?$this->col_name:$this->name);
     return $this->id;
   }
   
