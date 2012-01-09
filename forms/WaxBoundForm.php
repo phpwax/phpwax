@@ -13,10 +13,11 @@ class WaxBoundForm implements iterator {
     if(!$this->prefix) $this->prefix = $model->table; 
     if(!$post_data &&  $_REQUEST[$this->prefix]) $this->post_data = $_REQUEST[$this->prefix];
     $this->bound_to_model = $model;
-    foreach($model->columns as $column=>$options) {
+    foreach($model->columns as $column=>$col_options) {
       $element = $model->get_col($column);
       $widget_name = $element->widget;
       $widget = new $widget_name($column, $element);
+      foreach($options as $k=>$v) $widget->{$k} = $v;
       if($element->editable) $this->elements[$column] = $widget;
     }
   }
