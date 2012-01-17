@@ -171,10 +171,7 @@ class WaxModel{
  	 */
 
  	public function scope($scope) {
-    $this->asked_for_scope = $scope;
  	  $method = "scope_".$scope;
-    WaxEvent::run(get_class($this).".scope", $this);
-    WaxEvent::run("model.".get_class($this).".scope", $this);
     if(method_exists($this, $method)) $this->$method;
     return $this;
  	}
