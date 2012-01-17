@@ -693,42 +693,15 @@ class WaxModel{
    	*
    	*/
 
-	public function setup(){
-   WaxEvent::run(get_class($this).".setup", $this);
-    WaxEvent::run("model.".get_class($this).".setup", $this);     
-  }
- 	public function before_save(){
-    WaxEvent::run(get_class($this).".before_save", $this);    
-    WaxEvent::run("model.".get_class($this).".save.before", $this); 
-  }
- 	public function after_save(){
-    WaxEvent::run(get_class($this).".after_save", $this);
-    WaxEvent::run("model.".get_class($this).".save.after", $this);     
-  }
- 	public function before_update(){
-    WaxEvent::run(get_class($this).".before_update", $this);
-    WaxEvent::run("model.".get_class($this).".update.before", $this);     
-  }
- 	public function after_update(){
-    WaxEvent::run(get_class($this).".after_update", $this);
-    WaxEvent::run("model.".get_class($this).".update.after", $this);
-  }
- 	public function before_insert(){
-    WaxEvent::run(get_class($this).".before_insert", $this);
-    WaxEvent::run("model.".get_class($this).".insert.before", $this);
-  }
- 	public function after_insert(){
-    WaxEvent::run(get_class($this).".after_insert", $this);
-    WaxEvent::run("model.".get_class($this).".insert.after", $this);
-  }
- 	public function before_delete(){
-    WaxEvent::run(get_class($this).".before_delete", $this);
-    WaxEvent::run("model.".get_class($this).".delete.before", $this);
-  }
- 	public function after_delete(){
-    WaxEvent::run(get_class($this).".after_delete", $this);
-    WaxEvent::run("model.".get_class($this).".delete.after", $this);
-  }
+	public function setup(){WaxEvent::run("model.".get_class($this).".setup");}
+ 	public function before_save(){WaxEvent::run("model.".get_class($this).".save.before");}
+ 	public function after_save(){WaxEvent::run("model.".get_class($this).".save.after");}
+ 	public function before_update(){WaxEvent::run("model.".get_class($this).".update.before");}
+ 	public function after_update(){WaxEvent::run("model.".get_class($this).".update.after");}
+ 	public function before_insert(){WaxEvent::run("model.".get_class($this).".insert.before");}
+ 	public function after_insert(){WaxEvent::run("model.".get_class($this).".insert.after");}
+ 	public function before_delete(){WaxEvent::run("model.".get_class($this).".delete.before");}
+ 	public function after_delete(){WaxEvent::run("model.".get_class($this).".delete.after");}
 
 
 }
