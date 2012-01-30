@@ -65,9 +65,10 @@ class ForeignKey extends WaxModelField {
       $this->choices = $choices;
       return true;
     }
-    $link = new $this->target_model;
+    $this->link = new $this->target_model;
+    WaxEvent::run("wax.choices.filter",$this); //filter choices hook
     $this->choices[""]="Select";
-    foreach($link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
+    foreach($this->link->all() as $row) $this->choices[$row->{$row->primary_key}]=$row->{$row->identifier};
     return $this->choices;
   }
   

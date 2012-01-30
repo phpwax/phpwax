@@ -91,17 +91,9 @@ class WaxEvent {
    */
   private static function insert_event($name, $key, $callback) {
     if(in_array($callback, self::$events[$name], true)) return false;
-  
+    
     // Add the new event at the given key location
-    self::$events[$name] = array_merge
-    (
-      // Events before the key
-      array_slice(self::$events[$name], 0, $key),
-      // New event callback
-      array($callback),
-      // Events after the key
-      array_slice(self::$events[$name], $key)
-    );
+    array_splice(self::$events[$name], $key, 0, $callback);
     return true;
   }
   
@@ -187,8 +179,9 @@ class WaxEvent {
    *
    * @return  mixed
    */
-  public function data() {
-    return end(self::$data_array);
+  public function &data() {
+    end(self::$data_array);
+    return self::$data_array[key(self::$data_array)];
   }
   
   /**

@@ -66,9 +66,9 @@ class WaxPartial {
     
 
     $p_controller->use_view = $partial;
-
+    
     if($p_controller->is_public_method($p_controller, $partial)) $p_controller->{$partial}();
-    elseif(method_exists($p_controller, "method_missing")) $p_controller->method_missing();
+    elseif(method_exists($p_controller, "method_missing")) $p_controller->method_missing("partial_call");
 		$this->output = $p_controller->render_view();
 	}
 	
