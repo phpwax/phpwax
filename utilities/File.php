@@ -167,8 +167,12 @@ class File {
   
   static private function output_image_gd($image_type, $dst, $destination){
     switch($image_type) {
+      case "gif":
       case 1: $src = imagegif($dst,$destination); break;
+      case "jpg":
+      case "jpeg":
       case 2: $src = imagejpeg($dst,$destination, self::$compression_quality);  break;
+      case "png":
       case 3: $src = imagepng($dst,$destination); break;
     }
     
