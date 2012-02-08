@@ -146,6 +146,7 @@ foreach(array_diff_key($this->join_model->columns,array($this->join_model->prima
     if(!$model) $model = $this->get(); //if nothing gets passed in to unlink then unlink everything
     $links = new $this->target_model;
     if($model instanceof WaxRecordset) {
+      //this bit will break non numeric keys that aren't eager loaded!
       foreach($model as $obj) $filter[] = $obj->primval;
       if(count($filter)) $this->join_model->filter($links->table."_".$links->primary_key,$filter)->delete();
     }else{

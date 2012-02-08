@@ -70,7 +70,7 @@ class WaxModel{
  		if( $class_name != 'WaxModel' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
  		}
- 		
+
 
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
@@ -85,8 +85,8 @@ class WaxModel{
    		  $this->clear();
 	    }
 	  }
- 	} 	
-  
+ 	}
+
   static public function find($finder, $params = array(), $scope_params = array()) {
     $class = get_called_class();
     if(is_numeric($finder)) return new $class($finder);
@@ -110,9 +110,9 @@ class WaxModel{
         break;
     }
   }
-  
 
- 
+
+
  	static public function load_adapter($db_settings) {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
@@ -351,7 +351,7 @@ class WaxModel{
      *  delete record from table
      *  @return model
      */
- 	public function delete() {
+ 	public function delete(){
  	  //throw an exception trying to delete a whole table.
  	  if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
  	  $this->before_delete();
@@ -381,7 +381,7 @@ class WaxModel{
     $this->having = $condition;
     return $this;
   }
-  
+
 	public function offset($offset){
 		$this->_offset = $offset;
 		return $this;
@@ -553,11 +553,11 @@ class WaxModel{
  	 * simple helper to return the value of the primary key
  	 **/
  	public function primval() {return $this->pk();}
- 	
+
   public function pk() {
     return $this->{$this->primary_key};
   }
-  
+
 
 
   /**
@@ -630,7 +630,7 @@ class WaxModel{
       return $field->get($args[0]);
     }
   }
-  
+
   public static function __callStatic($func, $args) {
     $finder = explode("by", $func);
     $what=explode("and", $finder[1]);
@@ -700,19 +700,19 @@ class WaxModel{
 
 	public function setup(){
    WaxEvent::run(get_class($this).".setup", $this);
-    WaxEvent::run("model.".get_class($this).".setup", $this);     
+    WaxEvent::run("model.".get_class($this).".setup", $this);
   }
  	public function before_save(){
-    WaxEvent::run(get_class($this).".before_save", $this);    
-    WaxEvent::run("model.".get_class($this).".save.before", $this); 
+    WaxEvent::run(get_class($this).".before_save", $this);
+    WaxEvent::run("model.".get_class($this).".save.before", $this);
   }
  	public function after_save(){
     WaxEvent::run(get_class($this).".after_save", $this);
-    WaxEvent::run("model.".get_class($this).".save.after", $this);     
+    WaxEvent::run("model.".get_class($this).".save.after", $this);
   }
  	public function before_update(){
     WaxEvent::run(get_class($this).".before_update", $this);
-    WaxEvent::run("model.".get_class($this).".update.before", $this);     
+    WaxEvent::run("model.".get_class($this).".update.before", $this);
   }
  	public function after_update(){
     WaxEvent::run(get_class($this).".after_update", $this);

@@ -5,7 +5,7 @@
  * @package PHP-Wax
  **/
 abstract class WaxDbAdapter {
-  
+
   protected $columns = array();
   protected $distinct = false;
   protected $filters = array();
@@ -19,16 +19,16 @@ abstract class WaxDbAdapter {
 	public $data_types = array(
 	    'string'          => "varchar",
 	    'text'            => "longtext",
-	    
+
 	    'date'            => "date",
 	    'time'            => 'time',
 	    'date_and_time'   => "datetime",
-	    
+
 	    'integer'         => "int",
 	    'decimal'         => "decimal",
 	    'float'           => "float"
   );
-  
+
   public $operators = array(
     "="=>     " = ",
     "raw"=>   "",
@@ -45,21 +45,21 @@ abstract class WaxDbAdapter {
 	public $default_db_engine = "MyISAM";
 	public $default_db_charset = "utf8";
 	public $default_db_collate = "utf8_unicode_ci";
-  
+
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
     if(!$db_settings['dbtype']) $db_settings['dbtype']="mysql";
     if(!$db_settings['host']) $db_settings['host']="localhost";
     if(!$db_settings['port']) $db_settings['port']="3306";
-    
+
     $this->db = $this->connect($db_settings);
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   }
-  
+
   public function connect($db_settings) {
     if(isset($db_settings['socket']) && strlen($db_settings['socket'])>2) {
-			$dsn="{$db_settings['dbtype']}:unix_socket={$db_settings['socket']};dbname={$db_settings['database']}"; 
+			$dsn="{$db_settings['dbtype']}:unix_socket={$db_settings['socket']};dbname={$db_settings['database']}";
 		} else {
 			$dsn="{$db_settings['dbtype']}:host={$db_settings['host']};port={$db_settings['port']};dbname={$db_settings['database']}";
 		}
@@ -69,24 +69,24 @@ abstract class WaxDbAdapter {
 		return $pdo;
   }
 
-  
 
-  
+
+
   public function insert(WaxModel $model) {
     $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
     return $model;
 	}
-  
+
   public function update(WaxModel $model) {
     $this->exec($this->prepare($this->update_sql($model)), array_intersect_key($model->row, $model->_col_names));
     $id = $model->primval;
     return $model;
   }
-  
+
   public function delete(WaxModel $model) {
     $sql = $this->delete_sql($model);
-    if(!$model->primval()) {
+    if(!$model->primval()){
       $filters = $this->filter_sql($model);
       if($filters["sql"]) $sql.= " WHERE ";
       $sql.=$filters["sql"];
@@ -98,24 +98,24 @@ abstract class WaxDbAdapter {
     }
     return $this->exec($this->db->prepare($sql), $params);
   }
-  
+
   public function select(WaxModel $model) {
     $params = array();
     if($model->sql) {
       $sql = $model->sql;
     } else {
       $sql .=$this->select_sql($model);
-			
+
 			$join = $this->left_join($model);
 			$sql .=$join["sql"];
 			$params = $join["params"];
-			
+
       $filters = $this->filter_sql($model);
       if($filters["sql"]) $sql.= " WHERE ";
       $sql.=$filters["sql"];
       if($params) $params = array_merge($params, $filters["params"]);
       else $params = $filters["params"];
-      
+
 			//add filters from the other side of the join
 			if($model->is_left_joined && $model->left_join_target instanceof WaxModel){
         $join_filters = $this->filter_sql($model->left_join_target);
@@ -148,9 +148,9 @@ abstract class WaxDbAdapter {
     WaxEvent::run("wax.db_query_end",$event_data);
 		return $res;
   }
-  
+
   public function prepare($sql) {
-    try { $stmt = $this->db->prepare($sql); } 
+    try { $stmt = $this->db->prepare($sql); }
     catch(PDOException $e) {
 		  $err = $e->getMessage();
 		  switch($e->getCode()) {
@@ -160,7 +160,7 @@ abstract class WaxDbAdapter {
 		}
 		return $stmt;
   }
-  
+
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
       WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
@@ -172,8 +172,8 @@ abstract class WaxDbAdapter {
 		    case "42S02":
 		    case "42S22":
 		    ob_start();
-		    
-		    foreach(Autoloader::$plugin_array as $plugin) Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true); 
+
+		    foreach(Autoloader::$plugin_array as $plugin) Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true);
         Autoloader::include_dir(MODEL_DIR, true);
         foreach(get_declared_classes() as $class) {
           if(is_subclass_of($class, "WaxModel")) {
@@ -182,8 +182,8 @@ abstract class WaxDbAdapter {
             if(strlen($output)) echo $output;
           }
         }
-		    
-		    
+
+
 		    $sync = false; //Forces destruction and flushing of output buffer
 		    ob_end_clean();
 		    try {
@@ -199,41 +199,41 @@ abstract class WaxDbAdapter {
 		}
 		return $pdo_statement;
   }
-  
+
   /**
    * Raw query method
-   * @param string $sql 
+   * @param string $sql
    */
   public function query($sql) {
     return $this->db->query($sql);
   }
-  
+
   /**
    * Passes to PDO::quote functionality
-   * @param string $string 
+   * @param string $string
    */
   public function quote($string) {
     return $this->db->quote($string);
   }
-  
-  
+
+
   public function random() {
     return "RAND()";
   }
-  
-  
+
+
   /* Handles date comparison replaces parameters with db specifics */
   // Not Yet implemented
   public function date($query) {
 
   }
-  
-  
+
+
   /**
    * Query Specific methods, construct driver specific language
    */
 	public function insert_sql($model) {
-	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
+	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`)
              VALUES (".join(",", array_keys($this->bindings($model->row))).")";
 	}
 
@@ -246,7 +246,7 @@ abstract class WaxDbAdapter {
     return "UPDATE `{$model->table}` SET ".$this->update_values(array_intersect_key($model->row, $model->_col_names)).
       " WHERE `{$model->table}`.`{$model->primary_key}` = '{$pk}'";
   }
-   
+
   public function select_sql($model) {
     $sql .= "SELECT ";
     if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
@@ -257,13 +257,13 @@ abstract class WaxDbAdapter {
     $sql.= " FROM `{$model->table}`";
     return $sql;
   }
-  
+
   public function delete_sql($model) {
     $sql = "DELETE FROM `{$model->table}`";
     if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->primval()}";
     return $sql;
   }
-  
+
   public function row_count_query($model) {
     if($model->is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
@@ -272,7 +272,7 @@ abstract class WaxDbAdapter {
 		  $this->total_without_limits = $found[0]['FOUND_ROWS()'];
 	  }
   }
-  
+
   public function left_join($model) {
 		if($model->is_left_joined && count($model->join_conditions)){
 		  $conditions = $this->filter_sql($model,"join_conditions");
@@ -283,10 +283,10 @@ abstract class WaxDbAdapter {
 	  }
   }
   public function group($model){
-    if($model->group_by) return array("sql"=>" GROUP BY {$model->group_by}", "params"=>$model->_group_by_params); 
+    if($model->group_by) return array("sql"=>" GROUP BY {$model->group_by}", "params"=>$model->_group_by_params);
   }
   public function having($model){
-    if($model->having) return " HAVING {$model->having}";  
+    if($model->having) return " HAVING {$model->having}";
   }
   public function order($model){
     if($model->_order) return array("sql"=>" ORDER BY ".$model->_order, "params"=>$model->_order_params);
@@ -294,7 +294,7 @@ abstract class WaxDbAdapter {
   public function limit($model){
     if($model->_limit) return " LIMIT ". (int)$model->_offset . ", " . (int)$model->_limit;
   }
-  
+
   public function filter_sql($model, $filter_name = "filters") {
     $params = array();
     $sql = "";
@@ -302,7 +302,7 @@ abstract class WaxDbAdapter {
       foreach($model->$filter_name as $filter) {
         if(is_array($filter)) {
           //add table name if it's a column
-          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; 
+          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`.";
           $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
           if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
           else $params[]=$filter["value"];
@@ -315,15 +315,15 @@ abstract class WaxDbAdapter {
     $sql = rtrim($sql, "AND ");
     return array("sql"=>$sql, "params"=>$params);
   }
-  
+
   /**
    * Fultext search on columns
    *
-   * @param string $text 
-   * @param array $columns 
+   * @param string $text
+   * @param array $columns
    * @return $this
    */
-  
+
   public function search(WaxModel $model, $text, $columns=array(), $relevance_floor=0) {
     // First up try to add the fulltext index. Do nothing if errors
     $cols = array_keys($columns);
@@ -348,18 +348,18 @@ abstract class WaxDbAdapter {
     if(!$model->_limit) $model->limit(1000);
     return $model;
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   /**
    * Introspection and structure creation methods
    *
    */
-  
+
   public function syncdb(WaxModel $model) {
-    
+
     // First check the table for this model exists
     $tables = $this->view_table($model);
     $exists = false;
@@ -367,10 +367,10 @@ abstract class WaxDbAdapter {
       if($table[0]== $model->table) $exists=true;
     }
     if(!$exists && $info = $this->create_table($model)) $output .= $info."\n";
-    
+
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
-    // Map definitions to database - create or alter if required	
+    // Map definitions to database - create or alter if required
     foreach($model->columns as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;
@@ -391,21 +391,21 @@ abstract class WaxDbAdapter {
     $output .= "Table {$table} is now synchronised";
     return $output;
   }
-  
-  
+
+
   public function view_table(WaxModel $model) {
     $stmt = $this->db->prepare("SHOW TABLES");
     return $this->exec($stmt)->fetchAll(PDO::FETCH_NUM);
   }
-  
+
   public function view_columns(WaxModel $model) {
     $db = $this->db_settings["database"];
-    $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA ='{$db}' 
+    $stmt = $this->db->prepare("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA ='{$db}'
       AND TABLE_NAME = '{$model->table}'");
     $stmt = $this->exec($stmt);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
-  
+
   public function create_table(WaxModel $model) {
     $sql = "CREATE TABLE IF NOT EXISTS `{$model->table}` (";
     $sql .= $this->column_sql($model->get_col($model->primary_key), $model);
@@ -414,14 +414,14 @@ abstract class WaxDbAdapter {
     $this->exec($stmt);
     return "Created table {$model->table}";
   }
-  
+
   public function drop_table($table_name) {
     $sql = "DROP TABLE IF EXISTS `$table_name`";
     $stmt = $this->db->prepare($sql);
     $this->exec($stmt);
     return "...removed table $table_name"."\n";
   }
-  
+
   public function column_sql(WaxModelField $field, WaxModel $model) {
     $sql.= "`{$field->col_name}`";
     if(!$type = $field->data_type) $type = "string";
@@ -435,7 +435,7 @@ abstract class WaxDbAdapter {
     if($field->primary) $sql.=" PRIMARY KEY";
     return $sql;
   }
-  
+
   public function add_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
     if(!$field->col_name) return false;
     $sql = "ALTER TABLE `$model->table` ADD ";
@@ -444,7 +444,7 @@ abstract class WaxDbAdapter {
     $this->exec($stmt, array(), $swallow_errors);
     return "Added column {$field->col_name} to {$model->table}\n";
   }
-  
+
   public function alter_column(WaxModelField $field, WaxModel $model, $swallow_errors=false) {
     if(!$field->col_name) return false;
     $sql = "ALTER TABLE `$model->table` MODIFY ";
@@ -453,10 +453,10 @@ abstract class WaxDbAdapter {
     $this->exec($stmt, array(), $swallow_errors);
     return "Updated column {$field->field} in {$model->table}\n";
   }
-  
-  
-  
-  
+
+
+
+
 
   /**
    * Internal helper methods
@@ -470,14 +470,14 @@ abstract class WaxDbAdapter {
 		}
     return $params;
   }
-  
+
   protected function update_values($array) {
     foreach( $array as $key=>$value ) {
       $expressions[] ="`{$key}`=:{$key}";
     }
     return join( ', ', $expressions );
   }
-  
+
   protected function map_operator_value($operator, $value) {
     switch($operator) {
       case "=": return "?";
@@ -486,15 +486,15 @@ abstract class WaxDbAdapter {
       case "LIKE": return " LIKE ?";
       case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
       case "raw": return "";
-      default: return "?"; 
+      default: return "?";
     }
   }
 
-  
-  
-  
 
 
-} // END class 
+
+
+
+} // END class
 
 
