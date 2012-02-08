@@ -51,6 +51,8 @@ class WaxModel{
   public $cache_engine = "Memory";
   public $cache = false;
 
+  public $asked_for_scope;
+
   /**
    *  constructor
    *  @param  mixed   param   PDO instance,
