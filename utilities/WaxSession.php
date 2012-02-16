@@ -79,7 +79,11 @@ class WaxSession {
     else return static::$data[$this->name][$key];
   }
   
+  public function __get($key) { $this->get($key); }
+
   public function set($key, $value) { static::$updated[$this->name] = true; static::$data[$this->name][$key] = $value; }
+
+  public function __set($key, $value) { $this->set($key, $value); }
   
   public function unset_var($key) { static::$updated[$this->name] = true; unset(static::$data[$this->name][$key]); }
   
