@@ -234,10 +234,10 @@ class AutoLoader
                 $dirit = new WaxRecursiveDirectoryIterator($directory), true);
     foreach ( $dir as $file ) {
       if(substr($fn = $file->getFilename(),0,1) != "." && strrchr($fn, ".")==".php") {
+       $classname = basename($fn, ".php");
         if($force){
-          require_once($file->getPathName());
-        }else{
-          $classname = basename($fn, ".php");
+          if(!class_exists($classname, false)) require_once($file->getPathName());
+        }else{          
           self::register($type, $classname, $file->getPathName());
         }
       } 
