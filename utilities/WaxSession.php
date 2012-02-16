@@ -64,6 +64,10 @@ class WaxSession {
    * write session data back to session storage on destruction
    */
   function __destruct(){
+    $this->save_session();
+  }
+
+  function save_session(){
     if(!is_dir($this->file_storage_dir())){
       if(!mkdir($this->file_storage_dir(), 0750, true)) throw new WaxException("Session not writable - ".$this->file_storage_dir());
     }
