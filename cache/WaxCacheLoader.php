@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Cache;
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +9,7 @@
  *	Class for loading in pre existing cache files based on the current location or value passed in
  *  @package PHP-Wax
  */
-class WaxCacheLoader {
+class Loader {
 
 	public $config=array();
 	public $engine_type = 'File';

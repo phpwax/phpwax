@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Cache;
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +9,7 @@
  *	Engine for caching of data / objects to file.
  *  @package PHP-Wax
  */
-class WaxCacheBackgroundMemcache implements CacheEngine{
+class BackgroundMemcache implements Engine{
 
   public $identifier = false;
   public $lifetime = 100;  

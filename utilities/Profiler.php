@@ -1,4 +1,7 @@
 <?php 
+namespace Wax\Utilities;
+use Wax\Core\Event;
+use Wax\Template\Template;
 
 class Profiler {
 
@@ -204,15 +207,15 @@ class Profiler {
   
   public function profile() {
 
-    WaxEvent::add("wax.db_query", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", WaxEvent::data()->queryString, debug_backtrace(false));
+    Event::add("wax.db_query", function(){
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Database Queries", Event::data()->queryString, debug_backtrace(false));
     });
-    WaxEvent::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
+    Event::add("wax.db_query_end", function() {Profiler::stop(array_pop(Profiler::$current_benchmark));});
     
-    WaxEvent::add("wax.partial", function(){
-      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", WaxEvent::data()->path);      
+    Event::add("wax.partial", function(){
+      Profiler::$current_benchmark[] = Profiler::start("Application", "Partials", Event::data()->path);      
     });
-    WaxEvent::add("wax.partial_render", function() {
+    Event::add("wax.partial_render", function() {
       Profiler::stop(array_pop(Profiler::$current_benchmark));      
     });
     
@@ -220,20 +223,20 @@ class Profiler {
     
     
     
-    WaxEvent::add("wax.start", function(){Profiler::marker("Request Received");});
-    WaxEvent::add("wax.init", function(){Profiler::marker("Application Initialised");});
-    WaxEvent::add("wax.post_request", function(){Profiler::marker("Request Processed");});
-    WaxEvent::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
-    WaxEvent::add("wax.action", function(){Profiler::marker("Action Ready");});
-    WaxEvent::add("wax.layout", function(){Profiler::marker("View Parsed");});
-    WaxEvent::add("wax.post_render", function(){Profiler::marker("Response Ready");});
+    Event::add("wax.start", function(){Profiler::marker("Request Received");});
+    Event::add("wax.init", function(){Profiler::marker("Application Initialised");});
+    Event::add("wax.post_request", function(){Profiler::marker("Request Processed");});
+    Event::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
+    Event::add("wax.action", function(){Profiler::marker("Action Ready");});
+    Event::add("wax.layout", function(){Profiler::marker("View Parsed");});
+    Event::add("wax.post_render", function(){Profiler::marker("Response Ready");});
 
-    WaxEvent::add("wax.post_render", function(){
+    Event::add("wax.post_render", function(){
       if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') return true;
-      $profile_view = new WaxTemplate;
+      $profile_view = new Template;
       $profile_view->add_path(FRAMEWORK_DIR."/template/builtin/profile");
-      if(strpos(WaxEvent::data()->body,"</body>")===false) WaxEvent::data()->body.=$profile_view->parse();
-      else WaxEvent::data()->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",WaxEvent::data()->body);
+      if(strpos(Event::data()->body,"</body>")===false) Event::data()->body.=$profile_view->parse();
+      else Event::data()->body = preg_replace("/(.*)<\/body>(.*)/", "$1".$profile_view->parse()."</body>$2",Event::data()->body);
     });
     
   }

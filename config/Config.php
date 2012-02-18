@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Config;
+
 /**
  * 	@package PHP-Wax
  */

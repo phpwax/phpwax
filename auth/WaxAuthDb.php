@@ -1,4 +1,7 @@
 <?php
+namespace Wax\Auth;
+
+
 /**
  * 	@package PHP-Wax
  */
@@ -8,7 +11,7 @@
   * Can be extended to check access via a flat file or any other method.
   * @package PHP-Wax
   */
-class WaxAuthDb {
+class Db {
 
 
   /**
@@ -187,4 +190,3 @@ class WaxAuthDb {
   }
 	
 }
-?>

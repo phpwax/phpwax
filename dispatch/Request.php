@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Dispatch;
+
 /**
 	* @package PHP-Wax
   */

@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Cache;
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +9,7 @@
  *	Engine for caching of data / objects to filesystem.
  *  @package PHP-Wax
  */
-class WaxCacheFilesystem implements CacheEngine{
+class Filesystem implements Engine{
   
   public $key = false;
   public $root_dir = false;

@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Cache;
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +9,7 @@
  *	Engine for caching of data / objects to memcache.
  *  @package PHP-Wax
  */
-class WaxCacheMemcache implements CacheEngine{
+class Memcache implements Engine{
   
   public $key = false;
   public $server = "localhost";

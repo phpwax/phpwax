@@ -1,5 +1,7 @@
 <?
-class WaxRegenFileCache{
+namespace Wax\Cache;
+
+class RegenFile {
 
 	public function __construct($data_file){
 		$config = unserialize(file_get_contents($data_file));

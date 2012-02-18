@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Cache;
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +9,7 @@
  *	Engine for caching of data / objects to memory.
  *  @package PHP-Wax
  */
-class WaxCacheMemory implements CacheEngine{
+class Memory implements Engine{
   
   public $key = false;
   static public $cache = array();

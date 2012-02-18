@@ -1,5 +1,8 @@
-<?
-class WaxRegenMemcacheCache{
+<?php
+
+namespace Wax\Cache;
+
+class RegenMemcache{
 	
 	public function __construct($meta_key, $server, $port){
 		$this->memcache = new Memcache;

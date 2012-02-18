@@ -1,4 +1,7 @@
 <?php
+namespace Wax\Cache;
+
+
 /**
 	* @package PHP-Wax
   */
@@ -7,7 +10,7 @@
  *	Class for implementing caching of data / objects etc.
  *  @package PHP-Wax
  */
-class WaxCache {
+class Cache {
 		
 	public $store = "File";
 	public $engine = false;

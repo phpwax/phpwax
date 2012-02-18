@@ -1,4 +1,6 @@
 <?php
+namespace Wax\Config;
+
 
 /**
  * Allows for multi-dimensional ini files.

@@ -1,4 +1,6 @@
 <?
+namespace Wax\Cache;
+
 /**
  * cache interface system
  * in general $model should be an instance of WaxCacheLoader
