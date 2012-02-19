@@ -77,14 +77,19 @@ abstract class Adapter {
 
   
   public function insert($model) {
-    $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
+    $stmt = $this->prepare($this->insert_sql($model));
+    Event::run("wax.db_query",$stmt);
+    $stmt = $this->exec($stmt, $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
+    Event::run("wax.db_query_end",$stmt);
     return $model;
 	}
   
   public function update($model) {
-    $this->exec($this->prepare($this->update_sql($model)), array_intersect_key($model->row, $model->_col_names));
-    $id = $model->primval;
+    $stmt = $this->prepare($this->update_sql($model));
+    Event::run("wax.db_query",$stmt);
+    $this->exec($stmt, array_intersect_key($model->row, $model->_col_names));
+    Event::run("wax.db_query_end",$stmt);
     return $model;
   }
   
@@ -98,7 +103,11 @@ abstract class Adapter {
       $sql.= $this->order($model);
       $sql.= $this->limit($model);
     }
-    return $this->exec($this->db->prepare($sql), $params);
+    $stmt = $this->db->prepare($sql);
+    Event::run("wax.db_query",$stmt);
+    $res = $this->exec($stmt, $params);
+    Event::run("wax.db_query_end",$stmt);
+    return $res;
   }
   
   public function select($model) {
@@ -278,12 +287,12 @@ abstract class Adapter {
 		  return array("sql"=>$sql, "params"=>$conditions["params"]);
 	  }
   }
-  public function group($model) {if($model->group_by) return " GROUP BY {$model->group_by}"; }
-  public function having($model) {if($model->having) return " HAVING {$model->having}";  }
+  public function group($model) {if($model->_group_by) return " GROUP BY {$model->_group_by}"; }
+  public function having($model) {if($model->_having) return " HAVING {$model->_having}";  }
   public function order($model) {if($model->_order) return " ORDER BY {$model->_order}";}
   public function limit($model) {if($model->_limit) return " LIMIT {$model->_offset}, {$model->_limit}";}
   
-  public function filter_sql($model, $filter_name = "filters") {
+  public function filter_sql($model, $filter_name = "_filters") {
     $params = array();
     $sql = "";
     if(count($model->$filter_name)) {

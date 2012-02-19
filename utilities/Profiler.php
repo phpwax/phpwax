@@ -228,7 +228,8 @@ class Profiler {
     Event::add("wax.post_request", function(){Profiler::marker("Request Processed");});
     Event::add("wax.controller_global", function(){Profiler::marker("Controller Loaded");});
     Event::add("wax.action", function(){Profiler::marker("Action Ready");});
-    Event::add("wax.layout", function(){Profiler::marker("View Parsed");});
+    Event::add("wax.prelayout", function(){Profiler::marker("View Parsed");});
+    Event::add("wax.layout", function(){Profiler::marker("Layout Parsed");});
     Event::add("wax.post_render", function(){Profiler::marker("Response Ready");});
 
     Event::add("wax.post_render", function(){

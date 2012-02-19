@@ -132,11 +132,11 @@ class Field {
     $class = get_class($this);
     
     //static cache of associations
-    if($this->is_association) WaxModelField::$skip_field_delegation_cache[$class]['assoc'] = true;
+    if($this->is_association) self::$skip_field_delegation_cache[$class]['assoc'] = true;
     
     //static cache of overridden get methods
     $method = new \ReflectionMethod($class, 'get');
-    if($method->getDeclaringClass()->name == "WaxModelField") WaxModelField::$skip_field_delegation_cache[$class]['get'] = true;
+    if($method->getDeclaringClass()->name == "Field") self::$skip_field_delegation_cache[$class]['get'] = true;
     else self::$skip_field_delegation_cache[$class]['get'] = false;
   }
 } // END class 

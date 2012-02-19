@@ -1,6 +1,9 @@
 <?php
 namespace Wax\Model\Fields;
 use Wax\Model\Field;
+use Wax\Model\Model;
+use Wax\Model\Recordset;
+use Wax\Template\Helper\Inflections;
 
 /**
  * ForeignKey class
@@ -31,24 +34,20 @@ class ForeignKey extends Field {
   
   public function get() {
     $class = $this->target_model;
-    if($cache = WaxModel::get_cache($class, $this->field, $this->model->primval)) return $cache;
     $model = new $this->target_model($this->model->{$this->col_name});
     if($model->primval) {
-      WaxModel::set_cache($class, $this->field, $this->model->primval, $model);
       return $model;
     } else return false;
   }
   
   public function set($value) {
-    if($value instanceof WaxModel) {
+    if($value instanceof Model) {
       $this->model->{$this->col_name} = $value->{$value->primary_key};
       return $this->model->save();
     } else {
       $this->model->{$this->col_name} = $value;
       return $this->model->save();
     }
-    $class = get_class($this->model);
-    WaxModel::unset_cache($class, $this->field, $this->model->{$this->col_name});
   }
   
   public function save() {
@@ -57,7 +56,7 @@ class ForeignKey extends Field {
   }
   
   public function get_choices() {
-    if($this->choices && $this->choices instanceof WaxRecordset) {
+    if($this->choices && $this->choices instanceof Recordset) {
       foreach($this->choices as $row) $choices[$row->{$row->primary_key}]=$row->{$row->identifier};
       $this->choices = $choices;
       return true;

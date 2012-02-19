@@ -134,8 +134,7 @@ class Application {
 		  Event::run("wax.action", $controller);
 		  $controller->{$controller->action}();
 		}
-		
-		Event::run("wax.after_filter", $controller);
+		Event::run("wax.prelayout", $controller);
 		$controller->content_for_layout = $controller->render_view();
 		Event::run("wax.layout", $controller);
 

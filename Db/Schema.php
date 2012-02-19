@@ -43,6 +43,10 @@ class Schema  {
     return $this->keys;
   }
   
+  public function set_key($key) {
+    $this->keys[] = $key;
+  }
+  
   public function associations() {
     return $this->associations;
   }

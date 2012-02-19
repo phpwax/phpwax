@@ -46,6 +46,7 @@ class Model{
 
   public $_schema             = FALSE;
   public $_schema_class       = "Wax\\Db\\Schema";
+  public $_observers          = [];
 
   /**
    *  constructor
@@ -92,6 +93,16 @@ class Model{
  	public function define($column, $type, $options=array()) {
     $this->schema("define", $column, $type, $options);
  	}
+  
+  public function observe($proxy, $event) {
+    $this->observers[$event] = $proxy;
+  }
+  
+  public function notify_observers($event) {
+    
+  }
+  
+  
   
   public function schema() {
     if(!$this->_schema) {
