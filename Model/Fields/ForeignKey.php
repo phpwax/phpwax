@@ -1,5 +1,6 @@
 <?php
-namespace Wax\Db;
+namespace Wax\Model\Fields;
+use Wax\Model\Field;
 
 /**
  * ForeignKey class
