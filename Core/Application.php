@@ -5,6 +5,7 @@ use Wax\Model\Model;
 use Wax\Dispatch\Url;
 use Wax\Dispatch\Response;
 use Wax\Template\Helper\Inflections;
+use Wax\Dispatch\RoutingException;
 
 /**
 	*  @package PHP-Wax  
@@ -128,7 +129,7 @@ class Application {
 		  } else {  	    
 		    $class=get_class($controller);
 		    Event::run("wax.404", $controller);
-			  throw new WXRoutingException("No Public Action Defined for - ".$controller->action." in controller {$class}.", "Missing Action");
+			  throw new RoutingException("No Public Action Defined for - ".$controller->action." in controller {$class}.", "Missing Action");
   		}
 		} else {
 		  Event::run("wax.action", $controller);
