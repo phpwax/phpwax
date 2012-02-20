@@ -88,7 +88,9 @@ abstract class Adapter {
   public function update($model) {
     $stmt = $this->prepare($this->update_sql($model));
     Event::run("wax.db_query",$stmt);
-    $this->exec($stmt, array_intersect_key($model->row, $model->_col_names));
+    $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
+    print_r($vals);exit;
+    $this->exec($stmt, $vals);
     Event::run("wax.db_query_end",$stmt);
     return $model;
   }
@@ -112,14 +114,10 @@ abstract class Adapter {
   
   public function select($model) {
     $params = array();
-    if($model->sql) {
-      $sql = $model->sql;
+    if($model->_sql) {
+      $sql = $model->_sql;
     } else {
       $sql .=$this->select_sql($model);
-			
-			$join = $this->left_join($model);
-			$sql .=$join["sql"];
-			$params = $join["params"];
 			
       $filters = $this->filter_sql($model);
       if($filters["sql"]) $sql.= " WHERE ";
@@ -127,16 +125,6 @@ abstract class Adapter {
       if($params) $params = array_merge($params, $filters["params"]);
       else $params = $filters["params"];
       
-			//add filters from the other side of the join
-			if($model->is_left_joined && $model->left_join_target instanceof Model){
-        $join_filters = $this->filter_sql($model->left_join_target);
-        if($join_filters["sql"])
-          if(strpos($sql,"WHERE") === false) $sql.= " WHERE ";
-          else $sql.= " AND ";
-        $sql.=$join_filters["sql"];
-        if($params) $params = array_merge($params, $join_filters["params"]);
-        else $params = $join_filters["params"];
-      }
 			
       $sql.= $this->group($model);
       $sql.= $this->having($model);
@@ -248,7 +236,8 @@ abstract class Adapter {
       $pk = $model->row[$model->primary_key];
       $model->{$model->primary_key} = $model->_update_pk;
     }
-    return "UPDATE `{$model->table}` SET ".$this->update_values(array_intersect_key($model->row, $model->_col_names)).
+    $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
+    return "UPDATE `{$model->table}` SET ".$this->update_values($vals).
       " WHERE `{$model->table}`.`{$model->primary_key}` = '{$pk}'";
   }
    
@@ -257,7 +246,7 @@ abstract class Adapter {
     if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
     elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
 		//mysql extra - if limit then record the number of rows found without limits
-		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
+		elseif($model->_is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
     else $sql.= "*";
     $sql.= " FROM `{$model->table}`";
     return $sql;
@@ -265,12 +254,12 @@ abstract class Adapter {
   
   public function delete_sql($model) {
     $sql = "DELETE FROM `{$model->table}`";
-    if($model->primval()) $sql .= " WHERE {$model->primary_key}={$model->primval()}";
+    if($model->pk()) $sql .= " WHERE {$model->primary_key}={$model->pk()}";
     return $sql;
   }
   
   public function row_count_query($model) {
-    if($model->is_paginated) {
+    if($model->_is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
 		  $this->exec($extrastmt);
 		  $found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
@@ -278,15 +267,7 @@ abstract class Adapter {
 	  }
   }
   
-  public function left_join($model) {
-		if($model->is_left_joined && count($model->join_conditions)){
-		  $conditions = $this->filter_sql($model,"join_conditions");
-		  if($model->left_join_target instanceof Model) $join_table = $model->left_join_target->table;
-		  else $join_table = $model->left_join_target;
-		  $sql = " LEFT JOIN `" . $join_table . "` ON ( " . $conditions["sql"] . " )";
-		  return array("sql"=>$sql, "params"=>$conditions["params"]);
-	  }
-  }
+
   public function group($model) {if($model->_group_by) return " GROUP BY {$model->_group_by}"; }
   public function having($model) {if($model->_having) return " HAVING {$model->_having}";  }
   public function order($model) {if($model->_order) return " ORDER BY {$model->_order}";}
@@ -332,14 +313,14 @@ abstract class Adapter {
     }
     $text = $this->db->quote($text);
     // Run the query adding the weighting supplied in the columns array
-    $model->select_columns = "SQL_CALC_FOUND_ROWS * ,(";
+    $model->_select_columns = "SQL_CALC_FOUND_ROWS * ,(";
     foreach($columns as $name=>$weighting) {
-      $model->select_columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
+      $model->_select_columns.="($weighting * (MATCH($name) AGAINST ($text)) ) +";
     }
-    $model->select_columns = rtrim($model->select_columns, "+");
-    $model->select_columns .= ") AS relevance ";
+    $model->_select_columns = rtrim($model->_select_columns, "+");
+    $model->_select_columns .= ") AS relevance ";
     $model->filter("MATCH(".implode(",", $cols).") AGAINST ($text IN BOOLEAN MODE)");
-    $model->having = "relevance > ".$relevance_floor;
+    $model->_having = "relevance > ".$relevance_floor;
     $model->_order = "relevance DESC";
     // Add an arbitrary limit to force found_rows to run
     if(!$model->_limit) $model->limit(1000);
@@ -369,7 +350,7 @@ abstract class Adapter {
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required	
-    foreach($model->columns as $model_col=>$model_col_setup) {
+    foreach($model->schema("columns") as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;
       $col_exists = false;
