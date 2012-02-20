@@ -94,12 +94,14 @@ class Model{
     $this->schema("define", $column, $type, $options);
  	}
   
-  public function observe($proxy, $event) {
-    $this->observers[$event] = $proxy;
+  public function observe($event, $proxy) {
+    $this->_observers[$event][] = $proxy;
   }
   
   public function notify_observers($event) {
-    
+    foreach($this->_observers[$event] as $proxy) {
+      $proxy->notify($event, $this);
+    }
   }
   
   
@@ -306,6 +308,7 @@ class Model{
   public function save() {
     Event::run("wax.model.before_save", $this);
   	$this->before_save();
+    $this->notify_observers("before_save");
   	foreach($this->schema("columns") as $col=>$setup) {
   	  $this->get_col($col)->save();
   	}
@@ -320,11 +323,12 @@ class Model{
   		}
  	    Event::run("wax.model.after_save", $this);
   		$res->after_save();
+      $this->notify_observers("after_save");
   		return $res;
   }
 
   public function update( $id_list = array() ) {
-    $this->before_update(); 
+    $this->before_update();
     $res = self::$db->update($this);
     $res->after_update();
     return $res;
@@ -506,7 +510,7 @@ class Model{
     *  @return mixed           property value
     */
   public function __get($name) {
-    if(array_key_exists($name, $this->schema("columns"))) {
+    if(in_array($name, $this->schema("keys"))|| in_array($name, $this->schema("associations"))) {
       $field = $this->get_col($name);
       return $field->get();
     }
