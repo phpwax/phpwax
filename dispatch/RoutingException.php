@@ -1,11 +1,16 @@
 <?php
+namespace Wax\Dispatch;
+use Wax\Template\Helper\Inflections;
+use Wax\Utilities\Log;
+use Wax\Core\Exception;
+
 /**
  *
  * @package PHP-Wax
  * @author Ross Riley & charles marshall
  **/
-class WXRoutingException extends WaxException
-{
+class RoutingException extends Exception {
+
   static $redirect_on_error=false;
   static $double_redirect = false;
   
@@ -29,14 +34,14 @@ class WXRoutingException extends WaxException
           exit;
         }  
         $_GET["route"]=$location;
-				WaxUrl::$params = false;
-				WaxUrl::perform_mappings();
-        $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+				Url::$params = false;
+				Url::perform_mappings();
+        $delegate = Inflections::slashcamelize(Url::get("controller"), true)."Controller";
   		  $delegate_controller = new $delegate;
   		  $delegate_controller->execute_request();
   		  exit;
 		  } else {
-		    WaxLog::log("error", "[Routing] Double redirect error");
+		    Log::log("error", "[Routing] Double redirect error");
 		    $code ="Application Error"; 
 		    $message = "A Page not found error was triggered and you have not set up a page to handle it";
 		  }
@@ -45,7 +50,7 @@ class WXRoutingException extends WaxException
   }
   
   function simple_routing_error_log() {
-    WaxLog::log("error", "[Routing] Couldn't load a requested page: {$_GET['route']}");
+    Log::log("error", "[Routing] Couldn't load a requested page: {$_GET['route']}");
   }
 }
 
