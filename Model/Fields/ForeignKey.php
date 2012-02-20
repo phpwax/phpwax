@@ -4,6 +4,7 @@ use Wax\Model\Field;
 use Wax\Model\Model;
 use Wax\Model\Recordset;
 use Wax\Template\Helper\Inflections;
+use Wax\Core\ObjectProxy;
 
 /**
  * ForeignKey class
@@ -12,12 +13,13 @@ use Wax\Template\Helper\Inflections;
  **/
 class ForeignKey extends Field {
   
-  public $maxlength = "11";
-  public $target_model = false;
-  public $widget = "SelectInput";
-  public $choices = array();
-  public $is_association = true;
-  public $data_type = "integer";
+  public $maxlength       = "11";
+  public $target_model    = FALSE;
+  public $widget          = "SelectInput";
+  public $choices         = [];
+  public $is_association  = true;
+  public $data_type       = "integer";
+  public $value           = FALSE;
   
   public function setup() {
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
@@ -33,22 +35,25 @@ class ForeignKey extends Field {
   }
   
   public function get() {
-    $class = $this->target_model;
-    $model = new $this->target_model($this->model->{$this->col_name});
-    if($model->primval) {
-      return $model;
-    } else return false;
+    if($this->value) return $this->value->get();
   }
   
   public function set($value) {
-    if($value instanceof Model) {
-      $this->model->{$this->col_name} = $value->{$value->primary_key};
-      return $this->model->save();
-    } else {
-      $this->model->{$this->col_name} = $value;
-      return $this->model->save();
-    }
+    if(is_object($value)) {
+      $this->value = new ObjectProxy($value);
+      $this->model->observe("before_save", new ObjectProxy($this));
+      $this->model->row[$this->field] = $this->value;
+    } 
   }
+  
+  public function notify($event, $object) {
+    $object->row[$this->col_name] = $object->row[$this->field]->get()->pk();
+    if($this->field !== $this->col_name) unset($object->row[$this->field]);
+    $object->schema("set_key", $this->field);
+  }
+  
+  
+  
   
   public function save() {
     return true;
