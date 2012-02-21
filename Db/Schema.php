@@ -1,6 +1,7 @@
 <?php
 namespace Wax\Db;
 use Wax\Core\Exception;
+use Wax\Core\ObjectProxy;
 
 /**
  * Defines how models map to DB Storage
@@ -13,6 +14,7 @@ class Schema  {
   public $keys           = [];    
   public $associations   = [];    
   public $columns        = [];
+  public $values         = [];
   
   public function __construct($db_adapter) {
     self::$adapter = $db_adapter;
@@ -28,11 +30,13 @@ class Schema  {
   
 
   public function get_col($name, $model) {
+    if($this->values[$name]) return $this->values[$name]->get();
     if(!$this->columns[$name][0]) throw new Exception("Error", $name." is not a valid call");
     $class = $this->columns[$name][0];
     if(!class_exists($class)) $class = "Wax\\Model\\Fields\\".$class;
-    return new $class($name, $model, $this->columns[$name][1]);
-    
+    $field = new $class($name, $model, $this->columns[$name][1]);
+    $this->values[$name] = new ObjectProxy($field);
+    return $field;
   }
   
   public function columns() {
