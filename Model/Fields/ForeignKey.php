@@ -17,7 +17,7 @@ class ForeignKey extends Field {
   public $target_model    = FALSE;
   public $widget          = "SelectInput";
   public $choices         = [];
-  public $is_association  = true;
+  public $is_association  = TRUE;
   public $data_type       = "integer";
   public $value           = FALSE;
   
@@ -47,17 +47,16 @@ class ForeignKey extends Field {
   }
   
   public function notify($event, $object) {
-    $object->row[$this->col_name] = $object->row[$this->field]->get()->pk();
-    if($this->field !== $this->col_name) unset($object->row[$this->field]);
-    $object->schema("set_key", $this->field);
+    if($event == "before_save") $this->before_save($object);
   }
   
   
   
   
-  public function save() {
-    return true;
-    //return $this->set($this->value);
+  public function before_save() {
+    $object->row[$this->col_name] = $object->row[$this->field]->get()->pk();
+    if($this->field !== $this->col_name) unset($object->row[$this->field]);
+    $object->schema("set_key", $this->field);
   }
   
   public function get_choices() {
