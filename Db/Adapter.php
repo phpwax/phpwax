@@ -49,6 +49,8 @@ abstract class Adapter {
 	public $default_db_engine = "MyISAM";
 	public $default_db_charset = "utf8";
 	public $default_db_collate = "utf8_unicode_ci";
+  public $query             = FALSE;
+  public $query_class       = FALSE;
   
   public function __construct($db_settings=array()) {
     $this->db_settings = $db_settings;
@@ -59,6 +61,8 @@ abstract class Adapter {
     
     $this->db = $this->connect($db_settings);
 		$this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    if(!$this->query_class) $query_class = "Wax\\Db\\Query\\".ucfirst($db_settings["dbtype"])."Query";
+    $this->query = new $query_class;
   }
   
   public function connect($db_settings) {
@@ -77,7 +81,7 @@ abstract class Adapter {
 
   
   public function insert($model) {
-    $stmt = $this->prepare($this->insert_sql($model));
+    $stmt = $this->prepare($this->query->insert($model));
     Event::run("wax.db_query",$stmt);
     $stmt = $this->exec($stmt, $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
@@ -86,7 +90,7 @@ abstract class Adapter {
 	}
   
   public function update($model) {
-    $stmt = $this->prepare($this->update_sql($model));
+    $stmt = $this->prepare($this->query->update($model));
     Event::run("wax.db_query",$stmt);
     $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
     $this->exec($stmt, $vals);
@@ -98,7 +102,7 @@ abstract class Adapter {
   
   
   public function delete($model) {
-    $sql = $this->delete_sql($model);
+    $sql = $this->query->delete($model);
     if(!$model->primval()) {
       $filters = $this->filter_sql($model);
       if($filters["sql"]) $sql.= " WHERE ";
@@ -119,21 +123,9 @@ abstract class Adapter {
     if($model->_sql) {
       $sql = $model->_sql;
     } else {
-      $sql .=$this->select_sql($model);
-			
-      $filters = $this->filter_sql($model);
-      if($filters["sql"]) $sql.= " WHERE ";
-      $sql.=$filters["sql"];
-      if($params) $params = array_merge($params, $filters["params"]);
-      else $params = $filters["params"];
-			
-      $sql.= $this->group($model);
-      $sql.= $this->having($model);
-      $sql.= $this->order($model);
-      $this->sql_without_limit = $sql;
-      $sql.= $this->limit($model);
+      $sql=$this->query->select($model);
     }
-
+    die($sql);
     $stmt = $this->prepare($sql);
     Event::run("wax.db_query",$stmt);
     $this->exec($stmt, $params);
@@ -239,45 +231,6 @@ abstract class Adapter {
     return $model;    
   }
   
-  
-  
-  
-  /**
-   * Query Specific methods, construct driver specific language
-   */
-	public function insert_sql($model) {
-	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
-             VALUES (".join(",", array_keys($this->bindings($model->row))).")";
-	}
-
-  public function update_sql($model) {
-    if(!$pk = $model->_update_pk) $pk = $model->row[$model->primary_key];
-    else {
-      $pk = $model->row[$model->primary_key];
-      $model->{$model->primary_key} = $model->_update_pk;
-    }
-    $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
-    return "UPDATE `{$model->table}` SET ".$this->update_values($vals).
-      " WHERE `{$model->table}`.`{$model->primary_key}` = '{$pk}'";
-  }
-   
-  public function select_sql($model) {
-    $sql .= "SELECT ";
-    if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
-    elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
-		//mysql extra - if limit then record the number of rows found without limits
-		elseif($model->_is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
-    else $sql.= "*";
-    $sql.= " FROM `{$model->table}`";
-    return $sql;
-  }
-  
-  public function delete_sql($model) {
-    $sql = "DELETE FROM `{$model->table}`";
-    if($model->pk()) $sql .= " WHERE {$model->primary_key}={$model->pk()}";
-    return $sql;
-  }
-  
   public function row_count_query($model) {
     if($model->_is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
@@ -288,31 +241,9 @@ abstract class Adapter {
   }
   
 
-  public function group($model) {if($model->_group_by) return " GROUP BY {$model->_group_by}"; }
-  public function having($model) {if($model->_having) return " HAVING {$model->_having}";  }
-  public function order($model) {if($model->_order) return " ORDER BY {$model->_order}";}
-  public function limit($model) {if($model->_limit) return " LIMIT {$model->_offset}, {$model->_limit}";}
   
-  public function filter_sql($model, $filter_name = "_filters") {
-    $params = array();
-    $sql = "";
-    if(count($model->$filter_name)) {
-      foreach($model->$filter_name as $filter) {
-        if(is_array($filter)) {
-          //add table name if it's a column
-          if(in_array($filter["name"],array_keys($model->columns))) $sql.= "`$model->table`."; 
-          $sql.= $filter["name"].$this->operators[$filter["operator"]].$this->map_operator_value($filter["operator"], $filter["value"]);
-          if(is_array($filter["value"])) foreach($filter["value"] as $val) $params[]=$val;
-          else $params[]=$filter["value"];
-          $sql .= " AND ";
-        } else {
-          $sql.= $filter." AND ";
-        }
-      }
-    }
-    $sql = rtrim($sql, "AND ");
-    return array("sql"=>$sql, "params"=>$params);
-  }
+  
+  
   
   /**
    * Fultext search on columns
@@ -452,45 +383,6 @@ abstract class Adapter {
     $this->exec($stmt, array(), $swallow_errors);
     return "Updated column {$field->field} in {$model->table}\n";
   }
-  
-  
-  
-  
-
-  /**
-   * Internal helper methods
-   *
-   */
-
-  protected function bindings($array) {
-		$params = array();
-		foreach( $array as $key=>$value ) {
-			$params[":{$key}"] = $value;
-		}
-    return $params;
-  }
-  
-  protected function update_values($array) {
-    foreach( $array as $key=>$value ) {
-      $expressions[] ="`{$key}`=:{$key}";
-    }
-    return join( ', ', $expressions );
-  }
-  
-  protected function map_operator_value($operator, $value) {
-    switch($operator) {
-      case "=": return "?";
-      case "!=": return "?";
-      case "~": return "%?%";
-      case "LIKE": return " LIKE ?";
-      case "in": return "(".rtrim(str_repeat("?,", count($value)), ",").")";
-      case "raw": return "";
-      default: return "?"; 
-    }
-  }
-
-  
-  
   
 
 
