@@ -10,22 +10,17 @@ use Wax\Core\ObjectProxy;
  */
 class Schema  {
   
-  public static $adapter = FALSE;
   public $table          = FALSE;
   public $keys           = [];    
   public $associations   = [];    
   public $columns        = [];
   public $values         = [];
   
-  public function __construct($db_adapter) {
-    self::$adapter = $db_adapter;
-  }
-  
   
   
   public function define($column, $type, $options=array()) {
-    if(!$options["target_model"]) $this->keys[] = $column;
-    elseif($options["target_model"]) $this->associations[] = $column; 
+    if(!$options["target_model"]) $this->set_key($column);
+    elseif($options["target_model"]) $this->set_association($column); 
     $this->columns[$column] = array($type, $options);
   }
   
@@ -49,8 +44,13 @@ class Schema  {
   }
   
   public function set_key($key) {
-    $this->keys[] = $key;
+    if(!in_array($key,$this->keys)) $this->keys[] = $key;
   }
+  
+  public function set_association($key) {
+    if(!in_array($key,$this->associations)) $this->associations[] = $key;
+  }
+  
   
   public function set_table($table) {
     $this->table = $table;
