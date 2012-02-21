@@ -17,39 +17,27 @@ use Wax\Db\DbException;
  **/
 class Model{
 
-  static public $adapter      = FALSE;
   static public $db_settings  = FALSE;
   static public $db           = FALSE;
   public $table               = FALSE;
-  public $primary_key         = "id";
-  public $primary_type        = "AutoField";
-  public $primary_options     = [];
   public $row                 = [];
+  public $primary_key         = "id";
+  public $_primary_type       = "AutoField";
+  public $_primary_options    = [];
+  public $_identifier         = FALSE;
+  public $_persistent         = TRUE;
+  public $_is_paginated       = FALSE;
 
   public $_query_params = [
-    "table"              => FALSE,
-    "select_columns"     => [],
     "filters"            => [],
-    "group_by"           => FALSE,
-    "having"             => FALSE,
-    "order"              => FALSE,
-    "limit"              => FALSE,
-    "offset"             => "0",
-    "include"            => [],
-    "sql"                => FALSE,
-    "sql_without_limit"  => FALSE,
-    "errors"             => [],
-    "persistent"         => TRUE,
-    "identifier"         => FALSE,
-    "is_paginated"       => FALSE,
-    "update_pk"          => FALSE, 
+    "offset"             => "0"
   ];
   public $_query              = FALSE;
   public $_schema             = FALSE;
   public $_schema_class       = "Wax\\Db\\Schema";
   public $_observers          = [];
   static public $_backends    = []; 
-  static public $backend      = FALSE;
+  static public $_backend     = FALSE;
 
   /**
    *  constructor
@@ -58,7 +46,7 @@ class Model{
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 	  $this->load_backend($this->$db_settings);
+ 	  $this->load_backend(self::$db_settings);
  		
     $class_name =  get_class($this);
  		if( $class_name != 'Model' && !$this->table ) {
@@ -67,7 +55,7 @@ class Model{
  		}
     $this->_query = new \ArrayObject($this->_query_params);
     $this->load_schema();
- 		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
+ 		$this->define($this->primary_key, $this->_primary_type, $this->_primary_options);
  		$this->setup();
  		$this->set_identifier();
     
@@ -87,17 +75,17 @@ class Model{
  	public function load_backend($db_settings, $label="default") {
  	  if($db_settings["dbtype"]=="none") return true;
  	  $builder = "Wax\\Db\\Query\\".ucfirst($db_settings["dbtype"])."Query";
-    self::$_backend[$label] = new $builder($db_settings);
+    self::$_backends[$label] = new $builder($db_settings);
     $this->set_backend($label);
  	}
   
   public function set_backend($label) {
-    self::$backend = self::$_backends[$label];
+    self::$_backend = self::$_backends[$label];
   }
   
   public function load_schema() {
     if(!$this->_schema) {
-      $schema = new $this->_schema_class(self::$adapter);
+      $schema = new $this->_schema_class();
       $schema->set_table($this->table);
       $this->_schema = ObjectManager::set($schema);
     }
@@ -108,7 +96,7 @@ class Model{
  	}
   
   public function observe($event, $proxy) {
-    $this->_observers[$event][] = $proxy;
+    if(!in_array($proxy, $this->_observers[$event])) $this->_observers[$event][] = $proxy;
   }
   
   public function notify_observers($event) {
@@ -169,7 +157,7 @@ class Model{
  	 */
 
  	public function search($text, $columns = array(), $relevance=0) {
- 	  $res = self::$backend->search($this, $text, $columns, $relevance);
+ 	  $res = self::$_backend->search($this, $text, $columns, $relevance);
     return $res;
  	}
 
@@ -253,7 +241,7 @@ class Model{
  	  if(!$this->_query->filters && !$this->pk()) throw new DbException("Tried to delete a whole table. Please revise your code.", "Programmer Fail");
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
- 	  $res = self::$backend->delete($this);
+ 	  $res = self::$_backend->delete($this);
     $this->after_delete();
     return $res;
   }
@@ -264,7 +252,7 @@ class Model{
 	}
 
 	public function random($limit) {
-	  $this->order(self::$backend->random());
+	  $this->order(self::$_backend->random());
 	  $this->limit($limit);
 	  return $this;
 	}
@@ -304,34 +292,30 @@ class Model{
     Event::run("wax.model.before_save", $this);
   	$this->before_save();
     $this->notify_observers("before_save");
-  	foreach($this->schema("columns") as $col=>$setup) {
-  	  $this->get_col($col)->save();
-  	}
   	if($this->_persistent) {      
   	  if($this->pk()) {       
-        if(!$this->validate()) return false;
   	    $res = $this->update();
       } else {      
-          if(!$this->validate()) return false;        
-  	      $res = $this->insert();
-  	    }
-  		}
+  	    $res = $this->insert();
+  	  }
  	    Event::run("wax.model.after_save", $this);
   		$res->after_save();
       $this->notify_observers("after_save");
   		return $res;
+    }
+    return $this;
   }
 
   public function update() {
     $this->before_update();
-    $res = self::$backend->update($this);
+    $res = self::$_backend->update($this);
     $res->after_update();
     return $res;
   }
 
   public function insert() {
-    $this->before_insert();  
-    $res = self::$backend->insert($this);
+    $this->before_insert();
+    $res = self::$_backend->insert($this);
     $this->row = $res->row;
     $this->after_insert();
     return $this;
@@ -339,28 +323,28 @@ class Model{
 
   public function syncdb() {
     if(get_class($this) == "Model") return;
-    $res = self::$backend->syncdb($this);
+    $res = self::$_backend->syncdb($this);
     return $res;
   }
 
   public function query($query) {
-    return self::$backend->query($query);
+    return self::$_backend->query($query);
   }
 
   
 
  	public function all() {
- 	  return new Recordset($this, self::$backend->select($this));
+ 	  return new Recordset($this, self::$_backend->select($this));
  	}
 
  	public function rows() {
- 	  return self::$backend->select($this);
+ 	  return self::$_backend->select($this);
  	}
 
  	public function first() {
  	  $this->_query->limit = "1";
  	  $model = clone $this;
- 	  $res = self::$backend->select($model);
+ 	  $res = self::$_backend->select($model);
  	  if($res[0]) $model->row = $res[0];
  	  else $model = false;
  	  return $model;
@@ -373,12 +357,12 @@ class Model{
  	}
   
 	public function total_without_limits(){
-		return self::$backend->total_without_limits;
+		return self::$_backend->total_without_limits;
 	}
   
   public function find_by_sql($sql) {
     $this->sql($sql);
-    $res = self::$backend->select($this);
+    $res = self::$_backend->select($this);
     return new Recordset($this, $res);
   }
   
@@ -388,9 +372,7 @@ class Model{
 
 
  	public function set_attributes($array) {
-		foreach((array)$array as $k=>$v) {
-		  $this->$k=$v;
-		}
+		foreach((array)$array as $k=>$v) $this->$k=$v;
 	  return $this;
 	}
 
