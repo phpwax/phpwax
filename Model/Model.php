@@ -26,27 +26,30 @@ class Model{
   public $primary_options     = [];
   public $row                 = [];
 
-  public $_select_columns     = [];
-  public $_filters            = [];
-	public $_group_by           = FALSE;
-	public $_having             = false;
-  public $_order              = false;
-  public $_limit              = false;
-  public $_offset             = "0";
-  public $_include            = [];
-  public $_sql                = false;
-  public $_errors             = [];
-  public $_persistent         = TRUE;
-  public $_identifier         = FALSE;
-
-	public $_is_paginated       = FALSE;
-	
-  
-	public $_update_pk          = FALSE;
-
+  public $_query_params = [
+    "table"              => FALSE,
+    "select_columns"     => [],
+    "filters"            => [],
+    "group_by"           => FALSE,
+    "having"             => FALSE,
+    "order"              => FALSE,
+    "limit"              => FALSE,
+    "offset"             => "0",
+    "include"            => [],
+    "sql"                => FALSE,
+    "sql_without_limit"  => FALSE,
+    "errors"             => [],
+    "persistent"         => TRUE,
+    "identifier"         => FALSE,
+    "is_paginated"       => FALSE,
+    "update_pk"          => FALSE, 
+  ];
+  public $_query              = FALSE;
   public $_schema             = FALSE;
   public $_schema_class       = "Wax\\Db\\Schema";
   public $_observers          = [];
+  static public $_backends    = []; 
+  static public $backend      = FALSE;
 
   /**
    *  constructor
@@ -55,23 +58,21 @@ class Model{
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
  	function __construct($params=null) {
- 	  try {
- 	    self::load_adapter(self::$db_settings);
- 	    if(!self::$db && self::$adapter) self::$db = new self::$adapter(self::$db_settings);
- 	  } catch (\Exception $e) {
- 	    throw new DbException("Cannot Initialise DB", "Database Configuration Error");
- 	  }
-    
- 		$class_name =  get_class($this);
+ 	  $this->load_backend($this->$db_settings);
+ 		
+    $class_name =  get_class($this);
  		if( $class_name != 'Model' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
+      $this->_query->table = $this->table;
  		}
-    
-    $this->schema();
+    $this->_query = new \ArrayObject($this->_query_params);
+    $this->load_schema();
  		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
  		$this->setup();
  		$this->set_identifier();
- 		// If a scope is passed into the constructor run a method called scope_[scope]().
+    
+    
+ 		// Handles initialisers passed into the constructor run a method called scope_[scope]() or if an `id` then load that model.
  		if($params) {
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) {$this->$method;}
@@ -83,12 +84,24 @@ class Model{
 	  }
  	}
  
- 	static public function load_adapter($db_settings, $label="default") {
+ 	public function load_backend($db_settings, $label="default") {
  	  if($db_settings["dbtype"]=="none") return true;
- 	  $adapter = "Wax\\Db\\".ucfirst($db_settings["dbtype"])."Adapter";
- 	  self::$adapter = $adapter;
- 	  self::$db_settings = $db_settings;
+ 	  $builder = "Wax\\Db\\Query\\".ucfirst($db_settings["dbtype"])."Query";
+    self::$_backend[$label] = new $builder($db_settings);
+    $this->set_backend($label);
  	}
+  
+  public function set_backend($label) {
+    self::$backend = self::$_backends[$label];
+  }
+  
+  public function load_schema() {
+    if(!$this->_schema) {
+      $schema = new $this->_schema_class(self::$adapter);
+      $schema->set_table($this->table);
+      $this->_schema = ObjectManager::set($schema);
+    }
+  }
 
  	public function define($column, $type, $options=array()) {
     $this->schema("define", $column, $type, $options);
@@ -107,10 +120,6 @@ class Model{
   
   
   public function schema() {
-    if(!$this->_schema) {
-      $schema = new $this->_schema_class(self::$adapter);
-      $this->_schema = ObjectManager::set($schema);
-    }
     if(count(func_get_args())) {
       $schema = ObjectManager::get($this->_schema);
       $args = func_get_args();
@@ -121,10 +130,11 @@ class Model{
   public function columns() {
     return $this->schema("columns");
   }
+  
+  public function writable_columns() {
+    return array_intersect_key($this->row, array_fill_keys($this->schema("keys"),1 ));
+  }
 
- 	public function add_error($field, $message) {
- 	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
- 	}
 
  	public function filter($column, $value=NULL, $operator="=") {
  	  //if the var is a string, then we are asuming its a new style filter
@@ -137,10 +147,10 @@ class Model{
           else $operator = "raw"; //otherwise its a raw operation, so substitue values
 
         $filter = array("name"=>$column,"operator"=>$operator, "value"=>$value);
-        if($operator == "=") $this->_filters[$column] = $filter; //if its equal then overwrite the filter passed on col name
-        else $this->_filters[] = $filter;
+        if($operator == "=") $this->_query->filters[$column]= $filter; //if its equal then overwrite the filter passed on col name
+        else $this->_query->filters[] = $filter;
 
- 	    } else $this->_filters[] = $column; //assume a raw query, with no parameters
+ 	    } else $this->_query->filters[] = $column; //assume a raw query, with no parameters
     }else{ //if the column isn't a string, then we assume it's an array with multiple filter's passed in.
       foreach((array)$column as $old_column => $old_value) {
         $this->filter($old_column, $old_value);
@@ -159,7 +169,7 @@ class Model{
  	 */
 
  	public function search($text, $columns = array(), $relevance=0) {
- 	  $res = self::$db->search($this, $text, $columns, $relevance);
+ 	  $res = self::$backend->search($this, $text, $columns, $relevance);
     return $res;
  	}
 
@@ -178,35 +188,24 @@ class Model{
 
 
  	public function clear() {
-    $this->_filters = array();
-    $this->_order = false;
-    $this->_limit = false;
-    $this->_offset = "0";
-    $this->_sql = false;
-		$this->_is_paginated = false;
-    $this->_errors = array();
-		$this->_having = false;
-		$this->_select_columns = array();
+    $this->_query->filters        = [];
+    $this->_query->order          = FALSE;
+    $this->_query->limit          = false;
+    $this->_query->offset         = "0";
+    $this->_query->sql            = FALSE;
+		$this->_query->is_paginated   = FALSE;
+		$this->_query->having         = false;
+		$this->_query->select_columns = [];
     return $this;
  	}
 
 
  	public function validate() {
- 	  foreach($this->schema("columns") as $column=>$setup) {
-      $class = $setup[0];
-      if(!class_exists($class)) $class = "Wax\\Model\\Fields\\".$class;
- 	    $field = new $class($column, $this, $setup[1]);
- 	    $field->is_valid();
- 	    if($field->errors) {
- 	      $this->errors[$column] = $field->errors;
-      }
- 	  }
- 	  if(count($this->errors)) return false;
  	  return true;
  	}
 
  	public function get_errors() {
- 	  return $this->errors;
+ 	  return [];
  	}
 
   public function get_col($name) {
@@ -251,51 +250,47 @@ class Model{
      */
  	public function delete() {
  	  //throw an exception trying to delete a whole table.
- 	  if(!$this->_filters && !$this->primval()) throw new DbException("Tried to delete a whole table. Please revise your code.", "Programmer Fail");
+ 	  if(!$this->_query->filters && !$this->pk()) throw new DbException("Tried to delete a whole table. Please revise your code.", "Programmer Fail");
  	  $this->before_delete();
 		//before we delete this, check fields - clean up joins by delegating to field
-		foreach($this->schema("columns") as $col=>$setup) $this->get_col($col)->delete();
- 	  $res = self::$db->delete($this);
+ 	  $res = self::$backend->delete($this);
     $this->after_delete();
     return $res;
   }
 
  	public function order($order_by){
-		$this->_order = $order_by;
+		$this->_query->order = $order_by;
 		return $this;
 	}
 
 	public function random($limit) {
-	  $this->order(self::$db->random());
+	  $this->order(self::$backend->random());
 	  $this->limit($limit);
 	  return $this;
 	}
 
-	public function dates($start, $end) {
-
-	}
 
 	public function offset($offset){
-		$this->_offset = $offset;
+		$this->_query->offset = $offset;
 		return $this;
 	}
 	public function limit($limit){
-		$this->_limit = $limit;
+		$this->_query->limit = $limit;
 		return $this;
 	}
 	public function group($group_by){
-		$this->_group_by = $group_by;
+		$this->_query->group_by = $group_by;
 		return $this;
 	}
 	public function sql($query) {
-	  $this->_sql = $query;
+	  $this->_query->sql = $query;
 	  return $this;
 	}
 
 	//take the page number, number to show per page, return paginated record set..
 	public function page($page_number="1", $per_page=10){
-		$this->is_paginated = true;
-		return new WaxPaginatedRecordset($this, $page_number, $per_page);
+		$this->_query->is_paginated = TRUE;
+		return new PaginatedRecordset($this, $page_number, $per_page);
 	}
 
 
@@ -329,14 +324,14 @@ class Model{
 
   public function update() {
     $this->before_update();
-    $res = self::$db->update($this);
+    $res = self::$backend->update($this);
     $res->after_update();
     return $res;
   }
 
   public function insert() {
     $this->before_insert();  
-    $res = self::$db->insert($this);
+    $res = self::$backend->insert($this);
     $this->row = $res->row;
     $this->after_insert();
     return $this;
@@ -344,33 +339,30 @@ class Model{
 
   public function syncdb() {
     if(get_class($this) == "Model") return;
-    if($this->disallow_sync) return;
-    $res = self::$db->syncdb($this);
+    $res = self::$backend->syncdb($this);
     return $res;
   }
 
   public function query($query) {
-    return self::$db->query($query);
+    return self::$backend->query($query);
   }
 
   
 
  	public function all() {
- 	  return new Recordset($this, self::$db->select($this));
+ 	  return new Recordset($this, self::$backend->select($this));
  	}
 
  	public function rows() {
- 	  return self::$db->select($this);
+ 	  return self::$backend->select($this);
  	}
 
  	public function first() {
- 	  $this->_limit = "1";
+ 	  $this->_query->limit = "1";
  	  $model = clone $this;
- 	  $res = self::$db->select($model);
- 	  if($res[0])
- 	    $model->row = $res[0];
- 	  else
- 	    $model = false;
+ 	  $res = self::$backend->select($model);
+ 	  if($res[0]) $model->row = $res[0];
+ 	  else $model = false;
  	  return $model;
  	}
 
@@ -381,12 +373,12 @@ class Model{
  	}
   
 	public function total_without_limits(){
-		return self::$db->total_without_limits;
+		return self::$backend->total_without_limits;
 	}
   
   public function find_by_sql($sql) {
     $this->sql($sql);
-    $res = self::$db->select($this);
+    $res = self::$backend->select($this);
     return new Recordset($this, $res);
   }
   
@@ -404,11 +396,7 @@ class Model{
 
 
  	public function is_posted() {
- 		if(is_array($_REQUEST[$this->table])) {
- 			return true;
- 		} else {
- 			return false;
- 		}
+ 		return is_array($_REQUEST[$this->table]);
  	}
 
  	public function handle_post($attributes=null) {
