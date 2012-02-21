@@ -11,6 +11,7 @@ use Wax\Core\ObjectProxy;
 class Schema  {
   
   public static $adapter = FALSE;
+  public $table          = FALSE;
   public $keys           = [];    
   public $associations   = [];    
   public $columns        = [];
@@ -50,6 +51,15 @@ class Schema  {
   public function set_key($key) {
     $this->keys[] = $key;
   }
+  
+  public function set_table($table) {
+    $this->table = $table;
+  }
+  
+  public function table() {
+    return $this->table;
+  }
+  
   
   public function associations() {
     return $this->associations;
