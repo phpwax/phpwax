@@ -60,9 +60,7 @@ abstract class Adapter {
     if(!$db_settings['port']) $db_settings['port']="3306";
     
     $this->db = $this->connect($db_settings);
-		$this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-    if(!$this->query_class) $query_class = "Wax\\Db\\Query\\".ucfirst($db_settings["dbtype"])."Query";
-    $this->query = new $query_class;
+    $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
   }
   
   public function connect($db_settings) {
@@ -78,65 +76,8 @@ abstract class Adapter {
   }
 
   
-
-  
-  public function insert($model) {
-    $stmt = $this->prepare($this->query->insert($model));
-    Event::run("wax.db_query",$stmt);
-    $stmt = $this->exec($stmt, $model->row);
-    $model->row[$model->primary_key]=$this->db->lastInsertId();
-    Event::run("wax.db_query_end",$stmt);
-    return $model;
-	}
-  
-  public function update($model) {
-    $stmt = $this->prepare($this->query->update($model));
-    Event::run("wax.db_query",$stmt);
-    $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
-    $this->exec($stmt, $vals);
-    Event::run("wax.db_query_end",$stmt);
-    return $model;
-  }
-  
-  
-  
-  
-  public function delete($model) {
-    $sql = $this->query->delete($model);
-    if(!$model->primval()) {
-      $filters = $this->filter_sql($model);
-      if($filters["sql"]) $sql.= " WHERE ";
-      $sql.=$filters["sql"];
-      $params =$filters["params"];
-      $sql.= $this->order($model);
-      $sql.= $this->limit($model);
-    }
-    $stmt = $this->db->prepare($sql);
-    Event::run("wax.db_query",$stmt);
-    $res = $this->exec($stmt, $params);
-    Event::run("wax.db_query_end",$stmt);
-    return $res;
-  }
-  
-  public function select($model) {
-    $params = array();
-    if($model->_sql) {
-      $sql = $model->_sql;
-    } else {
-      $sql=$this->query->select($model);
-    }
-    die($sql);
-    $stmt = $this->prepare($sql);
-    Event::run("wax.db_query",$stmt);
-    $this->exec($stmt, $params);
-    $this->row_count_query($model);
-		$res = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    Event::run("wax.db_query_end",$stmt);
-		return $res;
-  }
-  
   public function prepare($sql) {
-    try { $stmt = $this->db->prepare($sql); } 
+    try { $stmt = $this->db->prepare($sql); Event::run("wax.db_query",$stmt); } 
     catch(\PDOException $e) {
 		  $err = $e->getMessage();
 		  switch($e->getCode()) {
@@ -183,6 +124,7 @@ abstract class Adapter {
 		    if(!$swallow_errors) throw new SqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
 		  }
 		}
+    Event::run("wax.db_query_end",$stmt);
 		return $pdo_statement;
   }
   
@@ -202,41 +144,17 @@ abstract class Adapter {
     return $this->db->quote($string);
   }
   
-  
-  public function random() {
-    return "RAND()";
+  public function last_id() {
+    return $this->db->lastInsertId();
   }
   
-  
-  /* Handles date comparison replaces parameters with db specifics */
-  // Not Yet implemented
-  public function date($query) {
-
-  }
-  
-  
-  /************** Hardcore power methods, allows joins to perform faster operations *********/
-  
-  /*** Sets values on an array of keys ***/
-  public function _group_update($model, $ids, $values) {
-    foreach($values as $k=>$val) $keys.="`{$k}`=?";
-    $sql = "UPDATE `{$model->table}` SET ".$keys.
-            " WHERE `{$model->table}`.`{$model->primary_key}` IN(".join(",",array_fill(0,count($ids),"?")).");";
-  
-    $stmt = $this->prepare($sql);
-    $vals = array_merge(array_values($values), $ids);
-    Event::run("wax.db_query",$stmt);
-    $this->exec($stmt, $vals);
-    Event::run("wax.db_query_end",$stmt);
-    return $model;    
-  }
   
   public function row_count_query($model) {
     if($model->_is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
 		  $this->exec($extrastmt);
 		  $found = $extrastmt->fetchAll(\PDO::FETCH_ASSOC);
-		  $this->total_without_limits = $found[0]['FOUND_ROWS()'];
+		  return $found[0]['FOUND_ROWS()'];
 	  }
   }
   
