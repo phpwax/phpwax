@@ -2,6 +2,10 @@
 namespace Wax\Model\Fields;
 use Wax\Model\Field;
 use Wax\Template\Helper\Inflections;
+use Wax\Model\Model;
+use Wax\Model\Recordset;
+use Wax\Core\ObjectProxy;
+
 
 /**
  * HasManyField class
@@ -10,14 +14,16 @@ use Wax\Template\Helper\Inflections;
  **/
 class HasManyField extends Field {
   
-  public $target_model = false;
-  public $join_field = false;
-  public $editable = false;
-  public $is_association = true;
-  public $eager_loading = false;
-  public $widget = "MultipleSelectInput";
-	public $join_order = false; //specify order of the returned joined objects
-  public $data_type = "integer";
+  public $target_model    = FALSE;
+  public $join_field      = FALSE;
+  public $editable        = FALSE;
+  public $is_association  = TRUE;
+  public $eager_loading   = FALSE;
+	public $join_order      = FALSE; //specify order of the returned joined objects
+  public $widget          = "MultipleSelectInput";
+  public $data_type       = "integer";
+  public $value           = FALSE;
+  public $additive        = TRUE;  // Default behaviour, non destructive writes.
   
   public function setup() {
     $this->col_name = false;
@@ -38,12 +44,41 @@ class HasManyField extends Field {
     return $this->lazy_load($target);
   }
   
+  public function set($value) {
+    if($value instanceof $this->target_model){  
+      $this->value[] = new ObjectProxy($value);
+      $proxy = new ObjectProxy($this);
+      $this->model->observe("before_save", $proxy);
+      $this->model->observe("after_save", $proxy);
+      $this->model->row[$this->field] = $this->value;
+    }
+    if(is_array($value) || $value instanceof Traversable) foreach($value as $item) $this->set($item);
+  }
+  
+  public function notify($event, $object) {
+    if($event == "before_save") $this->before_save($object);
+    if($event == "after_save") $this->after_save($object);
+    
+  }
+  
+  public function before_save($object) {
+    unset($object->row[$this->field]);
+  }
+  
+  public function after_save($parent) {
+    $rows = [];
+    foreach($this->value as $model) {
+      $rows[]=$model->get()->pk();
+    }
+    $class = "\\".$this->target_model;
+    $class::$db->_group_update(new $class, $rows, [$this->join_field=>$parent->pk()]);
+  }
+  
+  
+  
   public function eager_load($target) {
-		$cache = WaxModel::get_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, false);
-		if(is_array($cache)) return new WaxModelAssociation($this->model, $target, $cache, $this->field);
     $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-		WaxModel::set_cache($this->target_model.":".md5(serialize($target->filters)), $this->field, $this->model->primval, $vals->rowset);
-		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
+		return new Association($this->model, $target, $vals->rowset, $this->field);
   }
   
   public function lazy_load($target) {
@@ -51,17 +86,9 @@ class HasManyField extends Field {
     foreach($target->rows() as $row) {
       $ids[]=$row[$target->primary_key];
     }
-    return new WaxModelAssociation($this->model, $target, $ids, $this->field);
+    return new Association($this->model, $target, $ids, $this->field);
   }
   
-  public function set($value) {
-    if($value instanceof $this->target_model){
-      $value->{$this->join_field} = $this->model->primval();
-      $value->_col_names[$this->join_field] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
-      $value->save();
-    }
-    if($value instanceof WaxRecordset) foreach($value as $row) $this->set($row);
-  }
   
   public function unlink($value = false) {
     if(!$value) $value = $this->get(); //if nothing gets passed in to unlink then unlink everything
@@ -70,12 +97,10 @@ class HasManyField extends Field {
       $value->_col_names[$this->join_field] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
       $value->save();
     }
-    if($value instanceof WaxRecordset) foreach($value as $row) $this->unlink($row);
+    if($value instanceof Recordset) foreach($value as $row) $this->unlink($row);
   }
   
-  public function save() {
-    return true;
-  }
+  
 
   public function before_sync() {
     if($this->target_model != get_class($this->model)){
