@@ -1,28 +1,54 @@
 <?php
 namespace Wax\Db\Query;
 use Wax\Utilities\Log;
+use Wax\Core\Event;
 
 
 class MysqlQuery extends Query {
+  
+  public $adapter     = FALSE;
+  
+  public function __construct($db_settings) {
+    if(!$db_settings && !$db_settings["dbtype"]) return;
+    $adapter = "Wax\\Db\\".ucfirst($db_settings["dbtype"])."Adapter";
+    $this->adapter = new $adapter($db_settings);
+  }
+  
+  
 
 	public function insert($model) {
-	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
-             VALUES (".join(",", array_keys($this->bindings($model->row))).")";
+	  $sql = "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`) 
+             VALUES (".$this->placeholders(array_keys($model->row), TRUE).")";
+    $stmt = $this->adapter->prepare($sql);
+    $stmt = $this->adapter->exec($stmt, $model->row);
+    $model->row[$model->primary_key]=$this->adapter->last_id();
+    return $model;    
 	}
 
   public function update($model) {
-    if(!$pk = $model->_update_pk) $pk = $model->row[$model->primary_key];
-    else {
+    $orig_pk = $model->row[$model->primary_key];
+    if(!$pk = $model->_update_pk) {
+      $pk = $model->row[$model->primary_key];
+      unset($model->row[$model->primary_key]);
+    } else {
       $pk = $model->row[$model->primary_key];
       $model->{$model->primary_key} = $model->_update_pk;
     }
-    return "UPDATE `{$model->table}` SET ".$this->bindings($model->writable_columns()).
+
+    $sql = "UPDATE `{$model->table}` SET ".$this->bindings(array_keys($model->writable_columns()), TRUE).
       " WHERE `{$model->table}`.`{$model->primary_key}` = '{$pk}'";
+    $stmt = $this->adapter->prepare($sql);
+    $stmt = $this->adapter->exec($stmt, $model->row);
+    $model->row[$model->primary_key]=$orig_pk;
+    return $model;  
   }
   
   public function group_update($schema, $values, $pks) {
-    return "UPDATE `{$schema->table}` SET ".$this->bindings($values).
+    $sql = "UPDATE `{$schema->table}` SET ".$this->bindings(array_keys($values)).
       " WHERE `{$schema->table}`.`{$schema->primary_key}` IN(".implode(", ",array_fill(0,count($pks),"?")).")";
+    $stmt = $this->adapter->prepare($sql);
+    $stmt = $this->adapter->exec($stmt, array_merge(array_values($values), array_values($pks)));
+    return $model;  
   }
    
   public function select($model) {
@@ -43,10 +69,13 @@ class MysqlQuery extends Query {
     $sql  .= $this->group($model);
     $sql  .= $this->having($model);
     $sql  .= $this->order($model);
-    $model->_sql_without_limit = $sql;
+    $model->_query->sql_without_limit = $sql;
     $sql  .= $this->limit($model);
-    die($sql);
-    return $sql;
+
+    $stmt = $this->adapter->prepare($sql);
+    $stmt = $this->adapter->exec($stmt, $model->row);
+    $this->total_without_limits = $this->adapter->row_count_query($model);
+    return $stmt->fetchAll(\PDO::FETCH_ASSOC);    
   }
   
   public function delete($model) {
@@ -64,6 +93,14 @@ class MysqlQuery extends Query {
     foreach($keys as $key) {
       if($by_value) $expressions[] ="`{$key}`=:{$key}";
       else $expressions[] = "`{$key}`=?";
+    }
+    return join( ', ', $expressions );
+  }
+  
+  public function placeholders($keys, $by_value=FALSE) {
+    foreach($keys as $key) {
+      if($by_value) $expressions[] =":{$key}";
+      else $expressions[] = "?";
     }
     return join( ', ', $expressions );
   }
