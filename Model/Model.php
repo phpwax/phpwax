@@ -155,7 +155,7 @@ class Model{
  	 *
  	 * @param string $text
  	 * @param array $columns
- 	 * @return WaxRecordset Object
+ 	 * @return Recordset Object
  	 */
 
  	public function search($text, $columns = array(), $relevance=0) {
@@ -327,7 +327,7 @@ class Model{
   		return $res;
   }
 
-  public function update( $id_list = array() ) {
+  public function update() {
     $this->before_update();
     $res = self::$db->update($this);
     $res->after_update();
@@ -356,7 +356,7 @@ class Model{
   
 
  	public function all() {
- 	  return new WaxRecordset($this, self::$db->select($this));
+ 	  return new Recordset($this, self::$db->select($this));
  	}
 
  	public function rows() {
@@ -387,7 +387,7 @@ class Model{
   public function find_by_sql($sql) {
     $this->sql($sql);
     $res = self::$db->select($this);
-    return new WaxRecordset($this, $res);
+    return new Recordset($this, $res);
   }
   
 
@@ -467,7 +467,7 @@ class Model{
     return $mod->all();
   }
   
-  static public function create($attributes = array()) {
+  static public function create($attributes = []) {
  		$class = get_called_class();
     $new = new $class;
  		return $new->update_attributes($attributes);
