@@ -8,17 +8,23 @@ namespace Wax\Model;
  * @package PhpWax
  **/
 
-class Recordset implements Iterator, ArrayAccess, Countable {
+class Recordset implements \Iterator, \ArrayAccess, \Countable {
 
   public $model = false;
+  public $rowset;
+  
   protected $obj = false;
   protected $key = 0;
   protected $constraints = array();
-  public $rowset;
   
-  public function __construct(WaxModel $model, $rowset) {
+  
+  public function __construct($model, $rowset) {
     $this->rowset = $rowset;
     $this->model = $model;
+  }
+  
+  public function first() {
+    return $this[0];
   }
   
   public function next() {
