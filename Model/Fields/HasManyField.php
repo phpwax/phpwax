@@ -67,11 +67,9 @@ class HasManyField extends Field {
   
   public function after_save($parent) {
     $rows = [];
-    foreach($this->value as $model) {
-      $rows[]=$model->get()->pk();
-    }
-    $class = "\\".$this->target_model;
-    $class::$db->_group_update(new $class, $rows, [$this->join_field=>$parent->pk()]);
+    foreach($this->value as $model) $rows[]=$model->get()->pk();
+    $parent::$_backend->group_update(new $this->target_model, [$this->join_field=>$parent->pk()], $rows);
+    $parent->row[$this->field] = $this->value;
   }
   
   
