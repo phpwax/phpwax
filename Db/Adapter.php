@@ -89,11 +89,13 @@ abstract class Adapter {
     $stmt = $this->prepare($this->update_sql($model));
     Event::run("wax.db_query",$stmt);
     $vals = array_intersect_key($model->row, array_fill_keys($model->schema("keys"),1 ));
-    print_r($vals);exit;
     $this->exec($stmt, $vals);
     Event::run("wax.db_query_end",$stmt);
     return $model;
   }
+  
+  
+  
   
   public function delete($model) {
     $sql = $this->delete_sql($model);
@@ -124,7 +126,6 @@ abstract class Adapter {
       $sql.=$filters["sql"];
       if($params) $params = array_merge($params, $filters["params"]);
       else $params = $filters["params"];
-      
 			
       $sql.= $this->group($model);
       $sql.= $this->having($model);
@@ -222,6 +223,25 @@ abstract class Adapter {
   }
   
   
+  /************** Hardcore power methods, allows joins to perform faster operations *********/
+  
+  /*** Sets values on an array of keys ***/
+  public function _group_update($model, $ids, $values) {
+    foreach($values as $k=>$val) $keys.="`{$k}`=?";
+    $sql = "UPDATE `{$model->table}` SET ".$keys.
+            " WHERE `{$model->table}`.`{$model->primary_key}` IN(".join(",",array_fill(0,count($ids),"?")).");";
+  
+    $stmt = $this->prepare($sql);
+    $vals = array_merge(array_values($values), $ids);
+    Event::run("wax.db_query",$stmt);
+    $this->exec($stmt, $vals);
+    Event::run("wax.db_query_end",$stmt);
+    return $model;    
+  }
+  
+  
+  
+  
   /**
    * Query Specific methods, construct driver specific language
    */
@@ -262,7 +282,7 @@ abstract class Adapter {
     if($model->_is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
 		  $this->exec($extrastmt);
-		  $found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
+		  $found = $extrastmt->fetchAll(\PDO::FETCH_ASSOC);
 		  $this->total_without_limits = $found[0]['FOUND_ROWS()'];
 	  }
   }
