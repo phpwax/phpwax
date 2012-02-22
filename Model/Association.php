@@ -17,7 +17,7 @@ class Association extends Recordset {
   public $owner_field;
   public $current_object; //used as a cache of the current object for lazy loading checking on valid call
 
-  public function __construct(WaxModel $model, WaxModel $target_model, $rowset, $owner_field=false) {
+  public function __construct(Model $model, Model $target_model, $rowset, $owner_field=false) {
     $this->rowset = $rowset;
     $this->model = $model;
     $this->target_model = $target_model;
