@@ -65,9 +65,11 @@ class Model{
  		  $method = "scope_".$params;
 	    if(method_exists($this, $method)) {$this->$method;}
 	    else {
+        $this->notify_observers("before_read");
 	      $res = $this->filter(array($this->primary_key => $params))->first();
    		  $this->row=$res->row;
    		  $this->clear();
+        $this->notify_observers("after_read");
 	    }
 	  }
  	}
