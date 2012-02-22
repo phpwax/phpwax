@@ -1,6 +1,7 @@
 <?php
 namespace Wax\Model\Fields;
 use Wax\Model\Field;
+use Wax\Model\Association;
 use Wax\Template\Helper\Inflections;
 use Wax\Model\Model;
 use Wax\Model\Recordset;
