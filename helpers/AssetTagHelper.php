@@ -106,7 +106,7 @@ class AssetTagHelper extends WXHelpers {
         $name = $file->getPathName();
         if(is_file($name))$ret .= $this->javascript_include_tag("/".str_replace($base, "", $name), $options);
       }
-    } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined", $options);
+    } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined.js", $options);
     return $ret;
   }
   
@@ -121,7 +121,7 @@ class AssetTagHelper extends WXHelpers {
         $name = $file->getPathName();
         if(is_file($name)) $ret .= $this->stylesheet_link_tag("/".str_replace($base, "", $name), $options);
       }
-    } else $ret = $this->stylesheet_link_tag("build/{$name}_combined", $options);
+    } else $ret = $this->stylesheet_link_tag("build/{$name}_combined.css", $options);
     return $ret;
   }
 	public function git_revision(){
