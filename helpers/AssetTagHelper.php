@@ -99,10 +99,10 @@ class AssetTagHelper extends WXHelpers {
     if(ENV=="development" || defined("NO_JS_BUNDLE")) {
       if($plugin){
         $base = PLUGIN_DIR.$plugin."/resources/public/";
-        $d = $base."stylesheets/";
+        $d = $base."javascripts/";
       }else{
         $base = PUBLIC_DIR;
-        $d = $base."stylesheets/".$name;       
+        $d = $base."javascripts/".$name;       
       } 
       if(!is_readable($d)) return false;
       foreach($this->iterate_dir($d, "js") as $file){
