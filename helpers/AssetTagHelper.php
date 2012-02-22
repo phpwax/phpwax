@@ -97,14 +97,17 @@ class AssetTagHelper extends WXHelpers {
   
   public function js_bundle($name, $options = array(), $plugin="") {
     if(ENV=="development" || defined("NO_JS_BUNDLE")) {
-      if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
-      else $base = PUBLIC_DIR;
-      $d = $base."javascripts/".$name;
+      if($plugin){
+        $base = PLUGIN_DIR.$plugin."/resources/public/";
+        $d = $base."stylesheets/";
+      }else{
+        $base = PUBLIC_DIR;
+        $d = $base."stylesheets/".$name;       
+      } 
       if(!is_readable($d)) return false;
-      $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.js$|^[^\.]*$#i'), true);
-      foreach($dir as $file){
+      foreach($this->iterate_dir($d, "js") as $file){
         $name = $file->getPathName();
-        if(is_file($name))$ret .= $this->javascript_include_tag("/".str_replace($base, "", $name), $options);
+        $ret .= $this->javascript_include_tag("/".str_replace($base, "", $name), $options);
       }
     } else $ret = $this->javascript_include_tag("/javascripts/build/{$name}_combined.js", $options);
     return $ret;
@@ -112,18 +115,28 @@ class AssetTagHelper extends WXHelpers {
   
   public function css_bundle($name, $options=array(), $plugin="") {
     if(ENV=="development") {     
-      if($plugin) $base = PLUGIN_DIR.$plugin."/resources/public/";
-      else $base = PUBLIC_DIR;
-      $d = $base."stylesheets/".$name;       
-      if(!is_readable($d)) return false;
-      $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#(?<!/)\.css$|^[^\.]*$#i'), true);
-      foreach($dir as $file){
+      if($plugin){
+        $base = PLUGIN_DIR.$plugin."/resources/public/";
+        $d = $base."stylesheets/";
+      }else{
+        $base = PUBLIC_DIR;
+        $d = $base."stylesheets/".$name;       
+      }      
+      if(!is_readable($d)) return false;       
+      foreach($this->iterate_dir($d, "css") as $file){
         $name = $file->getPathName();
-        if(is_file($name)) $ret .= $this->stylesheet_link_tag("/".str_replace($base, "", $name), $options);
-      }
+        $ret .= $this->stylesheet_link_tag("/".str_replace($base, "", $name), $options);
+      }      
     } else $ret = $this->stylesheet_link_tag("build/{$name}_combined.css", $options);
     return $ret;
   }
+  public function iterate_dir($d, $ext){
+    $files = array();
+    $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#.*#i'), true);
+    foreach($dir as $file) if(!$file->isDir() && $file->getExtension() == $ext) $files[] = $file;
+    return $files;
+  }
+
 	public function git_revision(){
 	  $rev = "";
 	  if(ENV =="development") return $rev;
