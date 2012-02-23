@@ -15,7 +15,6 @@ class Recordset implements \Iterator, \ArrayAccess, \Countable {
   
   protected $obj = false;
   protected $key = 0;
-  protected $constraints = array();
   
   
   public function __construct($model, $rowset) {
@@ -54,18 +53,12 @@ class Recordset implements \Iterator, \ArrayAccess, \Countable {
   }
   
   public function offsetGet($offset) {
-    if(is_numeric($this->rowset[$offset])){
-      $model = get_class($this->model);
-      $obj = new $model($this->rowset[$offset]);
-      $this->rowset[$offset] = $obj->row;
+    if($this->rowset[$offset] instanceof ObjectProxy) return $this->rowset[$offset]->get();
+    if($this->model && ($obj = clone $this->model)){
+      $obj->row = $this->rowset[$offset];
       return $obj;
-    }else{
-      if(!$this->rowset[$offset]) return false;
-      if($this->model && ($obj = clone $this->model)){
-        $obj->row = $this->rowset[$offset];
-        return $obj;
-      }
     }
+    return $this->rowset[$offset];
   }
   
   public function offsetSet($offset, $value) {
