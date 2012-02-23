@@ -219,7 +219,7 @@ abstract class Adapter {
     // Then fetch the existing columns from the database
     $db_cols = $this->view_columns($model);
     // Map definitions to database - create or alter if required	
-    foreach($model->schema("columns") as $model_col=>$model_col_setup) {
+    foreach($model->fieldset("columns") as $model_col=>$model_col_setup) {
       $model_field = $model->get_col($model_col);
       if($info = $model_field->before_sync()) $output .= $info;
       $col_exists = false;
