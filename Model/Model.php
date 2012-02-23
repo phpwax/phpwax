@@ -1,7 +1,7 @@
 <?php
 namespace Wax\Model;
 use Wax\Core\Event;
-use Wax\Core\ObjectManager;
+use Wax\Core\ObjectProxy;
 use Wax\Model\Fields;
 use Wax\Template\Helper\Inflections;
 use Wax\Db\DbException;
@@ -25,16 +25,18 @@ class Model{
   public $_primary_type       = "AutoField";
   public $_primary_options    = [];
   public $_identifier         = FALSE;
-  public $_persistent         = TRUE;
+  public $_persistent         = TRUE;  // Set to false to disallow saving to the backend.
+  public $_readable           = TRUE;  // Set to false to disallow reading from the backend.
   public $_is_paginated       = FALSE;
+  public $_tainted            = FALSE; // set to true when a write operation has been performed.
+  
 
   public $_query_params = [
     "filters"            => [],
     "offset"             => "0"
   ];
   public $_query              = FALSE;
-  public $_schema             = FALSE;
-  public $_schema_class       = "Wax\\Db\\Schema";
+  public $_fieldset           = FALSE;
   public $_observers          = [];
   static public $_backends    = []; 
   static public $_backend     = FALSE;
@@ -47,14 +49,12 @@ class Model{
    */
  	function __construct($params=null) {
  	  $this->load_backend(self::$db_settings);
- 		
     $class_name =  get_class($this);
  		if( $class_name != 'Model' && !$this->table ) {
  			$this->table = Inflections::underscore( $class_name );
-      $this->_query->table = $this->table;
  		}
     $this->_query = new \ArrayObject($this->_query_params);
-    $this->load_schema();
+    $this->load_fieldset();
  		$this->define($this->primary_key, $this->_primary_type, $this->_primary_options);
  		$this->setup();
  		$this->set_identifier();
@@ -85,44 +85,41 @@ class Model{
     self::$_backend = self::$_backends[$label];
   }
   
-  public function load_schema() {
-    if(!$this->_schema) {
-      $schema = new $this->_schema_class();
-      $schema->set_table($this->table);
-      $this->_schema = ObjectManager::set($schema);
+  public function observe($proxy) {
+    if(!in_array($proxy, $this->_observers)) $this->_observers[] = $proxy;
+  }
+  
+  public function notify_observers() {
+    foreach($this->_observers as $proxy) {
+      call_user_func_array([$proxy,"notify"],func_get_args());
+    }
+  }
+  
+  
+  public function load_fieldset() {
+    if(!$this->_fieldset) {
+      $this->_fieldset = new ObjectProxy(new Fieldset($this));
     }
   }
 
  	public function define($column, $type, $options=array()) {
-    $this->schema("define", $column, $type, $options);
+    $this->fieldset("add", $column, $type, $options);
  	}
   
-  public function observe($event, $proxy) {
-    if(!in_array($proxy, $this->_observers[$event])) $this->_observers[$event][] = $proxy;
-  }
-  
-  public function notify_observers($event) {
-    foreach($this->_observers[$event] as $proxy) {
-      $proxy->notify($event, $this);
-    }
-  }
-  
-  
-  
-  public function schema() {
+  public function fieldset() {
     if(count(func_get_args())) {
-      $schema = ObjectManager::get($this->_schema);
+      $set = $this->_fieldset->get();
       $args = func_get_args();
-      return call_user_func_array([$schema, array_shift($args)], $args);
+      return call_user_func_array([$set, array_shift($args)], $args);
     }
   }
   
   public function columns() {
-    return $this->schema("columns");
+    return $this->fieldset("columns");
   }
   
   public function writable_columns() {
-    return array_intersect_key($this->row, array_fill_keys($this->schema("keys"),1 ));
+    return array_intersect_key($this->row, array_fill_keys($this->fieldset("keys"),1 ));
   }
 
 
@@ -199,7 +196,7 @@ class Model{
  	}
 
   public function get_col($name) {
-    return $this->schema("get_col",$name, $this);
+    return $this->fieldset("get_col",$name, $this);
   }
 
 
@@ -219,8 +216,8 @@ class Model{
   public function set_identifier() {
     // Grab the first text field to display
     if($this->_identifier) return true;
-    foreach($this->schema("columns") as $name=>$col) {
-      if($col[0]=="CharField") {
+    foreach($this->fieldset("columns") as $name=>$col) {
+      if($col->data_type=="string") {
         $label_field = $name;
       }
       if($label_field) {
@@ -450,13 +447,6 @@ class Model{
 
 
   /********** Magic Methods **************/
-
- 	public function __call( $func, $args ) {
-    if(array_key_exists($func, $this->schema(columns))) {
-      $field = $this->get_col($func);
-      return $field->get($args[0]);
-    }
-  }
   
   public static function __callStatic($func, $args) {
     $finder = explode("by", $func);
@@ -482,9 +472,11 @@ class Model{
     *  @return mixed           property value
     */
   public function __get($name) {
-    if(in_array($name, $this->schema("keys"))|| in_array($name, $this->schema("associations"))) {
-      $field = $this->get_col($name);
-      return $field->get();
+    if(in_array($name, $this->fieldset("keys"))|| in_array($name, $this->fieldset("associations"))) {
+      $this->notify_observers("before_get", $this, $name);
+      $val = $this->row[$name];
+      $this->notify_observers("after_get", $this, $name);
+      return $val;
     }
     elseif(method_exists($this, $name)) return $this->{$name}();
     elseif(is_array($this->row) && array_key_exists($name, $this->row)) return $this->row[$name];
@@ -497,9 +489,10 @@ class Model{
    *  @param  mixed   value   property value
    */
   public function __set( $name, $value ) {
-    if(in_array($name, $this->schema("keys"))|| in_array($name, $this->schema("associations"))) {
-      $field = $this->get_col($name);
-      $field->set($value);
+    if(in_array($name, $this->fieldset("keys"))|| in_array($name, $this->fieldset("associations"))) {
+      $this->notify_observers("before_set", $this, $name);
+      $this->row[$name]=$value;
+      $this->notify_observers("after_set", $this, $name);
     } else throw new SchemaException("You tried to write to a property that is not defined.","Model Assignment Error", $this, $name);
   }
 
