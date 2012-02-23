@@ -5,6 +5,7 @@ use Wax\Model\Association;
 use Wax\Template\Helper\Inflections;
 use Wax\Model\Model;
 use Wax\Model\Recordset;
+use Wax\Model\ModelPointer;
 use Wax\Core\ObjectProxy;
 
 
@@ -25,6 +26,7 @@ class HasManyField extends Field {
   public $data_type       = "integer";
   public $value           = FALSE;
   public $additive        = TRUE;  // Default behaviour, non destructive writes.
+  public $tainted         = FALSE; // set to true when a write operation has been performed.
   
   public function setup() {
     $this->col_name = false;
@@ -32,59 +34,46 @@ class HasManyField extends Field {
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
     if(!$this->join_field) $this->join_field = Inflections::underscore($class_name)."_".$this->model->primary_key;
   }
-
-  public function validate() {
-    return true;
+  
+  public function before_get($object, $field) {
+    if($this->value && !$this->tainted) {
+      $object->row[$field] = new Association($this->model, $target, $this->value, $this->field);
+      return;
+    }    
+    $object->row[$field] = $this->lazy_load($target);
   }
   
-  public function get($filters = false) {
-    $target = new $this->target_model;
-    if($filters) $target->filter($filters);
-    if($this->join_order) $target->order($this->join_order);
-    if($this->eager_loading) return $this->eager_load($target);
-    return $this->lazy_load($target);
-  }
-  
-  public function set($value) {
+  public function after_set($object, $field) {
+    $value = $object->row[$field];
     if($value instanceof $this->target_model){  
       $this->value[] = new ObjectProxy($value);
       $proxy = new ObjectProxy($this);
-      $this->model->observe("before_save", $proxy);
-      $this->model->observe("after_save", $proxy);
-      $this->model->row[$this->field] = $this->value;
+      $object->observe("before_save", $proxy);
+      $object->observe("after_save", $proxy);
+      $this->tainted = TRUE;
+      $object->row[$field] = $this->value;
     }
-    if(is_array($value) || $value instanceof Traversable) foreach($value as $item) $this->set($item);
-  }
-  
-  public function notify($event, $object) {
-    if($event == "before_save") $this->before_save($object);
-    if($event == "after_save") $this->after_save($object);
-    
+    if(is_array($value) || $value instanceof Traversable) foreach($value as $item) $this->after_set($item, $field);
   }
   
   public function before_save($object) {
     unset($object->row[$this->field]);
   }
   
-  public function after_save($parent) {
+  public function after_save($object) {
     $rows = [];
     foreach($this->value as $model) $rows[]=$model->get()->pk();
-    $parent::$_backend->group_update(new $this->target_model, [$this->join_field=>$parent->pk()], $rows);
-    $parent->row[$this->field] = $this->value;
+    $object::$_backend->group_update(new $this->target_model, [$this->join_field=>$object->pk()], $rows);
+    $object->row[$this->field] = $this->value;
   }
-  
-  
-  
-  public function eager_load($target) {
-    $vals = $target->filter(array($this->join_field=>$this->model->primval))->all();
-		return new Association($this->model, $target, $vals->rowset, $this->field);
-  }
+
   
   public function lazy_load($target) {
     $target->filter(array($this->join_field=>$this->model->primval));
-    foreach($target->rows() as $row) {
-      $ids[]=$row[$target->primary_key];
+    foreach($target->all() as $row) {
+      $ids[]=new ObjectProxy($row);
     }
+    $this->tainted = FALSE;
     return new Association($this->model, $target, $ids, $this->field);
   }
   

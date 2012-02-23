@@ -13,47 +13,36 @@ use Wax\Core\ObjectProxy;
  **/
 class ForeignKey extends Field {
   
-  public $maxlength       = "11";
   public $target_model    = FALSE;
   public $widget          = "SelectInput";
   public $choices         = [];
   public $is_association  = TRUE;
-  public $data_type       = "integer";
+  public $data_type       = "string";
   public $value           = FALSE;
   
   public function setup() {
     if(!$this->target_model) $this->target_model = Inflections::camelize($this->field, true);
+    
     // Overrides naming of field to model_id if col_name is not explicitly set
-    if($this->col_name == $this->field){
-      $link = new $this->target_model;
-      $this->col_name = Inflections::underscore($this->target_model)."_".$link->primary_key;
-    }
-  }
-
-  public function validate() {
-    return true;
+    if(!$this->col_name){
+      $this->col_name = Inflections::underscore($this->target_model)."_id";
+    }    
   }
   
-  public function get() {
-    if($this->value) return $this->value->get();
+  public function before_get($object, $name) {
+    $object->row[$name] = $this->value->get();
   }
   
-  public function set($value) {
-    if(is_object($value)) {
-      $this->value = new ObjectProxy($value);
-      $this->model->observe("before_save", new ObjectProxy($this));
-      $this->model->row[$this->field] = $this->value;
+  public function after_set($object, $name) {
+    if(is_object($object->row[$name])) {
+      $this->value = new ObjectProxy($object->row[$name]);
+      $object->observe("before_save", new ObjectProxy($this));
+      $object->row[$name] = $this->value;
     } 
   }
+ 
   
-  public function notify($event, $object) {
-    if($event == "before_save") $this->before_save($object);
-  }
-  
-  
-  
-  
-  public function before_save() {
+  public function before_save($object) {
     $object->row[$this->col_name] = $object->row[$this->field]->get()->pk();
     if($this->field !== $this->col_name) unset($object->row[$this->field]);
     $object->schema("set_key", $this->field);
