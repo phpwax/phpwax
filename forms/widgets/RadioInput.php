@@ -13,7 +13,7 @@ class RadioInput extends SelectInput {
   
   public $template = '%s';
   public $label_template = '<label for="%s">%s</label>';
-  public $sub_template = '<input type="radio" name="%s" value="%s" %s id="%s"><label for="%s" class="radio_label">%s</label>';
+  public $sub_template = '<span class="radio"><input type="radio" name="%s" value="%s" %s id="%s"><label for="%s" class="radio_label">%s</label></span>';
 
   public function tag_content() {
     $output = "";
