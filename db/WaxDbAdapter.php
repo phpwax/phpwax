@@ -249,11 +249,13 @@ abstract class WaxDbAdapter {
 
   public function select_sql($model) {
     $sql .= "SELECT ";
+    if($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS ";
     if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
     elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
-		//mysql extra - if limit then record the number of rows found without limits
-		elseif($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS *";
     else $sql.= "*";
+		//mysql extra - if limit then record the number of rows found without limits
+
+
     $sql.= " FROM `{$model->table}`";
     return $sql;
   }
