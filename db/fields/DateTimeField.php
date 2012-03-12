@@ -26,11 +26,11 @@ class DateTimeField extends WaxModelField {
   }
 
   public function output() {
-    return date($this->output_format, strtotime($this->get()));
+    return $this->strtotime_reformat($this->get(), $this->output_format);
   }
 
   public function validate() {
-    if($value = $this->get()) $this->model->row[$this->field]= date($this->save_format, strtotime($value));
+    $this->model->row[$this->field] = $this->strtotime_reformat($this->get(), $this->save_format);
   }
 
   public function uk_date_switch() {
@@ -38,6 +38,10 @@ class DateTimeField extends WaxModelField {
   }
 
   public function get(){
-    if($val = parent::get()) return date($this->input_format, strtotime($val));
+    return $this->strtotime_reformat(parent::get(), $this->input_format);
+  }
+
+  private function strtotime_reformat($val, $format){
+    if(($ret = strtotime($val)) !== false) return date($format, $ret);
   }
 }
