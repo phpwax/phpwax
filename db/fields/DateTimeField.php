@@ -30,7 +30,10 @@ class DateTimeField extends WaxModelField {
   }
 
   public function validate() {
-    if($value = $this->get()) $this->model->row[$this->field]= date($this->save_format, strtotime($value));
+    if($value = $this->get()){
+      if(($unix = strtotime($value)) === false) unset($this->model->row[$this->field]); // unparsable strings should go in as null, instead of epoch
+      else $this->model->row[$this->field] = date($this->save_format, $unix);
+    }
   }
 
   public function uk_date_switch() {
