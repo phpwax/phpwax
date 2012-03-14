@@ -4,7 +4,7 @@
  *
  * @package PHP-Wax
  * @author Sheldon Els & Charles Marshall
- * 
+ *
  **/
 class WaxTreeModel extends WaxModel {
   static public $all_rows;
@@ -15,7 +15,7 @@ class WaxTreeModel extends WaxModel {
   public $root_path = false;
   public $level = false;
   public $tree_array = false;
-  
+
   function __construct($params=null) {
     parent::__construct($params);
     if(!$this->parent_column) $this->parent_column = "parent";
@@ -25,14 +25,21 @@ class WaxTreeModel extends WaxModel {
     $this->define($this->children_column, "HasManyField", array("target_model" => get_class($this), "join_field" => $this->parent_join_field, "eager_loading" => true));
     $this->tree_setup();
   }
-  
+
+  public function has_children($scope=false){
+    $class = get_class($this);
+    $model = new $class($scope);
+    if($model->filter($this->parent_join_field, $this->primval)->first()) return true;
+    return false;
+  }
+
   /**
    * function to get the tree structure for in-order traversal via a foreach($model->tree() as $node) type use
    * if the current model is empty it will return the entire tree including all root nodes
    * if the current model is a particular node (has an id) it will only return the tree underneath that node
    * if filters are set on the model, it will return only rows which match those filters (BE WARE, THIS CAN HAVE SOME UNUSUAL RESULTS)
    *
-   * @return 
+   * @return
    */
 	public function tree(){
 		$model_class = get_class($this);
@@ -40,7 +47,7 @@ class WaxTreeModel extends WaxModel {
 		$this->cached_tree_set(serialize($new_tree));
 		return new RecursiveIteratorIterator(new WaxTreeRecordset($this, $new_tree), RecursiveIteratorIterator::SELF_FIRST );
 	}
-  
+
 	public function build_tree() {
 		$lookup = array();
 		$cutoff = $this->primval;
@@ -61,11 +68,11 @@ class WaxTreeModel extends WaxModel {
 		if($cutoff) $tree = $cutoff;
 		return array_values($tree);
 	}
-	
+
 	public function recursive_tree_sort(&$tree) {
 	  foreach($tree as &$it){
-	    if(count($it["children"])){ 
-		    ksort($it["children"]); 
+	    if(count($it["children"])){
+		    ksort($it["children"]);
 		    $it["children"]=array_values($it["children"]);
 		    $this->recursive_tree_sort($it["children"]);
 		  }
@@ -89,18 +96,18 @@ class WaxTreeModel extends WaxModel {
     $cache = $this->cache_object();
 		$cache->set($value);
 	}
-	
+
 	//clear the cache of the tree
-	public function delete() {	
+	public function delete() {
 		$cache = $this->cache_object();
 		$cache->expire();
 		return parent::delete();
 	}
-	
+
 	public function save(){
 		$cache = $this->cache_object();
 		$cache->expire();
-		return parent::save();		
+		return parent::save();
 	}
 
   /**
@@ -110,7 +117,7 @@ class WaxTreeModel extends WaxModel {
    */
   public function roots() {
   	if($root_return = WaxModel::get_cache($this->table, "parent", "rootnodes")) return $root_return;
-  	  
+
     /** Methods of finding a root node **/
     //First method: parent reference same as primary key
     $filter[] = "{$this->parent_column}_{$this->primary_key} = {$this->primary_key}";
@@ -120,7 +127,7 @@ class WaxTreeModel extends WaxModel {
     $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL OR {$this->parent_column}_{$this->primary_key} = 0";
 
     $root_return = $this->filter("(".join(" OR ", $filter).")")->order('id')->all();
-    
+
     if($root_return) return $root_return;
     else return false;
   }
@@ -148,21 +155,21 @@ class WaxTreeModel extends WaxModel {
 	  }
 		return $this->root_path = new WaxRecordset($this, $path_to_root);
   }
-  
+
   public function path_from_root(){
     return new WaxRecordset(clone $this, array_reverse((array)$this->path_to_root()->rowset));
   }
   /**
    * returns a numeric representation of this objects depth in the tree
    * @return integer $level
-   */  
+   */
   public function get_level() {
     if($this->level) return $this->level;
     if(!$this->root_path) $this->path_to_root();
     $this->level = count($this->root_path) - 1;
     return $this->level;
   }
-  
+
   public function clear(){
     parent::clear();
     $this->root_path = false;
@@ -197,35 +204,35 @@ class WaxTreeModel extends WaxModel {
     return false;
   }
 
-  
+
   public function root() {
     if($this->is_root()) return $this;
  	  $parent = $this->{$this->parent_column};
  	  $return = $parent;
     while($parent && $parent->primval() > 0) {
       $return = $parent;
-      $parent = $parent->{$this->parent_column}; 
+      $parent = $parent->{$this->parent_column};
     }
     return $return;
   }
-  
+
   public function siblings() {
     $class=get_class($this);
     $tree = new $class;
     return $tree->filter(array($this->parent_join_field=>$this->{$this->parent_join_field}, $this->primary_key." NOT"=>array($this->primval())))->all();
   }
-  
+
   public function before_save(){
     if($this->primval) foreach($this->tree() as $node) if($this->{$this->parent_join_field} == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
   }
-  
+
   public function syncdb(){
     if(get_class($this) == "WaxTreeModel") return;
     parent::syncdb();
   }
-  
+
   public function tree_setup(){}
-  
-  
+
+
 }
 ?>
