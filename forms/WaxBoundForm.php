@@ -29,13 +29,19 @@ class WaxBoundForm implements iterator {
   public function save() {
     if(!$this->is_posted()) return false;
     $associations = array();
-    foreach($this->elements as $name=>$el) {
-      if(isset($this->post_data[$name])) {
- 	      if(!$el->is_association) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
- 	      else $associations[$name] = $el;
-      }
+    foreach($this->elements as $name=>$el){
+      if(!$el->is_association) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+      else $associations[$name] = $el;
     }
-    foreach($associations as $name=>$el) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+    foreach($associations as $name=>$el){
+      $alt_name = false;
+      if(($this->bound_to_model->columns[$name][0] == "ForeignKey") && ($t_class = $this->bound_to_model->columns[$name][1]['target_model'])){
+        $alt = new $t_class;
+        $alt_name = $alt->table.'_'.$alt->primary_key;
+        if($this->post_data[$alt_name]) $this->bound_to_model->{$alt_name} = $el->handle_post($this->post_data[$alt_name]);
+      }
+      if(!$alt_name) $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+    }
     $res = $this->bound_to_model->save();
     $this->validate();
     if($this->is_valid()) return $res;
