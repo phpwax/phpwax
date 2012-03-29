@@ -37,7 +37,9 @@ class WaxBoundForm implements iterator {
           $col = $this->bound_to_model->get_col($name);
           $alt_name = $col->col_name;
           if($this->post_data[$alt_name]) $this->bound_to_model->{$alt_name} = $el->handle_post($this->post_data[$alt_name]);
-        } elseif(isset($this->post_data[$name])) $associations[$name] = $el;
+          else $alt_name = false;
+        }
+        if(!$alt_name && isset($this->post_data[$name])) $associations[$name] = $el;
       }
     }
     foreach($associations as $name=>$el){
