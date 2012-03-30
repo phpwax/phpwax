@@ -42,6 +42,6 @@ class DateTimeField extends WaxModelField {
   }
 
   private function strtotime_reformat($val, $format){
-    if(($ret = strtotime($val)) !== false) return date($format, $ret);
+    if(($ret = strtotime(str_replace("/", "-", $val))) !== false) return date($format, $ret);
   }
 }
