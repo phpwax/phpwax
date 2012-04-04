@@ -52,9 +52,8 @@ class WaxBoundForm implements iterator {
   }
 
   public function validate() {
-    foreach($this->elements as $el) {
-      if(!$el->is_valid()) $this->errors[] = $el->errors;
-    }
+    foreach($this->elements as $el) if(!$el->is_valid()) $this->errors[$el->bound_data->col_name] = $el->errors;
+    foreach((array)$this->bound_to_model->errors as $col=>$err) if($err) $this->errors[$col] = array_unique(array_merge($this->errors[$col], $err));
 
   }
 
