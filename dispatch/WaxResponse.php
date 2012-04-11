@@ -74,6 +74,7 @@ class WaxResponse {
   }
   
   public function execute() {
+    WaxEvent::run("wax.response.execute", $this);
     header($this->status_map[$this->status]);
     header("X-Info: Powered By PHP-Wax");
     foreach($this->headers as $header=>$val)
