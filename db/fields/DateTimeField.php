@@ -9,6 +9,7 @@ class DateTimeField extends WaxModelField {
 
   public $null = true;
   public $default = false;
+  public $database_default = "NULL";
   public $maxlength = false;
   public $widget = "DateInput";
   public $output_format = "Y-m-d H:i:s";

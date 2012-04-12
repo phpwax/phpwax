@@ -430,7 +430,7 @@ abstract class WaxDbAdapter {
     elseif($field->maxlength) $sql.= "({$field->maxlength}) ";
     if($field->null) $sql.=" NULL";
     else $sql.=" NOT NULL";
-    if($field->default) $sql.= " DEFAULT '{$field->default}'";
+    if($field->default || $field->database_default) $sql.= " DEFAULT ".($field->database_default !== null?$field->database_default:"'$field->default'");
     if($field->auto) $sql.= " AUTO_INCREMENT";
     if($field->primary) $sql.=" PRIMARY KEY";
     return $sql;
