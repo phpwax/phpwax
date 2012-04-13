@@ -138,21 +138,11 @@ class WaxTreeModel extends WaxModel {
    */
   public function path_to_root(){
     if($this->root_path) return $this->root_path;
-    if(!self::$all_rows){
-      $model = clone $this;
-      self::$all_rows = $model->clear()->rows();
-    }
-		foreach( self::$all_rows as $item ){
-			$lookup[$item['id']] = $item;
-		}
-		$path_to_root = array();
-		$current_id = $this->primval();
-		if(array_key_exists($current_id, $lookup)){
-		  while($lookup[$current_id]){
-		    $path_to_root[] = $lookup[$current_id];
-		    $current_id = $lookup[$current_id][$this->parent_column."_".$this->primary_key];
-		  }
-	  }
+    //loop up the parent calls and add to the array
+    $parent_field = $this->parent_column;
+    $path_to_root = array($this->primval);
+    $parent_model = $this;
+    while($parent_model = $parent_model->$parent_field) $path_to_root[] = $parent_model->row;
 		return $this->root_path = new WaxRecordset($this, $path_to_root);
   }
 
