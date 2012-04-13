@@ -57,7 +57,11 @@ class WaxResponse {
     $cookie[] = "Path=$path";
     $cookie[] = "Domain=".($domain?$domain:$_SERVER['HTTP_HOST']);
     
-    if($expires) $cookie[] = "Expires=".date("D, d-M-Y H:i:s T", is_numeric($expires)?$expires:strtotime($expires));
+    if($expires){
+      if(is_numeric($expires)) $expires = "@$expires";
+      $date = new DateTime($expires, new DateTimeZone('GMT'));
+      $cookie[] = "Expires=".$date->format('D, d-M-Y H:i:s')." GMT";
+    }
     if($secure) $cookie[] = "Secure";
     
     if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
@@ -70,6 +74,7 @@ class WaxResponse {
   }
   
   public function execute() {
+    WaxEvent::run("wax.response.execute", $this);
     header($this->status_map[$this->status]);
     header("X-Info: Powered By PHP-Wax");
     foreach($this->headers as $header=>$val)
