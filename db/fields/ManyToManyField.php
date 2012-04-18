@@ -111,9 +111,9 @@ class ManyToManyField extends WaxModelField {
       throw new WXException("ManyToMany set before Model Save", "Cannot set ".get_class($this->model)."->".$this->field." before saving ".get_class($this->model));
       return;
     }
-    if(!is_array($value) && ($class = $this->target_model) && ($mo = new $class($value)) && $mo->primval){
-      $value = $mo;
-    }
+    // if(!is_array($value) && ($class = $this->target_model) && ($mo = new $class($value)) && $mo->primval){
+    //   $value = $mo;
+    // }
 
     if($value instanceof WaxModel) {
       if(!($ret = $this->join_model->filter(array($this->join_field($value) => $value->primval) )->first())) {
