@@ -90,10 +90,10 @@ class ManyToManyField extends WaxModelField {
   private function lazy_load($target_model) {
     $left_field = $this->model->table."_".$this->model->primary_key;
     $right_field = $target_model->table."_".$target_model->primary_key;
-    $this->join_model->select_columns=$right_field;
+    if($this->join_model) $this->join_model->select_columns=$right_field;
     $ids = array();
     if($cache = WaxModel::get_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target_model->filters)), false )) return new WaxModelAssociation($this->model, $target_model, $cache, $this->field);
-    foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
+    if($this->join_model) foreach($this->join_model->rows() as $row) $ids[]=$row[$right_field];
     WaxModel::set_cache(get_class($this->model), $this->field, $this->model->primval.":".md5(serialize($target_model->filters)), $ids);
     return new WaxModelAssociation($this->model, $target_model, $ids, $this->field);
   }
