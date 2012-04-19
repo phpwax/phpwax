@@ -44,8 +44,12 @@ class WaxBoundForm implements iterator {
     }
     if(!$this->bound_to_model->primval) $res = $this->bound_to_model->save();
 
+
     foreach($associations as $name=>$el){
+      echo "$name ->";
       $this->bound_to_model->{$name} = $el->handle_post($this->post_data[$name]);
+      print_r($this->bound_to_model->{$name});
+      exit;
     }
 
     if($this->bound_to_model) $res = $this->bound_to_model->save();
