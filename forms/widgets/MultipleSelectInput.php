@@ -13,11 +13,16 @@ class MultipleSelectInput extends SelectInput {
 
   public function tag_content() {
     if(!$this->choices) $this->choices = $this->get_choices();
+
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
+
+    if($this->value instanceOf WaxRecordset) foreach($this->value->rowset as $r) if((is_array($r) && $v = array_shift($r)) || $v=$r ) $set_values[] = $v;
+    else $set_values = array($this->value);
+
     foreach((array)$this->choices as $value=>$option) {
       $sel = "";
-      if($this->value==$value) $sel = ' selected="selected"';
+      if(in_array($value, $set_values)) $sel = ' selected="selected"';
       $output .= sprintf($choice, $value, $sel, $option);
     }
     return $output;
