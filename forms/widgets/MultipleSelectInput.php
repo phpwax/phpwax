@@ -10,7 +10,7 @@ class MultipleSelectInput extends SelectInput {
 
   public $template = '<select multiple="multiple" %s>%s</select>';
 
-  
+
   public function tag_content() {
     if(!$this->choices) $this->choices = $this->get_choices();
     $output = "";
@@ -22,8 +22,11 @@ class MultipleSelectInput extends SelectInput {
     }
     return $output;
   }
-  
 
+  public function output_name() {
+    if($this->prefix) return $this->prefix."[".$this->name."]";
+    return $this->name."[]";
+  }
 
 
 } // END class
