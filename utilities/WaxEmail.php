@@ -2,7 +2,7 @@
 /**
 	* @package PHP-Wax
 	*/
-	
+
 /**
  * @package PHP-Wax
  *	Email class gives a comprehensive API for sending emails.
@@ -76,16 +76,16 @@ class WaxEmail
     public $alt_body           = "";
 
     /**
-     * Sets word wrapping on the body of the message to a given number of 
+     * Sets word wrapping on the body of the message to a given number of
      * characters.
      * @var int
      */
     public $WordWrap          = 0;
-    
+
     public $use_layout = false;
 
 
-    
+
 
     /**
      * @access private
@@ -101,14 +101,14 @@ class WaxEmail
     private $boundary        = array();
     private $error_count     = 0;
     private $LE              = "\n";
-    
-    
+
+
     /////////////////////////////////////////////////
     // VARIABLE METHODS
     /////////////////////////////////////////////////
 
     /**
-     * Sets message type to HTML.  
+     * Sets message type to HTML.
      * @param bool $bool
      * @return void
      */
@@ -119,14 +119,14 @@ class WaxEmail
             $this->ContentType = "text/plain";
     }
 
-    
+
 
     /////////////////////////////////////////////////
     // RECIPIENT METHODS
     /////////////////////////////////////////////////
 
     /**
-     * Adds a "To" address.  
+     * Adds a "To" address.
      * @param string $address
      * @param string $name
      * @return void
@@ -140,7 +140,7 @@ class WaxEmail
     /**
      * Adds a "Cc" address. Note: this function works
      * with the SMTP mailer on win32, not with the "mail"
-     * mailer.  
+     * mailer.
      * @param string $address
      * @param string $name
      * @return void
@@ -154,7 +154,7 @@ class WaxEmail
     /**
      * Adds a "Bcc" address. Note: this function works
      * with the SMTP mailer on win32, not with the "mail"
-     * mailer.  
+     * mailer.
      * @param string $address
      * @param string $name
      * @return void
@@ -166,7 +166,7 @@ class WaxEmail
     }
 
     /**
-     * Adds a "Reply-to" address.  
+     * Adds a "Reply-to" address.
      * @param string $address
      * @param string $name
      * @return void
@@ -185,7 +185,7 @@ class WaxEmail
     /**
      * Creates message and assigns Mailer. If the message is
      * not sent successfully then it returns false.  Use the ErrorInfo
-     * variable to view description of the error.  
+     * variable to view description of the error.
      * @return bool
      */
     function send() {
@@ -212,16 +212,16 @@ class WaxEmail
         $result = $this->MailSend($header, $body);
         return $result;
     }
-    
-    
+
+
 
     /**
-     * Sends mail using the PHP mail() function.  
+     * Sends mail using the PHP mail() function.
      * @access private
      * @return bool
      */
     function MailSend($header, $body) {
-      $header = preg_replace('#(?<!\r)\n#si', "\n", $header); 
+      $header = preg_replace('#(?<!\r)\n#si', "\n", $header);
       //$additional_parameters = "-f".$this->HeaderLine("Return-Path",$this->sender);
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
         return true;
@@ -230,14 +230,14 @@ class WaxEmail
 			}
     }
 
-    
+
 
     /////////////////////////////////////////////////
     // MESSAGE CREATION METHODS
     /////////////////////////////////////////////////
 
     /**
-     * Creates recipient headers.  
+     * Creates recipient headers.
      * @access private
      * @return string
      */
@@ -253,9 +253,9 @@ class WaxEmail
 
         return $addr_str;
     }
-    
+
     /**
-     * Formats an address correctly. 
+     * Formats an address correctly.
      * @access private
      * @return string
      */
@@ -264,7 +264,7 @@ class WaxEmail
             $formatted = $addr[0];
         else
         {
-            $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" . 
+            $formatted = $this->EncodeHeader($addr[1], 'phrase') . " <" .
                          $addr[0] . ">";
         }
 
@@ -274,7 +274,7 @@ class WaxEmail
     /**
      * Wraps message for use with mailers that do not
      * automatically perform wrapping and for quoted-printable.
-     * Original written by philippe.  
+     * Original written by philippe.
      * @access private
      * @return string
      */
@@ -336,7 +336,7 @@ class WaxEmail
               else
               {
                 $buf_o = $buf;
-                $buf .= ($e == 0) ? $word : (" " . $word); 
+                $buf .= ($e == 0) ? $word : (" " . $word);
 
                 if (strlen($buf) > $length and $buf_o != "")
                 {
@@ -350,7 +350,7 @@ class WaxEmail
 
         return $message;
     }
-    
+
     /**
      * Set the body wrapping.
      * @access private
@@ -359,7 +359,7 @@ class WaxEmail
     function SetWordWrap() {
         if($this->WordWrap < 1)
             return;
-            
+
         switch($this->message_type)
         {
            case "alt":
@@ -374,13 +374,13 @@ class WaxEmail
     }
 
     /**
-     * Assembles message header.  
+     * Assembles message header.
      * @access private
      * @return string
      */
     function CreateHeader() {
         $result = "";
-        
+
         // Set the boundaries
         $uniq_id = md5(uniqid(time()));
         $this->boundary[1] = "b1_" . $uniq_id;
@@ -392,7 +392,7 @@ class WaxEmail
           $result .= $this->HeaderLine("Return-Path", trim($this->sender));
           $result .= $this->HeaderLine("Sender", trim($this->sender));
         }
-        
+
         // To be created automatically by mail()
         if($intercept = Config::get("email_intercept")) {
           if(is_array($this->to)) foreach($this->to as $to) $tos .= $to[0]." ";
@@ -406,12 +406,12 @@ class WaxEmail
         else $result .= $this->HeaderLine("To", $this->to);
         if(count($this->cc) > 0)
           $result .= $this->AddrAppend("Cc", $this->cc);
- 
+
 
         $from = array();
         $from[0][0] = trim($this->from);
         $from[0][1] = $this->from_name;
-        $result .= $this->AddrAppend("From", $from); 
+        $result .= $this->AddrAppend("From", $from);
 
         // sendmail and mail() extract Bcc from the header before sending
         if(count($this->bcc) > 0)
@@ -436,8 +436,8 @@ class WaxEmail
             case "alt_attachments":
                 if($this->InlineImageExists())
                 {
-                    $result .= sprintf("Content-Type: %s;%s\ttype=\"text/html\";%s\tboundary=\"%s\"%s", 
-                                    "multipart/related", $this->LE, $this->LE, 
+                    $result .= sprintf("Content-Type: %s;%s\ttype=\"text/html\";%s\tboundary=\"%s\"%s",
+                                    "multipart/related", $this->LE, $this->LE,
                                     $this->boundary[1], $this->LE);
                 }
                 else
@@ -468,16 +468,16 @@ class WaxEmail
         switch($this->message_type)
         {
             case "alt":
-                $result .= $this->GetBoundary($this->boundary[1], "", 
+                $result .= $this->GetBoundary($this->boundary[1], "",
                                               "text/plain", "");
                 $result .= $this->EncodeString($this->alt_body, $this->Encoding);
                 $result .= $this->LE.$this->LE;
-                $result .= $this->GetBoundary($this->boundary[1], "", 
+                $result .= $this->GetBoundary($this->boundary[1], "",
                                               "text/html", "");
-                
+
                 $result .= $this->EncodeString($this->body, $this->Encoding);
                 $result .= $this->LE.$this->LE;
-    
+
                 $result .= $this->EndBoundary($this->boundary[1]);
                 break;
             case "plain":
@@ -487,32 +487,32 @@ class WaxEmail
                 $result .= $this->GetBoundary($this->boundary[1], "", "", "");
                 $result .= $this->EncodeString($this->body, $this->Encoding);
                 $result .= $this->LE;
-     
+
                 $result .= $this->AttachAll();
                 break;
             case "alt_attachments":
                 $result .= sprintf("--%s%s", $this->boundary[1], $this->LE);
                 $result .= sprintf("Content-Type: %s;%s" .
                                    "\tboundary=\"%s\"%s",
-                                   "multipart/alternative", $this->LE, 
+                                   "multipart/alternative", $this->LE,
                                    $this->boundary[2], $this->LE.$this->LE);
-    
+
                 // Create text body
-                $result .= $this->GetBoundary($this->boundary[2], "", 
+                $result .= $this->GetBoundary($this->boundary[2], "",
                                               "text/plain", "") . $this->LE;
 
                 $result .= $this->EncodeString($this->alt_body, $this->Encoding);
                 $result .= $this->LE.$this->LE;
-    
+
                 // Create the HTML body
-                $result .= $this->GetBoundary($this->boundary[2], "", 
+                $result .= $this->GetBoundary($this->boundary[2], "",
                                               "text/html", "") . $this->LE;
-    
+
                 $result .= $this->EncodeString($this->body, $this->Encoding);
                 $result .= $this->LE.$this->LE;
 
                 $result .= $this->EndBoundary($this->boundary[2]);
-                
+
                 $result .= $this->AttachAll();
                 break;
         }
@@ -533,23 +533,23 @@ class WaxEmail
         if($encoding == "") { $encoding = $this->Encoding; }
 
         $result .= $this->TextLine("--" . $boundary);
-        $result .= sprintf("Content-Type: %s; charset = \"%s\"", 
+        $result .= sprintf("Content-Type: %s; charset = \"%s\"",
                             $contentType, $charSet);
         $result .= $this->LE;
         $result .= $this->HeaderLine("Content-Transfer-Encoding", $encoding);
         $result .= $this->LE;
-       
+
         return $result;
     }
-    
+
     /**
      * Returns the end of a message boundary.
      * @access private
      */
     function EndBoundary($boundary) {
-        return $this->LE . "--" . $boundary . "--" . $this->LE; 
+        return $this->LE . "--" . $boundary . "--" . $this->LE;
     }
-    
+
     /**
      * Sets the message type.
      * @access private
@@ -601,7 +601,7 @@ class WaxEmail
      * @param string $type File extension (MIME) type.
      * @return bool
      */
-    function AddAttachment($path, $name = "", $encoding = "base64", 
+    function AddAttachment($path, $name = "", $encoding = "base64",
                            $type = "application/octet-stream") {
         if(!@is_file($path))
         {
@@ -652,7 +652,7 @@ class WaxEmail
             $type        = $this->attachment[$i][4];
             $disposition = $this->attachment[$i][6];
             $cid         = $this->attachment[$i][7];
-            
+
             $mime[] = sprintf("--%s%s", $this->boundary[1], $this->LE);
             $mime[] = sprintf("Content-Type: %s; name=\"%s\"%s", $type, $name, $this->LE);
             $mime[] = sprintf("Content-Transfer-Encoding: %s%s", $encoding, $this->LE);
@@ -660,7 +660,7 @@ class WaxEmail
             if($disposition == "inline")
                 $mime[] = sprintf("Content-ID: <%s>%s", $cid, $this->LE);
 
-            $mime[] = sprintf("Content-Disposition: %s; filename=\"%s\"%s", 
+            $mime[] = sprintf("Content-Disposition: %s; filename=\"%s\"%s",
                               $disposition, $name, $this->LE.$this->LE);
 
             // Encode as string attachment
@@ -672,7 +672,7 @@ class WaxEmail
             }
             else
             {
-                $mime[] = $this->EncodeFile($path, $encoding);                
+                $mime[] = $this->EncodeFile($path, $encoding);
                 if($this->IsError()) { return ""; }
                 $mime[] = $this->LE.$this->LE;
             }
@@ -682,7 +682,7 @@ class WaxEmail
 
         return join("", $mime);
     }
-    
+
     /**
      * Encodes attachment in requested format.  Returns an
      * empty string on failure.
@@ -738,13 +738,13 @@ class WaxEmail
     }
 
     /**
-     * Encode a header string to best of Q, B, quoted or none.  
+     * Encode a header string to best of Q, B, quoted or none.
      * @access private
      * @return string
      */
     function EncodeHeader ($str, $position = 'text') {
       $x = 0;
-      
+
       switch (strtolower($position)) {
         case 'phrase':
           if (!preg_match('/[\200-\377]/', $str)) {
@@ -786,12 +786,12 @@ class WaxEmail
 
       $encoded = preg_replace('/^(.*)$/m', " =?".$this->CharSet."?$encoding?\\1?=", $encoded);
       $encoded = trim(str_replace("\n", $this->LE, $encoded));
-      
+
       return $encoded;
     }
-    
+
     /**
-     * Encode string to quoted-printable.  
+     * Encode string to quoted-printable.
      * @access private
      * @return string
      */
@@ -814,7 +814,7 @@ class WaxEmail
     }
 
     /**
-     * Encode string to q encoding.  
+     * Encode string to q encoding.
      * @access private
      * @return string
      */
@@ -835,7 +835,7 @@ class WaxEmail
                   "'='.sprintf('%02X', ord('\\1'))", $encoded);
             break;
         }
-        
+
         // Replace every spaces to _ (more readable than =20)
         $encoded = str_replace(" ", "_", $encoded);
 
@@ -852,7 +852,7 @@ class WaxEmail
      * @param string $type File extension (MIME) type.
      * @return void
      */
-    function AddStringAttachment($string, $filename, $encoding = "base64", 
+    function AddStringAttachment($string, $filename, $encoding = "base64",
                                  $type = "application/octet-stream") {
         // Append to $attachment array
         $cur = count($this->attachment);
@@ -865,23 +865,23 @@ class WaxEmail
         $this->attachment[$cur][6] = "attachment";
         $this->attachment[$cur][7] = 0;
     }
-    
+
     /**
-     * Adds an embedded attachment.  This can include images, sounds, and 
-     * just about any other document.  Make sure to set the $type to an 
-     * image type.  For JPEG images use "image/jpeg" and for GIF images 
+     * Adds an embedded attachment.  This can include images, sounds, and
+     * just about any other document.  Make sure to set the $type to an
+     * image type.  For JPEG images use "image/jpeg" and for GIF images
      * use "image/gif".
      * @param string $path Path to the attachment.
-     * @param string $cid Content ID of the attachment.  Use this to identify 
+     * @param string $cid Content ID of the attachment.  Use this to identify
      *        the Id for accessing the image in an HTML form.
      * @param string $name Overrides the attachment name.
      * @param string $encoding File encoding (see $Encoding).
-     * @param string $type File extension (MIME) type.  
+     * @param string $type File extension (MIME) type.
      * @return bool
      */
-    function AddEmbeddedImage($path, $cid, $name = "", $encoding = "base64", 
+    function AddEmbeddedImage($path, $cid, $name = "", $encoding = "base64",
                               $type = "application/octet-stream") {
-    
+
         if(!@is_file($path))
         {
             $this->SetError($this->Lang("file_access") . $path);
@@ -902,10 +902,10 @@ class WaxEmail
         $this->attachment[$cur][5] = false; // isStringAttachment
         $this->attachment[$cur][6] = "inline";
         $this->attachment[$cur][7] = $cid;
-    
+
         return true;
     }
-    
+
     /**
      * Returns true if an inline attachment is present.
      * @access private
@@ -921,7 +921,7 @@ class WaxEmail
                 break;
             }
         }
-        
+
         return $result;
     }
 
@@ -942,7 +942,7 @@ class WaxEmail
     }
 
     /**
-     * Returns the proper RFC 822 formatted date. 
+     * Returns the proper RFC 822 formatted date.
      * @access private
      * @return string
      */
@@ -955,16 +955,16 @@ class WaxEmail
 
         return $result;
     }
-    
+
     /**
-     * Returns the appropriate server variable.  Should work with both 
-     * PHP 4.1.0+ as well as older versions.  Returns an empty string 
+     * Returns the appropriate server variable.  Should work with both
+     * PHP 4.1.0+ as well as older versions.  Returns an empty string
      * if nothing is found.
      * @access private
      * @return mixed
      */
     function ServerVar($varName) {
-        
+
         if(isset($_SERVER[$varName]))
             return $_SERVER[$varName];
         else
@@ -987,7 +987,7 @@ class WaxEmail
         return $result;
     }
 
-    
+
     /**
      * Returns true if an error occurred.
      * @return bool
@@ -997,7 +997,7 @@ class WaxEmail
     }
 
     /**
-     * Changes every end of line from CR or LF to CRLF.  
+     * Changes every end of line from CR or LF to CRLF.
      * @access private
      * @return string
      */
@@ -1007,24 +1007,30 @@ class WaxEmail
         $str = str_replace("\n", $this->LE, $str);
         return $str;
     }
-    
+
     public function kill_injections($text) {
       return preg_replace("/(%0A|%0D|\n+|\r+)(content-type:|to:|cc:|bcc:)/i","", $text);
     }
-    
+
     public function get_templates($action) {
 			$view = Inflections::underscore(get_class($this))."/".$action;
-			
-			$view_path= new WaxTemplate($this);
-			
-			$view_path->add_path(VIEW_DIR.$view);
-			$view_path->add_path(PLUGIN_DIR."cms/view/".$view);
 
+			$view_path= new WaxTemplate($this);
+
+			foreach(Autoloader::view_paths("user") as $path) {
+        $view_path->add_path($path.get_class($this)."/".$use_view);
+        $view_path->add_path($path."shared/".$view);
+        $view_path->add_path($path.$view);
+      }
+      foreach((array)Autoloader::view_paths("plugin") as $path) {
+        $view_path->add_path($path.$view);
+        $view_path->add_path($path."shared/".$view);
+      }
 			foreach($view_path->template_paths as $path){
 				if(is_readable($path.".html")) $html = $view_path->parse();
 				if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
 			}
-      
+
       if($html){
         $this->is_html(true);
         $this->content_for_layout = $html;
@@ -1033,16 +1039,16 @@ class WaxEmail
         if($txt) $this->alt_body = $txt;
       }elseif($txt) $this->body = $txt;
     }
-    
+
     public function render_layout() {
       if(!$this->use_layout) return false;
       $this->use_format = "html";
       $layout = new WaxTemplate($this);
       $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
       ob_end_clean();
-  	  return $layout->parse($this->use_format);      
+  	  return $layout->parse($this->use_format);
     }
-    
+
     public function __call($name, $args) {
       if(substr($name, 0,4)=="send") {
         $action = substr($name, 5);
@@ -1052,7 +1058,7 @@ class WaxEmail
       }
     }
 
-    
+
 }
 
 ?>
