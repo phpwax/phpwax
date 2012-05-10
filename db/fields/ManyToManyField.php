@@ -70,7 +70,7 @@ class ManyToManyField extends WaxModelField {
   }
 
 
-  private function eager_load($target) {
+  protected function eager_load($target) {
 		$this->join_model->left_join($target);
 		$this->join_model->join_condition("$target->table.$target->primary_key = ".$this->join_model->table.".".$this->join_field($target));
 		//select columns from the far side of the join, not the join table itself
@@ -87,7 +87,7 @@ class ManyToManyField extends WaxModelField {
 		return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
   }
 
-  private function lazy_load($target_model) {
+  protected function lazy_load($target_model) {
     $left_field = $this->model->table."_".$this->model->primary_key;
     $right_field = $target_model->table."_".$target_model->primary_key;
     if($this->join_model) $this->join_model->select_columns=$right_field;
