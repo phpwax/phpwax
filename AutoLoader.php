@@ -86,6 +86,9 @@ function __autoload($class_name) {
 }
 
 function throw_wxexception($e) {
+  AutoLoader::include_from_registry("WaxException");
+  AutoLoader::include_from_registry("WaxTemplate");
+  AutoLoader::include_from_registry("Cacheable");
   $exc = new WaxException($e->getMessage(), "Application Error", false, array("file"=>$e->getFile(), "line"=>$e->getLine(), "trace"=>$e->getTraceAsString()));
 }
 
