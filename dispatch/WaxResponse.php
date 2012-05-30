@@ -65,12 +65,12 @@ class WaxResponse {
     if($secure) $cookie[] = "Secure";
     
     if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
-    $this->headers["Set-Cookie"][] = implode(";", $cookie);
+    $this->headers["Set-Cookie"][$key] = implode(";", $cookie);
   }
   
   public function delete_cookie($key, $path='/', $domain=false) {
     if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
-    $this->headers["Set-Cookie"][] = "$key='';path=$path;domain=$domain;expires= Thu, 01-Jan-1970 00:00:00 GMT";
+    $this->headers["Set-Cookie"][$key] = "$key=;path=$path;domain=$domain;expires=Thu, 01-Jan-1970 00:00:00 GMT";
   }
   
   public function execute() {
