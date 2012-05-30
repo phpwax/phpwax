@@ -47,10 +47,11 @@ class Field {
   public function notify($event, $object, $field=FALSE) {
     if($event == "before_save")   $this->before_save($object);
     if($event == "after_save")    $this->after_save($object);
-    if($event == "before_set")    $this->before_set($object, $field);
-    if($event == "after_set")     $this->after_set($object, $field);
-    if($event == "before_get")    $this->before_get($object, $field);
-    if($event == "after_get")     $this->after_get($object, $field);    
+    
+    if($event == "before_set" && $field==$this->field)    $this->before_set($object, $field);
+    if($event == "after_set"  && $field==$this->field)    $this->after_set($object, $field);
+    if($event == "before_get" && $field==$this->field)    $this->before_get($object, $field);
+    if($event == "after_get"  && $field==$this->field)    $this->after_get($object, $field);    
   }
   
   public function before_save($object) {}

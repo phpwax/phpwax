@@ -1,5 +1,6 @@
 <?php
 namespace Wax\Model;
+use Wax\Core\ObjectProxy;
 
 /**
  *  Recordset class
@@ -10,16 +11,31 @@ namespace Wax\Model;
 
 class Recordset implements \Iterator, \ArrayAccess, \Countable {
 
-  public $model = false;
-  public $rowset;
-  
-  protected $obj = false;
+  public $model = FALSE;
+  public $rowset;  
   protected $key = 0;
   
   
-  public function __construct($model, $rowset) {
-    $this->rowset = $rowset;
-    $this->model = $model;
+  public function __construct() {
+    $args = func_get_args();
+    if($args[0] instanceof Model) {
+      $this->model =  $args[0];
+      $this->initialise($args[1]);
+    } else {
+      $this->initialise($args[0]);
+    }
+  }
+  
+  public function dump() {
+    foreach($this->rowset as $obj) {
+      print_r($obj->get());
+    }
+  }
+  
+  public function initialise($rows) {
+    foreach($rows as $row) {
+      $this->rowset[] = new ObjectProxy($row);
+    }
   }
   
   public function first() {
@@ -54,15 +70,11 @@ class Recordset implements \Iterator, \ArrayAccess, \Countable {
   
   public function offsetGet($offset) {
     if($this->rowset[$offset] instanceof ObjectProxy) return $this->rowset[$offset]->get();
-    if($this->model && ($obj = clone $this->model)){
-      $obj->row = $this->rowset[$offset];
-      return $obj;
-    }
     return $this->rowset[$offset];
   }
   
   public function offsetSet($offset, $value) {
-    $this->rowset[$offset]=$value;
+    $this->rowset[$offset]= new ObjectProxy($value);
   }
   
   public function offsetUnset($offset) {
@@ -74,6 +86,8 @@ class Recordset implements \Iterator, \ArrayAccess, \Countable {
   public function __call($method, $args) {
     return call_user_func_array(array($this->model, $method), $args);
   }
+
+  
   
   
 }

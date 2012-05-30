@@ -3,9 +3,11 @@ namespace Wax\Core;
 
 class ObjectProxy {
 
-  public $key = false;
+  public $key =   FALSE;
+  public $type =  FALSE;
 
     public function __construct($object) {
+      $this->type = get_class($object);
       $this->key = ObjectManager::set($object);
     }
   

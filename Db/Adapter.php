@@ -33,17 +33,7 @@ abstract class Adapter {
 	    'float'           => "float"
   );
   
-  public $operators = array(
-    "="=>     " = ",
-    "raw"=>   "",
-    "!="=>    " != ",
-    "~"=>     " LIKE ",
-    "in"=>    " IN",
-    "<=" =>   " <= ",
-    ">="=>    " >= ",
-    ">"=>     " > ",
-    "<"=>     " < "
-  );
+  
   public $sql_without_limit = false;
   public $total_without_limits = false;
 	public $default_db_engine = "MyISAM";

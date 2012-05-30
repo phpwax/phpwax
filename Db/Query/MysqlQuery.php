@@ -8,6 +8,19 @@ class MysqlQuery extends Query {
   
   public $adapter     = FALSE;
   
+  public $operators = [
+    "="=>     " = ",
+    "raw"=>   "",
+    "!="=>    " != ",
+    "~"=>     " LIKE ",
+    "in"=>    " IN",
+    "<=" =>   " <= ",
+    ">="=>    " >= ",
+    ">"=>     " > ",
+    "<"=>     " < "
+  ];
+  
+  
   public function __construct($db_settings) {
     if(!$db_settings && !$db_settings["dbtype"]) return;
     $adapter = "Wax\\Db\\".ucfirst($db_settings["dbtype"])."Adapter";
@@ -63,8 +76,7 @@ class MysqlQuery extends Query {
     $filters = $this->filter($model);
     if($filters["sql"]) $sql.= " WHERE ";
     $sql.=$filters["sql"];
-    if($params) $params = array_merge($params, $filters["params"]);
-    else $params = $filters["params"];
+    $params = $filters["params"];
     
     $sql  .= $this->group($model);
     $sql  .= $this->having($model);
@@ -73,7 +85,7 @@ class MysqlQuery extends Query {
     $sql  .= $this->limit($model);
 
     $stmt = $this->adapter->prepare($sql);
-    $stmt = $this->adapter->exec($stmt, $model->row);
+    $stmt = $this->adapter->exec($stmt, $params);
     $this->total_without_limits = $this->adapter->row_count_query($model);
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);    
   }
@@ -106,11 +118,11 @@ class MysqlQuery extends Query {
   }
   
   
-  public function filter($model, $filter_name = "_filters") {
+  public function filter($model) {
     $params = [];
     $sql = "";
-    if(count($model->$filter_name)) {
-      foreach($model->$filter_name as $filter) {
+    if(count($model->_query->filters)) {
+      foreach($model->_query->filters as $filter) {
         if(is_array($filter)) {
           //add table name if it's a column
           if(in_array($filter["name"], $model->writable_columns())) {

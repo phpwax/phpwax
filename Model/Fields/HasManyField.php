@@ -1,7 +1,6 @@
 <?php
 namespace Wax\Model\Fields;
 use Wax\Model\Field;
-use Wax\Model\Association;
 use Wax\Template\Helper\Inflections;
 use Wax\Model\Model;
 use Wax\Model\Recordset;
@@ -37,23 +36,27 @@ class HasManyField extends Field {
   
   public function before_get($object, $field) {
     if($this->value && !$this->tainted) {
-      $object->row[$field] = new Association($this->model, $target, $this->value, $this->field);
+      $object->row[$field] = new Recordset($this->value);
       return;
-    }    
-    $object->row[$field] = $this->lazy_load($target);
+    } elseif(!$this->value) $object->row[$field] = $this->lazy_load($object);
   }
   
   public function after_set($object, $field) {
-    $value = $object->row[$field];
-    if($value instanceof $this->target_model){  
-      $this->value[] = new ObjectProxy($value);
-      $proxy = new ObjectProxy($this);
-      $object->observe("before_save", $proxy);
-      $object->observe("after_save", $proxy);
-      $this->tainted = TRUE;
-      $object->row[$field] = $this->value;
+    if(get_class($object->row[$field]) == $this->target_model){
+      $this->handle_set($object->row[$field]);
     }
-    if(is_array($value) || $value instanceof Traversable) foreach($value as $item) $this->after_set($item, $field);
+    if(is_array($object->row[$field]) || $object->row[$field] instanceof Traversable) {
+      foreach($object->row[$field] as $item) $this->handle_set($item);
+    }
+    $object->row[$field] = new Recordset($this->value);
+  }
+  
+  public function handle_set($object) {
+    $this->value[] = $object;
+    $proxy = new ObjectProxy($this);
+    $object->observe("before_save", $proxy);
+    $object->observe("after_save", $proxy);
+    $this->tainted = TRUE;
   }
   
   public function before_save($object) {
@@ -74,7 +77,7 @@ class HasManyField extends Field {
       $ids[]=new ObjectProxy($row);
     }
     $this->tainted = FALSE;
-    return new Association($this->model, $target, $ids, $this->field);
+    return new Recordset($target, $ids);
   }
   
   

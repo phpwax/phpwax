@@ -66,7 +66,7 @@ class Model{
 	    if(method_exists($this, $method)) {$this->$method;}
 	    else {
         $this->notify_observers("before_read");
-	      $res = $this->filter(array($this->primary_key => $params))->first();
+	      $res = $this->filter([$this->primary_key=>$params])->first();
    		  $this->row=$res->row;
    		  $this->clear();
         $this->notify_observers("after_read");
@@ -333,7 +333,13 @@ class Model{
   
 
  	public function all() {
- 	  return new Recordset($this, self::$_backend->select($this));
+    $fetch = self::$_backend->select($this);
+    foreach($fetch as $row) {
+      $model = clone $this;
+      $model->row = $row;
+      $records[]=$model;
+    }
+ 	  return new Recordset($this, $records);
  	}
 
  	public function rows() {

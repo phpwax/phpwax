@@ -30,15 +30,17 @@ class ForeignKey extends Field {
   }
   
   public function before_get($object, $name) {
-    $object->row[$name] = $this->value->get();
+    if($name == $this->field) $object->row[$name] = $this->value->get();
   }
   
   public function after_set($object, $name) {
-    if(is_object($object->row[$name])) {
-      $this->value = new ObjectProxy($object->row[$name]);
-      $object->observe("before_save", new ObjectProxy($this));
-      $object->row[$name] = $this->value;
-    } 
+    if($name == $this->field) {
+      if(is_object($object->row[$name])) {
+        $this->value = new ObjectProxy($object->row[$name]);
+        $object->observe("before_save", new ObjectProxy($this));
+        $object->row[$name] = $this->value;
+      } 
+    }
   }
  
   
