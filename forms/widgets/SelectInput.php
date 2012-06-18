@@ -50,6 +50,10 @@ class SelectInput extends WaxWidget {
 
   }
 
+  public function output_name() {
+    if($this->bound_data instanceof ForeignKey) return $this->bound_data->table."[".$this->bound_data->col_name."]";
+    return parent::output_name();
+  }
 
 
 } // END class
