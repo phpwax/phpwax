@@ -36,7 +36,7 @@ class WaxBoundForm implements iterator {
         if(($this->bound_to_model->columns[$name][0] == "ForeignKey") && ($t_class = $this->bound_to_model->columns[$name][1]['target_model'])){
           $col = $this->bound_to_model->get_col($name);
           $alt_name = $col->col_name;
-          if($this->post_data[$alt_name]) $this->bound_to_model->{$alt_name} = $el->handle_post($this->post_data[$alt_name]);
+          if($this->post_data[$alt_name] !== NULL) $this->bound_to_model->{$alt_name} = $el->handle_post($this->post_data[$alt_name]);
           else $alt_name = false;
         }
         if(!$alt_name && isset($this->post_data[$name])) $associations[$name] = $el;
