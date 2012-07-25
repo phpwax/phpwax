@@ -23,7 +23,7 @@ class RadioInput extends SelectInput {
       $sel = "";
 			if(is_numeric($this->value) && (int)$this->value==(int)$value) $sel = ' checked="checked"';
 			elseif( (string)$this->value==(string) $value) $sel = ' checked="checked"';
-      $output .= sprintf($this->sub_template, $this->output_name(), $value,$sel,$this->output_id().$value,$this->output_id().$value,$value);
+      $output .= sprintf($this->sub_template, $this->output_name(), $value,$sel,$this->output_id().$value,$this->output_id().$value,$option);
     }
     return $output;
   }
