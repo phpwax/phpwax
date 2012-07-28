@@ -117,7 +117,7 @@ class Config
 	  if(!is_array($new_config)) {
 	    $new_config = array($new_config=>$new_value);
 	  }
-	  self::$config_array = array_merge(self::$config_array, $new_config);
+	  self::$config_array = array_merge((array)self::$config_array, (array)$new_config);
 	}
 	
 	/**
