@@ -114,7 +114,7 @@ class WaxWidget{
       elseif($name == "id") $res.=sprintf('%s="%s" ', $name, $this->output_id());
       elseif($name == "value") $res.=sprintf('%s="%s" ', $name, htmlentities($this->value));
       elseif($name == "checked" && $this->{$name} == "checked") $res.=sprintf('%s="%s" ', $name, $this->value);
-      elseif(isset($this->{$name}) && $name != "checked") $res.=sprintf('%s="%s" ', $name, $this->{$name});
+      elseif($this->{$name} !== NULL && $name != "checked") $res.=sprintf('%s="%s" ', $name, $this->{$name});
     }
     return $res;
   }
