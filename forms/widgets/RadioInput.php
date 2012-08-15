@@ -45,8 +45,7 @@ class RadioInput extends SelectInput {
   
   public function map_choices() {
     foreach($this->choices as $key=>$choice) {
-      if(is_numeric($key)) $choices[$choice]=$choice;
-      else $choices[$key]=$choice;
+      $choices[$key]=$choice;
     }
     $this->choices = $choices;
   }
