@@ -12,7 +12,8 @@ class RadioInput extends SelectInput {
   public $class = "input_field radio_field";
   
   public $template = '%s';
-  public $label_template = '<label for="%s">%s</label>';
+  public $group_label_class = "radio_group_label";
+  public $label_template = '<label for="%s" class="%s">%s</label>';
   public $sub_template = '<span class="radio"><input type="radio" name="%s" value="%s" %s id="%s"><label for="%s" class="radio_label">%s</label></span>';
 
   public function tag_content() {
@@ -50,5 +51,8 @@ class RadioInput extends SelectInput {
     $this->choices = $choices;
   }
   
+  public function label() {
+    return sprintf($this->label_template, $this->output_id(), $this->group_label_class, $this->label);
+  }
 
-} // END class
+}
