@@ -29,7 +29,7 @@ class MultipleSelectInput extends SelectInput {
   }
 
   public function output_name() {
-    if($this->prefix) return $this->prefix."[".$this->name."]";
+    if($this->prefix) return $this->prefix."[".$this->name."][]";
     return $this->name."[]";
   }
 
