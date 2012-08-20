@@ -1,7 +1,8 @@
 {
     "name": "wax/wax",
+    "type": "library",
     "description": "PHP Wax v5",
-    "keywords": ["microframework"],
+    "keywords": ["framework", "php"],
     "homepage": "http://php-wax.com/",
     "license": "MIT",
     "authors": [
