@@ -1,0 +1,48 @@
+{
+    "name": "wax/wax",
+    "description": "PHP Wax v5",
+    "keywords": ["microframework"],
+    "homepage": "http://php-wax.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ross Riley",
+            "email": "ross@oneblackbear.com"
+        },
+        {
+            "name": "Charles Marshall",
+            "email": "charles@oneblackbear.com"
+        },
+        {
+            "name": "Sheldon Els",
+            "email": "sheldon@oneblackbear.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "pimple/pimple": "1.*",
+        "symfony/event-dispatcher": "2.1.*",
+        "symfony/http-foundation": "2.1.*",
+        "symfony/http-kernel": "2.1.*",
+        "symfony/routing": "2.1.*",
+        "symfony/class-loader": "2.1.*"
+    },
+    "require-dev": {
+        "symfony/security": "2.1.*",
+        "symfony/config": "2.1.*",
+        "symfony/locale": "2.1.*",
+        "symfony/form": "2.1.*",
+        "symfony/browser-kit": "2.1.*",
+        "symfony/finder": "2.1.*",
+        "symfony/validator": "2.1.*"
+    },
+    "autoload": {
+        "psr-0": { "Wax": "src/" }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

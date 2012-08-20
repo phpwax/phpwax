@@ -1,0 +1,106 @@
+<?use Wax\Utilities\Profiler;?>
+<style>
+.profile_output {background:#ececec;padding:50px 0;}
+table.profiler { width: 90%; margin: 20px auto; border-collapse: collapse;table-layout:fixed;}
+	table.profiler th,
+	table.profiler td { padding: 0.2em 0.4em; background: #fff; border: solid 1px #ccc; text-align: left; font-weight: normal; font-size: 1em; color: #111; vertical-align: top;overflow:hidden; }
+	table.profiler tr.group th { font-size: 1.4em; background: #222; color: #eee; border-color: #222; }
+	table.profiler tr.headers th { text-transform: lowercase; font-variant: small-caps; background: #ddd; color: #777; }
+	table.profiler tr.mark th.name { width: 70%; font-size: 1.2em; background: #fff; vertical-align: middle; }
+	table.profiler tr.mark td.current { background: #eddecc; }
+	table.profiler tr.mark td.min { background: #d2f1cb; }
+	table.profiler tr.mark td.max { background: #ead3cb; }
+	table.profiler tr.mark td.average { background: #ddd; }
+	table.profiler tr.mark td.total { background: #d0e3f0; }
+	table.profiler tr.time td { border-bottom: 0; }
+	table.profiler tr.memory td { border-top: none; }
+	table.profiler tr.final th.name { background: #222; color: #fff; }
+	table.profiler tr.mark td.data {font-size:10px;padding-left:15px;}
+	.profile_output {display:none;}
+  .profile_output:target {display:block;}
+  .show_trace {text-transform:uppercase;font-size:9px;color:#999;}
+  .trace {display:none;background:#D0E3F0;color:white;padding:4px;}
+  .trace code {color:#333;white-space:pre;}
+</style>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    $(".show_trace").click(function(){$(this).nextAll(".trace").toggle();return false;});
+  });  
+</script>
+<div class="profile_output" id="profile">
+  <?foreach(Profiler::groups() as $group => $benchmarks):?>
+    <table class="profiler">
+  	  <tr class="group"><th class="name" colspan="5"><?php echo ucfirst($group) ?></th></tr>
+  		<tr class="headers">
+  			<th class="name">Benchmark</th>
+  			<th class="min">Min</th>
+  			<th class="max">Max</th>
+  			<th class="average">Average</th>
+  			<th class="total">Total</th>
+  		</tr>
+  		<?foreach($benchmarks as $name => $tokens): ?>
+  		  <tr class="mark time">
+    			<?$stats = Profiler::stats($tokens); ?>
+    			<th class="name" rowspan="2"><? echo $name, ' (', count($tokens), ')' ?></th>
+    			<?foreach (array('min', 'max', 'average', 'total') as $key): ?>
+    			  <td class="<?php echo $key ?>"><?php echo number_format($stats[$key]['time'] *1000,0), ' ', 'ms' ?></td>
+    			<?endforeach?>
+    		</tr>
+    		<tr class="mark memory">
+    			<?foreach (array('min', 'max', 'average', 'total') as $key):?>
+    			  <td class="<?=$key?>"><?php echo number_format($stats[$key]['memory'] / 1024, 1), ' kb' ?></td>
+    			<?endforeach?>
+    		</tr>
+  		<?endforeach ?>
+
+  	</table>
+  <?endforeach?>
+  <?$markers = Profiler::marker_stats()?>
+  <table class="profiler">
+	  <tr class="headers">
+      <th colspan="3" class="name">Cumulative Execution</th>
+      <th>Time</th>
+      <th>Memory</th>
+    </tr>
+    <?foreach($markers["markers"] as $marker):?>
+      <tr class="mark">
+  			<th class="name" colspan="3"><?=$marker["name"]?></th>
+  			<td class="total"><?php echo number_format($marker['time']*1000,0), ' ', 'ms' ?></td>
+  			<td class="total"><?php echo number_format($marker['memory'] /1024,0), ' ', 'kb' ?></td>
+  		</tr>
+    <?endforeach?>
+  </table>
+  
+  <table class="profiler">
+	  <tr class="group"><th class="name" colspan="5">In Depth Profile</th></tr>
+	  <tr class="headers">
+		  <th class="name" colspan="3">Operation</th>
+		  <th class="name">Time</th>
+		  <th class="name">Memory</th>
+		</tr>
+		<?foreach((array)$benchmarks as $name => $tokens):?>
+		  <?$stats = Profiler::stats($tokens); ?>
+		  <tr class="mark time">
+  			<th class="name" colspan="3"><? echo $name, ' (', count($tokens), ')' ?></th>
+  			<td class="min"><?php echo number_format($stats["total"]['time'] *1000,0), ' ', 'ms' ?></td>
+  			<td class="min"><?php echo number_format($stats["total"]['memory'] /1024,0), ' ', 'kb' ?></td>
+  		</tr>
+		  <?foreach($tokens as $token):?>
+  	    <?$stats = Profiler::total($token);?>
+  	    <tr class="mark">
+  	      <td colspan="3" class="data">
+  	        <?if($stats[3]):?><a class="show_trace" href="#">[+]</a><?endif?>
+  	        <?=$stats[2]?><br>
+  	        <div class="trace">
+                <code><?foreach((array) $stats[3] as $trace):?><?if($trace["file"]):?>FILE:  <?=$trace["file"]?> (<?=$trace["line"]?>)                  
+<?endif?><?endforeach?>
+                </code>
+  	        </div>
+  	      </td>
+  	      <td class="average"><?php echo number_format($stats[0]*1000,0), ' ', 'ms' ?></td>
+  	      <td class="average"><?php echo number_format($stats[1] /1024,0), ' ', 'kb' ?></td>
+  	    </tr>
+  	  <?endforeach?>
+  	<?endforeach?>
+		
+</div>
