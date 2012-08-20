@@ -1,5 +1,5 @@
 {
-    "name": "wax/wax",
+    "name": "phpwax/phpwax",
     "type": "library",
     "description": "PHP Wax v5",
     "keywords": ["framework", "php"],
