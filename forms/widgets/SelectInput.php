@@ -10,7 +10,7 @@ class SelectInput extends WaxWidget {
   public $null=false;
 
   public $allowable_attributes = array(
-    "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple"
+    "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple", "data-placeholder"
   );
 
 
