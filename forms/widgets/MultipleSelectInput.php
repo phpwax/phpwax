@@ -33,5 +33,8 @@ class MultipleSelectInput extends SelectInput {
     return $this->name."[]";
   }
 
+  public function handle_post($post_val){
+    return array_filter($post_val);
+  }
 
 } // END class
