@@ -58,7 +58,7 @@ class WaxCodeGenerator {
     return $output;
   }
   
-  public function add_function($name, $include_text=null, $visibility="public") {
+  static public function add_function($name, $include_text=null, $visibility="public") {
     $output = "\n"."  $visibility function $name() {"."\n";
     if($include_text) $output.=$include_text;
     $output.= "  }"."\n";
