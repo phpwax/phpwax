@@ -43,7 +43,7 @@ class WaxSession {
     //get id from request or generate an id
     if(($this->id = $_COOKIE[$this->name]) || ($this->id = $_REQUEST[$this->name])){
       //initialize data from cross-request storage
-      if(!static::$data[$this->name] && ($stats = stat($this->file_storage()))){
+      if(!static::$data[$this->name] && (is_readable($storage = $this->file_storage())) && ($stats = stat($storage))){
         if(time() < $stats[9]) static::$data[$this->name] = unserialize(file_get_contents($this->file_storage()));
         else unlink($this->file_storage());
       }
