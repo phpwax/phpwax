@@ -38,18 +38,20 @@ class WaxModelAssociation extends WaxRecordset {
   }
   
   public function valid() {
-    if(isset($this->rowset[$this->key]) && is_numeric($this->rowset[$this->key])){ //lazy loading
+    if(isset($this->rowset[$this->key])){
       $model = get_class($this->target_model);
       while($this->key < count($this->rowset)){
-        $this->current_object = new $model($this->rowset[$this->key]);
+        if(is_numeric($this->rowset[$this->key])){
+          $this->current_object = new $model($this->rowset[$this->key]);
+        }else{
+          $this->current_object = new $model;
+          $this->current_object->row = $this->rowset[$this->key];
+        }
         if($this->current_object->primval()) return true;
         $this->next();
       }
-      return false;
-    }else{ //normal loading
-      if(isset($this->rowset[$this->key])) return true;
-      return false;
     }
+    return false;
   }
 
   public function count() {
