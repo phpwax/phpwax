@@ -114,7 +114,7 @@ class AssetTagHelper extends WXHelpers {
   }
   
   public function css_bundle($name, $options=array(), $plugin="") {
-    if(ENV=="development") {     
+    if(ENV=="development" || defined("NO_CSS_BUNDLE")) {     
       if($plugin){
         $base = PLUGIN_DIR.$plugin."/resources/public/";
         $d = $base."stylesheets/";
