@@ -150,7 +150,6 @@ class AutoLoader
         if(require_once(self::$registry[$responsibility][$class_name]) ) {return true; }
       }
     }
-    throw new WaxDependencyException("Class Name - {$class_name} cannot be found in the registry.", "Missing Dependency");
   }
   
   static public function controller_paths($resp=false) {
