@@ -80,10 +80,8 @@ function auto_loader_check_cache(){
   return false;
 } 
 
+spl_autoload_register(array('AutoLoader',"include_from_registry"));
 
-function __autoload($class_name) {
-  AutoLoader::include_from_registry($class_name);
-}
 
 function throw_wxexception($e) {
   AutoLoader::include_from_registry("WaxException");
