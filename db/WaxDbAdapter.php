@@ -47,12 +47,13 @@ abstract class WaxDbAdapter {
 	public $default_db_collate = "utf8_unicode_ci";
 
   public function __construct($db_settings=array()) {
+
     $this->db_settings = $db_settings;
     if($db_settings['dbtype']=="none") return false;
     if(!$db_settings['dbtype']) $db_settings['dbtype']="mysql";
     if(!$db_settings['host']) $db_settings['host']="localhost";
     if(!$db_settings['port']) $db_settings['port']="3306";
-
+    ini_set("default_charset", $this->default_db_charset);
     $this->db = $this->connect($db_settings);
 		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   }
