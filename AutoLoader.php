@@ -184,6 +184,7 @@ class AutoLoader
     self::autoregister_plugins();
     if(self::include_from_registry($class) ) return true;
     else {
+      print_r(get_defined_constants()); exit;
       echo WAX_ROOT."\n";
       die(CACHE_DIR);
       die(PLUGIN_DIR);
