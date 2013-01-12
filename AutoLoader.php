@@ -184,6 +184,7 @@ class AutoLoader
     self::autoregister_plugins();
     if(self::include_from_registry($class) ) return true;
     else {
+      die(PLUGIN_DIR);
       print_r(self::$registry); 
       exit;
     }
