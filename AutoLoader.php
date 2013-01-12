@@ -86,20 +86,23 @@ if(!function_exists("auto_loader_check_cache")) {
 spl_autoload_register(array('AutoLoader',"include_from_registry"));
 spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
 
-
-function throw_wxexception($e) {
-  AutoLoader::include_from_registry("WaxException");
-  AutoLoader::include_from_registry("WaxTemplate");
-  AutoLoader::include_from_registry("Cacheable");
-  $exc = new WaxException($e->getMessage(), "Application Error", false, array("file"=>$e->getFile(), "line"=>$e->getLine(), "trace"=>$e->getTraceAsString()));
+if(!function_exists("throw_wxexception")) {
+  function throw_wxexception($e) {
+    AutoLoader::include_from_registry("WaxException");
+    AutoLoader::include_from_registry("WaxTemplate");
+    AutoLoader::include_from_registry("Cacheable");
+    $exc = new WaxException($e->getMessage(), "Application Error", false, array("file"=>$e->getFile(), "line"=>$e->getLine(), "trace"=>$e->getTraceAsString()));
+  }
 }
 
-function throw_wxerror($code, $error, $file, $line, $vars) {
-  //log warnings without halting execution
-  if($code == 2) WaxLog::log("warn", "code: $code, error: $error, file: $file, line: $line");
-  else $exc = new WaxException($error, "Application Error $code", false, array("file"=>$file, "line"=>$line, "vars"=>$vars));
-}
+if(!function_exists("throw_wxerror")) {
 
+  function throw_wxerror($code, $error, $file, $line, $vars) {
+    //log warnings without halting execution
+    if($code == 2) WaxLog::log("warn", "code: $code, error: $error, file: $file, line: $line");
+    else $exc = new WaxException($error, "Application Error $code", false, array("file"=>$file, "line"=>$line, "vars"=>$vars));
+  }
+}
 
 class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
   
