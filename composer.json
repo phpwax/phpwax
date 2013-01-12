@@ -1,6 +1,5 @@
 {
     "name": "phpwax/phpwax",
-    "version": "3.2.0",
     "description": "The Full Stack Version of the PHP Wax Framework",
     "authors": [
         {
@@ -17,5 +16,6 @@
         "Auth/", "Cache/", "config/", "core/", "Db/","dispatch/","Exceptions/",
         "forms/","helpers/","interfaces/","Template/","Utilities/"
       ]
-    }
+    },
+    "minimum-stability": "dev"
 }
