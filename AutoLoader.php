@@ -23,7 +23,7 @@ if(!defined("SESSION_DIR")) define('SESSION_DIR', WAX_ROOT.'tmp/session/');
 if(!defined("PUBLIC_DIR")) define('PUBLIC_DIR', WAX_ROOT.'public/');
 if(!defined("SCRIPT_DIR")) define('SCRIPT_DIR', PUBLIC_DIR.'javascripts/');
 if(!defined("STYLE_DIR")) define('STYLE_DIR', PUBLIC_DIR.'stylesheets/');
-if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT . 'plugins/'); 
+if(!defined("PLUGIN_DIR")) define('PLUGIN_DIR', WAX_ROOT.'plugins/'); 
 if(!defined("FRAMEWORK_DIR")) define("FRAMEWORK_DIR", dirname(__FILE__));
 if(function_exists('date_default_timezone_set')){
   if(!defined('PHPWAX_TIMEZONE')) date_default_timezone_set('Europe/London');
