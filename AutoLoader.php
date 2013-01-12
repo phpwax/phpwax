@@ -180,8 +180,8 @@ class AutoLoader
   }
   
   static public function include_class_from_plugin($class) {
+    if(self::include_from_registry($class)) return true;
     self::autoregister_plugins();
-    die($class);
     self::include_from_registry($class);
   }
   
