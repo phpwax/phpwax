@@ -181,6 +181,7 @@ class AutoLoader
   
   static public function include_class_from_plugin($class) {
     self::autoregister_plugins();
+    die($class);
     self::include_from_registry($class);
   }
   
