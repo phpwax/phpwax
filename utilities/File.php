@@ -114,6 +114,7 @@ class File {
    *   stretch          - ignores aspect ratio.
    */
   static public function smart_resize_image($source, $destination, $width, $height, $mode = "crop"){
+    if(!is_readable($source)) return;
     list($source_width, $source_height, $image_type) = getimagesize($source);
     
     if(!$width && !$height || !function_exists("imagecopyresampled")) return false;
