@@ -5,8 +5,6 @@
   *  @package PHP-Wax
   */
 
-class_alias('AutoLoader', 'Autoloader');
-
 /**
  *  Defines application level constants
  */
