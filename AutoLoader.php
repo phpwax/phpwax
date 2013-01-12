@@ -81,6 +81,7 @@ function auto_loader_check_cache(){
 } 
 
 spl_autoload_register(array('AutoLoader',"include_from_registry"));
+spl_autoload_register(array('AutoLoader',"autoregister_plugins"));
 
 
 function throw_wxexception($e) {
