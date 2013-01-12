@@ -185,8 +185,8 @@ class AutoLoader
     if(self::include_from_registry($class) ) return true;
     else {
       echo WAX_ROOT."\n";
-      die(PLUGIN_DIR);
       die(CACHE_DIR);
+      die(PLUGIN_DIR);
       print_r(self::$registry); 
       exit;
     }
