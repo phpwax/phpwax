@@ -81,7 +81,7 @@ function auto_loader_check_cache(){
 } 
 
 spl_autoload_register(array('AutoLoader',"include_from_registry"));
-spl_autoload_register(array('AutoLoader',"autoregister_plugins"));
+spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
 
 
 function throw_wxexception($e) {
@@ -177,6 +177,11 @@ class AutoLoader
     $setup = PLUGIN_DIR.$plugin."/setup.php";
     self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
     if(is_readable($setup)) include_once($setup);
+  }
+  
+  static public function include_class_from_plugin($class) {
+    self::autoregister_plugins();
+    self::include_from_registry($class);
   }
   
   static public function plugin_installed($plugin) {
