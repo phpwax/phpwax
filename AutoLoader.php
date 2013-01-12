@@ -34,51 +34,54 @@ if(function_exists('date_default_timezone_set')){
  * check cache
  *
  */
-function auto_loader_check_cache(){
+if(!function_exists("auto_loader_check_cache")) {
+  function auto_loader_check_cache(){
   
-  $cache_location = CACHE_DIR .'layout/';
-  $image_cache_location = CACHE_DIR.'images/';
-  include_once FRAMEWORK_DIR .'/core/WaxEvent.php';
-  include_once FRAMEWORK_DIR .'/utilities/WaxSession.php';
-  include_once FRAMEWORK_DIR .'/utilities/Session.php';
-  include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-  include_once FRAMEWORK_DIR .'/utilities/Config.php';
-  include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-  include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
-  include_once FRAMEWORK_DIR .'/utilities/File.php';
-  $mime_types = array("css"=>"text/css","json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
-  /** CHECK LAYOUT CACHE **/
-  if(($config = Config::get('layout_cache')) && $config['engine']){
-    if($_REQUEST['no-wax-cache']) return false;
-    if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
-    else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';    
-    $cache = new WaxCacheLoader($config, $cache_location);
+    $cache_location = CACHE_DIR .'layout/';
+    $image_cache_location = CACHE_DIR.'images/';
+    include_once FRAMEWORK_DIR .'/core/WaxEvent.php';
+    include_once FRAMEWORK_DIR .'/utilities/WaxSession.php';
+    include_once FRAMEWORK_DIR .'/utilities/Session.php';
+    include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
+    include_once FRAMEWORK_DIR .'/utilities/Config.php';
+    include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
+    include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
+    include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
+    include_once FRAMEWORK_DIR .'/utilities/File.php';
+    $mime_types = array("css"=>"text/css","json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
+    /** CHECK LAYOUT CACHE **/
+    if(($config = Config::get('layout_cache')) && $config['engine']){
+      if($_REQUEST['no-wax-cache']) return false;
+      if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
+      else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';    
+      $cache = new WaxCacheLoader($config, $cache_location);
 
-    if($content = $cache->layout_cache_loader($config)){
-      $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-      $pos = strrpos($url_details['path'], ".");
-      $ext = substr($url_details['path'],$pos+1); 
-      if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
-      header("wax-cache: true");
-      header("wax-cache-eng: ".$config['engine']);
-      header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
-      echo $content;
-      exit;
-    }
-  }  
-  /** ALSO CHECK FOR IMAGES **/
-  if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
-    if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php'; 
-    else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
-    if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader($img_config['engine'], $image_cache_location, $img_config['lifetime']);
-    else $cache = new WaxCacheLoader('Image', $image_cache_location);
-    if($cache->valid($img_config)) File::display_image($cache->identifier);
-  }  
+      if($content = $cache->layout_cache_loader($config)){
+        $url_details = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+        $pos = strrpos($url_details['path'], ".");
+        $ext = substr($url_details['path'],$pos+1); 
+        if(isset($mime_types[$ext])) header("Content-type:".$mime_types[$ext]);
+        header("wax-cache: true");
+        header("wax-cache-eng: ".$config['engine']);
+        header("wax-cache-id: ".str_replace(CACHE_DIR, "", $cache->identifier()));
+        echo $content;
+        exit;
+      }
+    }  
+    /** ALSO CHECK FOR IMAGES **/
+    if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
+      if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php'; 
+      else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
+      if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader($img_config['engine'], $image_cache_location, $img_config['lifetime']);
+      else $cache = new WaxCacheLoader('Image', $image_cache_location);
+      if($cache->valid($img_config)) File::display_image($cache->identifier);
+    }  
   
-  return false;
-} 
+    return false;
+  } 
+}
+
 
 spl_autoload_register(array('AutoLoader',"include_from_registry"));
 spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
