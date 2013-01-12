@@ -182,7 +182,11 @@ class AutoLoader
   static public function include_class_from_plugin($class) {
     if(self::include_from_registry($class)) return true;
     self::autoregister_plugins();
-    self::include_from_registry($class);
+    if(self::include_from_registry($class) ) return true;
+    else {
+      print_r(self::$registry); 
+      exit;
+    }
   }
   
   static public function plugin_installed($plugin) {
