@@ -323,5 +323,5 @@ class AutoLoader
   
 }
 auto_loader_check_cache();
-Autoloader::initialise();
+AutoLoader::initialise();
 
