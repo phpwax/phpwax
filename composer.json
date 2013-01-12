@@ -16,6 +16,5 @@
         "Auth/", "Cache/", "config/", "core/", "Db/","dispatch/","Exceptions/",
         "forms/","helpers/","interfaces/","Template/","Utilities/"
       ]
-    },
-    "minimum-stability": "dev"
+    }
 }
