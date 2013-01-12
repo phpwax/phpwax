@@ -1,0 +1,14 @@
+{
+    "name": "phpwax/phpwax",
+    "description": "The Full Stack Version of the PHP Wax Framework",
+    "authors": [
+        {
+            "name": "Ross Riley",
+            "email": "riley.ross@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+      "php": ">=5.3"
+    }
+}
