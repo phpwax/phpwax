@@ -30,6 +30,10 @@ if(function_exists('date_default_timezone_set')){
   else date_default_timezone_set(PHPWAX_TIMEZONE);
 }
 
+// Setup Autoloader Stack
+spl_autoload_register(array('AutoLoader',"include_from_registry"));
+spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
+
 /**
  * check cache
  *
@@ -78,11 +82,7 @@ function auto_loader_check_cache(){
   }  
   
   return false;
-} 
-
-spl_autoload_register(array('AutoLoader',"include_from_registry"));
-spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
-
+}
 
 function throw_wxexception($e) {
   AutoLoader::include_from_registry("WaxException");
