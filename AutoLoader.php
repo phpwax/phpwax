@@ -153,7 +153,7 @@ class AutoLoader
   
   static public function register_assets($bundle, $directory) {
     $am = self::get_asset_manager();
-    $am->set($bundle, new Assetic\Asset\GlobAsset($directory));
+    $am->set($bundle, new RecursiveGlobAsset($directory));
   }
   
   static public function include_from_registry($class_name) {
