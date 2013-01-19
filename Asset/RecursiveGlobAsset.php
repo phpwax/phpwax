@@ -26,9 +26,9 @@ class RecursiveGlobAsset extends GlobAsset {
 
   public function iterate_dir($d, $ext){
     $files = array();
-    $dir = new RecursiveIteratorIterator(
-        new RecursiveRegexIterator(
-          new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), 
+    $dir = new \RecursiveIteratorIterator(
+        new \RecursiveRegexIterator(
+          new \RecursiveDirectoryIterator($d, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS), 
           '#^.+\.'.$this->pattern.'$#i'
         ), 
       true);
