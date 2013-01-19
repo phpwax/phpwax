@@ -22,7 +22,7 @@
     },
     "autoload": {
       "classmap": [
-        "Auth/", "Cache/", "config/", "core/", "Db/","dispatch/","Exceptions/",
+        "Asset", "Auth/", "Cache/", "config/", "core/", "Db/","dispatch/","Exceptions/",
         "forms/","helpers/","interfaces/","Template/","Utilities/","AutoLoader.php"
       ],
       "files": ["AutoLoader.php"]
