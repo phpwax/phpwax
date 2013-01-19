@@ -159,6 +159,7 @@ class AutoLoader
   static public function include_from_registry($class_name) {
     foreach(self::$registry_chain as $responsibility) {
       if(isset(self::$registry[$responsibility]) && array_key_exists($class_name, self::$registry[$responsibility])) {
+        if(class_exists($class_name,false)) return true;
         if(require_once(self::$registry[$responsibility][$class_name]) ) {return true; }
       }
     }
