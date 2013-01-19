@@ -153,9 +153,7 @@ class AutoLoader
   
   static public function register_assets($bundle, $directory) {
     $am = self::get_asset_manager();
-    $am->set($bundle, $directory);
-    $writer = new AssetWriter(PUBLIC_DIR);
-    $writer->writeManagerAssets($am);
+    $am->set($bundle, new Assetic\Asset\GlobAsset($directory));
   }
   
   static public function include_from_registry($class_name) {
@@ -315,6 +313,8 @@ class AutoLoader
   static public function run_application($environment="development", $full_app=true) {
     //if(!defined('ENV')) define('ENV', $environment);  
     $app=new WaxApplication($full_app);
+    $writer = new Assetic\AssetWriter(rtrim(PUBLIC_DIR,"/"));
+    $res = $writer->writeManagerAssets(self::get_asset_manager());
   }
 
   /**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
