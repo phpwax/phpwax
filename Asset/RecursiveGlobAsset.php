@@ -24,7 +24,7 @@ class RecursiveGlobAsset extends GlobAsset {
     parent::__construct(array(), $filters, $root, $vars);
   }
 
-  public function iterate_dir($d, $ext){
+  public function iterate_dir($d){
     $files = array();
     $dir = new \RecursiveIteratorIterator(
         new \RecursiveRegexIterator(
