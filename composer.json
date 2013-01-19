@@ -17,7 +17,8 @@
     ],
     "license": "MIT",
     "require": {
-      "php": ">=5.3"
+      "php": ">=5.3",
+      "kriswallsmith/assetic": "1.1.*@dev"
     },
     "autoload": {
       "classmap": [

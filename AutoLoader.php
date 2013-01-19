@@ -32,7 +32,6 @@ if(function_exists('date_default_timezone_set')){
 
 // Setup Autoloader Stack
 spl_autoload_register(array('AutoLoader',"include_from_registry"));
-spl_autoload_register(array('AutoLoader',"include_class_from_plugin"));
 
 /**
  * check cache
@@ -130,6 +129,7 @@ class AutoLoader
   static public $registry_chain = array("user", "application", "plugin", "framework");
   static public $controller_registry = array();
   static public $view_registry = array();
+  static public $asset_manager = false;
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
@@ -143,6 +143,18 @@ class AutoLoader
   }
   static public function register_view_path($responsibility, $path) {
     self::$view_registry[$responsibility][]=$path;
+  }
+  
+  static public function get_asset_manager() {
+    if(!self$asset_manager) return self::$asset_manager;
+    else self::$asset_manager = new Assetic\AssetManager();
+  }
+  
+  static public function register_assets($bundle, $directory) {
+    $am = self::get_asset_manager();
+    $am->set($bundle, $directory);
+    $writer = new AssetWriter(PUBLIC_DIR);
+    $writer->writeManagerAssets($am);
   }
   
   static public function include_from_registry($class_name) {
@@ -177,12 +189,6 @@ class AutoLoader
     $setup = PLUGIN_DIR.$plugin."/setup.php";
     self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
     if(is_readable($setup)) include_once($setup);
-  }
-  
-  static public function include_class_from_plugin($class) {
-    if(self::include_from_registry($class)) return true;
-    self::autoregister_plugins();
-    if(self::include_from_registry($class) ) return true;
   }
   
   static public function plugin_installed($plugin) {
