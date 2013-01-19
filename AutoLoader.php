@@ -146,7 +146,7 @@ class AutoLoader
   }
   
   static public function get_asset_manager() {
-    if(!self$asset_manager) return self::$asset_manager;
+    if(!self::$asset_manager) return self::$asset_manager;
     else self::$asset_manager = new Assetic\AssetManager();
   }
   
