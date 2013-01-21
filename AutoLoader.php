@@ -129,8 +129,7 @@ class AutoLoader
   static public $registry_chain = array("user", "application", "plugin", "framework");
   static public $controller_registry = array();
   static public $view_registry = array();
-  static public $asset_manager = false;
-  static public $asset_server = array();
+  static public $asset_server = false;
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
