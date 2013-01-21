@@ -145,15 +145,9 @@ class AutoLoader
     self::$view_registry[$responsibility][]=$path;
   }
   
-  static public function get_asset_manager() {
-    if(self::$asset_manager) return self::$asset_manager;
-    else self::$asset_manager = new Assetic\AssetManager();
-    return self::$asset_manager;
-  }
   
-  static public function register_assets($bundle, $directory) {
-    $am = self::get_asset_manager();
-    $am->set($bundle, new RecursiveGlobAsset($directory));
+  static public function register_assets($bundle, $directory, $type) {
+    Wax\Asset\AssetServer::symlink_bundle($bundle, $type, $directory);
   }
   
   static public function include_from_registry($class_name) {
