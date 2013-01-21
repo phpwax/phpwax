@@ -246,7 +246,7 @@ class AutoLoader
     $type = $asset_paths[0];
     $as = self::get_asset_server();
     if($as->handles($bundle, $type)) {
-      $as->serve($bundle, $asset_paths);
+      $as->serve($asset_paths);
     }
     
   }
