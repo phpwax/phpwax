@@ -308,8 +308,6 @@ class AutoLoader
   static public function run_application($environment="development", $full_app=true) {
     //if(!defined('ENV')) define('ENV', $environment);  
     $app=new WaxApplication($full_app);
-    $writer = new Assetic\AssetWriter(rtrim(PUBLIC_DIR,"/"));
-    $res = $writer->writeManagerAssets(self::get_asset_manager());
   }
 
   /**** DEPRECIATED FUNCTIONS BELOW THIS POINT, WILL BE REMOVED IN COMING RELEASES ****/
