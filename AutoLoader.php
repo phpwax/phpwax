@@ -244,8 +244,12 @@ class AutoLoader
     $asset_paths = explode("/", $_GET["route"]);
     $bundle = $asset_paths[1];
     $as = self::get_asset_server();
-    if($as->handles($bundle)) $as->serve($asset_paths);
+    if($as->handles($bundle)) {
+      $as->serve($bundle, $asset_paths);
+    }
+    
   }
+
   
   static public function recursive_register($directory, $type, $force = false) {
     if(!is_dir($directory)||substr($directory,0,1)==".") { return false; }
