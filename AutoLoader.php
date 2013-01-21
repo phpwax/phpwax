@@ -243,8 +243,9 @@ class AutoLoader
   static public function asset_servable() {
     $asset_paths = explode("/", $_GET["route"]);
     $bundle = $asset_paths[1];
+    $type = $asset_paths[0];
     $as = self::get_asset_server();
-    if($as->handles($bundle)) {
+    if($as->handles($bundle, $type)) {
       $as->serve($bundle, $asset_paths);
     }
     
