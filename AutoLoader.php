@@ -130,6 +130,7 @@ class AutoLoader
   static public $controller_registry = array();
   static public $view_registry = array();
   static public $asset_manager = false;
+  static public $asset_server = array();
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
@@ -145,10 +146,16 @@ class AutoLoader
     self::$view_registry[$responsibility][]=$path;
   }
   
+  static public function get_asset_server() {
+    if(!self::$asset_server) self::$asset_server = new Wax\Asset\AssetServer;
+    return self::$asset_server;
+  }
   
   static public function register_assets($bundle, $directory, $type) {
-    Wax\Asset\AssetServer::symlink_bundle($bundle, $type, $directory);
+    $as = self::get_asset_server();
+    $as->register($bundle, $directory, $type);
   }
+  
   
   static public function include_from_registry($class_name) {
     foreach(self::$registry_chain as $responsibility) {
