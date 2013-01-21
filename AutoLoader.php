@@ -240,6 +240,12 @@ class AutoLoader
     }
   }
   
+  static public function asset_servable() {
+    $asset_paths = explode("/", $_GET["route"]);
+    $bundle = $asset_paths[1];
+    var_dump($bundle); exit;
+  }
+  
   static public function recursive_register($directory, $type, $force = false) {
     if(!is_dir($directory)||substr($directory,0,1)==".") { return false; }
     $dir = new RecursiveIteratorIterator(
@@ -312,7 +318,8 @@ class AutoLoader
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
-    //if(!defined('ENV')) define('ENV', $environment);  
+    //if(!defined('ENV')) define('ENV', $environment);
+    self::asset_servable();
     $app=new WaxApplication($full_app);
   }
 
