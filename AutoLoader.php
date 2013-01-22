@@ -244,6 +244,10 @@ class AutoLoader
     $asset_paths = explode("/", $_GET["route"]);
     $bundle = $asset_paths[1];
     $type = $asset_paths[0];
+    if(false !== in_array($type, self::$plugin_asset_types)) {
+      $type = false;
+      $bundle = $asset_paths[0];
+    }
     $as = self::get_asset_server();
     if($as->handles($bundle, $type)) {
       $as->serve($asset_paths);
