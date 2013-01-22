@@ -150,7 +150,7 @@ class AutoLoader
     return self::$asset_server;
   }
   
-  static public function register_assets($bundle, $directory, $type) {
+  static public function register_assets($bundle, $directory, $type = false) {
     $as = self::get_asset_server();
     $as->register($bundle, $directory, $type);
   }
