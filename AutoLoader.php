@@ -40,23 +40,11 @@ spl_autoload_register(array('AutoLoader',"include_from_registry"));
 function auto_loader_check_cache(){
   
   $cache_location = CACHE_DIR .'layout/';
-  $image_cache_location = CACHE_DIR.'images/';
-  include_once FRAMEWORK_DIR .'/core/WaxEvent.php';
-  include_once FRAMEWORK_DIR .'/utilities/WaxSession.php';
-  include_once FRAMEWORK_DIR .'/utilities/Session.php';
-  include_once FRAMEWORK_DIR .'/utilities/Spyc.php';
-  include_once FRAMEWORK_DIR .'/utilities/Config.php';
-  include_once FRAMEWORK_DIR .'/cache/WaxCacheLoader.php';
-  include_once FRAMEWORK_DIR .'/interfaces/CacheEngine.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheFile.php';
-  include_once FRAMEWORK_DIR .'/cache/engines/WaxCacheImage.php';
-  include_once FRAMEWORK_DIR .'/utilities/File.php';
+  $image_cache_location = CACHE_DIR.'images/';s
   $mime_types = array("css"=>"text/css","json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   /** CHECK LAYOUT CACHE **/
   if(($config = Config::get('layout_cache')) && $config['engine']){
     if($_REQUEST['no-wax-cache']) return false;
-    if($config['include_path']) include_once WAX_ROOT .$config['include_path'] .'WaxCache'.$config['engine'].'.php'; 
-    else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$config['engine'].'.php';    
     $cache = new WaxCacheLoader($config, $cache_location);
 
     if($content = $cache->layout_cache_loader($config)){
@@ -73,8 +61,6 @@ function auto_loader_check_cache(){
   }  
   /** ALSO CHECK FOR IMAGES **/
   if(($img_config = Config::get('image_cache')) && substr_count($_SERVER['REQUEST_URI'], 'show_image') && $img_config['engine']){
-    if($img_config['include_path']) include_once WAX_ROOT .$img_config['include_path'] .'WaxCache'.$img_config['engine'].'.php'; 
-    else include_once FRAMEWORK_DIR .'/cache/engines/WaxCache'.$img_config['engine'].'.php';
     if(isset($img_config['lifetime'])) $cache = new WaxCacheLoader($img_config['engine'], $image_cache_location, $img_config['lifetime']);
     else $cache = new WaxCacheLoader('Image', $image_cache_location);
     if($cache->valid($img_config)) File::display_image($cache->identifier);
@@ -84,9 +70,6 @@ function auto_loader_check_cache(){
 }
 
 function throw_wxexception($e) {
-  AutoLoader::include_from_registry("WaxException");
-  AutoLoader::include_from_registry("WaxTemplate");
-  AutoLoader::include_from_registry("Cacheable");
   $exc = new WaxException($e->getMessage(), "Application Error", false, array("file"=>$e->getFile(), "line"=>$e->getLine(), "trace"=>$e->getTraceAsString()));
 }
 
