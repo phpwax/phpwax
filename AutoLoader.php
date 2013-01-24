@@ -40,7 +40,7 @@ spl_autoload_register(array('AutoLoader',"include_from_registry"));
 function auto_loader_check_cache(){
   
   $cache_location = CACHE_DIR .'layout/';
-  $image_cache_location = CACHE_DIR.'images/';s
+  $image_cache_location = CACHE_DIR.'images/';
   $mime_types = array("css"=>"text/css","json" => "text/javascript", 'js'=> 'text/javascript', 'xml'=>'application/xml', 'rss'=> 'application/rss+xml', 'html'=>'text/html', 'kml'=>'application/vnd.google-earth.kml+xml');
   /** CHECK LAYOUT CACHE **/
   if(($config = Config::get('layout_cache')) && $config['engine']){
