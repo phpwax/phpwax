@@ -168,8 +168,17 @@ class AutoLoader
     /*** If this fails, and we aren't initialised, try autoregistering the plugins ****/
     if(!self::$plugins_initialised) {
       self::autoregister_plugins();
-      self::include_from_registry($class_name);
+      return self::include_from_registry($class_name);
     }
+    if(!self::$initialised) {
+      self::recursive_register(APP_LIB_DIR, "user");
+      self::recursive_register(MODEL_DIR, "application");
+      self::recursive_register(CONTROLLER_DIR, "application");
+      self::recursive_register(FORMS_DIR, "application");
+      self::recursive_register(FRAMEWORK_DIR, "framework");
+      return self::include_from_registry($class_name);
+    }
+    return false;
   }
   
   static public function controller_paths($resp=false) {
@@ -303,11 +312,6 @@ class AutoLoader
   static public function initialise() {
     self::detect_inis();
     self::detect_assets();
-    self::recursive_register(APP_LIB_DIR, "user");
-    self::recursive_register(MODEL_DIR, "application");
-    self::recursive_register(CONTROLLER_DIR, "application");
-    self::recursive_register(FORMS_DIR, "application");
-    self::recursive_register(FRAMEWORK_DIR, "framework");
     WaxEvent::run("wax.start");
     self::register_controller_path("user", CONTROLLER_DIR);
     self::register_view_path("user", VIEW_DIR);
