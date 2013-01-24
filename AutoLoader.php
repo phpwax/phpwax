@@ -299,7 +299,6 @@ class AutoLoader
   }
 
   static public function initialise() {
-    self::asset_servable();
     self::detect_inis();
     self::detect_assets();
     self::detect_test_mode();
@@ -325,6 +324,7 @@ class AutoLoader
    */ 
   static public function run_application($environment="development", $full_app=true) {
     //if(!defined('ENV')) define('ENV', $environment);
+    self::asset_servable();
     $app=new WaxApplication($full_app);
   }
 
