@@ -168,7 +168,7 @@ class AutoLoader
     /*** If this fails, and we aren't initialised, try autoregistering the plugins ****/
     if(!self::$plugins_initialised) {
       self::autoregister_plugins();
-      return self::include_from_registry($class_name);
+      self::include_from_registry($class_name);
     }
     if(!self::$initialised) {
       self::recursive_register(APP_LIB_DIR, "user");
