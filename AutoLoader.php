@@ -311,9 +311,9 @@ class AutoLoader
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
+    self::asset_servable();
     if(!self::$initialised) self::initialise();
     //if(!defined('ENV')) define('ENV', $environment);
-    self::asset_servable();
     $app=new WaxApplication($full_app);
   }
 
