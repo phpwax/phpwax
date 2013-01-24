@@ -130,6 +130,7 @@ class AutoLoader
   static public $controller_registry = array();
   static public $view_registry = array();
   static public $asset_server = false;
+  static public $initialised = false;
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
@@ -267,12 +268,6 @@ class AutoLoader
     }
   }
   
-  static public function detect_test_mode() {
-    if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] == "simpletest" ) {
-      define('ENV', 'test');
-    }
-  }
-  
   static public function detect_environments() {
     if(!is_array(Config::get("environments"))) return false;
     if($_SERVER['HOSTNAME']) $addr = gethostbyname($_SERVER['HOSTNAME']);
@@ -301,7 +296,6 @@ class AutoLoader
   static public function initialise() {
     self::detect_inis();
     self::detect_assets();
-    self::detect_test_mode();
     self::recursive_register(APP_LIB_DIR, "user");
     self::recursive_register(MODEL_DIR, "application");
     self::recursive_register(CONTROLLER_DIR, "application");
@@ -323,6 +317,7 @@ class AutoLoader
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
+    if(!self::$initialised) self::initialise();
     //if(!defined('ENV')) define('ENV', $environment);
     self::asset_servable();
     $app=new WaxApplication($full_app);
@@ -336,4 +331,3 @@ class AutoLoader
   
 }
 auto_loader_check_cache();
-AutoLoader::initialise();
