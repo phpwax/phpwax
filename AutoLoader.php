@@ -131,6 +131,7 @@ class AutoLoader
   static public $view_registry = array();
   static public $asset_server = false;
   static public $initialised = false;
+  static public $plugins_initialised = false;
   
   static public function add_asset_type($key, $type){
     self::$plugin_asset_types[$key] = $type;
@@ -163,6 +164,11 @@ class AutoLoader
         if(class_exists($class_name,false)) return true;
         if(require_once(self::$registry[$responsibility][$class_name]) ) {return true; }
       }
+    }
+    /*** If this fails, and we aren't initialised, try autoregistering the plugins ****/
+    if(!self::$plugins_initialised) {
+      self::autoregister_plugins();
+      self::include_from_registry($class_name);
     }
   }
   
@@ -213,6 +219,7 @@ class AutoLoader
         if(is_dir(PLUGIN_DIR.$plugin) && substr($plugin, 0, 1) != ".") self::include_plugin($plugin);
       }
     }
+    self::$plugins_initialised = true;
   }
   
   static public function detect_assets() {
