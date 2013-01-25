@@ -114,6 +114,7 @@ class AutoLoader
   static public $view_registry = array();
   static public $asset_server = false;
   static public $initialised = false;
+  static public $plugin_setup_scripts = array();
   static public $plugins_initialised = false;
   
   static public function add_asset_type($key, $type){
@@ -154,15 +155,7 @@ class AutoLoader
       self::autoregister_plugins();
       self::include_from_registry($class_name);
     }
-    if(!self::$initialised) {
-      self::recursive_register(APP_LIB_DIR, "user");
-      self::recursive_register(MODEL_DIR, "application");
-      self::recursive_register(CONTROLLER_DIR, "application");
-      self::recursive_register(FORMS_DIR, "application");
-      self::recursive_register(FRAMEWORK_DIR, "framework");
-      return self::include_from_registry($class_name);
-    }
-    return false;
+      
   }
   
   static public function controller_paths($resp=false) {
@@ -188,7 +181,11 @@ class AutoLoader
     self::register_view_path("plugin", PLUGIN_DIR.$plugin."/view/");
     $setup = PLUGIN_DIR.$plugin."/setup.php";
     self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
-    if(is_readable($setup)) include_once($setup);
+    if(is_readable($setup)) self::$plugin_setup_scripts[] = $setup ;
+  }
+  
+  static public function run_plugin_setup_scripts() {
+    foreach(self::$plugin_setup_scripts as $setup) require_once($setup);
   }
   
   static public function plugin_installed($plugin) {
@@ -305,6 +302,7 @@ class AutoLoader
     self::register_helpers();
     set_exception_handler('throw_wxexception');
     set_error_handler('throw_wxerror', 247 );
+    self::run_plugin_setup_scripts();
     WaxEvent::run("wax.init");
   }
   /**
