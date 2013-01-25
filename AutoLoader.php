@@ -188,6 +188,10 @@ class AutoLoader
     foreach(self::$plugin_setup_scripts as $setup) require_once($setup);
   }
   
+  static public function add_plugin_setup_scripts($setup) {
+    self::$plugin_setup_scripts[] = $setup ;
+  }
+  
   static public function plugin_installed($plugin) {
     return is_readable(PLUGIN_DIR.$plugin);
   }
