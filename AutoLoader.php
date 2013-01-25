@@ -181,14 +181,14 @@ class AutoLoader
     self::register_view_path("plugin", PLUGIN_DIR.$plugin."/view/");
     $setup = PLUGIN_DIR.$plugin."/setup.php";
     self::$plugin_array[] = array("name"=>"$plugin","dir"=>PLUGIN_DIR.$plugin);
-    if(is_readable($setup)) self::$plugin_setup_scripts[] = $setup ;
+    if(is_readable($setup)) self::add_plugin_setup_script( $setup ) ;
   }
   
   static public function run_plugin_setup_scripts() {
     foreach(self::$plugin_setup_scripts as $setup) require_once($setup);
   }
   
-  static public function add_plugin_setup_scripts($setup) {
+  static public function add_plugin_setup_script($setup) {
     self::$plugin_setup_scripts[] = $setup ;
   }
   
