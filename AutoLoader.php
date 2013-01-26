@@ -309,12 +309,18 @@ class AutoLoader
     self::run_plugin_setup_scripts();
     WaxEvent::run("wax.init");
   }
+  
+  static public function bootstrap() {
+    self::asset_servable();
+    auto_loader_check_cache();
+    return true;
+  }
+  
   /**
    * Includes the necessary files and instantiates the application.
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
-    self::asset_servable();
     if(!self::$initialised) self::initialise();
     //if(!defined('ENV')) define('ENV', $environment);
     $app=new WaxApplication($full_app);
@@ -327,4 +333,3 @@ class AutoLoader
   }
   
 }
-auto_loader_check_cache();
