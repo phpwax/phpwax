@@ -153,8 +153,13 @@ class AutoLoader
     /*** If this fails, and we aren't initialised, try autoregistering the plugins ****/
     if(!self::$plugins_initialised) {
       self::autoregister_plugins();
-      self::include_from_registry($class_name);
+      if(self::include_from_registry($class_name)) return true;
     }
+    if(!self::$initialised) {
+      self::initialise();
+      if(self::include_from_registry($class_name)) return true;
+    }
+    
       
   }
   
