@@ -113,7 +113,6 @@ class AutoLoader
   static public $controller_registry = array();
   static public $view_registry = array();
   static public $asset_server = false;
-  static public $initialised = false;
   static public $plugin_setup_scripts = array();
   static public $plugins_initialised = false;
   
@@ -313,6 +312,7 @@ class AutoLoader
   static public function bootstrap() {
     self::asset_servable();
     auto_loader_check_cache();
+    self::initialise();
     return true;
   }
   
@@ -321,7 +321,6 @@ class AutoLoader
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
-    if(!self::$initialised) self::initialise();
     //if(!defined('ENV')) define('ENV', $environment);
     $app=new WaxApplication($full_app);
   }
