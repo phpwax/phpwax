@@ -222,7 +222,6 @@ class AutoLoader
   }
   
   static public function detect_assets() {
-    self::get_asset_server();
     self::register("framework", "File", FRAMEWORK_DIR."/utilities/File.php");
     if(!isset($_GET["route"])) return false;
     $temp_route = $_GET["route"];
