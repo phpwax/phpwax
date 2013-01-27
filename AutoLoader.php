@@ -113,6 +113,7 @@ class AutoLoader
   static public $controller_registry = array();
   static public $view_registry = array();
   static public $asset_server = false;
+  static public $initialised = false;
   static public $plugin_setup_scripts = array();
   static public $plugins_initialised = false;
   
@@ -307,6 +308,7 @@ class AutoLoader
     set_error_handler('throw_wxerror', 247 );
     self::run_plugin_setup_scripts();
     WaxEvent::run("wax.init");
+    self::$initialised = true;
   }
   
   static public function bootstrap() {
@@ -321,6 +323,7 @@ class AutoLoader
    * @access public
    */ 
   static public function run_application($environment="development", $full_app=true) {
+    if(!self::$initialised) self::initialise();
     //if(!defined('ENV')) define('ENV', $environment);
     $app=new WaxApplication($full_app);
   }
