@@ -114,6 +114,7 @@ class AutoLoader
   static public $view_registry = array();
   static public $asset_server = false;
   static public $initialised = false;
+  static public $bootstrapped_app = false;
   static public $plugin_setup_scripts = array();
   static public $plugins_initialised = false;
   
@@ -301,6 +302,7 @@ class AutoLoader
   static public function initialise() {
     self::detect_inis();
     self::detect_assets();
+    if(!self::$bootstrapped_app) self::file_locators();
     WaxEvent::run("wax.start");
     self::register_controller_path("user", CONTROLLER_DIR);
     self::register_view_path("user", VIEW_DIR);
@@ -315,8 +317,17 @@ class AutoLoader
     self::$initialised = true;
   }
   
+  static public function file_locators() {
+    self::recursive_register(APP_LIB_DIR, "user");
+    self::recursive_register(MODEL_DIR, "application");
+    self::recursive_register(CONTROLLER_DIR, "application");
+    self::recursive_register(FORMS_DIR, "application");
+    self::recursive_register(FRAMEWORK_DIR, "framework");
+  }
+  
   static public function bootstrap() {
     self::asset_servable();
+    self::$bootstrapped_app = true;
     auto_loader_check_cache();
     self::initialise();
     return true;
