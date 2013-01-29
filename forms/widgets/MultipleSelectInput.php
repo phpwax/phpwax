@@ -26,7 +26,7 @@ class MultipleSelectInput extends SelectInput {
 
     foreach((array)$this->choices as $value=>$option) {
       $sel = "";
-      if(in_array($value, $set_values)) $sel = ' selected="selected"';
+      if(in_array($value, $set_values)) $sel = ' selected';
       $output .= sprintf($choice, $value, $sel, $option);
     }
     return $output;
