@@ -30,6 +30,9 @@ if(function_exists('date_default_timezone_set')){
   else date_default_timezone_set(PHPWAX_TIMEZONE);
 }
 
+// Setup Autoloader Stack
+spl_autoload_register(array('AutoLoader',"include_from_registry"));
+
 /**
  * check cache
  *
@@ -80,10 +83,6 @@ function auto_loader_check_cache(){
   return false;
 } 
 
-
-function __autoload($class_name) {
-  AutoLoader::include_from_registry($class_name);
-}
 
 function throw_wxexception($e) {
   AutoLoader::include_from_registry("WaxException");
