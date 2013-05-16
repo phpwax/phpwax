@@ -158,12 +158,13 @@ if($argv){
   foreach($argv as $dir){
     if(!is_dir($dir)) continue;
     touch("$dir/garbage.collect.lock", time() + WaxSession::$garbage_collection_timeout);
-    foreach(glob("$dir/*") as $file){
-      if($file == "$dir/garbage.collect.lock") continue;
-      if(($stats = stat($file)) && time() > $stats[9])
-        unlink($file);
+
+    $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
+    foreach($objects as $name => $file){
+      if($name == "$dir/garbage.collect.lock") continue;
+      if(!$file->isFile()) continue;      
+      if(($stats = stat($name)) && time() > $stats[9]) unlink($name);
     }
   }
 }
 
-?>
