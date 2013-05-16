@@ -107,7 +107,11 @@ class WaxSession {
         return true;
   }
   
-  public function file_storage_dir(){ return "$this->file_storage_prefix$this->name"; }
+  public function file_storage_dir(){ 
+    $id_pieces = str_split($this->id);
+    $id_folder = $id_pieces[0].$id_pieces[1]."/".$id_pieces[2].$id_pieces[3]."/".$id_pieces[4].$id_pieces[5];
+    return "$this->file_storage_prefix$this->name"."/".$id_folder; 
+  }
   
   public function file_storage(){ return $this->file_storage_dir()."/".$this->id; }
   
