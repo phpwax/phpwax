@@ -50,7 +50,7 @@ class WaxSession {
     }else $this->id = $this->safe_encrypt($_SERVER['REMOTE_ADDR'].microtime().mt_rand());
     
     //add folder to collection of folders to be garbage collected
-    static::$garbage_collection_folders[] = $this->file_storage_dir();
+    static::$garbage_collection_folders[] = $this->file_storage_dir_base();
     
     //set cookie on render to propogate session
     $session = $this;
@@ -109,9 +109,11 @@ class WaxSession {
   
   public function file_storage_dir(){ 
     $id_pieces = str_split($this->id);
-    $id_folder = $id_pieces[0].$id_pieces[1]."/".$id_pieces[2].$id_pieces[3]."/".$id_pieces[4].$id_pieces[5];
+    $id_folder = $id_pieces[7].$id_pieces[8]."/".$id_pieces[9].$id_pieces[10]."/".$id_pieces[11].$id_pieces[12];
     return "$this->file_storage_prefix$this->name"."/".$id_folder; 
   }
+  
+  public function file_storage_dir_base() {return $this->file_storage_prefix.$this->name;}
   
   public function file_storage(){ return $this->file_storage_dir()."/".$this->id; }
   
