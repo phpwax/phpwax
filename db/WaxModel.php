@@ -413,11 +413,11 @@ class WaxModel{
 	 * @author charles marshall
 	 */
 	public function left_join($target){
-		if(is_string($target) || $target instanceof WaxModel){
+    $this->is_left_joined = true;
+		if($target instanceof WaxModel){
 		  $this->left_join_table_name = $target->table;
 		  $this->left_join_target = $target;
-  		$this->is_left_joined = true;
-		}
+		}else $this->left_join_table_name = $target;
 		return $this;
 	}
 	/**
