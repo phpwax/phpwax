@@ -126,7 +126,7 @@ class WaxTreeModel extends WaxModel {
     //Third method: parent references a nothing
     $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL OR {$this->parent_column}_{$this->primary_key} = 0";
 
-    $root_return = $this->filter("(".join(" OR ", $filter).")")->order('id')->all();
+    $root_return = $this->filter("(".join(" OR ", $filter).")")->order($this->table.'.id')->all();
 
     if($root_return) return $root_return;
     else return false;
