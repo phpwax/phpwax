@@ -120,11 +120,11 @@ class WaxTreeModel extends WaxModel {
 
     /** Methods of finding a root node **/
     //First method: parent reference same as primary key
-    $filter[] = "{$this->parent_column}_{$this->primary_key} = {$this->primary_key}";
+    $filter[] = "$this->table.{$this->parent_column}_{$this->primary_key} = ".$this->table.".{$this->primary_key}";
     //Second method: parent references a non-existant node (including 0)
-    $filter[] = "{$this->parent_column}_{$this->primary_key} NOT IN (SELECT {$this->primary_key} FROM `{$this->table}`)";
+    $filter[] = $this->table.".{$this->parent_column}_{$this->primary_key} NOT IN (SELECT {$this->primary_key} FROM `{$this->table}`)";
     //Third method: parent references a nothing
-    $filter[] = "{$this->parent_column}_{$this->primary_key} IS NULL OR {$this->parent_column}_{$this->primary_key} = 0";
+    $filter[] = $this->table.".{$this->parent_column}_{$this->primary_key} IS NULL OR ".$this->table.".{$this->parent_column}_{$this->primary_key} = 0";
 
     $root_return = $this->filter("(".join(" OR ", $filter).")")->order($this->table.'.id')->all();
 
