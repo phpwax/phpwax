@@ -169,7 +169,7 @@ class AssetTagHelper extends WXHelpers {
       if($source{0} != '/') {
         $source = "/{$dir}/{$source}";
       }
-			if($ext && !strpos($source, ".")) {
+			if($ext && !strpos($source, ".$ext")) {
 				$source = $source.".".$ext;
 			}
     }
