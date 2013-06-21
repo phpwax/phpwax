@@ -33,20 +33,20 @@ class WaxModel{
   public $persistent = true;
   public $identifier = false;
   static public $object_cache = array();
-	public $is_paginated = false;
+  public $is_paginated = false;
   public $validation_groups = array(); //active validation groups to check on validate
-	//joins
-	public $is_left_joined = false;
-	public $left_join_target = false;
-	public $left_join_table_name = false;
-	public $join_conditions = false;
-	public $cols = array();
-	public $_col_names = array();
-	public $_update_pk = false;
+  //joins
+  public $is_left_joined = false;
+  public $left_join_target = false;
+  public $left_join_table_name = false;
+  public $join_conditions = false;
+  public $cols = array();
+  public $_col_names = array();
+  public $_update_pk = false;
 
 
-	/** interface vars **/
-	public $cache_enabled = false;
+  /** interface vars **/
+  public $cache_enabled = false;
   public $cache_lifetime = 600;
   public $cache_engine = "Memory";
   public $cache = false;
@@ -59,33 +59,33 @@ class WaxModel{
    *                          or record id (if integer),
    *                          or constraints (if array) but param['pdo'] is PDO instance
    */
- 	function __construct($params=null) {
- 	  try {
- 	    if(!static::$db && static::$adapter) static::$db = new static::$adapter(static::$db_settings);
- 	  } catch (Exception $e) {
- 	    throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
- 	  }
+  function __construct($params=null) {
+    try {
+      if(!static::$db && static::$adapter) static::$db = new static::$adapter(static::$db_settings);
+    } catch (Exception $e) {
+      throw new WaxDbException("Cannot Initialise DB", "Database Configuration Error");
+    }
 
- 		$class_name =  get_class($this) ;
- 		if( $class_name != 'WaxModel' && !$this->table ) {
- 			$this->table = Inflections::underscore( $class_name );
- 		}
+    $class_name =  get_class($this) ;
+    if( $class_name != 'WaxModel' && !$this->table ) {
+      $this->table = Inflections::underscore( $class_name );
+    }
 
 
- 		$this->define($this->primary_key, $this->primary_type, $this->primary_options);
- 		$this->setup();
- 		$this->set_identifier();
- 		// If a scope is passed into the constructor run a method called scope_[scope]().
- 		if($params) {
- 		  $method = "scope_".$params;
-	    if(method_exists($this, $method)) {$this->$method;}
-	    else {
-	      $res = $this->filter(array($this->primary_key => $params))->first();
-   		  $this->row=$res->row;
-   		  $this->clear();
-	    }
-	  }
- 	}
+    $this->define($this->primary_key, $this->primary_type, $this->primary_options);
+    $this->setup();
+    $this->set_identifier();
+    // If a scope is passed into the constructor run a method called scope_[scope]().
+    if($params) {
+      $method = "scope_".$params;
+      if(method_exists($this, $method)) {$this->$method;}
+      else {
+        $res = $this->filter(array($this->primary_key => $params))->first();
+        $this->row=$res->row;
+        $this->clear();
+      }
+    }
+  }
 
   static public function find($finder, $params = array(), $scope_params = array()) {
     $class = get_called_class();
@@ -113,27 +113,27 @@ class WaxModel{
 
 
 
- 	static public function load_adapter($db_settings) {
- 	  if($db_settings["dbtype"]=="none") return true;
- 	  $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
- 	  static::$adapter = $adapter;
- 	  static::$db_settings = $db_settings;
- 	}
+  static public function load_adapter($db_settings) {
+    if($db_settings["dbtype"]=="none") return true;
+    $adapter = "Wax".ucfirst($db_settings["dbtype"])."Adapter";
+    static::$adapter = $adapter;
+    static::$db_settings = $db_settings;
+  }
 
- 	public function define($column, $type, $options=array()) {
- 	  $this->columns[$column]=array($type, $options);
- 	}
+  public function define($column, $type, $options=array()) {
+    $this->columns[$column]=array($type, $options);
+  }
 
- 	public function add_error($field, $message) {
- 	  if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
- 	}
+  public function add_error($field, $message) {
+    if(!in_array($message, (array)$this->errors[$field])) $this->errors[$field][]=$message;
+  }
 
- 	public function filter($column, $value=NULL, $operator="=") {
- 	  //if the var is a string, then we are asuming its a new style filter
- 	  if(is_string($column)) {
- 	    //with a value passed in this confirms its a new method of filter
- 	    if($value !== NULL) {
- 	      //operator sniffing
+  public function filter($column, $value=NULL, $operator="=") {
+    //if the var is a string, then we are asuming its a new style filter
+    if(is_string($column)) {
+      //with a value passed in this confirms its a new method of filter
+      if($value !== NULL) {
+        //operator sniffing
         if(is_array($value))
           if(strpos($column, "?") === false) $operator = "in"; //no ? params so this is an old in check
           else $operator = "raw"; //otherwise its a raw operation, so substitue values
@@ -142,77 +142,77 @@ class WaxModel{
         if($operator == "=") $this->filters[$column] = $filter; //if its equal then overwrite the filter passed on col name
         else $this->filters[] = $filter;
 
- 	    } else $this->filters[] = $column; //assume a raw query, with no parameters
+      } else $this->filters[] = $column; //assume a raw query, with no parameters
     }else{ //if the column isn't a string, then we assume it's an array with multiple filter's passed in.
       foreach((array)$column as $old_column => $old_value) {
         $this->filter($old_column, $old_value);
       }
     }
     return $this;
- 	}
+  }
 
- 	/**
- 	 * Search Function, hands over to the DB to perform natural language searching.
- 	 * Takes an array of columns which can each have a weighting value
- 	 *
- 	 * @param string $text
- 	 * @param array $columns
- 	 * @return WaxRecordset Object
- 	 */
+  /**
+   * Search Function, hands over to the DB to perform natural language searching.
+   * Takes an array of columns which can each have a weighting value
+   *
+   * @param string $text
+   * @param array $columns
+   * @return WaxRecordset Object
+   */
 
- 	public function search($text, $columns = array(), $relevance=0) {
- 	  $res = static::$db->search($this, $text, $columns, $relevance);
+  public function search($text, $columns = array(), $relevance=0) {
+    $res = static::$db->search($this, $text, $columns, $relevance);
     return $res;
- 	}
+  }
 
- 	/**
- 	 * Scope function... allows a named scope function to be called which configures a view of the model
- 	 *
- 	 * @param string $scope
- 	 * @return $this
- 	 */
+  /**
+   * Scope function... allows a named scope function to be called which configures a view of the model
+   *
+   * @param string $scope
+   * @return $this
+   */
 
- 	public function scope($scope) {
+  public function scope($scope) {
     $this->asked_for_scope = $scope;
- 	  $method = "scope_".$scope;
+    $method = "scope_".$scope;
     WaxEvent::run(get_class($this).".scope", $this);
     WaxEvent::run("model.".get_class($this).".scope", $this);
     if(method_exists($this, $method)) $this->$method;
     return $this;
- 	}
+  }
 
 
- 	public function clear() {
+  public function clear() {
     $this->filters = array();
     $this->group_by = false;
     $this->_order = false;
     $this->_limit = false;
     $this->_offset = "0";
     $this->sql = false;
-		$this->is_paginated = false;
-		$this->is_left_joined = false;
+    $this->is_paginated = false;
+    $this->is_left_joined = false;
     $this->errors = array();
-		$this->having = false;
-		$this->select_columns = array();
+    $this->having = false;
+    $this->select_columns = array();
     return $this;
- 	}
+  }
 
 
- 	public function validate() {
- 	  foreach($this->columns as $column=>$setup) {
- 	    $field = new $setup[0]($column, $this, $setup[1]);
- 	    $field->is_valid();
- 	    if($field->errors) {
- 	      $this->errors[$column] = $field->errors;
+  public function validate() {
+    foreach($this->columns as $column=>$setup) {
+      $field = new $setup[0]($column, $this, $setup[1]);
+      $field->is_valid();
+      if($field->errors) {
+        $this->errors[$column] = $field->errors;
       }
- 	  }
- 	  if(count($this->errors)) return false;
- 	  return true;
- 	}
+    }
+    if(count($this->errors)) return false;
+    return true;
+  }
 
- 	public function get_errors() {
- 	  return $this->errors;
- 	}
+  public function get_errors() {
+    return $this->errors;
+  }
 
   public function get_col($name) {
     if(!$this->columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
@@ -226,7 +226,7 @@ class WaxModel{
     if($data) {
       $model_this = new $model;
       if(is_array($data[0])) {
-     	  return new WaxRecordset(new $model, $data);
+        return new WaxRecordset(new $model, $data);
       }else{
         $row = new $model;
         $row->row = $data;
@@ -245,10 +245,10 @@ class WaxModel{
     else $cache->set($value);
   }
 
-	static public function unset_cache($model, $field, $id = false){
+  static public function unset_cache($model, $field, $id = false){
     $cache = new WaxCache($model."/".$field."/".$id, "memory");
     $cache->expire();
-	}
+  }
   /**
    * output_val function
    * Gets the output value of a field,
@@ -281,7 +281,7 @@ class WaxModel{
       *  @param  string  name    property name
       *  @return mixed           property value
       */
- 	public function __get($name) {
+  public function __get($name) {
     if(array_key_exists($name, $this->columns)) {
       if(WaxModelField::$skip_field_delegation_cache[$this->columns[$name][0]]["get"]) return $this->row[$name];
       $field = $this->get_col($name);
@@ -297,10 +297,10 @@ class WaxModel{
    *  @param  string  name    property name
    *  @param  mixed   value   property value
    */
- 	public function __set( $name, $value ) {
+  public function __set( $name, $value ) {
     if(array_key_exists($name, $this->columns)) {
- 	    $field = $this->get_col($name);
- 	    $field->set($value);
+      $field = $this->get_col($name);
+      $field->set($value);
     } else $this->row[$name]=$value;
   }
 
@@ -308,7 +308,7 @@ class WaxModel{
    *  __toString overload
    *  @return  primary key of class
    */
- 	public function __toString() {
+  public function __toString() {
     return $this->{$this->primary_key};
   }
 
@@ -319,115 +319,115 @@ class WaxModel{
   *  Note that this operation is only carried out if the model
   *  is configured to be persistent.
   */
- 	public function save() {
- 	  WaxEvent::run("wax.model.before_save", $this);
- 	  $this->before_save();
- 	  $associations = array();
- 	  foreach($this->columns as $col=>$setup) {
- 	    $field = $this->get_col($col);
- 	    $this->_col_names[$field->col_name] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
- 	    if(!$field->is_association) $this->get_col($col)->save();
- 	    else $associations[]=$field;
- 	  }
- 	  if($this->persistent) {
- 	    if($this->primval) {
- 	      $this->before_update();
+  public function save() {
+    WaxEvent::run("wax.model.before_save", $this);
+    $this->before_save();
+    $associations = array();
+    foreach($this->columns as $col=>$setup) {
+      $field = $this->get_col($col);
+      $this->_col_names[$field->col_name] = 1; //cache column names as keys of an array for the adapter to check which cols are allowed to write
+      if(!$field->is_association) $this->get_col($col)->save();
+      else $associations[]=$field;
+    }
+    if($this->persistent) {
+      if($this->primval) {
+        $this->before_update();
         if(!$this->validate()) return false;
- 	      $res = $this->update();
+        $res = $this->update();
       }
- 	    else {
- 	      $this->before_insert();
+      else {
+        $this->before_insert();
         if(!$this->validate()) return false;
- 	      $res = $this->insert();
- 	    }
- 		}
- 		foreach($associations as $assoc) $assoc->save();
-	  WaxEvent::run("wax.model.after_save", $this);
- 		$res->after_save();
- 		return $res;
+        $res = $this->insert();
+      }
+    }
+    foreach($associations as $assoc) $assoc->save();
+    WaxEvent::run("wax.model.after_save", $this);
+    $res->after_save();
+    return $res;
   }
 
     /**
      *  delete record from table
      *  @return model
      */
- 	public function delete(){
- 	  //throw an exception trying to delete a whole table.
- 	  if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
- 	  $this->before_delete();
-		//before we delete this, check fields - clean up joins by delegating to field
-		foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();
- 	  $res = static::$db->delete($this);
+  public function delete(){
+    //throw an exception trying to delete a whole table.
+    if(!$this->filters && !$this->primval) throw new WaxException("Tried to delete a whole table. Please revise your code.");
+    $this->before_delete();
+    //before we delete this, check fields - clean up joins by delegating to field
+    foreach($this->columns as $col=>$setup) $this->get_col($col)->delete();
+    $res = static::$db->delete($this);
     $this->after_delete();
     return $res;
   }
 
- 	public function order($order_by, $order_params = array()){
-		$this->_order = $order_by;
-		$this->_order_params = $order_params;
-		return $this;
-	}
+  public function order($order_by, $order_params = array()){
+    $this->_order = $order_by;
+    $this->_order_params = $order_params;
+    return $this;
+  }
 
-	public function random($limit) {
-	  $this->order(static::$db->random());
-	  $this->limit($limit);
-	  return $this;
-	}
+  public function random($limit) {
+    $this->order(static::$db->random());
+    $this->limit($limit);
+    return $this;
+  }
 
-	public function dates($start, $end) {
+  public function dates($start, $end) {
 
-	}
+  }
   public function having($condition){
     $this->having = $condition;
     return $this;
   }
 
-	public function offset($offset){
-		$this->_offset = $offset;
-		return $this;
-	}
-	public function limit($limit){
-		$this->_limit = $limit;
-		return $this;
-	}
-	public function group($group_by, $group_params = array()){
-		$this->group_by = $group_by;
-		$this->_group_by_params = $group_params;
-		return $this;
-	}
-	public function sql($query) {
-	  $this->sql = $query;
-	  return $this;
-	}
+  public function offset($offset){
+    $this->_offset = $offset;
+    return $this;
+  }
+  public function limit($limit){
+    $this->_limit = $limit;
+    return $this;
+  }
+  public function group($group_by, $group_params = array()){
+    $this->group_by = $group_by;
+    $this->_group_by_params = $group_params;
+    return $this;
+  }
+  public function sql($query) {
+    $this->sql = $query;
+    return $this;
+  }
 
-	//take the page number, number to show per page, return paginated record set..
-	public function page($page_number="1", $per_page=10){
-		$this->is_paginated = true;
-		return new WaxPaginatedRecordset($this, $page_number, $per_page);
-	}
-	/**
-	 * the left join function activates the flag to let the db adapter know a join will be used
-	 * also takes the table to join to - returns $this so its chainable
-	 * @param string $target (this can be a model name or the wax model itself)
-	 * @return WaxModel $this
-	 * @author charles marshall
-	 */
-	public function left_join($target){
+  //take the page number, number to show per page, return paginated record set..
+  public function page($page_number="1", $per_page=10){
+    $this->is_paginated = true;
+    return new WaxPaginatedRecordset($this, $page_number, $per_page);
+  }
+  /**
+   * the left join function activates the flag to let the db adapter know a join will be used
+   * also takes the table to join to - returns $this so its chainable
+   * @param string $target (this can be a model name or the wax model itself)
+   * @return WaxModel $this
+   * @author charles marshall
+   */
+  public function left_join($target){
     $this->is_left_joined = true;
-		if($target instanceof WaxModel){
-		  $this->left_join_table_name = $target->table;
-		  $this->left_join_target = $target;
-		}else $this->left_join_table_name = $target;
-		return $this;
-	}
-	/**
-	 * takes the conditions to add to the join syntax in the db adapter
-	 * @param string $conditions or array $conditions
-	 * @return WaxModel $this
-	 */
-	public function join_condition($conditions){
- 	  if(is_string($conditions)) $this->join_conditions[]=$conditions;
- 	  else {
+    if($target instanceof WaxModel){
+      $this->left_join_table_name = $target->table;
+      $this->left_join_target = $target;
+    }else $this->left_join_table_name = $target;
+    return $this;
+  }
+  /**
+   * takes the conditions to add to the join syntax in the db adapter
+   * @param string $conditions or array $conditions
+   * @return WaxModel $this
+   */
+  public function join_condition($conditions){
+    if(is_string($conditions)) $this->join_conditions[]=$conditions;
+    else {
       foreach((array)$conditions as $key=>$filter) {
         if(is_array($filter)) {
           if(!strpos($key, "?")) {
@@ -439,10 +439,10 @@ class WaxModel{
       }
     }
     return $this;
-	}
+  }
 
 
-	/************** Methods that hit the database ****************/
+  /************** Methods that hit the database ****************/
 
 
   public function update( $id_list = array() ) {
@@ -471,88 +471,88 @@ class WaxModel{
 
 
   public function create($attributes = array()) {
- 		$row = clone $this;
- 		return $row->update_attributes($attributes);
+    $row = clone $this;
+    return $row->update_attributes($attributes);
   }
 
 
- 	public function all() {
- 	  return new WaxRecordset($this, static::$db->select($this));
- 	}
+  public function all() {
+    return new WaxRecordset($this, static::$db->select($this));
+  }
 
- 	public function rows() {
- 	  return static::$db->select($this);
- 	}
-
-
- 	public function first() {
- 	  $this->_limit = "1";
- 	  $model = clone $this;
- 	  $res = static::$db->select($model);
- 	  if($res[0])
- 	    $model->row = $res[0];
- 	  else
- 	    $model = false;
- 	  return $model;
- 	}
+  public function rows() {
+    return static::$db->select($this);
+  }
 
 
- 	public function update_attributes($array) {
- 	  $this->set_attributes($array);
-		return $this->save();
- 	}
+  public function first() {
+    $this->_limit = "1";
+    $model = clone $this;
+    $res = static::$db->select($model);
+    if($res[0])
+      $model->row = $res[0];
+    else
+      $model = false;
+    return $model;
+  }
 
 
- 	/************ End of database methods *************/
+  public function update_attributes($array) {
+    $this->set_attributes($array);
+    return $this->save();
+  }
 
 
- 	public function set_attributes($array) {
- 	  //move association fields to the end of the array
- 	  foreach((array)$array as $k=>$v) {
- 	    if($this->columns[$k]){
- 	      $is_assoc = WaxModelField::$skip_field_delegation_cache[$this->columns[$k][0]]['assoc'];
+  /************ End of database methods *************/
+
+
+  public function set_attributes($array) {
+    //move association fields to the end of the array
+    foreach((array)$array as $k=>$v) {
+      if($this->columns[$k]){
+        $is_assoc = WaxModelField::$skip_field_delegation_cache[$this->columns[$k][0]]['assoc'];
         if(!isset($is_assoc)){
-     	    $field = $this->get_col($k);
-     	    $is_assoc = $field->is_association;
- 	      }
-   	    if($is_assoc){
-   	      $swap = $array[$k];
-   	      unset($array[$k]);
-   	      $array[$k] = $swap;
+          $field = $this->get_col($k);
+          $is_assoc = $field->is_association;
+        }
+        if($is_assoc){
+          $swap = $array[$k];
+          unset($array[$k]);
+          $array[$k] = $swap;
         }
       }
     }
 
-		foreach((array)$array as $k=>$v) {
-		  $this->$k=$v;
-		}
-	  return $this;
-	}
+    foreach((array)$array as $k=>$v) {
+      $this->$k=$v;
+    }
+    return $this;
+  }
 
 
- 	public function is_posted() {
- 		if(is_array($_REQUEST[$this->table])) {
- 			return true;
- 		} else {
- 			return false;
- 		}
- 	}
+  public function is_posted() {
+    if(is_array($_REQUEST[$this->table])) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
- 	public function handle_post($attributes=null) {
- 	  if($this->is_posted()) {
- 	    if(!$attributes) $attributes = $_POST[$this->table];
- 	    return $this->update_attributes($attributes);
- 	  }
- 	  return false;
- 	}
+  public function handle_post($attributes=null) {
+    if($this->is_posted()) {
+      if(!$attributes) $attributes = $_POST[$this->table];
+      return $this->update_attributes($attributes);
+    }
+    return false;
+  }
 
- 	/**
- 	 * primval() function - superseded by snappier pk()
- 	 *
- 	 * @return mixed
- 	 * simple helper to return the value of the primary key
- 	 **/
- 	public function primval() {return $this->pk();}
+  /**
+   * primval() function - superseded by snappier pk()
+   *
+   * @return mixed
+   * simple helper to return the value of the primary key
+   **/
+  public function primval() {return $this->pk();}
 
   public function pk() {
     return $this->{$this->primary_key};
@@ -624,7 +624,7 @@ class WaxModel{
 
 
 
- 	public function __call( $func, $args ) {
+  public function __call( $func, $args ) {
     if(array_key_exists($func, $this->columns)) {
       $field = $this->get_col($func);
       return $field->get($args[0]);
@@ -638,20 +638,20 @@ class WaxModel{
 
     if( $args ) {
       if(count($what)==2) $filter["filter"] = array($what[0]=>$args[0], $what[1], $args[1]);
-    	else $filter["filter"] = array($what[0]=>$args[0]) ;
+      else $filter["filter"] = array($what[0]=>$args[0]) ;
 
-    	if($finder[0]=="find_all_") return static::find("all", array("filter"=>$filter));
+      if($finder[0]=="find_all_") return static::find("all", array("filter"=>$filter));
       else return static::find("first", array("filter"=>$filter));
     }
   }
 
   public function __clone() {
-  	$this->setup();
+    $this->setup();
    }
 
-	public function total_without_limits(){
-		return static::$db->total_without_limits;
-	}
+  public function total_without_limits(){
+    return static::$db->total_without_limits;
+  }
 
 
   /**
@@ -694,43 +694,43 @@ class WaxModel{
 
 
    /**
-   	*  These are left deliberately empty in the base class
-   	*
-   	*/
+    *  These are left deliberately empty in the base class
+    *
+    */
 
-	public function setup(){
+  public function setup(){
    WaxEvent::run(get_class($this).".setup", $this);
     WaxEvent::run("model.".get_class($this).".setup", $this);
   }
- 	public function before_save(){
+  public function before_save(){
     WaxEvent::run(get_class($this).".before_save", $this);
     WaxEvent::run("model.".get_class($this).".save.before", $this);
   }
- 	public function after_save(){
+  public function after_save(){
     WaxEvent::run(get_class($this).".after_save", $this);
     WaxEvent::run("model.".get_class($this).".save.after", $this);
   }
- 	public function before_update(){
+  public function before_update(){
     WaxEvent::run(get_class($this).".before_update", $this);
     WaxEvent::run("model.".get_class($this).".update.before", $this);
   }
- 	public function after_update(){
+  public function after_update(){
     WaxEvent::run(get_class($this).".after_update", $this);
     WaxEvent::run("model.".get_class($this).".update.after", $this);
   }
- 	public function before_insert(){
+  public function before_insert(){
     WaxEvent::run(get_class($this).".before_insert", $this);
     WaxEvent::run("model.".get_class($this).".insert.before", $this);
   }
- 	public function after_insert(){
+  public function after_insert(){
     WaxEvent::run(get_class($this).".after_insert", $this);
     WaxEvent::run("model.".get_class($this).".insert.after", $this);
   }
- 	public function before_delete(){
+  public function before_delete(){
     WaxEvent::run(get_class($this).".before_delete", $this);
     WaxEvent::run("model.".get_class($this).".delete.before", $this);
   }
- 	public function after_delete(){
+  public function after_delete(){
     WaxEvent::run(get_class($this).".after_delete", $this);
     WaxEvent::run("model.".get_class($this).".delete.after", $this);
   }
