@@ -14,19 +14,19 @@ abstract class WaxDbAdapter {
   protected $having = false;
   public $db;
   protected $date = false;
-	protected $timestamp = false;
-	protected $db_settings;
-	public $data_types = array(
-	    'string'          => "varchar",
-	    'text'            => "longtext",
+  protected $timestamp = false;
+  protected $db_settings;
+  public $data_types = array(
+      'string'          => "varchar",
+      'text'            => "longtext",
 
-	    'date'            => "date",
-	    'time'            => 'time',
-	    'date_and_time'   => "datetime",
+      'date'            => "date",
+      'time'            => 'time',
+      'date_and_time'   => "datetime",
 
-	    'integer'         => "int",
-	    'decimal'         => "decimal",
-	    'float'           => "float"
+      'integer'         => "int",
+      'decimal'         => "decimal",
+      'float'           => "float"
   );
 
   public $operators = array(
@@ -42,9 +42,9 @@ abstract class WaxDbAdapter {
   );
   public $sql_without_limit = false;
   public $total_without_limits = false;
-	public $default_db_engine = "MyISAM";
-	public $default_db_charset = "utf8";
-	public $default_db_collate = "utf8_unicode_ci";
+  public $default_db_engine = "MyISAM";
+  public $default_db_charset = "utf8";
+  public $default_db_collate = "utf8_unicode_ci";
 
   public function __construct($db_settings=array()) {
 
@@ -55,19 +55,19 @@ abstract class WaxDbAdapter {
     if(!$db_settings['port']) $db_settings['port']="3306";
     ini_set("default_charset", $this->default_db_charset);
     $this->db = $this->connect($db_settings);
-		$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   }
 
   public function connect($db_settings) {
     if(isset($db_settings['socket']) && strlen($db_settings['socket'])>2) {
-			$dsn="{$db_settings['dbtype']}:unix_socket={$db_settings['socket']};dbname={$db_settings['database']}";
-		} else {
-			$dsn="{$db_settings['dbtype']}:host={$db_settings['host']};port={$db_settings['port']};dbname={$db_settings['database']}";
-		}
+      $dsn="{$db_settings['dbtype']}:unix_socket={$db_settings['socket']};dbname={$db_settings['database']}";
+    } else {
+      $dsn="{$db_settings['dbtype']}:host={$db_settings['host']};port={$db_settings['port']};dbname={$db_settings['database']}";
+    }
     $pdo = new PDO( $dsn, $db_settings['username'] , $db_settings['password'] );
     $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, TRUE);
-		$pdo->exec("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
-		return $pdo;
+    $pdo->exec("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+    return $pdo;
   }
 
 
@@ -77,7 +77,7 @@ abstract class WaxDbAdapter {
     $stmt = $this->exec($this->prepare($this->insert_sql($model)), $model->row);
     $model->row[$model->primary_key]=$this->db->lastInsertId();
     return $model;
-	}
+  }
 
   public function update(WaxModel $model) {
     $this->exec($this->prepare($this->update_sql($model)), array_intersect_key($model->row, $model->_col_names));
@@ -107,9 +107,9 @@ abstract class WaxDbAdapter {
     } else {
       $sql .=$this->select_sql($model);
 
-			$join = $this->left_join($model);
-			$sql .=$join["sql"];
-			$params = $join["params"];
+      $join = $this->left_join($model);
+      $sql .=$join["sql"];
+      $params = $join["params"];
 
       $filters = $this->filter_sql($model);
       if($filters["sql"]) $sql.= " WHERE ";
@@ -117,8 +117,8 @@ abstract class WaxDbAdapter {
       if($params) $params = array_merge($params, $filters["params"]);
       else $params = $filters["params"];
 
-			//add filters from the other side of the join
-			if($model->is_left_joined && $model->left_join_target instanceof WaxModel){
+      //add filters from the other side of the join
+      if($model->is_left_joined && $model->left_join_target instanceof WaxModel){
         $join_filters = $this->filter_sql($model->left_join_target);
         if($join_filters["sql"])
           if(strpos($sql,"WHERE") === false) $sql.= " WHERE ";
@@ -145,36 +145,36 @@ abstract class WaxDbAdapter {
     WaxEvent::run("wax.db_query",$event_data);
     $this->exec($stmt, $params);
     $this->row_count_query($model);
-		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
     WaxEvent::run("wax.db_query_end",$event_data);
-		return $res;
+    return $res;
   }
 
   public function prepare($sql) {
     try { $stmt = $this->db->prepare($sql); }
     catch(PDOException $e) {
-		  $err = $e->getMessage();
-		  switch($e->getCode()) {
-		    default: 	throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
-		  }
+      $err = $e->getMessage();
+      switch($e->getCode()) {
+        default:  throw new WaxSqlException( "{$err}", "Error Preparing Database Query", $sql );
+      }
       exit;
-		}
-		return $stmt;
+    }
+    return $stmt;
   }
 
   public function exec($pdo_statement, $bindings = array(), $swallow_errors=false) {
     try {
       WaxLog::log("info", "[DB] ".$pdo_statement->queryString);
       if(count($bindings)) WaxLog::log("info", "[DB] Values:".join($bindings,",") );
-			$pdo_statement->execute($bindings);
-		} catch(PDOException $e) {
-			$err = $pdo_statement->errorInfo();
-			switch($e->getCode()) {
-		    case "42S02":
-		    case "42S22":
-		    ob_start();
+      $pdo_statement->execute($bindings);
+    } catch(PDOException $e) {
+      $err = $pdo_statement->errorInfo();
+      switch($e->getCode()) {
+        case "42S02":
+        case "42S22":
+        ob_start();
 
-		    foreach(Autoloader::$plugin_array as $plugin) Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true);
+        foreach(Autoloader::$plugin_array as $plugin) Autoloader::recursive_register(PLUGIN_DIR.$plugin["name"]."/lib/model", "plugin", true);
         Autoloader::include_dir(MODEL_DIR, true);
         foreach(get_declared_classes() as $class) {
           if(is_subclass_of($class, "WaxModel")) {
@@ -185,20 +185,20 @@ abstract class WaxDbAdapter {
         }
 
 
-		    $sync = false; //Forces destruction and flushing of output buffer
-		    ob_end_clean();
-		    try {
-		      $pdo_statement->execute($bindings);
-		    } catch(PDOException $e) {
-		      throw new WaxDBStructureException( "{$err[2]}", "Database Structure Error", $pdo_statement->queryString."\n".print_r($bindings,1) );
-		    }
-		    break;
-		    default:
-		    WaxLog::log("error", "[DB] $err[2] , SQL: ".$pdo_statement->queryString.($bindings?"\n".print_r($bindings,1):""));
-		    if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
-		  }
-		}
-		return $pdo_statement;
+        $sync = false; //Forces destruction and flushing of output buffer
+        ob_end_clean();
+        try {
+          $pdo_statement->execute($bindings);
+        } catch(PDOException $e) {
+          throw new WaxDBStructureException( "{$err[2]}", "Database Structure Error", $pdo_statement->queryString."\n".print_r($bindings,1) );
+        }
+        break;
+        default:
+        WaxLog::log("error", "[DB] $err[2] , SQL: ".$pdo_statement->queryString.($bindings?"\n".print_r($bindings,1):""));
+        if(!$swallow_errors) throw new WaxSqlException( "{$err[2]}", "Error Preparing Database Query", $pdo_statement->queryString."\n".print_r($bindings,1) );
+      }
+    }
+    return $pdo_statement;
   }
 
   /**
@@ -233,10 +233,10 @@ abstract class WaxDbAdapter {
   /**
    * Query Specific methods, construct driver specific language
    */
-	public function insert_sql($model) {
-	  return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`)
+  public function insert_sql($model) {
+    return "INSERT into `{$model->table}` (`".join("`,`", array_keys($model->row))."`)
              VALUES (".join(",", array_keys($this->bindings($model->row))).")";
-	}
+  }
 
   public function update_sql($model) {
     if(!$pk = $model->_update_pk) $pk = $model->row[$model->primary_key];
@@ -254,7 +254,7 @@ abstract class WaxDbAdapter {
     if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
     elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
     else $sql.= "*";
-		//mysql extra - if limit then record the number of rows found without limits
+    //mysql extra - if limit then record the number of rows found without limits
 
 
     $sql.= " FROM `{$model->table}`";
@@ -270,20 +270,20 @@ abstract class WaxDbAdapter {
   public function row_count_query($model) {
     if($model->is_paginated) {
       $extrastmt = $this->db->prepare("SELECT FOUND_ROWS()");
-		  $this->exec($extrastmt);
-		  $found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
-		  $this->total_without_limits = $found[0]['FOUND_ROWS()'];
-	  }
+      $this->exec($extrastmt);
+      $found = $extrastmt->fetchAll(PDO::FETCH_ASSOC);
+      $this->total_without_limits = $found[0]['FOUND_ROWS()'];
+    }
   }
 
   public function left_join($model) {
-		if($model->is_left_joined && count($model->join_conditions)){
-		  $conditions = $this->filter_sql($model,"join_conditions");
-		  if($model->left_join_target instanceof WaxModel) $join_table = $model->left_join_target->table;
-		  else $join_table = $model->left_join_target;
-		  $sql = " LEFT JOIN `" . $join_table . "` ON ( " . $conditions["sql"] . " )";
-		  return array("sql"=>$sql, "params"=>$conditions["params"]);
-	  }
+    if($model->is_left_joined && count($model->join_conditions)){
+      $conditions = $this->filter_sql($model,"join_conditions");
+      if($model->left_join_target instanceof WaxModel) $join_table = $model->left_join_target->table;
+      else $join_table = $model->left_join_target;
+      $sql = " LEFT JOIN `" . $join_table . "` ON ( " . $conditions["sql"] . " )";
+      return array("sql"=>$sql, "params"=>$conditions["params"]);
+    }
   }
   public function group($model){
     if($model->group_by) return array("sql"=>" GROUP BY {$model->group_by}", "params"=>$model->_group_by_params);
@@ -467,10 +467,10 @@ abstract class WaxDbAdapter {
    */
 
   protected function bindings($array) {
-		$params = array();
-		foreach( $array as $key=>$value ) {
-			$params[":{$key}"] = $value;
-		}
+    $params = array();
+    foreach( $array as $key=>$value ) {
+      $params[":{$key}"] = $value;
+    }
     return $params;
   }
 
