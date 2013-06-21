@@ -213,7 +213,25 @@ class WaxTreeModel extends WaxModel {
   }
 
   public function before_save(){
-    if($this->primval) foreach($this->tree() as $node) if($this->{$this->parent_join_field} == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
+    //if($this->primval) foreach($this->tree() as $node) if($this->{$this->parent_join_field} == $node->id) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
+    $cyclic = false;
+    //$path = $this->path_to_root();
+    $class= get_class($this);
+    $path_to_root = array();
+    $pm = new $class($this->parent_id);
+    $col = $this->parent_join_field;
+    while($pm->$col > 0){
+      $path_to_root[] = $pm->primval ;
+      if(in_array($pm->$col, $path_to_root) ){
+        $cyclic = true;
+        break;
+      }
+      $pm = new $class($pm->$col);
+    }
+
+    if(in_array($this->primval, $path_to_root) || $cyclic) throw new WaxException("Tree node cannot have parent in its own subtree.","Application Error");
+
+
   }
 
   public function syncdb(){
