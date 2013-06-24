@@ -37,8 +37,7 @@ class WaxForm implements Iterator {
     if(is_array($model)) $options = $model;
     if($model instanceof WaxModel) $this->handler = new WaxBoundForm($model, $post_data, $options);
     elseif($model instanceof WaxRecordset) $this->handler = new WaxRecordsetForm($model, $post_data, $options);
-    else $this->handler = new WaxUnboundForm($model, $post_data, array_merge($options, array('form_prefix'=>$this->form_prefix)) );
-		if($this->form_prefix) $this->handler->form_prefix = $this->form_prefix;
+    else $this->handler = new WaxUnboundForm($model, $post_data, $options);
     $this->setup();
   }
  
