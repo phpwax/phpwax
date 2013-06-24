@@ -133,7 +133,8 @@ class AssetTagHelper extends WXHelpers {
   public function iterate_dir($d, $ext){
     $files = array();
     $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#.*#i'), true);
-    foreach($dir as $file) if(!$file->isDir() && $file->getExtension() == $ext) $files[] = $file;
+    foreach($dir as $file) if(!$file->isDir() && pathinfo($file->getFilename(), PATHINFO_EXTENSION) == $ext) $files[] = $file;
+    natsort($files);
     return $files;
   }
 
@@ -142,9 +143,9 @@ class AssetTagHelper extends WXHelpers {
 	  if(ENV =="development") return $rev;
 		
 		if(!$rev = Config::get('GIT_HEAD')){
-			if(!$branch = Config::get('repo_branch')) $branch = "master";
-			$path = WAX_ROOT.".git/refs/heads/".$branch;
-			if(is_readable($path) && is_file($path)) $rev = "?r=".substr(file_get_contents($path),0,8);
+			if($branch = Config::get('repo_branch')) $path = WAX_ROOT.".git/refs/heads/".$branch;
+      else $path = WAX_ROOT.".git/".trim(substr(file_get_contents(WAX_ROOT.".git/HEAD"), 5));
+			if(is_readable($path) && is_file($path)) $rev = substr(file_get_contents($path),0,8);
 			Config::set('GIT_HEAD', $rev);
 		}
 		return $rev;
@@ -173,7 +174,7 @@ class AssetTagHelper extends WXHelpers {
 				$source = $source.".".$ext;
 			}
     }
-    return $source.$this->git_revision();
+    return $source."?r=".$this->git_revision();
   }
     
 }
