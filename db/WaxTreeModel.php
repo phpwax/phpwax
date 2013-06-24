@@ -33,6 +33,16 @@ class WaxTreeModel extends WaxModel {
     return false;
   }
 
+  public function enable_has_child_query(){
+    $parent_col = $this->parent_join_field;
+    $primary = $this->primary_key;
+    $this->select_columns = "
+      $this->table.*,
+      (SELECT count($primary) FROM `$this->table` as sub_content where `sub_content`.$parent_col= `$this->table`.$primary) as 'has_children'
+    ";
+    return $this;
+  }
+
   /**
    * function to get the tree structure for in-order traversal via a foreach($model->tree() as $node) type use
    * if the current model is empty it will return the entire tree including all root nodes
