@@ -218,8 +218,9 @@ class WaxTreeModel extends WaxModel {
     //$path = $this->path_to_root();
     $class= get_class($this);
     $path_to_root = array();
-    $pm = new $class($this->parent_id);
     $col = $this->parent_join_field;
+    $pm = new $class($this->$col);
+
     while($pm->$col > 0){
       $path_to_root[] = $pm->primval ;
       if(in_array($pm->$col, $path_to_root) ){
