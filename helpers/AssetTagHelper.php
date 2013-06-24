@@ -133,7 +133,7 @@ class AssetTagHelper extends WXHelpers {
   public function iterate_dir($d, $ext){
     $files = array();
     $dir = new RecursiveIteratorIterator(new RecursiveRegexIterator(new RecursiveDirectoryIterator($d, RecursiveDirectoryIterator::FOLLOW_SYMLINKS), '#.*#i'), true);
-    foreach($dir as $file) if(!$file->isDir() && $file->getExtension() == $ext) $files[] = $file;
+    foreach($dir as $file) if(!$file->isDir() && pathinfo($file->getFilename(), PATHINFO_EXTENSION) == $ext) $files[] = $file;
     return $files;
   }
 
