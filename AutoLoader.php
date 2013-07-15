@@ -8,6 +8,7 @@
 /**
  *  Defines application level constants
  */
+if(!defined("WAX_ROOT")) define("WAX_ROOT", __DIR__);
 if(!defined("WAX_START_TIME")) define("WAX_START_TIME",microtime(TRUE));
 if(!defined("WAX_START_MEMORY")) define("WAX_START_MEMORY",memory_get_usage());
 if(!defined("APP_DIR")) define('APP_DIR', WAX_ROOT . "app/");
