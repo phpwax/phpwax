@@ -23,7 +23,7 @@ class CheckboxInput extends TextInput {
     $out .= $this->before_tag();
     if($this->errors) $this->add_class("error_field");
     if($this->unchecked_value !== false){
-      $hidden = new HiddenInput($this->name, array("prefix"=>$this->prefix, "value"=>$this->unchecked_value));
+      $hidden = new HiddenInput($this->name, array("prefix"=>$this->prefix, "value"=>$this->unchecked_value, "id"=>$this->id."_fallback"));
       $out.=$hidden->render();
     }
     if($this->value == $this->checked_value) $this->checked="checked";
