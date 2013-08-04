@@ -166,6 +166,7 @@ class AutoLoader
   }
   
   static public function controller_paths($resp=false) {
+		$paths = array();
     if($resp) return self::$controller_registry[$resp];
     foreach(self::$controller_registry as $responsibility) {
       foreach($responsibility as $path) $paths[]=$path;
@@ -173,6 +174,7 @@ class AutoLoader
     return $paths;
   }
   static public function view_paths($resp = false) {
+		$paths = array();
     if($resp) return self::$view_registry[$resp];
     foreach(self::$view_registry as $responsibility) {
       foreach($responsibility as $path) $paths[]=$path;
