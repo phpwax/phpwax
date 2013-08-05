@@ -46,7 +46,8 @@ class RadioInput extends SelectInput {
   
   public function map_choices() {
     foreach($this->choices as $key=>$choice) {
-      $choices[$key]=$choice;
+      if($this->text_choices) $choices[$choice]=$choice;
+      else $choices[$key]=$choice;
     }
     $this->choices = $choices;
   }
@@ -54,5 +55,6 @@ class RadioInput extends SelectInput {
   public function label() {
     return sprintf($this->label_template, $this->output_id(), $this->group_label_class, $this->label);
   }
+  
 
 }

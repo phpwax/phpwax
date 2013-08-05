@@ -17,8 +17,12 @@ class MultipleSelectInput extends SelectInput {
     $output = "";
     $choice = '<option value="%s"%s>%s</option>';
 
-    if($this->value instanceOf WaxRecordset) foreach($this->value->rowset as $r) if((is_array($r) && $v = array_shift($r)) || $v=$r ) $set_values[] = $v;
-    else $set_values = array($this->value);
+    if($this->value instanceOf WaxRecordset) {
+      foreach($this->value->rowset as $r) {
+        if((is_array($r) && $v = array_shift($r)) || $v=$r ) $set_values[] = $v;
+      }
+    } else $set_values = $this->value;
+    
 
     foreach((array)$this->choices as $value=>$option) {
       $sel = "";

@@ -13,22 +13,20 @@ class SelectInput extends WaxWidget {
     "name", "disabled", "readonly", "size", "id", "class","tabindex", "multiple", "data-placeholder"
   );
 
-
   public $class = "input_field select_field";
   public $label_template = '<label for="%s">%s</label>';
   public $template = '<select %s>%s</select>';
-
+  public $choice_template = '<option value="%s"%s>%s</option>';
+  public $selected_template = ' selected="selected"';
 
   public function tag_content() {
     $output = "";
-    $choice = '<option value="%s"%s>%s</option>';
     if(!$this->choices) $this->choices = $this->get_choices();
     $this->map_choices();
     foreach($this->choices as $value=>$option) {
       $sel = "";
-			if(is_numeric($this->value) && $this->value==$value) $sel = ' selected="selected"';
-			elseif($this->value==$value) $sel = ' selected="selected"';
-      $output .= sprintf($choice, $value, $sel, $option);
+			if($this->value == $value) $sel = $this->selected_template;
+      $output .= sprintf($this->choice_template, $value, $sel, $option);
     }
     return $output;
   }
@@ -51,6 +49,7 @@ class SelectInput extends WaxWidget {
   }
 
   public function output_name() {
+    if($this->prefix) return $this->prefix."[".$this->name."]";
     if($this->name && $this->name != $this->bound_data->table."[".$this->field."]") return $this->name;
     else if($this->bound_data instanceof ForeignKey) return $this->bound_data->table."[".$this->bound_data->col_name."]";
     return parent::output_name();
