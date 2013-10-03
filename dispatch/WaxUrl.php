@@ -33,6 +33,7 @@ class WaxUrl {
   static public $mapped=false;
   static public $uri = false;
   static public $original_route = false;
+  static public $autoload = false;
 
   /**
    *
@@ -173,7 +174,7 @@ class WaxUrl {
 	}
 
 	protected static function is_controller($test) {
-	  if(class_exists(Inflections::slashcamelize(str_replace("-", "", $test), true)."Controller", false)) return true;
+	  if(class_exists(Inflections::slashcamelize(str_replace("-", "", $test), true)."Controller", self::$autoload)) return true;
 	  $path = "";
 	  if(strpos($test, "/")) {
 			$path = substr($test, 0, strpos($test, "/")+1);
