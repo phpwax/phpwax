@@ -46,10 +46,16 @@ class WaxPartial {
 	  if(!$this->routed_controller && WaxUrl::$params["controller"]) $controller = WaxUrl::$params["controller"];
     else if(!$this->routed_controller) $controller = WaxUrl::$default_controller;
     else $controller = $this->routed_controller;
+
+    if(is_callable($controller)) {
+      $p_controller = $controller();
+      $p_controller->controller = get_class($controller);
+    } else {
+      $delegate = Inflections::slashcamelize($controller, true) . "Controller";
+      $p_controller = new $delegate;
+      $p_controller->controller = $controller;
+    }           
     
-    $delegate = Inflections::slashcamelize($controller, true) . "Controller";
-    $p_controller = new $delegate;        
-    $p_controller->controller = $controller;
     $p_controller->use_layout = false;
     $p_controller->use_format = $this->format;
         
