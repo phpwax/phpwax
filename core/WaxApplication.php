@@ -96,9 +96,16 @@ class WaxApplication {
 	  $this->request = WaxUrl::$params;
 	  WaxEvent::run("wax.post_request", $this->request);
 	  $this->response = new WaxResponse;
-	  
-	  $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
-    $controller = new $delegate($this);
+
+    $delegate = WaxUrl::get("controller");
+    if(!is_callable($delegate)) {
+      $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
+      $controller = new $delegate($this);
+    } else {
+      $controller = $delegate($this);
+      WaxUrl::$params["controller"] = get_class($controller);
+    }
+
 	  WaxEvent::run("wax.controller", $controller);
 	  WaxEvent::run("wax.pre_render", $controller);
 	  if($controller->render !==false) $this->execute_controller($controller);    
