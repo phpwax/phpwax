@@ -103,7 +103,7 @@ class WaxApplication {
       $controller = new $delegate($this);
     } else {
       $controller = $delegate($this);
-      WaxUrl::$params["controller"] = get_class($controller);
+      $controller->controller = get_class($controller);
     }
 
 	  WaxEvent::run("wax.controller", $controller);
