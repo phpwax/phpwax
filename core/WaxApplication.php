@@ -101,6 +101,7 @@ class WaxApplication {
     if(!is_callable($delegate)) {
       $delegate = Inflections::slashcamelize(WaxUrl::get("controller"), true)."Controller";
       $controller = new $delegate($this);
+      $controller->controller = WaxUrl::get("controller");
     } else {
       $controller = $delegate($this);
       $controller->controller = get_class($controller);
@@ -121,7 +122,6 @@ class WaxApplication {
    **/
   
   public function execute_controller(&$controller) {	      
-    $controller->controller = WaxUrl::get("controller");
 	  $controller->action = WaxUrl::get("action");
 	  $controller->route_array = explode("/", trim(WaxUrl::$original_route,"/"));
 	  $controller->use_format = WaxUrl::get("format");
