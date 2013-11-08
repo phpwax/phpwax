@@ -41,27 +41,19 @@ class WaxApplication {
    **/
    
 	private function setup_environment() {
-	  $addr = gethostbyname($_SERVER["HOSTNAME"]);
-	  if(!$addr) $addr = gethostbyname($_SERVER["SERVER_NAME"]);
-	  $regexp = '/^((1?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(1?\d{1,2}|2[0-4]\d|25[0-5])$/'; 
-	  if(!preg_match($regexp, $addr)) $addr = false;
+
 		if(defined('ENV')) {
 		  Config::set_environment(ENV);
+		} elseif($_SERVER["ENV"]) {
+			define("ENV", $_SERVER["ENV"]);
+		  Config::set_environment('production');
 		} elseif(Config::get($_SERVER["SERVER_NAME"])) {
 		  Config::set_environment($_SERVER["SERVER_NAME"]);
 		  define("ENV", $_SERVER["SERVER_NAME"]);
-		} elseif($addr && (substr($addr,0,3)=="10." || substr($addr,0,4)=="127."||substr($addr,0,4)=="192.")) {
-		  Config::set_environment('development');
-		  define("ENV", "development");
-		} elseif($addr) {
-		  Config::set_environment('production');
-		  define("ENV", "production");
-		} else Config::set_environment('development');
+		} else Config::set_environment('production');
 			  
 		//  Looks for an environment specific file inside app/config 
-		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
-		WaxLog::log("info", "Detected environment $addr and loaded ".ENV);
-	  
+		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");	  
   }
   
   /**
