@@ -41,7 +41,6 @@ class WaxApplication {
    **/
    
 	private function setup_environment() {
-
 		if(defined('ENV')) {
 		  Config::set_environment(ENV);
 		} elseif($_SERVER["ENV"]) {
