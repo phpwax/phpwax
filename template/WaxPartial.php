@@ -49,7 +49,7 @@ class WaxPartial {
 
     if(is_callable($controller)) {
       $p_controller = $controller();
-      $p_controller->controller = get_class($controller);
+      $p_controller->controller = get_class($p_controller);
     } else {
       $delegate = Inflections::slashcamelize($controller, true) . "Controller";
       $p_controller = new $delegate;
