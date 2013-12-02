@@ -140,7 +140,7 @@ class AssetTagHelper extends WXHelpers {
 
 	public function git_revision(){
 	  $rev = "";
-	  if(ENV =="development") return $rev;
+	  if(ENV =="development" && !defined("PRODUCTION_ASSETS")) return $rev;
 
 		if(!$rev = Config::get('GIT_HEAD')){
 			if($branch = Config::get('repo_branch')) $path = WAX_ROOT.".git/refs/heads/".$branch;
