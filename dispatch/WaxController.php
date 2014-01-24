@@ -57,11 +57,12 @@ class WaxController
    *  @access protected
    *  @param string $route
    */
-  public function redirect_to($options, $protocol=false, $status=302) {
+  public function redirect_to($options, $protocol=false, $status=302, $host=false) {
+    if(!$host) $host = $_SERVER['HTTP_HOST'];
     if(!$protocol) $protocol = $_SERVER["HTTPS"]?"https://":"http://";
     switch(true) {
       case is_array($options):
-        $url = $protocol.$_SERVER['HTTP_HOST'].UrlHelper::url_for($options);
+        $url = $protocol.$host.UrlHelper::url_for($options);
         $this->response->redirect($url, $status);
         break;
       case preg_match("/^\w+:\/\/.*/", $options):
@@ -76,7 +77,7 @@ class WaxController
           if(substr($_SERVER['REQUEST_URI'],-1) != "/") $options = "/" . $options;
           $options = $_SERVER['REQUEST_URI'] . $options;
         }
-        $url = $protocol.$_SERVER['HTTP_HOST'].$options;
+        $url = $protocol.$host.$options;
         $this->response->redirect($url,$status);
         break;
     }
