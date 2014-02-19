@@ -6,14 +6,14 @@
   */
 
 class File {
-  
+
   static $compression_quality = "85";
   static $resize_library = "gd"; // Optionally set to 'gd'
-	
+
 	static function is_older_than($file, $time) {
 		if(file_exists($file)) {
 			$modtime=filemtime($file);
-			if($modtime>=(time() - $time ) ) { 
+			if($modtime>=(time() - $time ) ) {
 				return false;
 			}
 			else {
@@ -21,7 +21,7 @@ class File {
 			}
 		}
 	}
-	
+
 	static function safe_file_save($dir, $file) {
 		$file=preg_replace('/[^\w\.\-_]/', '', $file);
 		while(is_file($dir.$file)) {
@@ -31,7 +31,7 @@ class File {
 		}
 		return $file;
 	}
-	
+
 	static function is_image($file) {
 		if(!is_file($file)) { return false; }
 		if(getimagesize($file)) {
@@ -39,7 +39,7 @@ class File {
 		}
 		return false;
 	}
-	
+
 	static function clear_image_cache($image_id){
 		$look_for = CACHE_DIR."images/". $image_id."_*";
 		foreach(glob($look_for) as $filename){
@@ -76,7 +76,7 @@ class File {
 		chmod($destination, 0777);
 		return true;
 	}
-	
+
 	static public function gd_resize_image($source, $destination, $r_width, $overwrite=false, $force_width=false) {
 	  list($width, $height, $image_type) = getimagesize($source);
 	  if(!$width) return false;
@@ -96,16 +96,35 @@ class File {
       case 3: $src = imagecreatefrompng($source); break;
       default: return '';  break;
     }
-    
+
     $dst = imagecreatetruecolor($newwidth, $newheight);
     imagesavealpha($dst, true);
     $trans_colour = imagecolorallocatealpha($dst, 255, 255, 255, 127);
     imagefill($dst, 0, 0, $trans_colour);
     $img = imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-    
+
 		return self::output_image_gd($image_type, $dst, $destination);
 	}
-	
+
+  static function is_animated($filename){
+      if(!($fh = @fopen($filename, 'rb'))) return false;
+      $count = 0;
+      //an animated gif contains multiple "frames", with each frame having a
+      //header made up of:
+      // * a static 4-byte sequence (\x00\x21\xF9\x04)
+      // * 4 variable bytes
+      // * a static 2-byte sequence (\x00\x2C)
+
+      // We read through the file til we reach the end of the file, or we've found
+      // at least 2 frame headers
+      while(!feof($fh) && $count < 2) {
+        $chunk = fread($fh, 1024 * 100); //read 100kb at a time
+        $count += preg_match_all('#\x00\x21\xF9\x04.{4}\x00\x2C#s', $chunk, $matches);
+      }
+      fclose($fh);
+      return $count > 1;
+  }
+
   /**
    * modes:
    *   crop (default)   - keeps aspect ratio, fills target size, crops the rest
@@ -116,19 +135,19 @@ class File {
   static public function smart_resize_image($source, $destination, $width, $height, $mode = "crop"){
     if(!is_readable($source)) return;
     list($source_width, $source_height, $image_type) = getimagesize($source);
-    
+
     if(!$width && !$height || !function_exists("imagecopyresampled")) return false;
-    
+
     if(!$height || !$width) $mode = "nocrop"; //force nocrop when specifying only 1 dimension
-    
+
     $r_h = $height / $source_height;
     $r_w = $width / $source_width;
-    
+
     if($r_h == $r_h && $r_h == 1){
       copy($source, $destination);
       return true;
     }
-    
+
     //mode calculations, the clever stuff
     if($mode == "small"){
       if($r_h < $r_w) $width = $r_h * $source_width; //ignore target width and use the aspect ratio to work it out
@@ -150,22 +169,24 @@ class File {
         }
       }
     }
-    
+
     switch($image_type){
       case 1: $src = imagecreatefromgif($source); break;
       case 2: $src = imagecreatefromjpeg($source); break;
       case 3: $src = imagecreatefrompng($source); break;
       default: return false; break;
     }
-    
-    $dst = imagecreatetruecolor($width, $height);
-    imagesavealpha($dst, true);
-    imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
-    if(!imagecopyresampled($dst, $src, 0, 0, $source_x, $source_y, $width, $height, $source_width, $source_height)) return false;
-    
-    return self::output_image_gd($image_type, $dst, $destination);
+    if(self::is_animated($source)){
+      return self::resize_image($source, $destination, $width, false, false, true);
+    }else{
+      $dst = imagecreatetruecolor($width, $height);
+      imagesavealpha($dst, true);
+      imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
+      if(!imagecopyresampled($dst, $src, 0, 0, $source_x, $source_y, $width, $height, $source_width, $source_height)) return false;
+      return self::output_image_gd($image_type, $dst, $destination);
+    }
   }
-  
+
   static private function output_image_gd($image_type, $dst, $destination){
     switch($image_type) {
       case "gif":
@@ -176,39 +197,39 @@ class File {
       case "png":
       case 3: $src = imagepng($dst,$destination); break;
     }
-    
+
     imagedestroy($dst);
     if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
 		return true;
 	}
-	
+
 	static function rotate_image($source, $destination, $angle){
 		if(!self::is_image($source)) return false;
 	  if(self::$resize_library == "gd" && function_exists("imagerotate")) return self::gd_rotate_image($source, $destination, $angle);
 		system("cp $source $destination");
-		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";		
+		$command="mogrify $source -colorspace RGB -rotate {$angle} $destination";
 		system($command);
 		if(!is_file($destination)) { return false; }
 		chmod($destination, 0777);
 		return true;
 	}
-	
+
   static function gd_rotate_image($source, $destination, $angle){
 	  list($width, $height, $image_type) = getimagesize($source);
-	  
+
     switch($image_type) {
       case 1: $src = imagecreatefromgif($source); break;
       case 2: $src = imagecreatefromjpeg($source);  break;
       case 3: $src = imagecreatefrompng($source); break;
       default: return '';  break;
     }
-    
+
     $dst = imagerotate($src, $angle, -1);
-    
+
 		return self::output_image_gd($image_type, $dst, $destination);
   }
-  
+
 	static function resize_image_extra($source, $destination, $percent=false, $x=false, $y=false, $ignore_ratio=false){
 		if(!self::is_image($source)) return false;
 		system("cp {$source} {$destination}");
@@ -224,23 +245,23 @@ class File {
 		chmod($destination, 0777);
 		return true;
 	}
-	
+
   static public function image_convert($source, $destination, $type = "jpeg", $quality = 75){
     if(!function_exists("getimagesize")) return false;
     list($source_width, $source_height, $image_type) = getimagesize($source);
-    
+
     switch($image_type){
       case 1: $src = imagecreatefromgif($source); break;
       case 2: $src = imagecreatefromjpeg($source); break;
       case 3: $src = imagecreatefrompng($source); break;
       default: return false; break;
     }
-    
+
     $ret = call_user_func("image".$type, $src, $destination, $quality);
     imagedestroy($src);
     return $ret;
   }
-	
+
 	static function crop_image($source, $destination, $x, $y, $width, $height){
 		if(!self::is_image($source)) return false;
 	  if(self::$resize_library == "gd" && function_exists("imagecopyresampled")) return self::gd_crop_image($source, $destination, $x, $y, $width, $height);
@@ -251,32 +272,32 @@ class File {
 		chmod($destination, 0777);
 		return true;
 	}
-	
+
   static function gd_crop_image($source, $destination, $x, $y, $width, $height){
     list($source_width, $source_height, $image_type) = getimagesize($source);
-    
+
     switch($image_type){
       case 1: $src = imagecreatefromgif($source); break;
       case 2: $src = imagecreatefromjpeg($source); break;
       case 3: $src = imagecreatefrompng($source); break;
       default: return false; break;
     }
-    
+
     $dst = imagecreatetruecolor($width, $height);
     imagesavealpha($dst, true);
     imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 255, 255, 255, 127));
     if(!imagecopyresampled($dst, $src, 0, 0, $x, $y, $width, $height, $width, $height)) return false;
-    
+
     return self::output_image_gd($image_type, $dst, $destination);
 	}
-	
+
 	static function display_image($image) {
 		if(!self::is_image($image)) return false;
 		$info=getimagesize($image);
 		$mime = image_type_to_mime_type($info[2]);
 		self::display_asset($image, $mime);
 	}
-	
+
 	static function display_asset($path, $mime) {
 	  if(!is_readable($path)) return false;
 	  if($res = self::detect_mime($path)) $mime=$res;
@@ -295,7 +316,7 @@ class File {
 		fclose($handle);
 		exit;
 	}
-	
+
 	static function detect_mime($file) {
 	  $type=false;
 
@@ -307,28 +328,28 @@ class File {
   	}
   	return $type;
 	}
-	
+
 	static function stream_file($file, $stream_as = false, $autoexit=true) {
 	  $length=filesize($file);
 		$filename = preg_replace("/[^a-zA-Z0-9-_\.]/", "_", basename($file));
-		if(is_readable($file)) { 
+		if(is_readable($file)) {
 			header("Content-Type: application/force-download"."\n");
 			header("Content-Length: ".$length.'\n');
 			if($stream_as) $filename = $stream_as;
 			header("Content-disposition: inline; filename=".$filename."\n");
 			header("Connection: close"."\n");
 			ob_end_clean();
-			readfile($file); 
+			readfile($file);
 			if(!$autoexit) return true;
 			exit;
 		}
 		return false;
 	}
-	
+
 	static function get_extension($file) {
 		return substr($file, strrpos($file, '.')+1);
 	}
-	
+
 	static function get_folders($directory) {
 	  if(!is_dir($directory)) return array();
 		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
@@ -336,14 +357,14 @@ class File {
 			if(($iter->hasChildren(true)) && !strstr($iter->getPath()."/".$file, "/.")) {
 			  if($iter->isLink()) $row['path'] = readlink($iter->getPath().'/'.$file->getFilename());
 			  else $row['path']= $iter->getPath().'/'.$file->getFilename();
-				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());				
+				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());
 				$rows[]=$row; unset($row);
 				if($iter->isLink()) $rows = array_merge($rows, self::get_folders(readlink($iter->getPath().'/'.$file->getFilename())));
-			} 
+			}
 		}
 		return $rows;
 	}
-	
+
 	static function recursively_delete($item) {
 	  if(!is_file($item) && !is_dir($item)) return true;
 		if(is_file($item) && is_readable($item)) { unlink($item); return true; }
@@ -355,7 +376,7 @@ class File {
 		if(is_dir($item) && is_readable($item) && substr($item, -1) != "." ) { rmdir($item); }
 		return true;
 	}
-		
+
 	static function scandir_recursive($directory) {
 	  $folderContents = array();
 		foreach (scandir($directory) as $folderItem) {
@@ -369,20 +390,20 @@ class File {
 	  }
     return $folderContents;
 	}
-	
+
 	static function list_images_recursive($directory) {
 		$dir = new RecursiveIteratorIterator(
 		           new RecursiveDirectoryIterator($directory), true);
 		foreach ( $dir as $file ) {
 			if(!strstr($dir->getPath()."/".$file, "/.") ) {
-				if(self::is_image($file)) {					
+				if(self::is_image($file)) {
 					$imagearray[]=array("filename"=>$dir->getFilename(), "path"=>base64_encode($file));
 				}
-			}			
+			}
 		}
 		return $imagearray;
 	}
-	
+
 	static public function scandir($directory, $include_pattern=false) {
 	  $list = array();
 	  foreach(scandir($directory) as $item) {
@@ -393,7 +414,7 @@ class File {
 	  }
 	  return $list;
 	}
-	
+
 	static public function render_temp_image($original, $size) {
 	  if(self::is_image($original)) {
 	    $destination = tempnam(CACHE_DIR, "file_image_");
@@ -403,7 +424,7 @@ class File {
 	  }
 	  return false;
 	}
-	
+
 	static function write_to_file($filename, $filecontents, $mode = 0777) {
 		if(! $res = file_put_contents($filename, $filecontents) ) {
 		  chmod($filename, $mode);
@@ -412,16 +433,16 @@ class File {
 			return true;
 		}
 	}
-	
-  
+
+
   static function read_from_file($filename) {
   	if(!is_readable($filename)) {
-      return false;	
+      return false;
   	} else {
-      return file_get_contents($filename);	 	
+      return file_get_contents($filename);
     }
   }
-  
+
   static function recursive_directory_copy($source, $destination, $verbose=true) {
       if(!is_dir($destination)) mkdir($destination);
       foreach(File::scandir($source, ".htaccess") as $file) {
@@ -433,7 +454,7 @@ class File {
         }
       }
     }
-	
+
 	static function mime_map($filename) {
     $mime_types = array(
         'txt' => 'text/plain',
@@ -492,9 +513,9 @@ class File {
     $ext = strtolower(array_pop(explode('.',$filename)));
     if (array_key_exists($ext, $mime_types)) {
       return $mime_types[$ext];
-    } 
+    }
 	}
 
-	
+
 }
 ?>
