@@ -417,7 +417,10 @@ class WaxModel{
     if($target instanceof WaxModel){
       $this->left_join_table_name = $target->table;
       $this->left_join_target = $target;
-    }else $this->left_join_table_name = $target;
+    }else {
+      $this->left_join_table_name = $target;
+      $this->left_join_target = $target;
+  }
     return $this;
   }
   /**
