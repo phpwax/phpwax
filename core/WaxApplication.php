@@ -50,7 +50,7 @@ class WaxApplication {
 		  Config::set_environment($_SERVER["SERVER_NAME"]);
 		  define("ENV", $_SERVER["SERVER_NAME"]);
 		} else{
-              define("ENV", $_SERVER["SERVER_NAME"]);
+              define("ENV", 'production');
               Config::set_environment('production');
             }
 
