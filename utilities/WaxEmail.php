@@ -1,11 +1,11 @@
 <?php
 /**
-	* @package PHP-Wax
-	*/
+  * @package PHP-Wax
+  */
 
 /**
  * @package PHP-Wax
- *	Email class gives a comprehensive API for sending emails.
+ *  Email class gives a comprehensive API for sending emails.
  */
 class WaxEmail
 {
@@ -223,11 +223,11 @@ class WaxEmail
     function MailSend($header, $body) {
       $header = preg_replace('#(?<!\r)\n#si', "\n", $header);
       //$additional_parameters = "-f".$this->HeaderLine("Return-Path",$this->sender);
-			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
+      if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
         return true;
-			} else {
-				throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
-			}
+      } else {
+        throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
+      }
     }
 
 
@@ -1013,9 +1013,9 @@ class WaxEmail
     }
 
     public function get_templates($action) {
-			$view = Inflections::underscore(get_class($this))."/".$action;
+      $view = Inflections::underscore(get_class($this))."/".$action;
 
-			$view_path= new WaxTemplate($this);
+      $view_path= new WaxTemplate($this);
 
       foreach((array)Autoloader::view_paths("user") as $path) {
         $view_path->add_path($path.get_class($this)."/".$use_view);
@@ -1026,10 +1026,10 @@ class WaxEmail
         $view_path->add_path($path.$view);
         $view_path->add_path($path."shared/".$view);
       }
-			foreach($view_path->template_paths as $path){
-				if(is_readable($path.".html")) $html = $view_path->parse();
-				if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
-			}
+      foreach($view_path->template_paths as $path){
+        if(is_readable($path.".html")) $html = $view_path->parse();
+        if(is_readable($path.".txt")) $txt = $view_path->parse("txt");
+      }
 
       if($html){
         $this->is_html(true);
@@ -1046,7 +1046,7 @@ class WaxEmail
       $layout = new WaxTemplate($this);
       $layout->add_path(VIEW_DIR."layouts/".$this->use_layout);
       ob_end_clean();
-  	  return $layout->parse($this->use_format);
+      return $layout->parse($this->use_format);
     }
 
     public function __call($name, $args) {
