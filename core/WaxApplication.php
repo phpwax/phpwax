@@ -49,7 +49,10 @@ class WaxApplication {
 		} elseif(Config::get($_SERVER["SERVER_NAME"])) {
 		  Config::set_environment($_SERVER["SERVER_NAME"]);
 		  define("ENV", $_SERVER["SERVER_NAME"]);
-		} else Config::set_environment('production');
+		} else{
+              define("ENV", 'production');
+              Config::set_environment('production');
+            }
 
 		//  Looks for an environment specific file inside app/config
 		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
