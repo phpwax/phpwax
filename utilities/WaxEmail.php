@@ -226,7 +226,8 @@ class WaxEmail
 			if($rt = mail($to, $this->EncodeHeader($this->subject), $body, $header, $additional_parameters)) {
         return true;
 			} else {
-				throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
+                return false;
+				//throw new WaxEmailException("Couldn't Send Email", $header."\n".$body);
 			}
     }
 
