@@ -61,7 +61,7 @@ class WaxException extends Exception {
   		  exit;
 		  }
   	}
-		header("HTTP/1.1 500 Application Error",1, 500);
+		header("Status: 500 Application Error");
 		echo $this->error_message;
 		exit;
 	}
