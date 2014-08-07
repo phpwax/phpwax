@@ -140,8 +140,10 @@ class WaxValidate {
   }
 
   protected function valid_required() {
-    $value = $this->object->value();
-    if(strlen($value)< 1) $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
+    if(!($this->object instanceOf FileField)){ //if required filefield validates already
+      $value = $this->object->value();
+      if(strlen($value)< 1) $this->add_error($this->field, sprintf($this->messages["required"], $this->label));
+    }
   }
 
   //check that the submit button has a value - but a blank error so no front end error is shown
