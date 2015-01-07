@@ -18,7 +18,8 @@ class FileField extends WaxModelField {
   public $messages = array(
     "format"=>      "%s is not a valid format",
     "size_large"  =>      "image uploaded is too large (%s or less)",
-    "size_small"  =>      "%s is too small"
+    "size_small"  =>      "%s is too small",
+    "required"  =>      "%s is a required field"
   );
   public $data_type = "string";
 
@@ -45,7 +46,9 @@ class FileField extends WaxModelField {
   public function validate() {
     $this->valid_extension();
     $this->valid_size();
+    if($this->required) $this->valid_required();
   }
+
   public function valid_extension(){
     $file = $_FILES[$this->model->table];
     $name= $file['name'][$this->col_name];
@@ -54,7 +57,11 @@ class FileField extends WaxModelField {
       if($this->allowed_extensions && !in_array($ext, $this->allowed_extensions)  ) $this->add_error($this->field, sprintf($this->messages["format"], $ext));
     }
   }
-
+  public function valid_required() {
+    $file = $_FILES[$this->model->table];
+    $error= $file['error'][$this->col_name];
+    if($error == 4) $this->add_error($this->field, sprintf($this->messages["required"], $this->label?:$this->field));
+  }
   public function valid_size() {
     $file = $_FILES[$this->model->table];
     $error= $file['error'][$this->col_name];
