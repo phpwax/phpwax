@@ -71,7 +71,6 @@ class WaxResponse {
   
   public function execute() {
     header($this->status_map[$this->status]);
-    header("X-Info: Powered By PHP-Wax");
     foreach($this->headers as $header=>$val)
       if(is_array($val))
         foreach($val as $v)
