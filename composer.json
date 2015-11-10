@@ -2,19 +2,39 @@
     "name": "phpwax/phpwax",
     "description": "The Full Stack Version of the PHP Wax Framework",
     "authors": [
-        {"name": "Ross Riley",       "email": "riley.ross@gmail.com"},
-        {"name": "Charles Marshall", "email": "charles@oneblackbear.com"},
-        {"name": "Sheldon Els",      "email": "sheldon@oneblackbear.com"}
+        {
+            "name": "Ross Riley",
+            "email": "riley.ross@gmail.com"
+        },
+        {
+            "name": "Charles Marshall",
+            "email": "charles@oneblackbear.com"
+        },
+        {
+            "name": "Sheldon Els",
+            "email": "sheldon@oneblackbear.com"
+        }
     ],
     "license": "MIT",
     "require": {
-      "php": ">=5.3",
-      "phpwax/asset":     "1.0.*@dev"
+        "php": ">=5.3",
+        "phpwax/asset": "^1.0"
     },
     "autoload": {
-      "classmap": [
-        "auth/", "cache/", "config/", "core/", "db/","dispatch/","exceptions/",
-        "forms/","helpers/","interfaces/","template/","utilities/","AutoLoader.php"
-      ]
+        "classmap": [
+            "auth/",
+            "cache/",
+            "config/",
+            "core/",
+            "db/",
+            "dispatch/",
+            "exceptions/",
+            "forms/",
+            "helpers/",
+            "interfaces/",
+            "template/",
+            "utilities/",
+            "AutoLoader.php"
+        ]
     }
 }
