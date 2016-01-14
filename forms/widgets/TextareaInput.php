@@ -9,7 +9,7 @@
 class TextareaInput extends WaxWidget {
 
   public $allowable_attributes = array(
-    "name", "disabled", "readonly", "id", "class", "accesskey", "tabindex", "rows", "cols", "placeholder"
+    "name", "disabled", "readonly", "id", "class", "accesskey", "tabindex", "rows", "cols", "placeholder", "maxlength"
   );
 
   public $class = "input_field textarea_field";  
