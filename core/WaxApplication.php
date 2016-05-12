@@ -18,6 +18,7 @@ class WaxApplication
 
     public $request = false;
     public $response = false;
+    public $renderer;
 
     /**
      *  Step 1. Setup an environment.
@@ -199,6 +200,22 @@ class WaxApplication
         }
 
         return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * @param mixed $renderer
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
     }
 
 

@@ -26,6 +26,7 @@ class WaxController
   public $plugin_share = 'shared';
   public $filters = array();
   public $plugins = array();
+  public $renderer;
 
   // Flag which can be set to false to render nothing
   public $render = true;
@@ -37,6 +38,7 @@ class WaxController
     if($application instanceof WaxApplication) {
       $this->application = $application;
       $this->response = $this->application->response;
+      $this->renderer = $this->application->getRenderer();
     } else {
       $this->response = new WaxResponse;
     }
