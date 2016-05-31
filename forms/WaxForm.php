@@ -84,8 +84,17 @@ class WaxForm implements Iterator {
     if($name == "elements") return $this->handler->elements;
     if(array_key_exists($name, $this->handler->elements)) return $this->handler->elements[$name];
   }
-  
-  public function make_attributes() {
+
+  public function __isset($name)
+  {
+      if(array_key_exists($name, $this->handler->elements)) {
+          return true;
+      }
+
+      return false;
+  }
+
+    public function make_attributes() {
     $res = "";
     if(!$this->attributes['id']) $this->attributes['id'] = $this->form_prefix;
     foreach($this->attributes as $name=>$value) $res.=sprintf('%s="%s" ', $name, $value);
