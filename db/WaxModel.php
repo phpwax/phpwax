@@ -304,6 +304,19 @@ class WaxModel{
     } else $this->row[$name]=$value;
   }
 
+  public function __isset($name)
+  {
+    if(array_key_exists($name, $this->columns)) {
+      return true;
+    } elseif(method_exists($this, $name)) {
+      return true;
+    } elseif(is_array($this->row) && array_key_exists($name, $this->row)) {
+      return true;
+    }
+
+    return false;
+  }
+
   /**
    *  __toString overload
    *  @return  primary key of class
