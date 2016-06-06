@@ -1,6 +1,6 @@
 <?php
 
-class WaxUnboundForm implements iterator {
+class WaxUnboundForm implements Iterator {
   
   public $post_data;
   public $elements = array();
