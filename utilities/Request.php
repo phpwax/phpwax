@@ -41,21 +41,27 @@ class Request {
 		}
 
 	}
-	
-	public static function post($name, $clean=false) {
-	  self::init();
-	  if($clean) {
-	    $vals = filter_var_array(self::$post, FILTER_SANITIZE_SPECIAL_CHARS);
-	    return $vals[$name];
-	  }
-	  return self::$post[$name];
-	}
-	
-	public static function param($name, $clean = false) {
-	  self::init();
-	  return self::$params[$name];
-	}
-	
+
+    public static function post($name, $clean = false)
+    {
+        self::init();
+        if ($clean) {
+            $vals = filter_var_array(self::$post, FILTER_SANITIZE_SPECIAL_CHARS);
+
+            return $vals[$name];
+        }
+
+        return self::$post[$name];
+    }
+
+    public static function param($name, $clean = false)
+    {
+        self::init();
+
+        if (isset(self::$params[$name])) {
+            return self::$params[$name];
+        }
+    }
 
 
 }
