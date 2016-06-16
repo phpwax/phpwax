@@ -26,15 +26,20 @@ class Request {
 	    self::$init = true;
 	  }
 	}
-	
-	
-	public static function get($name, $clean=false) {
-	  self::init();
-	  if($clean) {
-	    $vals = filter_var_array(self::$get, FILTER_SANITIZE_SPECIAL_CHARS);
-	    return $vals[$name];
-	  }
-	  return self::$get[$name];
+
+
+	public static function get($name, $clean = false)
+	{
+		self::init();
+		if ($clean) {
+			$vals = filter_var_array(self::$get, FILTER_SANITIZE_SPECIAL_CHARS);
+
+			return $vals[$name];
+		}
+		if (isset(self::$get[$name])) {
+			return self::$get[$name];
+		}
+
 	}
 	
 	public static function post($name, $clean=false) {

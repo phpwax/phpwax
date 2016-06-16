@@ -49,7 +49,9 @@ class WaxModelField {
     $this->setup();
     $this->map_choices();
     $this->setup_validations();
-    if(!is_array(self::$skip_field_delegation_cache[get_class($this)])) $this->setup_skip_delegation_cache();
+    if (isset(self::$skip_field_delegation_cache[get_class($this)]) && !is_array(self::$skip_field_delegation_cache[get_class($this)])) {
+      $this->setup_skip_delegation_cache();
+    }
   }
 
   public function get() {

@@ -135,16 +135,25 @@ class WaxUrl {
     self::compile();
   }
 
-  /**
-   * get function
-   *
-   * @return mixed
-   **/
-  static public function get($val) {
-    if(!self::$mapped) self::compile();
-    if($val !=="controller" && strpos(self::$params[$val], "/")) return explode("/",self::$params[$val]);
-    return self::$params[$val];
-  }
+    /**
+     * get function
+     *
+     * @return mixed
+     **/
+    static public function get($val)
+    {
+        if (!self::$mapped) {
+            self::compile();
+        }
+        if ($val !== "controller" && isset(self::$params[$val]) && strpos(self::$params[$val], "/")) {
+            return explode("/", self::$params[$val]);
+        }
+
+        if (isset(self::$params[$val])) {
+            return self::$params[$val];
+        }
+
+    }
 
   static public function get_params() {
     if(!self::$mapped) self::compile();

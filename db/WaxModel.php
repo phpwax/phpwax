@@ -290,7 +290,7 @@ class WaxModel{
     public function __get($name)
     {
         if (array_key_exists($name, $this->columns)) {
-            if (WaxModelField::$skip_field_delegation_cache[$this->columns[$name][0]]["get"]) {
+            if (isset (WaxModelField::$skip_field_delegation_cache[$this->columns[$name][0]]["get"])) {
                 if (isset($this->row[$name])) {
                     return $this->row[$name];
                 }
