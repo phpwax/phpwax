@@ -76,6 +76,7 @@ class WaxModelField {
   }
 
   public function map_choices() {
+    $choices = [];
     if($this->text_choices && is_array($this->choices)) {
       $choices = $this->choices;
       $this->choices = array();

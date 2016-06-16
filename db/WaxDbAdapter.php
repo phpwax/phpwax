@@ -105,7 +105,7 @@ abstract class WaxDbAdapter {
     if($model->sql) {
       $sql = $model->sql;
     } else {
-      $sql .=$this->select_sql($model);
+      $sql =$this->select_sql($model);
 
       $join = $this->left_join($model);
       $sql .=$join["sql"];
@@ -249,7 +249,7 @@ abstract class WaxDbAdapter {
   }
 
   public function select_sql($model) {
-    $sql .= "SELECT ";
+    $sql = "SELECT ";
     if($model->is_paginated) $sql .= "SQL_CALC_FOUND_ROWS ";
     if(is_array($model->select_columns) && count($model->select_columns)) $sql.= join(",", $model->select_columns);
     elseif(is_string($model->select_columns)) $sql.=$model->select_columns;
