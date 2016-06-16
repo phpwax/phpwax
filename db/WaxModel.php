@@ -257,52 +257,69 @@ class WaxModel{
    * @return mixed
    */
 
-  public function output_val($name) {
-    $field = $this->get_col($name);
-    return $field->output();
-  }
+    public function output_val($name)
+    {
+        $field = $this->get_col($name);
 
-  public function set_identifier() {
-    // Grab the first text field to display
-    if($this->identifier) return true;
-    foreach($this->columns as $name=>$col) {
-      if($col[0]=="CharField") {
-        $label_field = $name;
-      }
-      if($label_field) {
-        $this->identifier = $label_field;
-        return true;
-      }
+        return $field->output();
     }
-  }
 
-     /**
-      *  get property
-      *  @param  string  name    property name
-      *  @return mixed           property value
-      */
-  public function __get($name) {
-    if(array_key_exists($name, $this->columns)) {
-      if(WaxModelField::$skip_field_delegation_cache[$this->columns[$name][0]]["get"]) return $this->row[$name];
-      $field = $this->get_col($name);
-      return $field->get();
+    public function set_identifier()
+    {
+        // Grab the first text field to display
+        if ($this->identifier) {
+            return true;
+        }
+        foreach ($this->columns as $name => $col) {
+            if ($col[0] == "CharField") {
+                $label_field = $name;
+            }
+            if (isset($label_field)) {
+                $this->identifier = $label_field;
+
+                return true;
+            }
+        }
     }
-    elseif(method_exists($this, $name)) return $this->{$name}();
-    elseif(is_array($this->row) && array_key_exists($name, $this->row)) return $this->row[$name];
-  }
+
+    /**
+     *  get property
+     * @param  string  name    property name
+     * @return mixed           property value
+     */
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->columns)) {
+            if (WaxModelField::$skip_field_delegation_cache[$this->columns[$name][0]]["get"]) {
+                if (isset($this->row[$name])) {
+                    return $this->row[$name];
+                }
+            }
+            $field = $this->get_col($name);
+
+            return $field->get();
+        } elseif (method_exists($this, $name)) {
+            return $this->{$name}();
+        } elseif (is_array($this->row) && array_key_exists($name, $this->row)) {
+            return $this->row[$name];
+        }
+    }
 
 
-  /**
-   *  set property
-   *  @param  string  name    property name
-   *  @param  mixed   value   property value
-   */
-  public function __set( $name, $value ) {
-    if(array_key_exists($name, $this->columns)) {
-      $field = $this->get_col($name);
-      $field->set($value);
-    } else $this->row[$name]=$value;
-  }
+    /**
+     *  set property
+     * @param  string  name    property name
+     * @param  mixed   value   property value
+     */
+    public function __set($name, $value)
+    {
+        if (array_key_exists($name, $this->columns)) {
+            $field = $this->get_col($name);
+            $field->set($value);
+        } else {
+            $this->row[$name] = $value;
+        }
+    }
 
   public function __isset($name)
   {
