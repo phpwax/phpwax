@@ -14,11 +14,11 @@ class Request {
 	static $post = false;
 	static $init = false;
 	
-	public function filter($val) {
+	public static function filter($val) {
 	  return filter_var($val, FILTER_FLAG_ENCODE_HIGH);
 	}
 	
-	public function init() {
+	public static function init() {
 	  if(!self::$init) {
 	    self::$get = WaxUrl::get_params();
 	    self::$post = $_POST;
@@ -28,7 +28,7 @@ class Request {
 	}
 	
 	
-	public function get($name, $clean=false) {
+	public static function get($name, $clean=false) {
 	  self::init();
 	  if($clean) {
 	    $vals = filter_var_array(self::$get, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -37,7 +37,7 @@ class Request {
 	  return self::$get[$name];
 	}
 	
-	public function post($name, $clean=false) {
+	public static function post($name, $clean=false) {
 	  self::init();
 	  if($clean) {
 	    $vals = filter_var_array(self::$post, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -46,7 +46,7 @@ class Request {
 	  return self::$post[$name];
 	}
 	
-	public function param($name, $clean = false) {
+	public static function param($name, $clean = false) {
 	  self::init();
 	  return self::$params[$name];
 	}
