@@ -54,9 +54,13 @@ class WaxModelField {
     }
   }
 
-  public function get() {
-    return $this->model->row[$this->col_name];
-  }
+    public function get()
+    {
+        if (isset($this->model->row[$this->col_name])) {
+            return $this->model->row[$this->col_name];
+        }
+
+    }
 
   public function value() {return $this->get();}
 
