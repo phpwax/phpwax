@@ -696,12 +696,10 @@ class WaxEmail
             $this->SetError($this->Lang("file_open") . $path);
             return "";
         }
-        $magic_quotes = get_magic_quotes_runtime();
-        set_magic_quotes_runtime(0);
+
         $file_buffer = fread($fd, filesize($path));
         $file_buffer = $this->EncodeString($file_buffer, $encoding);
         fclose($fd);
-        set_magic_quotes_runtime($magic_quotes);
 
         return $file_buffer;
     }
