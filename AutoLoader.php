@@ -230,7 +230,7 @@ class AutoLoader
     $_temp_route= preg_replace("/[^a-zA-Z0-9_\-\.]/", "", $temp_route);
     while(strpos($temp_route, "..")) $temp_route= str_replace("..", ".", $temp_route);
     $asset_paths = explode("/", $_GET["route"]);
-    if(in_array($asset_paths[0], self::$plugin_asset_types)) {
+    if(in_array($asset_paths[0], self::$plugin_asset_types) && is_dir(PLUGIN_DIR)) {
       $plugins = scandir(PLUGIN_DIR);
       $type = array_shift($asset_paths);
       rsort($plugins);
