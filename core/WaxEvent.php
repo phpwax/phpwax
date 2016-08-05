@@ -179,7 +179,7 @@ class WaxEvent {
    *
    * @return  mixed
    */
-  public function &data() {
+  public static function &data() {
     end(self::$data_array);
     return self::$data_array[key(self::$data_array)];
   }
