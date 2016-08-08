@@ -360,16 +360,16 @@ class File {
 		foreach ($iter as $file) {
 			if (($iter->hasChildren(true)) && !strstr($iter->getRealPath() . "/" . $file->getFilename(), "/.")) {
 				if ($iter->isLink()) {
-					$row['path'] = readlink($iter->getRealPath() . '/' . $file->getFilename());
+					$row['path'] = $iter->getLinkTarget() . '/' . $file->getFilename();
 				} else {
-					$row['path'] = $iter->getRealPath() . '/' . $file->getFilename();
+					$row['path'] = $iter->getPath() . '/' . $file->getFilename();
 				}
 				$row['name'] = str_repeat('&nbsp;&nbsp;', $iter->getDepth() + 2) . ucfirst($file->getFilename());
 				$rows[] = $row;
 				unset($row);
 				if ($iter->isLink()) {
 					$rows = array_merge($rows,
-						self::get_folders(readlink($iter->getRealPath() . '/' . $file->getFilename())));
+						self::get_folders($iter->getLinkTarget() . '/' . $file->getFilename()));
 				}
 			}
 		}
