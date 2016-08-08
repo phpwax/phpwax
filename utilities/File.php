@@ -350,18 +350,30 @@ class File {
 		return substr($file, strrpos($file, '.')+1);
 	}
 
-	static function get_folders($directory) {
-	  if(!is_dir($directory)) return array();
-		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
-		foreach ( $iter as $file ) {
-			if(($iter->hasChildren(true)) && !strstr($iter->getPath()."/".$file, "/.")) {
-			  if($iter->isLink()) $row['path'] = readlink($iter->getPath().'/'.$file->getFilename());
-			  else $row['path']= $iter->getPath().'/'.$file->getFilename();
-				$row['name']=str_repeat('&nbsp;&nbsp;', $iter->getDepth()+2).ucfirst($file->getFilename());
-				$rows[]=$row; unset($row);
-				if($iter->isLink()) $rows = array_merge($rows, self::get_folders(readlink($iter->getPath().'/'.$file->getFilename())));
+	static function get_folders($directory)
+	{
+		if (!is_dir($directory)) {
+			return array();
+		}
+		$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory),
+			RecursiveIteratorIterator::SELF_FIRST);
+		foreach ($iter as $file) {
+			if (($iter->hasChildren(true)) && !strstr($iter->getRealPath() . "/" . $file->getFilename(), "/.")) {
+				if ($iter->isLink()) {
+					$row['path'] = readlink($iter->getRealPath() . '/' . $file->getFilename());
+				} else {
+					$row['path'] = $iter->getRealPath() . '/' . $file->getFilename();
+				}
+				$row['name'] = str_repeat('&nbsp;&nbsp;', $iter->getDepth() + 2) . ucfirst($file->getFilename());
+				$rows[] = $row;
+				unset($row);
+				if ($iter->isLink()) {
+					$rows = array_merge($rows,
+						self::get_folders(readlink($iter->getRealPath() . '/' . $file->getFilename())));
+				}
 			}
 		}
+
 		return $rows;
 	}
 
