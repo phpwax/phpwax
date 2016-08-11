@@ -88,7 +88,7 @@ class WXHelpers {
         if(count($options)) {
             $html = array();
             foreach($options as $key => $value) {
-                $html[] = "$key=\"".@htmlspecialchars($value, ENT_COMPAT)."\"";
+                $html[] = "$key=\"".@htmlspecialchars($value, ENT_COMPAT, 'UTF-8')."\"";
             }
             sort($html);
             $html = implode(" ", $html);
