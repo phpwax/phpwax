@@ -53,19 +53,25 @@ class WaxResponse {
   public function body() {return $this->body;}
   
   public function set_cookie($key, $value='', $expires=false, $path="/", $domain=false, $secure=false) {
-    $cookie[] = "$key=$value";
-    $cookie[] = "Path=$path";
-    $cookie[] = "Domain=".($domain?$domain:$_SERVER['HTTP_HOST']);
-    
-    if($expires){
-      if(is_numeric($expires)) $expires = "@$expires";
-      $date = new DateTime($expires, new DateTimeZone('GMT'));
-      $cookie[] = "Expires=".$date->format('D, d-M-Y H:i:s')." GMT";
-    }
-    if($secure) $cookie[] = "Secure";
-    
-    if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
-    $this->headers["Set-Cookie"][$key] = implode(";", $cookie);
+      $cookie[] = "$key=$value";
+      $cookie[] = "Path=$path";
+      $cookie[] = "Domain=" . ($domain ? $domain : $_SERVER['HTTP_HOST']);
+
+      if ($expires) {
+          if (is_numeric($expires)) {
+              $expires = "@$expires";
+          }
+          $date = new DateTime($expires, new DateTimeZone('GMT'));
+          $cookie[] = "Expires=" . $date->format('D, d-M-Y H:i:s') . " GMT";
+      }
+      if ($secure) {
+          $cookie[] = "Secure";
+      }
+
+      if (!isset($this->headers["Set-Cookie"])) {
+          $this->headers["Set-Cookie"] = array();
+      }
+      $this->headers["Set-Cookie"][$key] = implode(";", $cookie);
   }
   
   public function delete_cookie($key, $path='/', $domain=false) {
