@@ -298,23 +298,27 @@ class File {
 		self::display_asset($image, $mime);
 	}
 
-	static function display_asset($path, $mime) {
-	  if(!is_readable($path)) return false;
-	  if($res = self::detect_mime($path)) $mime=$res;
-		$length=filesize($path);
-		header("Content-Type: " . $mime."\n");
-		header("Content-Length: ".$length."\n");
-		header("Content-disposition: inline; filename=".basename($path)."\n");
-		header('Expires: ' . date('D, d M Y H:i:s',time()+200000) . ' GMT');
-    header("Cache-Control: max-age=200000");
-    header('Pragma:');
+	static function display_asset($path, $mime)
+	{
+		if (!is_readable($path)) {
+			return false;
+		}
+		if ($res = self::detect_mime($path)) {
+			$mime = $res;
+		}
+		$length = filesize($path);
+		header("Content-Type: " . $mime . "\n");
+		header("Content-Length: " . $length . "\n");
+		header("Content-disposition: inline; filename=" . basename($path) . "\n");
+		header('Expires: ' . date('D, d M Y H:i:s', time() + 200000) . ' GMT');
+		header("Cache-Control: max-age=200000");
+		header('Pragma:');
 		ob_end_clean();
 		$handle = fopen($path, "r");
-		  while (!feof($handle)) {
-		    echo fread($handle, 8192);
-		  }
+		while (!feof($handle)) {
+			echo fread($handle, 8192);
+		}
 		fclose($handle);
-		exit;
 	}
 
 	static function detect_mime($file) {
