@@ -7,16 +7,13 @@ if(class_exists("WaxEvent", false)){
     $response->add_header('P3P', ' CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"');
     
     //garbage collection
-    $cmd = "php ".__FILE__." ";
-    $run_garbage_collection = true;
     foreach(WaxSession::$garbage_collection_folders as $dir){
-      if(($stats = stat($dir."/garbage.collect.lock")) && time() < $stats[9]){
-        $run_garbage_collection = false;
-        break;
+      $stats = stat("$dir/garbage.collect.lock");
+      if($stats && $stats[9] + WaxSession::$garbage_collection_timeout < time()){
+        touch("$dir/garbage.collect.lock");
+        exec("cd $dir && find . -mmin ".(WaxSession::$garbage_collection_timeout / 60)." -exec rm -f \"{}\" \\;"); //mmin is in minutes
       }
-      $cmd .= $dir." ";
     }
-    if($run_garbage_collection) exec($cmd." > /dev/null &");
   });
 }
 
@@ -73,7 +70,6 @@ class WaxSession {
     if(static::$updated[$this->name]){
       if(file_put_contents($this->file_storage(), serialize(static::$data[$this->name])) === false) throw new WaxException("Session not writable - ".$this->file_storage_dir());
     }
-    touch($this->file_storage(), time() + ($this->lifetime?$this->lifetime:(WaxSession::$garbage_collection_timeout * 10)));
   }
   
   public function get($key){
@@ -139,25 +135,4 @@ class WaxSession {
       $salt .= $itoa64[$c2 & 0x3f];
     } while (true);
   }
-  
-  /**
-   * depreciated. start does nothing now, since starting happens in construction. making use of sessions in any way will start them behind the scenes.
-   */
-  public function start(){}
 }
-
-//when run from console directly, garbage collect. parameters are directories to be processed
-if($argv){
-  array_shift($argv);
-  foreach($argv as $dir){
-    if(!is_dir($dir)) continue;
-    touch("$dir/garbage.collect.lock", time() + WaxSession::$garbage_collection_timeout);
-    foreach(glob("$dir/*") as $file){
-      if($file == "$dir/garbage.collect.lock") continue;
-      if(($stats = stat($file)) && time() > $stats[9])
-        unlink($file);
-    }
-  }
-}
-
-?>
