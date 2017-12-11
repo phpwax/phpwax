@@ -214,9 +214,14 @@ class WaxModel{
     return $this->errors;
   }
 
-  public function get_col($name) {
-    if(!$this->columns[$name][0]) throw new WXException("Error", $name." is not a valid call");
-    return new $this->columns[$name][0]($name, $this, $this->columns[$name][1]);
+    public function get_col($name)
+    {
+        if (!isset($this->columns[$name][0])) {
+            throw new WXException("Error", $name . " is not a valid call");
+        }
+
+        $colClass = $this->columns[$name][0];
+        return new $colClass($name, $this, $this->columns[$name][1]);
   }
 
   static public function get_cache($model, $field, $id, $transform = true) {
@@ -660,7 +665,11 @@ class WaxModel{
   public function __call( $func, $args ) {
     if(array_key_exists($func, $this->columns)) {
       $field = $this->get_col($func);
-      return $field->get($args[0]);
+      $argument = null;
+      if (isset($args[0])) {
+          $argument = $args[0];
+      }
+      return $field->get($argument);
     }
   }
 
