@@ -67,7 +67,7 @@ class WaxController
             $host = $_SERVER['HTTP_HOST'];
         }
         if (!$protocol) {
-            $protocol = $_SERVER["HTTPS"] ? "https://" : "http://";
+            $protocol = isset($_SERVER["HTTPS"]) ? "https://" : "http://";
         }
         switch (true) {
             case is_array($options):

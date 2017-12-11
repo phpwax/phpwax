@@ -26,8 +26,8 @@ class WaxCacheLoader {
     if($this->config['engine']) $this->engine_type = $this->config['engine'];
     if(!is_readable($this->config['dir'])) mkdir($this->config['dir'], 0777, true);    
     
-    if($this->config['lifetimes'] && ($lt = $this->lifetimes($this->config['lifetimes'])) ) $this->lifetime = $lt;
-    elseif($this->config['lifetime']) $this->lifetime = $this->config['lifetime'];
+    if(isset($this->config['lifetimes']) && ($lt = $this->lifetimes($this->config['lifetimes'])) ) $this->lifetime = $lt;
+    elseif(isset($this->config['lifetime'])) $this->lifetime = $this->config['lifetime'];
     else $this->lifetime = 3600;
   }
 
