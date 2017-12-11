@@ -81,7 +81,9 @@ class WaxModel{
       if(method_exists($this, $method)) {$this->$method;}
       else {
         $res = $this->filter(array($this->primary_key => $params))->first();
-        $this->row=$res->row;
+        if ($res) {
+            $this->row=$res->row;
+        }
         $this->clear();
       }
     }
