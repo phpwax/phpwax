@@ -208,21 +208,22 @@ class ManyToManyField extends WaxModelField
             $this->join_model->select_columns[] = "{$this->join_model->table}.$col";
         }
 
-        $cache = WaxModel::get_cache(get_class($this->model), $this->field,
-            $this->model->primval . ":" . md5(serialize($target->filters)), $vals->rowset, false);
-        if ($cache) {
-            return new WaxModelAssociation($this->model, $target, $cache, $this->field);
-        }
         $vals = $this->join_model->all();
         $fetchedRowset = null;
         if (isset($vals)) {
             $fetchedRowset = $vals->rowset;
         }
 
+        $cache = WaxModel::get_cache(get_class($this->model), $this->field,
+            $this->model->primval . ":" . md5(serialize($target->filters)), $fetchedRowset, false);
+        if ($cache) {
+            return new WaxModelAssociation($this->model, $target, $cache, $this->field);
+        }
+
         WaxModel::set_cache(get_class($this->model), $this->field,
             $this->model->primval . ":" . md5(serialize($target->filters)), $fetchedRowset);
 
-        return new WaxModelAssociation($this->model, $target, $vals->rowset, $this->field);
+        return new WaxModelAssociation($this->model, $target, $fetchedRowset, $this->field);
     }
 
     protected function lazy_load($target_model)
