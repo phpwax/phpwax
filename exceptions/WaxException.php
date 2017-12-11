@@ -24,14 +24,16 @@ class WaxException extends Exception {
   }
   
 	public function format_trace($e, $cli=false) {
+      $vars = isset($this->vars) ? $this->vars : null;
+      $trace = isset($this->trace) ? $this->trace : null;
 	  if(IN_CLI =="true" || $cli) {
-	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$this->vars, "trace"=>$this->trace));
+	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$vars, "trace"=>$trace));
 			$view->use_cache=false;
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/cli_trace");
   		return $view->parse();
 	  }else {
-	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$this->vars, "trace"=>$this->trace));
-			$view->use_cache=false;
+	    $view = new WaxTemplate(array("e"=>$e, "help"=>$this->help, "file"=>$this->file, "line"=>$this->line, "vars"=>$vars, "trace"=>$trace));
+	    $view->use_cache=false;
   		$view->add_path(FRAMEWORK_DIR."/template/builtin/trace");
   		return $view->parse();
 	  }

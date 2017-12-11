@@ -8,20 +8,29 @@ class WaxBoundForm implements iterator {
   public $errors = array();
   public $prefix;
 
-  public function __construct($model, $post_data, $options=array()) {
-    foreach($options as $k=>$v) $this->{$k} = $v;
-    if(!$this->prefix) $this->prefix = $model->table;
-    if(!$post_data &&  $_REQUEST[$this->prefix]) $this->post_data = $_REQUEST[$this->prefix];
-    $this->bound_to_model = $model;
-    foreach($model->columns as $column=>$options) {
-      $element = $model->get_col($column);
-      $widget_name = $element->widget;
-      $widget = new $widget_name($column, $element);
-      if($element->editable) $this->elements[$column] = $widget;
+    public function __construct($model, $post_data, $options = [])
+    {
+        foreach ($options as $k => $v) {
+            $this->{$k} = $v;
+        }
+        if (!$this->prefix) {
+            $this->prefix = $model->table;
+        }
+        if (!$post_data && isset($_REQUEST[$this->prefix])) {
+            $this->post_data = $_REQUEST[$this->prefix];
+        }
+        $this->bound_to_model = $model;
+        foreach ($model->columns as $column => $options) {
+            $element = $model->get_col($column);
+            $widget_name = $element->widget;
+            $widget = new $widget_name($column, $element);
+            if ($element->editable) {
+                $this->elements[$column] = $widget;
+            }
+        }
     }
-  }
 
-  public function add_element($name, $field_type, $settings=array()) {
+    public function add_element($name, $field_type, $settings=array()) {
     $widget = new $field_type($name, $settings);
     $this->elements[$name] = $widget;
   }

@@ -75,11 +75,17 @@ class WaxSession {
     }
     touch($this->file_storage(), time() + ($this->lifetime?$this->lifetime:(WaxSession::$garbage_collection_timeout * 10)));
   }
-  
-  public function get($key){
-    if(!$key) return static::$data[$this->name];
-    else return static::$data[$this->name][$key];
-  }
+
+    public function get($key)
+    {
+        if (!$key) {
+            return static::$data[$this->name];
+        } elseif (isset(static::$data[$this->name][$key])) {
+            return static::$data[$this->name][$key];
+        }
+
+        return null;
+    }
   
   public function __get($key) { return $this->get($key); }
 
