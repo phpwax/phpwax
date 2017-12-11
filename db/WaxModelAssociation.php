@@ -53,7 +53,7 @@ class WaxModelAssociation extends WaxRecordset {
   }
 
   public function count() {
-    if(is_numeric($this->rowset[0])){
+    if(isset($this->rowset[0]) && is_numeric($this->rowset[0])){
       $check_count = clone $this->target_model;
       $check_count->select_columns = array($check_count->primary_key);
       $check_count->filter($check_count->primary_key,$this->rowset);
