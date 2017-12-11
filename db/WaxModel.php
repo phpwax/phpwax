@@ -522,7 +522,7 @@ class WaxModel{
     $this->_limit = "1";
     $model = clone $this;
     $res = static::$db->select($model);
-    if($res[0])
+    if(isset($res[0]))
       $model->row = $res[0];
     else
       $model = false;
