@@ -74,10 +74,10 @@ class WaxUrl
     static public function compile()
     {
         /* Setup */
-        if (!isset(self::$uri)) {
+        if (!self::$uri) {
             self::$uri = $_GET["route"];
         }
-        if (!isset(self::$original_route)) {
+        if (!self::$original_route) {
             self::$original_route = $_GET["route"];
         }
 
