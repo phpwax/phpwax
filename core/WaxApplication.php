@@ -40,27 +40,30 @@ class WaxApplication
 
 
     /**
-	 *	Instantiates a config object and constructs the route.
-	 *  @access private
+     *  Instantiates a config object and constructs the route.
+     *  @access private
+     *
      *  @return void
-    **/
-	private function setup_environment()
+     **/
+    private function setup_environment()
     {
-		if(defined('ENV')) {
-		  Config::set_environment(ENV);
-		} elseif($_SERVER["ENV"]) {
-			define("ENV", $_SERVER["ENV"]);
-		  Config::set_environment($_SERVER["ENV"]);
-		} elseif(Config::get($_SERVER["SERVER_NAME"])) {
-		  Config::set_environment($_SERVER["SERVER_NAME"]);
-		  define("ENV", $_SERVER["SERVER_NAME"]);
-		} else{
-              define("ENV", 'production');
-              Config::set_environment('production');
-            }
+        if (defined('ENV')) {
+            Config::set_environment(ENV);
+        } elseif (isset($_SERVER["ENV"])) {
+            define("ENV", $_SERVER["ENV"]);
+            Config::set_environment($_SERVER["ENV"]);
+        } elseif (Config::get($_SERVER["SERVER_NAME"])) {
+            Config::set_environment($_SERVER["SERVER_NAME"]);
+            define("ENV", $_SERVER["SERVER_NAME"]);
+        } else {
+            define("ENV", 'production');
+            Config::set_environment('production');
+        }
 
-		//  Looks for an environment specific file inside app/config
-		if(is_readable(CONFIG_DIR.ENV.".php")) require_once(CONFIG_DIR.ENV.".php");
+        //  Looks for an environment specific file inside app/config
+        if (is_readable(CONFIG_DIR . ENV . ".php")) {
+            require_once(CONFIG_DIR . ENV . ".php");
+        }
     }
 
     /**
