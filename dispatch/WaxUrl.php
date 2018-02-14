@@ -261,10 +261,10 @@ class WaxUrl
      */
     protected static function force_defaults()
     {
-        if (!self::$params["controller"]) {
+        if (!isset(self::$params['controller']) || !self::$params["controller"]) {
             self::$params["controller"] = self::$defaults["controller"];
         }
-        if (!self::$params["action"]) {
+        if (!isset(self::$params['action']) || !self::$params["action"]) {
             self::$params["action"] = self::$defaults["action"];
         }
     }
