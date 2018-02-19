@@ -649,7 +649,7 @@ class WaxModel{
       return $ret;
     }else{
       $ret = clone $this;
-      $ret->{$ret->primary_key} = false;
+      $ret->{$ret->primary_key} = null;
       return $this->copy($ret);
     }
   }
