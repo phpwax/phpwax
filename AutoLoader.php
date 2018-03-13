@@ -83,7 +83,7 @@ function throw_wxerror($code, $error, $file, $line, $vars) {
 
 class WaxRecursiveDirectoryIterator extends RecursiveDirectoryIterator {
   
-  public function hasChildren() {
+  public function hasChildren($allow_links = null) {
     if(substr($this->getFilename(),0,1)==".") return false;
     else return parent::hasChildren();
   }
