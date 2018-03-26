@@ -157,6 +157,7 @@ class ManyToManyField extends WaxModelField
         $links = new $this->target_model;
         if ($model instanceof WaxRecordset) {
             //this bit will break non numeric keys that aren't eager loaded!
+            $filter = [];
             foreach ($model as $obj) {
                 $filter[] = $obj->primval;
             }
