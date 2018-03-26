@@ -546,31 +546,36 @@ class WaxModel{
   /************ End of database methods *************/
 
 
-  public function set_attributes($array) {
-    //move association fields to the end of the array
-    foreach((array)$array as $k=>$v) {
-      if($this->columns[$k]){
-        $is_assoc = WaxModelField::$skip_field_delegation_cache[$this->columns[$k][0]]['assoc'];
-        if(!isset($is_assoc)){
-          $field = $this->get_col($k);
-          $is_assoc = $field->is_association;
+    public function set_attributes($array)
+    {
+        //move association fields to the end of the array
+        foreach ((array)$array as $k => $v) {
+            if ($this->columns[$k]) {
+                $is_assoc = null;
+                if (isset(WaxModelField::$skip_field_delegation_cache[$this->columns[$k][0]]['assoc'])) {
+                    $is_assoc = WaxModelField::$skip_field_delegation_cache[$this->columns[$k][0]]['assoc'];
+                }
+                if (!isset($is_assoc)) {
+                    $field = $this->get_col($k);
+                    $is_assoc = $field->is_association;
+                }
+                if ($is_assoc) {
+                    $swap = $array[$k];
+                    unset($array[$k]);
+                    $array[$k] = $swap;
+                }
+            }
         }
-        if($is_assoc){
-          $swap = $array[$k];
-          unset($array[$k]);
-          $array[$k] = $swap;
+
+        foreach ((array)$array as $k => $v) {
+            $this->$k = $v;
         }
-      }
+
+        return $this;
     }
 
-    foreach((array)$array as $k=>$v) {
-      $this->$k=$v;
-    }
-    return $this;
-  }
 
-
-  public function is_posted() {
+    public function is_posted() {
     if(is_array($_REQUEST[$this->table])) {
       return true;
     } else {
