@@ -122,6 +122,7 @@ class ManyToManyField extends WaxModelField
         if ($value instanceof WaxRecordset || is_array($value)) {
             /*** Tentatively changing behaviour assigning will now replace, hence the initial delete ***/
             $this->delete();
+            $rowset = [];
             foreach ($value as $join) {
                 $new_join = $this->set(new $this->target_model($join));
                 $rowset[] = $new_join->row;
