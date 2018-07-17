@@ -7,7 +7,7 @@
  *	Engine for caching of data / objects to memcache.
  *  @package PHP-Wax
  */
-class WaxCacheMemcache implements CacheEngine{
+class WaxCacheMemcached implements CacheEngine{
   
   public $key = false;
   public $server = "localhost";
