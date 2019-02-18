@@ -1017,7 +1017,7 @@ class WaxEmail
       $view_path= new WaxTemplate($this);
 
       foreach((array)Autoloader::view_paths("user") as $path) {
-        $view_path->add_path($path.get_class($this)."/".$use_view);
+        $view_path->add_path($path.get_class($this)."/".$view);
         $view_path->add_path($path."shared/".$view);
         $view_path->add_path($path.$view);
       }
