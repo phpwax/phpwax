@@ -52,7 +52,7 @@ class WaxResponse {
     
   public function body() {return $this->body;}
   
-  public function set_cookie($key, $value='', $expires=false, $path="/", $domain=false, $secure=false) {
+  public function set_cookie($key, $value='', $expires=false, $path="/", $domain=false, $secure=true) {
       $cookie[] = "$key=$value";
       $cookie[] = "Path=$path";
       $cookie[] = "Domain=" . ($domain ? $domain : $_SERVER['HTTP_HOST']);
@@ -66,6 +66,7 @@ class WaxResponse {
       }
       if ($secure) {
           $cookie[] = "Secure";
+          $cookie[] = 'HttpOnly';
       }
 
       if (!isset($this->headers["Set-Cookie"])) {
