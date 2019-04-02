@@ -79,20 +79,23 @@ class WaxResponse {
     if(!$this->headers["Set-Cookie"]) $this->headers["Set-Cookie"] = array();
     $this->headers["Set-Cookie"][$key] = "$key=;path=$path;domain=$domain;expires=Thu, 01-Jan-1970 00:00:00 GMT";
   }
-  
-  public function execute() {
-    WaxEvent::run("wax.response.execute", $this);
-    header($this->status_map[$this->status]);
-    header("X-Info: Powered By PHP-Wax");
-    foreach($this->headers as $header=>$val)
-      if(is_array($val))
-        foreach($val as $v)
-          header($header.":".$v, false);
-      else
-        header($header.":".$val, false);
-    echo $this->body();
-    WaxEvent::run("wax.end");
-  }
+
+    public function execute()
+    {
+        WaxEvent::run('wax.response.execute', $this);
+        header($this->status_map[$this->status]);
+        foreach ($this->headers as $header => $val) {
+            if (is_array($val)) {
+                foreach ($val as $v) {
+                    header($header.':'.$v, false);
+                }
+            } else {
+                header($header.':'.$val, false);
+            }
+        }
+        echo $this->body();
+        WaxEvent::run('wax.end');
+    }
   	
 }
 
