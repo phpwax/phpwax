@@ -592,8 +592,7 @@ class File
         }
 
         if ($mime === null) {
-            $res = self::detect_mime($path);
-            $mime = $res;
+            $mime = self::detect_mime($path);
         }
 
         $length = filesize($path);
