@@ -592,7 +592,7 @@ class File
         }
 
         if ($mime === null) {
-            $res = self::detect_mime($path)l
+            $res = self::detect_mime($path);
             $mime = $res;
         }
 
