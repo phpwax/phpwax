@@ -232,7 +232,7 @@ class FormOptionsHelper extends FormHelper {
       $i = str_pad($i, 2, "0", STR_PAD_LEFT);
       $month[$i]=$i;
     }
-    for($i = 1900; $i<=2020; $i++) {
+    for($i = 1900; $i<=(int)date('Y')+10; $i++) {
       $year[$i]=$i;
     }
     if(!$selected_day) $selected_day = date('d');
