@@ -20,7 +20,7 @@ class WaxCLI {
   
   protected function app_setup() {
     //if(!defined("ENV")) define("ENV", "development");
-    Autoloader::run_application(ENV, false);
+    Autoloader::run_application(false);
   }
   
   public function controller($argv) {
