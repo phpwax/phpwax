@@ -336,7 +336,7 @@ class AutoLoader
         }
     }
 
-    public static function detect_assets(): ?bool
+    public static function detect_assets()
     {
         self::register("framework", "File", FRAMEWORK_DIR . "/utilities/File.php");
         if (!isset($_GET["route"])) {
