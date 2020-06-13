@@ -207,7 +207,7 @@ class AutoLoader
                 if (class_exists($class_name, false)) {
                     return true;
                 }
-                if (require_once(self::$registry[$responsibility][$class_name])) {
+                if (require(self::$registry[$responsibility][$class_name])) {
                     return true;
                 }
             }
@@ -343,7 +343,6 @@ class AutoLoader
             return false;
         }
         $temp_route = $_GET["route"];
-        $_temp_route = preg_replace("/[^a-zA-Z0-9_\-\.]/", "", $temp_route);
         while (strpos($temp_route, "..")) {
             $temp_route = str_replace("..", ".", $temp_route);
         }
@@ -386,7 +385,7 @@ class AutoLoader
             $classes = get_declared_classes();
         }
         foreach ((array)$classes as $class) {
-            if ($class instanceof \WXHelpers || $class === "WXHelpers" || $class === "Inflections") {
+            if (is_subclass_of($class, WXHelpers::class, true) || $class === "WXHelpers" || $class === "Inflections") {
                 foreach (get_class_methods($class) as $method) {
                     if (strpos($method, "_") !== 0 && !function_exists($method)) {
                         WaxCodeGenerator::new_helper_wrapper($class, $method);
@@ -429,50 +428,6 @@ class AutoLoader
             }
         }
         return $paths;
-    }
-
-    public static function plugin_installed($plugin)
-    {
-        return is_readable(PLUGIN_DIR . $plugin);
-    }
-
-    public static function detect_environments()
-    {
-        if (!is_array(Config::get("environments"))) {
-            return false;
-        }
-        if ($_SERVER['HOSTNAME']) {
-            $addr = gethostbyname($_SERVER['HOSTNAME']);
-        } elseif ($_SERVER['SERVER_ADDR']) {
-            $addr = $_SERVER['SERVER_ADDR'];
-        }
-        if ($envs = Config::get("environments")) {
-            foreach ($envs as $env => $range) {
-                $range = "/" . str_replace(".", "\.", $range) . "/";
-                if (preg_match($range, $addr) && !defined($env)) {
-                    define('ENV', $env);
-                }
-            }
-        }
-    }
-
-    public static function bootstrap()
-    {
-        self::asset_servable();
-        self::$bootstrapped_app = true;
-        auto_loader_check_cache();
-        self::initialise();
-        return true;
-    }
-
-    public static function asset_servable()
-    {
-        $asset_path = $_GET["route"];
-        $as = self::get_asset_server();
-        if ($as->handles($asset_path)) {
-            $as->serve($asset_path);
-        }
-
     }
 
     /**
