@@ -7,12 +7,29 @@
  **/
 class WaxWidget{
 
-  public $allowable_attributes = array(
-    "type", "name", "value", "checked", "disabled", "readonly", "size", "id", "class",
-    "maxlength", "src", "alt", "accesskey", "tabindex", "rows", "cols", "multiple", 'placeholder'
-  );
+    public $allowable_attributes = [
+        "type",
+        "name",
+        "value",
+        "checked",
+        "disabled",
+        "readonly",
+        "size",
+        "id",
+        "class",
+        "maxlength",
+        "src",
+        "alt",
+        "accesskey",
+        "tabindex",
+        "rows",
+        "cols",
+        "multiple",
+        'placeholder',
+        'pattern',
+    ];
 
-  public $defaults = array("name"=>"","editable"=>true,"value"=>"");
+    public $defaults = array("name"=>"","editable"=>true,"value"=>"");
 
   public $show_label = true;
   public $label_template = '<label for="%s>%s</label>';

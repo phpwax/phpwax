@@ -124,7 +124,7 @@ function throw_wxexception($e)
     $exc = new WaxException($e->getMessage(), "Application Error", false, array("file" => $e->getFile(), "line" => $e->getLine(), "trace" => $e->getTraceAsString()));
 }
 
-function throw_wxerror($code, $error, $file, $line, $vars)
+function throw_wxerror($code, $error, $file, $line, $vars = [])
 {
     //log warnings without halting execution
     if ($code == 2) {
