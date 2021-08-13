@@ -27,6 +27,7 @@ class WaxWidget{
         "multiple",
         'placeholder',
         'pattern',
+        'title',
     ];
 
     public $defaults = array("name"=>"","editable"=>true,"value"=>"");
